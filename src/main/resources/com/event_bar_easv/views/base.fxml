@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="576.0" prefWidth="874.0" stylesheets="@../css/base.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.event_bar_easv.gui.controllers.BaseController">
+    <left>
+        <VBox alignment="TOP_CENTER" prefHeight="515.0" prefWidth="209.0" spacing="20.0" styleClass="drawer" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+            <AnchorPane prefHeight="569.0" prefWidth="193.0">
+                <children>
+                    <VBox alignment="CENTER_LEFT" layoutY="4.0" prefHeight="179.0" prefWidth="211.0" spacing="10.0" styleClass="pane">
+                  <GridPane prefHeight="128.0" prefWidth="194.0">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Circle fill="#d6ebff" radius="33.0" stroke="BLACK" strokeType="INSIDE" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+                           <children>
+                              <Label fx:id="userEmail" text="admin@yahoo.com" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="userRole" text="Administrator" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                  </GridPane>
+                    </VBox>
+               <VBox layoutX="-2.0" layoutY="183.0" prefHeight="216.0" prefWidth="213.0">
+                  <children>
+                           <GridPane alignment="CENTER_LEFT" prefHeight="201.0" prefWidth="210.0" styleClass="menu-bar-top">
+                               <columnConstraints>
+                                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                               </columnConstraints>
+                               <rowConstraints>
+                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                               </rowConstraints>
+                               <children>
+                                   <Button fx:id="fillAllMovies" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleDashBoardPageSwitch" prefHeight="40.0" prefWidth="231.0" styleClass="allMoviesButton" text="Dashboard" />
+                                   <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleEventPageSwitch" prefHeight="40.0" prefWidth="231.0" styleClass="mediaPlayerButton" text="Event" GridPane.rowIndex="1" />
+                                   <Button fx:id="specialTicketButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleSpecialTicketsPageSwitch" prefHeight="40.0" prefWidth="231.0" styleClass="mediaPlayerButton" text="Special Tickets" GridPane.rowIndex="2" />
+                                   <Button fx:id="usersTicketButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleUsersPageSwitch" prefHeight="49.0" prefWidth="209.0" styleClass="mediaPlayerButton" text="Users" GridPane.rowIndex="3" />
+                               </children>
+                               <effect>
+                                   <DropShadow />
+                               </effect>
+                           </GridPane>
+                  </children>
+               </VBox>
+               <VBox alignment="CENTER" layoutX="-1.0" layoutY="516.0" prefHeight="37.0" prefWidth="212.0">
+                  <children>
+                     <Button alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="216.0" styleClass="mediaPlayerButton" text="Logout" />
+                  </children>
+               </VBox>
+                </children>
+            </AnchorPane>
+        </VBox>
+    </left>
+    <center>
+        <StackPane fx:id="app_content" prefHeight="554.0" prefWidth="612.0" BorderPane.alignment="CENTER">
+            <VBox prefHeight="200.0" prefWidth="100.0" />
+        </StackPane>
+    </center>
+</BorderPane>

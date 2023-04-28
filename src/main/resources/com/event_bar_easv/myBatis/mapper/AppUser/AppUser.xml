@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.event_bar_easv.dal.mappers.UserMapper">
+
+    <resultMap id="userResult" type="AppUser">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="passwordHash"  column="passWordHash"/>
+        <result property="isActivated" javaType="boolean" column="isActivated"/>
+        <collection property="roles" javaType="ArrayList" column="id" ofType="AppRole">
+            <id property="id" column="idRole"/>
+            <result property="name" column="nameRole"/>
+        </collection>
+    </resultMap>
+
+    <!--    this bullshit does not map column names with kebab case psw_has -->
+    <!--    so it needs to be casted -->
+    <select id="getAllUsers"
+            resultMap="userResult">
+        SELECT u.id,
+               u.name,
+               u.email,
+               u.psw_hash as passWordHash,
+               u.isActivated,
+               r.id       as idRole,-->
+               r.name     as nameRole-->
+        FROM app_user AS u -->
+                 left outer join user_role ur on u.id = ur.user_id
+                 left outer join role r on ur.role_id = r.id
+    </select>
+
+
+    <insert
+            id="createCustomer"
+            statementType="PREPARED"
+            keyProperty="id"
+            keyColumn="id"
+            parameterType="AppUser"
+            useGeneratedKeys="false"
+    >
+        INSERT INTO app_user (id,name,email,psw_hash,isActivated)
+        VALUES (#{id},#{name},#{email},#{passwordHash},#{isActivated});
+    </insert>
+
+    <insert
+            id="addUserToRole"
+            statementType="PREPARED"
+            keyProperty="id"
+            keyColumn="id"
+            useGeneratedKeys="false"
+            parameterType="map"
+    >
+        --  insert categoryId and movieId to joining table
+        INSERT INTO user_role (user_id,role_id)
+        VALUES (#{userId},#{roleId})
+
+    </insert>
+
+
+
+</mapper>
