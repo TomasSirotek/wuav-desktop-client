@@ -17,10 +17,10 @@ public enum ViewType {
             return "views/dashboardLayout.fxml";
         }
     },
-    EVENTS {
+    PROJECTS {
         @Override
         public String getFXMLView() {
-            return "views/eventView.fxml";
+            return "views/projectView.fxml";
         }
     },
     USERS {

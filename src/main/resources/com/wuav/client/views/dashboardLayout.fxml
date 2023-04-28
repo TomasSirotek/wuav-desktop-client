@@ -26,7 +26,7 @@
                <children>
                   <Pane prefHeight="200.0" prefWidth="1000.0" style="-fx-background-color: FFFFFF;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <effect>
-                        <DropShadow height="22.48" radius="5.9475" width="3.31" />
+                        <DropShadow height="12.9" radius="5.7625" width="12.15" />
                      </effect>
                      <children>
                         <GridPane layoutX="-1.0" prefHeight="60.0" prefWidth="999.0">
@@ -173,7 +173,7 @@
                                     <Font name="SansSerif Regular" size="15.0" />
                                  </font>
                               </MFXButton>
-                              <MFXButton alignment="BASELINE_LEFT" prefHeight="44.0" prefWidth="164.0" text="My projects" textFill="#141111">
+                              <MFXButton alignment="BASELINE_LEFT" onAction="#handleDashBoardPageSwitch" prefHeight="44.0" prefWidth="164.0" text="My projects" textFill="#141111">
                                  <graphic>
                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
                                        <children>
@@ -269,13 +269,6 @@
          <center>
             <StackPane fx:id="app_content" prefHeight="541.0" prefWidth="856.0" BorderPane.alignment="CENTER">
                <VBox prefHeight="200.0" prefWidth="100.0">
-                  <children>
-                     <Label prefHeight="149.0" prefWidth="431.0" text="ALL PROJECTS ">
-                        <font>
-                           <Font name="SansSerif Bold" size="30.0" />
-                        </font>
-                     </Label>
-                  </children>
                   <padding>
                      <Insets bottom="30.0" left="30.0" right="30.0" />
                   </padding></VBox>

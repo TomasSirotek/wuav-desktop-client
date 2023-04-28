@@ -131,11 +131,9 @@ public class BaseController extends RootController implements Initializable {
     }
 
 
-
-
     @FXML
     private void handleDashBoardPageSwitch()  {
-        runInParallel(ViewType.DASHBOARD);
+        runInParallel(ViewType.PROJECTS);
     }
     //endregion
 
@@ -158,13 +156,13 @@ public class BaseController extends RootController implements Initializable {
 
     //region VIEW INTERNAL HANDEL
 
-    private RootController tryToLoadView() {
-        try {
-            return loadNodesView(ViewType.EVENTS);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    private RootController tryToLoadView() {
+//        try {
+//            return loadNodesView(ViewType.EVENTS);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     /**
      * private method for showing new stages whenever its need

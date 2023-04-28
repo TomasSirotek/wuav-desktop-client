@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXPagination?>
+<?import io.github.palexdev.materialfx.controls.MFXTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #F2F2F2;" stylesheets="@../css/login.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.ProjectController">
+   <children>
+      <GridPane layoutX="61.0" layoutY="65.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="293.55743408203125" minHeight="10.0" prefHeight="90.61650085449219" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="519.0473556518555" minHeight="10.0" prefHeight="509.3834991455078" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="620.1368713378906" minWidth="10.0" prefWidth="620.1368713378906" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="620.1368713378906" minWidth="10.0" prefWidth="85.41229248046875" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="318.9468078613281" minWidth="10.0" prefWidth="107.58770751953125" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="204.94677734375" minWidth="10.0" prefWidth="186.58355712890625" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label text="My projects">
+                     <font>
+                        <Font name="SansSerif Regular" size="39.0" />
+                     </font>
+                  </Label>
+                  <MFXButton GridPane.columnIndex="1" />
+                  <MFXButton GridPane.columnIndex="2" />
+                  <MFXButton GridPane.columnIndex="3" />
+               </children>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </GridPane>
+            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+               <children>
+                  <MFXTableView layoutX="16.0" layoutY="22.0" prefHeight="466.0" prefWidth="955.0" />
+                  <MFXPagination layoutX="78.0" layoutY="88.0" />
+               </children>
+            </Pane>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>
