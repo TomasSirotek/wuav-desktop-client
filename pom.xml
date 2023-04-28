@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.event_bar_easv</groupId>
-    <artifactId>Event_Bar_EASV</artifactId>
+    <groupId>com.wuav.client</groupId>
+    <artifactId>Wuav_client</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>Event_Bar_EASV</name>
+    <name>Wuav_client</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -196,7 +196,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.event_bar_easv.private_movie_collection/com.event_bar_easv.Main
+                                com.wuav.client/com.wuav.client.Main
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

@@ -40,5 +40,5 @@ build/
 
 
 /src/main/resources/config.cfg
-/src/main/resources/com/event_bar_easv/ticketsTest/
+/src/main/resources/com/wuav/client/ticketsTest/
 /src/main/resources/emailConfig.cfg

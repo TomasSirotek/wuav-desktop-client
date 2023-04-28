@@ -19,11 +19,11 @@
 
     <!-- table aliases -->
     <typeAliases>
-        <typeAlias alias="AppUser" type="com.event_bar_easv.be.user.AppUser"/>
-        <typeAlias alias="AppRole" type="com.event_bar_easv.be.user.AppRole"/>
-        <typeAlias alias="Event" type="com.event_bar_easv.be.Event"/>
-        <typeAlias alias="TicketType" type="com.event_bar_easv.be.TicketType"/>
-        <typeAlias alias="SpecialTicketType" type="com.event_bar_easv.be.SpecialTicketType"/>
+        <typeAlias alias="AppUser" type="com.wuav.client.be.user.AppUser"/>
+        <typeAlias alias="AppRole" type="com.wuav.client.be.user.AppRole"/>
+        <typeAlias alias="Event" type="com.wuav.client.be.Event"/>
+        <typeAlias alias="TicketType" type="com.wuav.client.be.TicketType"/>
+        <typeAlias alias="SpecialTicketType" type="com.wuav.client.be.SpecialTicketType"/>
     </typeAliases>
 
     <!-- main environment -->

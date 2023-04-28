@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #F2F2F2;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.BaseController">
+   <children>
+      <BorderPane layoutX="206.0" layoutY="40.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <AnchorPane prefHeight="59.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Pane prefHeight="200.0" prefWidth="1000.0" style="-fx-background-color: FFFFFF;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <effect>
+                        <DropShadow height="22.48" radius="5.9475" width="3.31" />
+                     </effect>
+                     <children>
+                        <GridPane layoutX="-1.0" prefHeight="60.0" prefWidth="999.0">
+                          <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <HBox prefWidth="333.0">
+                                 <children>
+                                    <GridPane prefHeight="60.0" prefWidth="334.0">
+                                       <columnConstraints>
+                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="111.81563568115234" minWidth="10.0" prefWidth="67.27374267578125" />
+                                          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="118.5" minWidth="10.0" prefWidth="111.34956359863281" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="229.6508331298828" minWidth="10.0" prefWidth="156.1504364013672" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <ImageView fitHeight="24.0" fitWidth="24.0">
+                                             <image>
+                                                <Image url="@../images/navItems/menu-bar.png" />
+                                             </image>
+                                          </ImageView>
+                                          <Label graphicTextGap="10.0" prefHeight="51.0" prefWidth="121.0" text="Wuav" GridPane.columnIndex="1">
+                                             <font>
+                                                <Font name="SansSerif Bold" size="26.0" />
+                                             </font>
+                                             <padding>
+                                                <Insets left="10.0" />
+                                             </padding>
+                                          </Label>
+                                          <MFXButton fx:id="expand" prefHeight="23.0" prefWidth="37.0" rippleAnimateBackground="false" rippleAnimationSpeed="0.0" rippleBackgroundOpacity="0.0" rippleColor="#d0cdcd" rippleRadius="0.5" rippleRadiusMultiplier="0.5" text="." GridPane.columnIndex="2">
+                                             <graphic>
+                                                <ImageView fx:id="menuIcon" fitHeight="21.0" fitWidth="24.0" styleClass="mfx-button">
+                                                   <image>
+                                                      <Image url="@../../../../closeExpand.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                             <padding>
+                                                <Insets bottom="-10.0" left="-10.0" right="-20.0" top="-10.0" />
+                                             </padding>
+                                          </MFXButton>
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </HBox>
+                              <GridPane prefWidth="306.0" GridPane.columnIndex="2">
+                                <columnConstraints>
+                                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="179.532958984375" minWidth="10.0" prefWidth="179.532958984375" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="123.6771240234375" minWidth="10.0" prefWidth="48.489013671875" />
+                                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="80.2882080078125" minWidth="10.0" prefWidth="38.010986328125" />
+                                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="96.84771728515625" minWidth="10.0" prefWidth="67.09735107421875" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <MFXButton prefHeight="27.0" prefWidth="28.0" style="-fx-background-color: none; -fx-border-radius: 30; -fx-border-image-width: 20;" text="." textFill="#ffffff00" />
+                                    <ImageView fitHeight="20.0" fitWidth="20.0">
+                                       <image>
+                                          <Image url="@../images/navItems/notification.png" />
+                                       </image>
+                                    </ImageView>
+                                    <MFXButton prefHeight="27.0" prefWidth="28.0" style="-fx-background-color: none; -fx-border-radius: 30; -fx-border-image-width: 20;" text="." textFill="#ffffff00" GridPane.columnIndex="1" />
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" GridPane.columnIndex="1">
+                                       <image>
+                                          <Image url="@../images/navItems/settings.png" />
+                                       </image>
+                                    </ImageView>
+                                    <MFXButton prefHeight="27.0" prefWidth="28.0" style="-fx-background-color: none; -fx-border-radius: 30; -fx-border-image-width: 20;" text="." textFill="#ffffff00" GridPane.columnIndex="2" />
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" GridPane.columnIndex="2">
+                                       <image>
+                                          <Image url="@../images/navItems/help.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" GridPane.columnIndex="3">
+                                       <image>
+                                          <Image url="@../images/navItems/Screenshot%202023-04-28%20at%2017.46.15.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Circle fill="#ffffff00" radius="11.0" stroke="#000000ac" strokeType="INSIDE" GridPane.columnIndex="3" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+         </top>
+         <left>
+            <AnchorPane fx:id="slider" prefHeight="541.0" prefWidth="38.0" BorderPane.alignment="CENTER">
+               <children>
+                  <VBox fx:id="sideNavBox" layoutX="64.0" layoutY="94.0" prefHeight="541.0" prefWidth="140.0" style="-fx-background-color: FFFFFF;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <effect>
+                        <DropShadow height="0.0" radius="4.75" />
+                     </effect>
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="73.0" prefWidth="164.0">
+                           <children>
+                              <MFXButton fx:id="createNewProject" prefHeight="37.0" prefWidth="215.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Create project" textFill="#141111">
+                                 <graphic>
+                                    <HBox alignment="CENTER" prefHeight="24.0" prefWidth="31.0">
+                                       <children>
+                                          <ImageView fitHeight="24.0" fitWidth="24.0">
+                                             <image>
+                                                <Image url="@../images/navItems/plus.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </HBox>
+                                 </graphic>
+                                 <font>
+                                    <Font name="SansSerif Bold" size="15.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="6.0" right="20.0" />
+                                 </padding>
+                              </MFXButton>
+                           </children>
+                        </HBox>
+                        <VBox prefHeight="144.0" prefWidth="164.0">
+                           <children>
+                              <MFXButton alignment="BASELINE_LEFT" prefHeight="43.0" prefWidth="164.0" text="Overview" textFill="#141111">
+                                 <graphic>
+                                    <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
+                                       <children>
+                                          <ImageView fitHeight="24.0" fitWidth="24.0">
+                                             <image>
+                                                <Image url="@../images/navItems/home.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </HBox>
+                                 </graphic>
+                                 <font>
+                                    <Font name="SansSerif Regular" size="15.0" />
+                                 </font>
+                              </MFXButton>
+                              <MFXButton alignment="BASELINE_LEFT" prefHeight="44.0" prefWidth="164.0" text="My projects" textFill="#141111">
+                                 <graphic>
+                                    <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
+                                       <children>
+                                          <ImageView fitHeight="24.0" fitWidth="24.0">
+                                             <image>
+                                                <Image url="@../images/navItems/work.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </HBox>
+                                 </graphic>
+                                 <font>
+                                    <Font name="SansSerif Regular" size="15.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </MFXButton>
+                              <MFXButton alignment="BASELINE_LEFT" prefHeight="44.0" prefWidth="215.0" text="Invoices " textFill="#141111">
+                                 <graphic>
+                                    <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
+                                       <children>
+                                          <ImageView fitHeight="24.0" fitWidth="24.0">
+                                             <image>
+                                                <Image url="@../images/navItems/invoice.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </HBox>
+                                 </graphic>
+                                 <font>
+                                    <Font name="SansSerif Regular" size="15.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </MFXButton>
+                           </children>
+                        </VBox>
+                        <Label text="Account pages" />
+                        <VBox prefHeight="90.0" prefWidth="164.0">
+                           <children>
+                              <MFXButton alignment="BASELINE_LEFT" prefHeight="44.0" prefWidth="215.0" text="Account" textFill="#141111">
+                                 <graphic>
+                                    <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
+                                       <children>
+                                          <ImageView fitHeight="24.0" fitWidth="24.0">
+                                             <image>
+                                                <Image url="@../images/navItems/account.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </HBox>
+                                 </graphic>
+                                 <font>
+                                    <Font name="SansSerif Regular" size="15.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </MFXButton>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="194.0" prefWidth="164.0">
+                           <children>
+                              <Pane prefHeight="157.0" prefWidth="164.0" />
+                              <MFXButton alignment="BASELINE_LEFT" prefHeight="44.0" prefWidth="215.0" text="Logout" textFill="#141111">
+                                 <graphic>
+                                    <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
+                                       <children>
+                                          <ImageView fitHeight="24.0" fitWidth="24.0">
+                                             <image>
+                                                <Image url="@../images/navItems/logout.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </HBox>
+                                 </graphic>
+                                 <font>
+                                    <Font name="SansSerif Regular" size="15.0" />
+                                 </font>
+                              </MFXButton>
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="20.0" left="30.0" right="20.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </left>
+         <center>
+            <StackPane fx:id="app_content" prefHeight="541.0" prefWidth="856.0" BorderPane.alignment="CENTER">
+               <VBox prefHeight="200.0" prefWidth="100.0">
+                  <children>
+                     <Label prefHeight="149.0" prefWidth="431.0" text="ALL PROJECTS ">
+                        <font>
+                           <Font name="SansSerif Bold" size="30.0" />
+                        </font>
+                     </Label>
+                  </children>
+                  <padding>
+                     <Insets bottom="30.0" left="30.0" right="30.0" />
+                  </padding></VBox>
+            </StackPane>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

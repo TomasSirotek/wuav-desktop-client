@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk&display=swap');
+
+.fontDesign {
+    -fx-font-family: 'Schibsted Grotesk', sans-serif;
+    -fx-font-size: 35px;
+}
+
+* {
+    -fx-nord0: #192C35;
+    -fx-nord1: #4FC4F4;
+    -fx-nord2: #434C5E;
+    -fx-nord3: #4C566A;
+    -fx-nord4: #D8DEE9;
+    -fx-nord5: #E5E9F0;
+    -fx-nord6: #ECEFF4;
+    -fx-nord7: #8FBCBB;
+    -fx-nord8: #88C0D0;
+    -fx-nord9: #81A1C1;
+    -fx-nord10: #5E81AC;
+}
+
+
+.mfx-button{
+    -fx-text-fill: transparent;
+}
+
+
