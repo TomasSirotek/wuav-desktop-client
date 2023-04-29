@@ -122,7 +122,7 @@
                                                           <RowConstraints maxHeight="221.67987060546875" minHeight="10.0" prefHeight="79.81552124023438" vgrow="SOMETIMES" />
                                                         </rowConstraints>
                                                          <children>
-                                                            <HBox alignment="TOP_CENTER" GridPane.rowIndex="1">
+                                                            <HBox fx:id="imageActionHandleBox" alignment="TOP_CENTER" GridPane.rowIndex="1">
                                                                <children>
                                                                   <Label text="No image uploaded">
                                                                      <font>
@@ -133,7 +133,7 @@
                                                             </HBox>
                                                             <HBox alignment="CENTER" prefWidth="397.0">
                                                                <children>
-                                                                  <ImageView fitHeight="216.0" fitWidth="227.0" pickOnBounds="true" preserveRatio="true">
+                                                                  <ImageView fx:id="selectedImage" fitHeight="229.0" fitWidth="235.0" pickOnBounds="true" preserveRatio="true">
                                                                      <image>
                                                                         <Image url="@../images/navItems/no_data.png" />
                                                                      </image>
@@ -177,7 +177,7 @@
                                                                                  </image>
                                                                               </ImageView>
                                                                               <Label prefHeight="18.0" prefWidth="125.0" text="Select a file to upload " GridPane.columnIndex="1" />
-                                                                              <MFXButton fx:id="createNewProject1" prefHeight="29.0" prefWidth="86.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Select file" textFill="#141111" GridPane.columnIndex="2">
+                                                                              <MFXButton fx:id="selectFile" prefHeight="29.0" prefWidth="86.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Select file" textFill="#141111" GridPane.columnIndex="2">
                                                                                  <font>
                                                                                     <Font name="SansSerif Bold" size="15.0" />
                                                                                  </font>
@@ -201,7 +201,7 @@
                                                                         </Label>
                                                                      </children>
                                                                   </HBox>
-                                                                  <HBox alignment="CENTER" prefHeight="59.0" prefWidth="303.0">
+                                                                  <HBox fx:id="selectedFileHBox" alignment="CENTER" prefHeight="59.0" prefWidth="303.0">
                                                                      <children>
                                                                         <Label text="No file selected yet ..." />
                                                                      </children>
