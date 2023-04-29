@@ -109,6 +109,12 @@ public class ProjectController extends RootController implements Initializable {
                 layoutPane.setStyle("-fx-background-color: transparent;");
             }
         });
+        // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
+        stage.setOnShowing(e -> {
+            Stage previousStage = (Stage) previousScene.getWindow();
+            stage.getProperties().put("previousStage", previousStage);
+        });
+
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
@@ -162,11 +168,11 @@ public class ProjectController extends RootController implements Initializable {
 
         // status
         colStatus.setCellValueFactory(cellData -> {
-           // create button with image and text
+            // create button with image and text
             MFXButton successInActiveButton = new MFXButton("Success");
             successInActiveButton.getStyleClass().add("success");
             // set button to be smaller with padding all around
-          //  successInActiveButton.setMinSize(100, 20);
+            //  successInActiveButton.setMinSize(100, 20);
 
             successInActiveButton.setRippleAnimateBackground(false);
             successInActiveButton.setRippleBackgroundOpacity(0);
@@ -204,7 +210,7 @@ public class ProjectController extends RootController implements Initializable {
 
         colEdit.setCellValueFactory(col -> {
             MFXButton playButton = new MFXButton("");
-          //  playButton.getStyleClass().add("success");
+            //  playButton.getStyleClass().add("success");
             playButton.setPrefWidth(100);
             playButton.setPrefHeight(20);
             var imageIcon = new ImageView(new Image(getClass().getResourceAsStream("/edit.png")));

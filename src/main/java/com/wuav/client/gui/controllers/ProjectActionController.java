@@ -6,11 +6,9 @@ import javafx.fxml.Initializable;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ActionController extends RootController implements Initializable {
+public class ProjectActionController  extends RootController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
     }
-
-
 }

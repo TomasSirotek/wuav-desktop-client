@@ -24,21 +24,24 @@ import java.util.ResourceBundle;
 
 public class LoginController extends RootController implements Initializable {
 
-    private final IControllerFactory controllerFactory;
 
     @FXML
     private MFXButton login;
     @FXML
     private StackPane baseContent;
+    private final IControllerFactory controllerFactory;
 
     @Inject
     public LoginController(IControllerFactory controllerFactory) {
         this.controllerFactory = controllerFactory;
     }
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
+
+
 
     private RootController loadNodesView(ViewType viewType) throws IOException {
         return controllerFactory.loadFxmlFile(viewType);

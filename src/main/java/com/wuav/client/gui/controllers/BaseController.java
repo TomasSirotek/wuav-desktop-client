@@ -115,7 +115,7 @@ public class BaseController extends RootController implements Initializable {
         // app_content.setStyle("-fx-background-color: black;-fx-opacity: 0.1;");
 
 
-        slider.setPrefWidth(204); // Replace with your original sidebar width
+        slider.setPrefWidth(210); // Replace with your original sidebar width
         createNewProject.setText("Create projects"); // Replace with your original text
         sideNavBox.getChildren().forEach(node -> {
             if (node instanceof Label) {
@@ -162,17 +162,6 @@ public class BaseController extends RootController implements Initializable {
         });
         new Thread(loadDataTask).start();
     }
-
-
-    //region VIEW INTERNAL HANDEL
-
-//    private RootController tryToLoadView() {
-//        try {
-//            return loadNodesView(ViewType.EVENTS);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 
     /**
      * private method for showing new stages whenever its need

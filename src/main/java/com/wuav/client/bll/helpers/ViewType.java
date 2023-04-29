@@ -29,10 +29,10 @@ public enum ViewType {
             return "views/actionModalView.fxml";
         }
     },
-    SPECIAL_TICKETS{
+    PROJECT_ACTIONS{
         @Override
         public String getFXMLView() {
-            return "views/ticketView.fxml";
+            return "views/projectActionView.fxml";
         }
     },
     DASHBOARD {
