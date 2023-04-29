@@ -29,14 +29,11 @@ module com.wuav.client {
     exports com.wuav.client.dal.interfaces;
     exports com.wuav.client.config;
     exports com.wuav.client.di;
-    exports com.wuav.client.gui.controllers.event;
     exports com.wuav.client.gui.controllers.controllerFactory;
     exports com.wuav.client.bll.services.interfaces to com.google.guice;
     exports com.wuav.client.gui.models.user to com.google.guice;
-    exports com.wuav.client.bll.utilities.pdf to org.apache.pdfbox, org.apache.fontbox,com.google.zxing,javase,java.desktop, com.google.guice;
     exports com.wuav.client.bll.utilities.engines;
 
-    opens com.wuav.client.bll.utilities.pdf to org.apache.pdfbox, org.apache.fontbox,com.google.zxing,javase,java.desktop, com.google.guice;
     opens com.wuav.client.gui.controllers to javafx.fxml, com.google.guice, com.google.common;
     opens com.wuav.client to javafx.fxml, com.google.guice, org.slf4j;
     opens com.wuav.client.gui.controllers.abstractController to com.google.guice, javafx.fxml, com.google.common;
@@ -51,8 +48,6 @@ module com.wuav.client {
     opens com.wuav.client.dal.reporitory to org.mybatis,javafx.fxml, com.google.guice, com.google.common, org.slf4j;
     exports com.wuav.client.be.user to javafx.graphics, org.mybatis;
     opens com.wuav.client.be.user to com.google.guice, javafx.fxml, org.mybatis, org.slf4j;
-    exports com.wuav.client.gui.models.event to com.google.guice, javafx.graphics, org.mybatis;
-    opens com.wuav.client.gui.models.event to com.google.common, com.google.guice, javafx.fxml, org.slf4j;
     exports com.wuav.client.bll.utilities.email;
     opens com.wuav.client.bll.utilities.engines to com.google.guice;
     exports com.wuav.client.be to com.google.guice, javafx.graphics, org.mybatis;

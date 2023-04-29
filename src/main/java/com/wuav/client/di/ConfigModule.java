@@ -1,6 +1,5 @@
 package com.wuav.client.di;
 
-import com.wuav.client.bll.services.EventService;
 import com.wuav.client.bll.services.UserService;
 import com.wuav.client.bll.services.interfaces.IEventService;
 import com.wuav.client.bll.services.interfaces.IUserService;
@@ -9,14 +8,11 @@ import com.wuav.client.bll.utilities.email.EmailSender;
 import com.wuav.client.bll.utilities.email.IEmailSender;
 import com.wuav.client.bll.utilities.engines.CodeEngine;
 import com.wuav.client.bll.utilities.engines.ICodesEngine;
-import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
-import com.wuav.client.bll.utilities.pdf.PdfGenerator;
 import com.wuav.client.dal.interfaces.IEventRepository;
 import com.wuav.client.dal.interfaces.IUserRepository;
 import com.wuav.client.dal.reporitory.EventRepository;
 import com.wuav.client.dal.reporitory.UserRepository;
-import com.wuav.client.gui.models.event.EventModel;
-import com.wuav.client.gui.models.event.IEventModel;
+
 import com.wuav.client.gui.models.user.IUserModel;
 import com.wuav.client.gui.models.user.UserModel;
 import com.google.common.eventbus.EventBus;
@@ -51,7 +47,7 @@ public class ConfigModule extends AbstractModule {
          * Injection of movie service
          */
         bind(IUserService.class).to(UserService.class);
-        bind(IEventService.class).to(EventService.class);
+
 
 
         /*
@@ -63,13 +59,13 @@ public class ConfigModule extends AbstractModule {
          */
 
         bind(IUserModel.class).to(UserModel.class).in(Singleton.class);
-        bind(IEventModel.class).to(EventModel.class).in(Singleton.class);
+
 
         bind(IUserRepository.class).to(UserRepository.class);
         bind(IEventRepository.class).to(EventRepository.class);
 
         bind(ICodesEngine.class).to(CodeEngine.class).in(Singleton.class);
-        bind(IPdfGenerator.class).to(PdfGenerator.class).in(Singleton.class);
+
         bind(IEmailSender.class).to(EmailSender.class);
 
         bind(EmailConnectionFactory.class).asEagerSingleton();

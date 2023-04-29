@@ -15,11 +15,16 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.ColorInput;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -32,6 +37,10 @@ import java.util.*;
 
 public class BaseController extends RootController implements Initializable {
 
+    @FXML
+    private ImageView workIcon;
+    @FXML
+    private MFXButton projectButton;
     @FXML
     private MFXButton createNewProject;
     @FXML
@@ -96,13 +105,12 @@ public class BaseController extends RootController implements Initializable {
         slide.setDuration(Duration.seconds(0.4));
         slide.setNode(slider);
 
-      //  slide.setToX(slider.getPrefWidth());
+        //  slide.setToX(slider.getPrefWidth());
 
         Image image = new Image(getClass().getClassLoader().getResource("closeExpand.png").toExternalForm());
         menuIcon.setImage(image);
         slide.play();
-       // app_content.setStyle("-fx-background-color: black;-fx-opacity: 0.1;");
-
+        // app_content.setStyle("-fx-background-color: black;-fx-opacity: 0.1;");
 
 
         slider.setPrefWidth(204); // Replace with your original sidebar width
@@ -132,12 +140,13 @@ public class BaseController extends RootController implements Initializable {
 
 
     @FXML
-    private void handleDashBoardPageSwitch()  {
+    private void handleDashBoardPageSwitch() {
+        projectButton.setStyle("-fx-background-color: black; -fx-text-fill: white");
         runInParallel(ViewType.PROJECTS);
     }
     //endregion
 
-    private void runInParallel(ViewType type){
+    private void runInParallel(ViewType type) {
         final RootController[] parent = {null};
         Task<Void> loadDataTask = new Task<>() {
             @Override
@@ -151,7 +160,6 @@ public class BaseController extends RootController implements Initializable {
         });
         new Thread(loadDataTask).start();
     }
-
 
 
     //region VIEW INTERNAL HANDEL

@@ -173,11 +173,11 @@
                                     <Font name="SansSerif Regular" size="15.0" />
                                  </font>
                               </MFXButton>
-                              <MFXButton alignment="BASELINE_LEFT" onAction="#handleDashBoardPageSwitch" prefHeight="44.0" prefWidth="164.0" text="My projects" textFill="#141111">
+                              <MFXButton fx:id="projectButton" alignment="BASELINE_LEFT" onAction="#handleDashBoardPageSwitch" prefHeight="44.0" prefWidth="164.0" text="My projects" textFill="#141111">
                                  <graphic>
                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
                                        <children>
-                                          <ImageView fitHeight="24.0" fitWidth="24.0">
+                                          <ImageView fx:id="workIcon" fitHeight="24.0" fitWidth="24.0">
                                              <image>
                                                 <Image url="@../images/navItems/work.png" />
                                              </image>
