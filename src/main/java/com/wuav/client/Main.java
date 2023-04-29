@@ -19,7 +19,7 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
         StartUp.configure();
         IControllerFactory factory = StartUp.getInjector().getInstance(IControllerFactory.class);
-        IRootController controller = factory.loadFxmlFile(ViewType.MAIN);
+        IRootController controller = factory.loadFxmlFile(ViewType.LOGIN);
 
         Scene scene = new Scene(controller.getView());
         stage.setTitle("Wuav-login");
