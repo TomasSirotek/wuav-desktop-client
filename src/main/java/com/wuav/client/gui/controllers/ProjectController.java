@@ -1,33 +1,45 @@
 package com.wuav.client.gui.controllers;
 
+import com.google.inject.Inject;
 import com.wuav.client.be.Project;
+import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.gui.controllers.abstractController.RootController;
+import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXTableColumn;
-import io.github.palexdev.materialfx.controls.MFXTableView;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
+import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 
 public class ProjectController extends RootController implements Initializable {
 
 
+    private final IControllerFactory controllerFactory;
+    @FXML
+    private AnchorPane projectAnchorPane;
+    @FXML
+    private MFXButton createNewProject;
     @FXML
     private TableColumn<Project,Button> colEdit;
     @FXML
@@ -48,12 +60,74 @@ public class ProjectController extends RootController implements Initializable {
     private TableColumn<Project,String> colType;
 
 
+    @Inject
+    public ProjectController(IControllerFactory controllerFactory) {
+        this.controllerFactory = controllerFactory;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         fillTable();
-
+        createNewProject.setOnAction(e -> openNewProject());
     }
+
+    private void openNewProject() {
+        Scene scene = projectAnchorPane.getScene();
+        Window window = scene.getWindow();
+        if (window instanceof Stage) {
+            Pane layoutPane = (Pane) scene.lookup("#layoutPane");
+            if (layoutPane != null) {
+                layoutPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
+                layoutPane.setDisable(false);
+
+                var test = tryToLoadView();
+                show(test.getView(), "Create new project",scene);
+
+            } else {
+                System.out.println("AnchorPane not found");
+            }
+        }
+    }
+
+    /**
+     * private method for showing new stages whenever its need
+     *
+     * @param parent root that will be set
+     * @param title  title for new stage
+     */
+    private void show(Parent parent, String title,Scene previousScene) {
+        Stage stage = new Stage();
+        Scene scene = new Scene(parent);
+
+        stage.initOwner(getStage());
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setTitle(title);
+        stage.setOnCloseRequest(e -> {
+            Pane layoutPane = (Pane) previousScene.lookup("#layoutPane");
+            if (layoutPane != null) {
+                layoutPane.setDisable(true);
+                layoutPane.setStyle("-fx-background-color: transparent;");
+            }
+        });
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private RootController loadNodesView(ViewType viewType) throws IOException {
+        return controllerFactory.loadFxmlFile(viewType);
+    }
+
+
+
+    private RootController tryToLoadView() {
+        try {
+            return loadNodesView(ViewType.ACTIONS);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 
     private void setTableWithProjects() {
@@ -66,10 +140,7 @@ public class ProjectController extends RootController implements Initializable {
         project.setType("Private");
         project.setCreatedAt(new Date("2021/01/01"));
 
-
         projects.add(project);
-
-
 
         projectTable.setItems(projects);
     }

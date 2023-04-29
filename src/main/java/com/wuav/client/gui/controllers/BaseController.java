@@ -38,6 +38,8 @@ import java.util.*;
 public class BaseController extends RootController implements Initializable {
 
     @FXML
+    private AnchorPane mainAnchorPane;
+    @FXML
     private ImageView workIcon;
     @FXML
     private MFXButton projectButton;
