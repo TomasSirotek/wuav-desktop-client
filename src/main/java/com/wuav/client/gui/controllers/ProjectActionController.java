@@ -4,10 +4,17 @@ import com.wuav.client.gui.controllers.abstractController.RootController;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.File;
 import java.net.URL;
@@ -51,19 +58,65 @@ public class ProjectActionController  extends RootController implements Initiali
 
             selectedImage.setImage(new javafx.scene.image.Image(selectedFile.toURI().toString()));
             selectedFileHBox.setVisible(true);
-
+            selectFile.setDisable(true);
             changeImageActionHandleBox();
+            changeSelectedFileHBox();
         }
+
+    }
+
+    private void changeSelectedFileHBox() {
+        selectedFileHBox.getChildren().clear();
+       // create hbox with label at the start and button at the end with x as text and make the box light red and so that text start at the start and ubtton at the end
+        Label selectedFileLabel = new Label("Selected File: ");
+        selectedFileHBox.setStyle("-fx-text-fill: #ffffff;");
+        selectedFileHBox.setStyle("-fx-background-color: #E84910; -fx-spacing: 10; -fx-opacity: 0.8; -fx-padding: 10;");
+        selectedFileHBox.getChildren().add(selectedFileLabel);
+        Label selectedFileName = new Label("image.png");
+        selectedFileName.setStyle("-fx-text-fill: black;");
+        selectedFileHBox.getChildren().add(selectedFileName);
+        MFXButton removeFile = new MFXButton("X");
+        removeFile.getStyleClass().add("mfx-raised");
+        removeFile.setStyle("-fx-background-color: red; -fx-text-fill: #ffffff;");
+        removeFile.setOnAction(e -> removeImage());
+        selectedFileHBox.getChildren().add(removeFile);
 
     }
 
     private void changeImageActionHandleBox() {
         imageActionHandleBox.getChildren().clear();
-         removeImage = new MFXButton("Remove Image");
-        removeImage.getStyleClass().add("mfx-raised");
-        removeImage.setStyle("-fx-background-color: red; -fx-text-fill: #ffffff;");
-        removeImage.setOnAction(e -> removeImage());
-        imageActionHandleBox.getChildren().add(removeImage);
+        // add new button preview that has png image inside
+        MFXButton preview = new MFXButton("Preview");
+        preview.getStyleClass().add("mfx-raised");
+        preview.setStyle("-fx-background-color: #E84910; -fx-text-fill: #ffffff;");
+        preview.setOnAction(e -> previewImage());
+        imageActionHandleBox.getChildren().add(preview);
+
+    }
+
+    private void previewImage() {
+        // open new scene with image inside
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle("Authorize yourself");
+        stage.initStyle(StageStyle.DECORATED);
+        stage.setResizable(false);
+
+        ImageView imageView = new ImageView(selectedImage.getImage());
+        imageView.setPreserveRatio(true);
+        imageView.setFitHeight(600);
+        imageView.setFitHeight(500);
+
+        VBox layout = new VBox(10, imageView);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(10));
+
+        Scene scene = new Scene(layout);
+        stage.setScene(scene);
+
+
+        stage.showAndWait();
+
     }
 
     private void removeImage() {
@@ -75,6 +128,12 @@ public class ProjectActionController  extends RootController implements Initiali
         imageActionHandleBox.getChildren().clear();
         Label noImageUploaded = new Label("No Image Uploaded");
         imageActionHandleBox.getChildren().add(noImageUploaded);
-       //  selectedFileHBox.setVisible(false);
+        // clean selected file hbox and set back the text to no file selected
+        selectedFileHBox.getChildren().clear();
+        Label noFileSelected = new Label("No File Selected");
+        selectedFileHBox.getChildren().add(noFileSelected);
+        // set back the color back to white
+        selectedFileHBox.setStyle("-fx-background-color: #ffffff;");
+        selectFile.setDisable(false);
     }
 }
