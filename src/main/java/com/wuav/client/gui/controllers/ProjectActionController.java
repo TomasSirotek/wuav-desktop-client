@@ -51,7 +51,7 @@ public class ProjectActionController  extends RootController implements Initiali
         // execute this code when tab is switched to clientTab
         clientTab.setOnSelectionChanged(e -> {
             if(clientTab.isSelected()) {
-                loadMap();
+              //  loadMap();
 
             }
         });
