@@ -8,9 +8,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -19,9 +21,16 @@ import javafx.stage.StageStyle;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.scene.web.WebEngine;
+
+
 
 public class ProjectActionController  extends RootController implements Initializable {
 
+    @FXML
+    private Tab clientTab;
+    @FXML
+    private VBox mapVBox;
     @FXML
     private HBox imageActionHandleBox;
     @FXML
@@ -34,9 +43,26 @@ public class ProjectActionController  extends RootController implements Initiali
 
     private MFXButton removeImage;
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         selectFile.setOnAction(e -> selectFile());
+
+        // execute this code when tab is switched to clientTab
+        clientTab.setOnSelectionChanged(e -> {
+            if(clientTab.isSelected()) {
+                loadMap();
+
+            }
+        });
+    }
+
+    private void loadMap() {
+        WebView webView = new WebView();
+        WebEngine webEngine = webView.getEngine();
+        webEngine.load(getClass().getResource("/googleMap.html").toString());
+        mapVBox.getChildren().add(webView);
+
     }
 
 

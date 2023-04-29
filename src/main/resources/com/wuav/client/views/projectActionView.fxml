@@ -257,7 +257,7 @@
                                             </children></AnchorPane>
                                     </content>
                                 </Tab>
-                                <Tab text="Clent Information">
+                                <Tab fx:id="clientTab" text="Clent Information">
                                     <content>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
@@ -391,7 +391,7 @@
                                                                               </Label>
                                                                            </children>
                                                                         </HBox>
-                                                                        <MFXTextField alignment="TOP_LEFT" floatingTextGap="0.0" graphicTextGap="0.0" measureUnitGap="0.0" prefHeight="124.0" prefWidth="332.0" />
+                                                                        <MFXTextField alignment="TOP_LEFT" floatingTextGap="0.0" graphicTextGap="0.0" measureUnitGap="0.0" prefHeight="138.0" prefWidth="305.0" />
                                                                      </children>
                                                                   </VBox>
                                                                </children>
@@ -404,9 +404,91 @@
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
-                                                   <padding>
-                                                      <Insets bottom="30.0" left="20.0" right="20.0" top="20.0" />
-                                                   </padding>
+                                                   <children>
+                                                      <Pane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <children>
+                                                            <VBox layoutY="1.0" prefHeight="469.0" prefWidth="365.0">
+                                                               <children>
+                                                                  <HBox alignment="CENTER_LEFT" prefHeight="38.0" prefWidth="303.0">
+                                                                     <children>
+                                                                        <Label text="Finish up your work !">
+                                                                           <font>
+                                                                              <Font name="SansSerif Bold" size="25.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                                     </children>
+                                                                  </HBox>
+                                                                  <HBox prefHeight="110.0" prefWidth="305.0">
+                                                                     <children>
+                                                                        <GridPane prefHeight="192.0" prefWidth="333.0">
+                                                                           <columnConstraints>
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                           </columnConstraints>
+                                                                           <rowConstraints>
+                                                                              <RowConstraints maxHeight="65.32856750488281" minHeight="10.0" prefHeight="62.22999572753906" vgrow="SOMETIMES" />
+                                                                              <RowConstraints maxHeight="50.86857604980469" minHeight="10.0" prefHeight="47.77000427246094" vgrow="SOMETIMES" />
+                                                                           </rowConstraints>
+                                                                           <children>
+                                                                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                                                                 <children>
+                                                                                    <MFXButton fx:id="createNewProject1" prefHeight="29.0" prefWidth="157.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Send Email" textFill="#141111">
+                                                                                       <font>
+                                                                                          <Font name="SansSerif Bold" size="15.0" />
+                                                                                       </font>
+                                                                                       <padding>
+                                                                                          <Insets left="6.0" right="20.0" />
+                                                                                       </padding>
+                                                                                       <cursor>
+                                                                                          <Cursor fx:constant="HAND" />
+                                                                                       </cursor>
+                                                                                       <VBox.margin>
+                                                                                          <Insets right="5.0" />
+                                                                                       </VBox.margin>
+                                                                                    </MFXButton>
+                                                                                 </children>
+                                                                              </VBox>
+                                                                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+                                                                                 <padding>
+                                                                                    <Insets right="5.0" />
+                                                                                 </padding>
+                                                                                 <children>
+                                                                                    <MFXButton fx:id="createNewProject21" prefHeight="29.0" prefWidth="157.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Exit &amp; Save" textFill="#141111">
+                                                                                       <font>
+                                                                                          <Font name="SansSerif Bold" size="15.0" />
+                                                                                       </font>
+                                                                                       <cursor>
+                                                                                          <Cursor fx:constant="HAND" />
+                                                                                       </cursor>
+                                                                                    </MFXButton>
+                                                                                 </children>
+                                                                              </VBox>
+                                                                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                                 <GridPane.margin>
+                                                                                    <Insets left="5.0" />
+                                                                                 </GridPane.margin>
+                                                                              </VBox>
+                                                                              <MFXButton fx:id="createNewProject2" prefHeight="29.0" prefWidth="157.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Export PDF" textFill="#141111" GridPane.columnIndex="1">
+                                                                                 <font>
+                                                                                    <Font name="SansSerif Bold" size="15.0" />
+                                                                                 </font>
+                                                                                 <cursor>
+                                                                                    <Cursor fx:constant="HAND" />
+                                                                                 </cursor>
+                                                                              </MFXButton>
+                                                                           </children>
+                                                                        </GridPane>
+                                                                     </children>
+                                                                  </HBox>
+                                                                  <VBox fx:id="mapVBox" prefHeight="249.0" prefWidth="305.0" />
+                                                               </children>
+                                                               <padding>
+                                                                  <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                                                               </padding>
+                                                            </VBox>
+                                                         </children>
+                                                      </Pane>
+                                                   </children>
                                                 </AnchorPane>
                                              </children>
                                           </GridPane>

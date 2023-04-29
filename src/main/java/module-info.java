@@ -18,6 +18,7 @@ module com.wuav.client {
     requires activation;
     requires javax.mail;
     requires MaterialFX;
+    requires javafx.web;
 
 
     exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common;
