@@ -203,15 +203,19 @@ public class BaseController extends RootController implements Initializable {
     @FXML
     public void logoutButton(ActionEvent actionEvent) throws IOException {
         CurrentUser.getInstance().logout();
-        IControllerFactory factory = StartUp.getInjector().getInstance(IControllerFactory.class);
-        IRootController controller = factory.loadFxmlFile(ViewType.LOGIN);
 
-        Stage stage = new Stage();
-        Scene scene = new Scene(controller.getView());
-        stage.setTitle("Wuav-login");
-        stage.setResizable(false);
-        stage.setScene(scene);
-        stage.show();
+        getStage().close();
+        // this is bad
+//        IControllerFactory factory = StartUp.getInjector().getInstance(IControllerFactory.class);
+//        IRootController controller = factory.loadFxmlFile(ViewType.LOGIN);
+//
+//
+//        Stage stage = new Stage();
+//        Scene scene = new Scene(controller.getView());
+//        stage.setTitle("Wuav-login");
+//        stage.setResizable(false);
+//        stage.setScene(scene);
+//        stage.show();
     }
     //endregion
 

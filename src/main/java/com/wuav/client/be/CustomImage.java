@@ -3,23 +3,16 @@ package com.wuav.client.be;
 public class CustomImage {
 
     private int id;
-    private String name;
+    private String imageType;
 
-    private String url;
+    private String imageUrl;
 
-    public CustomImage(int id, String name, String url) {
+    public CustomImage(int id, String imageType, String imageUrl) {
         this.id = id;
-        this.name = name;
-        this.url = url;
+        this.imageType = imageType;
+        this.imageUrl = imageUrl;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
     public int getId() {
         return id;
@@ -29,11 +22,19 @@ public class CustomImage {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getImageType() {
+        return imageType;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setImageType(String imageType) {
+        this.imageType = imageType;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

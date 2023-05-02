@@ -16,10 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -52,7 +49,7 @@ public class ProjectController extends RootController implements Initializable {
     @FXML
     private TableColumn<Project,String> colName;
     @FXML
-    private TableColumn<Project,Button> colStatus;
+    private TableColumn<Project,String> colStatus;
     @FXML
     private TableColumn<Project,String> colDes;
     @FXML
@@ -71,8 +68,7 @@ public class ProjectController extends RootController implements Initializable {
         fillTable();
         createNewProject.setOnAction(e -> openNewProject());
 
-        System.out.println(CurrentUser.getInstance().getLoggedUser().getEmail()
-        );
+        System.out.println(CurrentUser.getInstance().getLoggedUser().toString());
     }
 
     private void openNewProject() {
@@ -141,21 +137,8 @@ public class ProjectController extends RootController implements Initializable {
 
 
     private void setTableWithProjects() {
-        ObservableList<Project> projects = FXCollections.observableArrayList();
-
-        Project project = new Project();
-        project.setName("Project 1");
-        project.setDescription("Description 1");
-        project.setCustomer(new Customer(100,
-                "Customer 1",
-                "technician@hotmail.com",
-                "12345678",
-                new CustomerType(1000,"Private"),
-                new Address(20000,"image",  "image", 67056)));
-        project.setCreatedAt(new Date("2021/01/01"));
-
-        projects.add(project);
-
+        // get user projects from current logged user singleton class
+        ObservableList<Project> projects = FXCollections.observableList(CurrentUser.getInstance().getLoggedUser().getProjects());
         projectTable.setItems(projects);
     }
 
@@ -174,40 +157,66 @@ public class ProjectController extends RootController implements Initializable {
 
         colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
 
-        // status
+//        // status
+//        colStatus.setCellValueFactory(cellData -> {
+//            // create button with image and text
+//            MFXButton successInActiveButton = new MFXButton("Success");
+//            successInActiveButton.getStyleClass().add("success");
+//            // set button to be smaller with padding all around
+//            //  successInActiveButton.setMinSize(100, 20);
+//
+//            successInActiveButton.setRippleAnimateBackground(false);
+//            successInActiveButton.setRippleBackgroundOpacity(0);
+//            successInActiveButton.setRippleRadius(0);
+//            successInActiveButton.setPrefWidth(100);
+//            successInActiveButton.setPrefHeight(20);
+//
+//            // successInActiveButton.setPadding(new Insets(5, 5, 5, 5));
+//            successInActiveButton.setOnAction(e -> {
+//                System.out.println("Selected: " + cellData.getValue());
+//            });
+//            // set image to a button
+//            var imageIcon = new ImageView(new Image(getClass().getResourceAsStream("/openExpand.png")));
+//            imageIcon.setFitHeight(15);
+//            imageIcon.setFitWidth(15);
+//            successInActiveButton.setGraphic(imageIcon);
+//
+//            return new SimpleObjectProperty<>(successInActiveButton);
+//        });
+
         colStatus.setCellValueFactory(cellData -> {
-            // create button with image and text
-            MFXButton successInActiveButton = new MFXButton("Success");
-            successInActiveButton.getStyleClass().add("success");
-            // set button to be smaller with padding all around
-            //  successInActiveButton.setMinSize(100, 20);
+            String status = cellData.getValue().getStatus();
+            return new SimpleStringProperty(status);
+        });
 
-            successInActiveButton.setRippleAnimateBackground(false);
-            successInActiveButton.setRippleBackgroundOpacity(0);
-            successInActiveButton.setRippleRadius(0);
-            successInActiveButton.setPrefWidth(100);
-            successInActiveButton.setPrefHeight(20);
-
-            // successInActiveButton.setPadding(new Insets(5, 5, 5, 5));
-            successInActiveButton.setOnAction(e -> {
-                System.out.println("Selected: " + cellData.getValue());
-            });
-            // set image to a button
-            var imageIcon = new ImageView(new Image(getClass().getResourceAsStream("/openExpand.png")));
-            imageIcon.setFitHeight(15);
-            imageIcon.setFitWidth(15);
-            successInActiveButton.setGraphic(imageIcon);
-
-            return new SimpleObjectProperty<>(successInActiveButton);
+        colStatus.setCellFactory(column -> {
+            return new TableCell<Project, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                        getStyleClass().removeAll("active", "completed");
+                    } else {
+                        setText(item);
+                        if (item.equals("ACTIVE")) {
+                            getStyleClass().add("active");
+                        } else if (item.equals("COMPLETED")) {
+                            getStyleClass().add("success");
+                        }
+                    }
+                }
+            };
         });
 
         // description
         colDes.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
         // Customer
-        colCustomer.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getEmail()));
+    //    colCustomer.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getEmail()));
 
         // Type
-        colType.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getCustomerType().getName()));
+      //  colType.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getCustomerType().getName()));
 
 
         // Date

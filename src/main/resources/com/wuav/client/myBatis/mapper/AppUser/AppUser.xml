@@ -15,7 +15,72 @@
             <id property="id" column="idRole"/>
             <result property="name" column="nameRole"/>
         </collection>
+        <collection property="projects" javaType="ArrayList" column="id" ofType="Project">
+            <id property="id" column="idProject"/>
+            <result property="name" column="projectName"/>
+            <result property="description" column="description"/>
+            <result property="createdAt" javaType="Date" column="createdAt"/>
+            <result property="status" column="status"/>
+        </collection>
     </resultMap>
+
+    <select id="getUserByEmail"
+            resultMap="userResult">
+
+        SELECT DISTINCT u.id,
+                        u.name,
+                        u.email,
+                        u.password_hash as passwordHash,
+                        u.created_at    as createdAt,
+                        r.id            as idRole,
+                        r.name          as nameRole,
+                        p.id            as idProject,
+                        p.name          as projectName,
+                        p.description  ,
+                        p.created_at    ,
+                        p.status
+        FROM app_user u
+                 INNER JOIN user_role ur ON u.id = ur.user_id
+                 INNER JOIN app_role r ON ur.role_id = r.id
+                 LEFT JOIN user_project up ON u.id = up.user_id
+                 LEFT JOIN project p ON up.project_id = p.id
+        WHERE u.email = #{email}
+
+
+    </select>
+
+
+<!--    &#45;&#45;         SELECT DISTINCT u.id,-->
+<!--    &#45;&#45;                         u.name,-->
+<!--    &#45;&#45;                         u.email,-->
+<!--    &#45;&#45;                         u.password_hash as passwordHash,-->
+<!--    &#45;&#45;                         u.created_at    as createdAt,-->
+<!--    &#45;&#45;                         r.id            as idRole,-->
+<!--    &#45;&#45;                         r.name          as nameRole-->
+<!--    &#45;&#45;-->
+<!--    &#45;&#45;         FROM app_user u-->
+<!--    &#45;&#45;                  INNER JOIN user_role ur ON u.id = ur.user_id-->
+<!--    &#45;&#45;                  INNER JOIN app_role r ON ur.role_id = r.id-->
+<!--    &#45;&#45;-->
+<!--    &#45;&#45;         WHERE u.email = #{email}-->
+
+
+<!--    <select id="getUserByEmail"-->
+<!--            resultMap="userResult">-->
+<!--        SELECT DISTINCT u.id,-->
+<!--                        u.name,-->
+<!--                        u.email,-->
+<!--                        u.password_hash as passwordHash,-->
+<!--                        u.created_at    as createdAt,-->
+<!--                        r.id            as idRole,-->
+<!--                        r.name          as nameRole-->
+
+<!--        FROM app_user u-->
+<!--                 INNER JOIN user_role ur ON u.id = ur.user_id-->
+<!--                 INNER JOIN app_role r ON ur.role_id = r.id-->
+
+<!--        WHERE u.email = #{email}-->
+<!--    </select>-->
 
 
     <select id="getUserById"
@@ -32,23 +97,6 @@
                  INNER JOIN app_role r ON ur.role_id = r.id
 
         WHERE u.id = #{userId}
-    </select>
-
-
-    <select id="getUserByEmail"
-            resultMap="userResult">
-        SELECT DISTINCT u.id,
-                        u.name,
-                        u.email,
-                        u.password_hash as passwordHash,
-                        u.created_at    as createdAt,
-                        r.id            as idRole,
-                        r.name          as nameRole
-        FROM app_user u
-                 INNER JOIN user_role ur ON u.id = ur.user_id
-                 INNER JOIN app_role r ON ur.role_id = r.id
-
-        WHERE u.email = #{email}
     </select>
 
 
@@ -69,7 +117,6 @@
     </select>
 
 
-
     <insert
             id="createCustomer"
             statementType="PREPARED"
@@ -78,8 +125,8 @@
             parameterType="AppUser"
             useGeneratedKeys="false"
     >
-        INSERT INTO app_user (id,name,email,psw_hash,isActivated)
-        VALUES (#{id},#{name},#{email},#{passwordHash},#{isActivated});
+        INSERT INTO app_user (id, name, email, psw_hash, isActivated)
+        VALUES (#{id}, #{name}, #{email}, #{passwordHash}, #{isActivated});
     </insert>
 
     <insert
@@ -91,11 +138,10 @@
             parameterType="map"
     >
         --  insert categoryId and movieId to joining table
-        INSERT INTO user_role (user_id,role_id)
-        VALUES (#{userId},#{roleId})
+        INSERT INTO user_role (user_id, role_id)
+        VALUES (#{userId}, #{roleId})
 
     </insert>
-
 
 
 </mapper>

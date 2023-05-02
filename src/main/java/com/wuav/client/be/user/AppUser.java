@@ -1,5 +1,7 @@
 package com.wuav.client.be.user;
 
+import com.wuav.client.be.Project;
+
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +14,9 @@ public class AppUser {
     private String passwordHash;
     private Date createdAt;
 
-    List<AppRole> roles;
+    private List<AppRole> roles;
+
+    private List<Project> projects;
 
     public int getId() {
         return id;
@@ -64,6 +68,16 @@ public class AppUser {
         this.createdAt = createdAt;
     }
 
+
+    public List<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(List<Project> projects) {
+        this.projects = projects;
+    }
+
+
     @Override
     public String toString() {
         return "AppUser{" +
@@ -73,6 +87,7 @@ public class AppUser {
                 ", passwordHash='" + passwordHash + '\'' +
                 ", createdAt=" + createdAt +
                 ", roles=" + roles +
+                ", projects=" + projects +
                 '}';
     }
 }

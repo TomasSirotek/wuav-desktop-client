@@ -21,6 +21,7 @@
     <typeAliases>
         <typeAlias alias="AppUser" type="com.wuav.client.be.user.AppUser"/>
         <typeAlias alias="AppRole" type="com.wuav.client.be.user.AppRole"/>
+        <typeAlias alias="Project" type="com.wuav.client.be.Project"/>
     </typeAliases>
 
     <!-- main environment -->

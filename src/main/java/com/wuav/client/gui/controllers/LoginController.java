@@ -95,7 +95,7 @@ public class LoginController extends RootController implements Initializable {
                     progressLoader.setVisible(false);
 
                     // Show an error message
-                    AlertHelper.showDefaultAlert("Authentication failed" + e.getMessage(), Alert.AlertType.ERROR);
+                    AlertHelper.showDefaultAlert("Authentication failed " + e.getMessage(), Alert.AlertType.ERROR);
                 });
             }
         }).start();

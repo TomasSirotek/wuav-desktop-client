@@ -13,15 +13,12 @@ public class Project {
 
     private String description;
 
-    private Customer customer;
-
     private Date createdAt;
 
-    private String mainImageURL;
+    private String status;  // active, completed, deleted
 
-    private List<CustomImage> attachedImagesUrl;
+   // private List<CustomImage> attachedImagesUrl;
 
-    private Status status;  // active, completed, deleted
 
     public int getId() {
         return id;
@@ -47,15 +44,6 @@ public class Project {
         this.description = description;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -64,27 +52,31 @@ public class Project {
         this.createdAt = createdAt;
     }
 
-    public String getMainImageURL() {
-        return mainImageURL;
-    }
-
-    public void setMainImageURL(String mainImageURL) {
-        this.mainImageURL = mainImageURL;
-    }
-
-    public List<CustomImage> getAttachedImagesUrl() {
-        return attachedImagesUrl;
-    }
-
-    public void setAttachedImagesUrl(List<CustomImage> attachedImagesUrl) {
-        this.attachedImagesUrl = attachedImagesUrl;
-    }
-
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
+    }
+
+//    public List<CustomImage> getAttachedImagesUrl() {
+//        return attachedImagesUrl;
+//    }
+//
+//    public void setAttachedImagesUrl(List<CustomImage> attachedImagesUrl) {
+//        this.attachedImagesUrl = attachedImagesUrl;
+//    }
+
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", createdAt=" + createdAt +
+                ", status='" + status + '\'' +
+                '}';
     }
 }
