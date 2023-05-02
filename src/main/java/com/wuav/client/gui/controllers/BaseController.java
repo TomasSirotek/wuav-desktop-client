@@ -9,6 +9,7 @@ import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.animation.TranslateTransition;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -72,6 +73,7 @@ public class BaseController extends RootController implements Initializable {
         expand.setStyle("-fx-text-fill: transparent;");
 
         handleExpandControl();
+        runInParallel(ViewType.PROJECTS);
     }
 
 
@@ -191,6 +193,11 @@ public class BaseController extends RootController implements Initializable {
     private void switchToView(Parent parent) {
         app_content.getChildren().clear();
         app_content.getChildren().add(parent);
+    }
+
+    public void logoutButton(ActionEvent actionEvent) {
+
+
     }
     //endregion
 

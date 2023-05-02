@@ -1,18 +1,20 @@
 package com.wuav.client.di;
 
+import com.wuav.client.bll.services.AuthService;
 import com.wuav.client.bll.services.UserService;
-import com.wuav.client.bll.services.interfaces.IEventService;
+import com.wuav.client.bll.services.interfaces.IAuthService;
 import com.wuav.client.bll.services.interfaces.IUserService;
 import com.wuav.client.bll.utilities.email.EmailConnectionFactory;
 import com.wuav.client.bll.utilities.email.EmailSender;
 import com.wuav.client.bll.utilities.email.IEmailSender;
 import com.wuav.client.bll.utilities.engines.CodeEngine;
 import com.wuav.client.bll.utilities.engines.ICodesEngine;
-import com.wuav.client.dal.interfaces.IEventRepository;
+import com.wuav.client.dal.interfaces.IProjectRepository;
 import com.wuav.client.dal.interfaces.IUserRepository;
-import com.wuav.client.dal.reporitory.EventRepository;
-import com.wuav.client.dal.reporitory.UserRepository;
+import com.wuav.client.dal.repository.ProjectRepository;
+import com.wuav.client.dal.repository.UserRepository;
 
+import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.models.user.IUserModel;
 import com.wuav.client.gui.models.user.UserModel;
 import com.google.common.eventbus.EventBus;
@@ -48,7 +50,9 @@ public class ConfigModule extends AbstractModule {
          */
         bind(IUserService.class).to(UserService.class);
 
+        bind(IAuthService.class).to(AuthService.class);
 
+        bind(CurrentUser.class).asEagerSingleton();
 
         /*
          * Injection of movie service
@@ -62,7 +66,7 @@ public class ConfigModule extends AbstractModule {
 
 
         bind(IUserRepository.class).to(UserRepository.class);
-        bind(IEventRepository.class).to(EventRepository.class);
+        bind(IProjectRepository.class).to(ProjectRepository.class);
 
         bind(ICodesEngine.class).to(CodeEngine.class).in(Singleton.class);
 

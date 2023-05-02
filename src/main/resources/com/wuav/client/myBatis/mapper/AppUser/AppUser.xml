@@ -9,13 +9,48 @@
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="email" column="email"/>
-        <result property="passwordHash"  column="passWordHash"/>
-        <result property="isActivated" javaType="boolean" column="isActivated"/>
+        <result property="passwordHash" column="passWordHash"/>
+        <result property="createdAt" javaType="Date" column="createdAt"/>
         <collection property="roles" javaType="ArrayList" column="id" ofType="AppRole">
             <id property="id" column="idRole"/>
             <result property="name" column="nameRole"/>
         </collection>
     </resultMap>
+
+
+    <select id="getUserById"
+            resultMap="userResult">
+        SELECT DISTINCT u.id,
+                        u.name,
+                        u.email,
+                        u.password_hash as passwordHash,
+                        u.created_at    as createdAt,
+                        r.id            as idRole,
+                        r.name          as nameRole
+        FROM app_user u
+                 INNER JOIN user_role ur ON u.id = ur.user_id
+                 INNER JOIN app_role r ON ur.role_id = r.id
+
+        WHERE u.id = #{userId}
+    </select>
+
+
+    <select id="getUserByEmail"
+            resultMap="userResult">
+        SELECT DISTINCT u.id,
+                        u.name,
+                        u.email,
+                        u.password_hash as passwordHash,
+                        u.created_at    as createdAt,
+                        r.id            as idRole,
+                        r.name          as nameRole
+        FROM app_user u
+                 INNER JOIN user_role ur ON u.id = ur.user_id
+                 INNER JOIN app_role r ON ur.role_id = r.id
+
+        WHERE u.email = #{email}
+    </select>
+
 
     <!--    this bullshit does not map column names with kebab case psw_has -->
     <!--    so it needs to be casted -->
@@ -32,6 +67,7 @@
                  left outer join user_role ur on u.id = ur.user_id
                  left outer join role r on ur.role_id = r.id
     </select>
+
 
 
     <insert

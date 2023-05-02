@@ -73,7 +73,7 @@
                            <children>
                               <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="307.0" GridPane.rowIndex="2">
                                  <children>
-                                    <MFXPasswordField alignment="BOTTOM_LEFT" borderGap="0.0" floatingTextGap="-30.0" graphicTextGap="0.0" maxHeight="31.0" measureUnitGap="0.0" minHeight="27.0" prefHeight="31.0" prefWidth="212.0" promptText="Password" />
+                                    <MFXPasswordField fx:id="userPswField" alignment="BOTTOM_LEFT" borderGap="0.0" floatingTextGap="-30.0" graphicTextGap="0.0" maxHeight="31.0" measureUnitGap="0.0" minHeight="27.0" prefHeight="31.0" prefWidth="212.0" promptText="Password" text="123456" />
                                  </children>
                                  <padding>
                                     <Insets left="10.0" />
@@ -81,7 +81,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
                                  <children>
-                                    <MFXTextField floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="31.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="212.0" promptText="Email" />
+                                    <MFXTextField fx:id="userEmailField" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="31.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="212.0" promptText="Email" text="tech@hotmail.com" />
                                  </children>
                                  <GridPane.margin>
                                     <Insets left="10.0" />
@@ -159,7 +159,7 @@
             <Insets bottom="80.0" left="80.0" right="80.0" top="80.0" />
          </padding>
       </HBox>
-      <MFXProgressBar fx:id="progressLoader" animationSpeed="0.7" layoutX="-2.0" prefHeight="6.0" prefWidth="503.0" styleClass="mfx-progress-bar" />
+      <MFXProgressBar fx:id="progressLoader" animationSpeed="0.7" layoutX="-2.0" prefHeight="6.0" prefWidth="503.0" styleClass="mfx-progress-bar" visible="false" />
       <ImageView fitHeight="310.0" fitWidth="375.0" layoutX="561.0" layoutY="188.0">
          <image>
             <Image url="@../images/undraw_circuit_sdmr.png" />

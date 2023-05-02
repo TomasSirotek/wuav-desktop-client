@@ -1,11 +1,33 @@
-package com.wuav.client.dal.reporitory;
+package com.wuav.client.dal.repository;
 
-import com.wuav.client.dal.interfaces.IEventRepository;
+import com.wuav.client.be.Project;
+import com.wuav.client.dal.interfaces.IProjectRepository;
+import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
+import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EventRepository implements IEventRepository {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProjectRepository implements IProjectRepository {
     static Logger logger = LoggerFactory.getLogger(UserRepository.class);
+
+
+    // here bring the logger and listener to the GUI
+    @Override
+    public List<Project> getAllProjectsByUserId(int userId) {
+
+//        List<Project> fetchedProjects = new ArrayList<>();
+//        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+//            ProjectMapper mapper = session.getMapper(ProjectMapper.class);
+//            fetchedProjects = mapper.getAllProjectsByUserId(id);
+//        } catch (Exception ex) {
+//            logger.error("An error occurred mapping tables", ex);
+//        }
+//        return fetchedProjects;
+        return null;
+    }
 
 
 //    @Override

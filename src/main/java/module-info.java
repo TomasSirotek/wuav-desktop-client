@@ -26,7 +26,7 @@ module com.wuav.client {
     exports com.wuav.client.bll.services;
     exports com.wuav.client.bll.utilities;
     exports com.wuav.client to javafx.graphics;
-    exports com.wuav.client.dal.reporitory;
+    exports com.wuav.client.dal.repository;
     exports com.wuav.client.dal.interfaces;
     exports com.wuav.client.config;
     exports com.wuav.client.di;
@@ -46,7 +46,7 @@ module com.wuav.client {
     opens com.wuav.client.bll.services to org.mybatis, javafx.fxml, org.slf4j, com.google.guice;
     opens com.wuav.client.bll.services.interfaces to  javafx.fxml, com.google.guice, com.google.common, org.slf4j;
     opens com.wuav.client.gui.models.user to javafx.fxml, com.google.guice, com.google.common, org.slf4j;
-    opens com.wuav.client.dal.reporitory to org.mybatis,javafx.fxml, com.google.guice, com.google.common, org.slf4j;
+    opens com.wuav.client.dal.repository to org.mybatis,javafx.fxml, com.google.guice, com.google.common, org.slf4j;
     exports com.wuav.client.be.user to javafx.graphics, org.mybatis;
     opens com.wuav.client.be.user to com.google.guice, javafx.fxml, org.mybatis, org.slf4j;
     exports com.wuav.client.bll.utilities.email;

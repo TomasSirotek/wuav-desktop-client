@@ -1,23 +1,30 @@
 package com.wuav.client.gui.controllers;
 
+import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.ViewType;
+import com.wuav.client.bll.services.interfaces.IAuthService;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.google.inject.Inject;
+import com.wuav.client.gui.utils.AlertHelper;
 import io.github.palexdev.materialfx.controls.MFXButton;
-import javafx.concurrent.Task;
+import io.github.palexdev.materialfx.controls.MFXPasswordField;
+import io.github.palexdev.materialfx.controls.MFXProgressBar;
+import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 
 
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 
+import javax.naming.AuthenticationException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -26,14 +33,24 @@ public class LoginController extends RootController implements Initializable {
 
 
     @FXML
+    private MFXProgressBar progressLoader;
+    @FXML
+    private MFXPasswordField userPswField;
+
+    @FXML
+    private MFXTextField userEmailField;
+    @FXML
     private MFXButton login;
     @FXML
     private StackPane baseContent;
     private final IControllerFactory controllerFactory;
 
+    private final IAuthService authService;
+
     @Inject
-    public LoginController(IControllerFactory controllerFactory) {
+    public LoginController(IControllerFactory controllerFactory, IAuthService authService) {
         this.controllerFactory = controllerFactory;
+        this.authService = authService;
     }
 
 
@@ -42,19 +59,46 @@ public class LoginController extends RootController implements Initializable {
     }
 
 
-
     private RootController loadNodesView(ViewType viewType) throws IOException {
         return controllerFactory.loadFxmlFile(viewType);
     }
 
 
     @FXML
-    private void login()  {
-        System.out.println("login in on");
+    private void login() {
+        // Show the progress bar while the application is loading
+        progressLoader.setVisible(true);
 
-        var test = tryToLoadView();
-        getStage().close();
-        show(test.getView(), "test");
+        // Use a new thread to authenticate the user and check authorization
+        new Thread(() -> {
+            try {
+                // Authenticate the user and check authorization
+                AppUser authenticatedUser = authService.authenticate(userEmailField.getText(), userPswField.getText());
+                boolean isAuthorized = authService.isAuthorized(authenticatedUser);
+
+                // Update the UI on the JavaFX application thread
+                Platform.runLater(() -> {
+                    // Hide the progress bar
+                    progressLoader.setVisible(false);
+
+                    // Show the logged view if the user is authorized
+                    if (isAuthorized) {
+                        var test = tryToLoadView();
+                        getStage().close();
+                        show(test.getView(), "Logged view ");
+                    }
+                });
+            } catch (AuthenticationException e) {
+                // Handle authentication failure
+                Platform.runLater(() -> {
+                    // Hide the progress bar
+                    progressLoader.setVisible(false);
+
+                    // Show an error message
+                    AlertHelper.showDefaultAlert("Authentication failed" + e.getMessage(), Alert.AlertType.ERROR);
+                });
+            }
+        }).start();
     }
 
     /**

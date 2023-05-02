@@ -1,6 +1,7 @@
-package com.wuav.client.dal.reporitory;
+package com.wuav.client.dal.repository;
 
 
+import com.wuav.client.be.Project;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.dal.interfaces.IUserRepository;
 import com.wuav.client.dal.mappers.UserMapper;
@@ -25,6 +26,31 @@ public class UserRepository implements IUserRepository {
             logger.error("An error occurred mapping tables", ex);
         }
         return allUsers;
+    }
+
+
+    @Override
+    public AppUser getUserByEmail(String email) {
+        AppUser fetchedUser = new AppUser();
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            fetchedUser = mapper.getUserByEmail(email);
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return fetchedUser;
+    }
+
+    @Override
+    public AppUser getUserById(int id) {
+        AppUser fetchedUser = new AppUser();
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            fetchedUser = mapper.getUserById(id);
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return fetchedUser;
     }
 
     @Override

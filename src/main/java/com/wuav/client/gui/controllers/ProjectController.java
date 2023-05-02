@@ -1,10 +1,11 @@
 package com.wuav.client.gui.controllers;
 
 import com.google.inject.Inject;
-import com.wuav.client.be.Project;
+import com.wuav.client.be.*;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
+import com.wuav.client.gui.models.user.CurrentUser;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -69,6 +70,9 @@ public class ProjectController extends RootController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         fillTable();
         createNewProject.setOnAction(e -> openNewProject());
+
+        System.out.println(CurrentUser.getInstance().getLoggedUser().getEmail()
+        );
     }
 
     private void openNewProject() {
@@ -142,8 +146,12 @@ public class ProjectController extends RootController implements Initializable {
         Project project = new Project();
         project.setName("Project 1");
         project.setDescription("Description 1");
-        project.setCustomerEmail("technician@hotmail.com");
-        project.setType("Private");
+        project.setCustomer(new Customer(100,
+                "Customer 1",
+                "technician@hotmail.com",
+                "12345678",
+                new CustomerType(1000,"Private"),
+                new Address(20000,"image",  "image", 67056)));
         project.setCreatedAt(new Date("2021/01/01"));
 
         projects.add(project);
@@ -196,10 +204,10 @@ public class ProjectController extends RootController implements Initializable {
         // description
         colDes.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
         // Customer
-        colCustomer.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomerEmail()));
+        colCustomer.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getEmail()));
 
         // Type
-        colType.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getType()));
+        colType.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getCustomerType().getName()));
 
 
         // Date

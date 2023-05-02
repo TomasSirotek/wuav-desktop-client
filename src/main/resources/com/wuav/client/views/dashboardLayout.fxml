@@ -240,7 +240,7 @@
                         <VBox prefHeight="194.0" prefWidth="164.0">
                            <children>
                               <Pane prefHeight="157.0" prefWidth="164.0" />
-                              <MFXButton alignment="BASELINE_LEFT" prefHeight="44.0" prefWidth="215.0" text="Logout" textFill="#141111">
+                              <MFXButton alignment="BASELINE_LEFT" onAction="#logoutButton" prefHeight="44.0" prefWidth="215.0" text="Logout" textFill="#141111">
                                  <graphic>
                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
                                        <children>

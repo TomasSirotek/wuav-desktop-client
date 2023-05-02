@@ -7,7 +7,11 @@ import java.util.List;
 public interface IUserService {
 
 
+    AppUser getUserByEmail(String email);
+
     List<AppUser> getAllUsers();
+
+    AppUser getUserById(int id);
 
     int createCustomer(AppUser appUser);
 }

@@ -1,8 +1,16 @@
 package com.wuav.client.dal.interfaces;
 
-public interface IEventRepository {
+import com.wuav.client.be.Project;
+
+import java.util.List;
+
+public interface IProjectRepository {
 //    List<Event> getAllEvents();
 //
+
+
+    List<Project> getAllProjectsByUserId(int userId);
+
 //    int addSpecialTicketToEvent(SpecialTicketType specialTicketType, int eventId);
 //
 //    int createSpecialTicket(SpecialTicketType specialTicketType);

@@ -86,7 +86,7 @@ public class UserController extends RootController implements Initializable {
                 .collect(Collectors.joining(","))
         ));
 
-        sysActive.setCellValueFactory(cellData -> new SimpleBooleanProperty(cellData.getValue().isActivated()));
+      //  sysActive.setCellValueFactory(cellData -> new SimpleBooleanProperty(cellData.getValue().isActivated()));
         trySetTableWithSysUsers();
     }
 
@@ -107,7 +107,7 @@ public class UserController extends RootController implements Initializable {
 //                .collect(Collectors.joining(","))
 //        ));
 
-        customerIsActive.setCellValueFactory(cellData -> new SimpleBooleanProperty(cellData.getValue().isActivated()));
+       // customerIsActive.setCellValueFactory(cellData -> new SimpleBooleanProperty(cellData.getValue().isActivated()));
         trySetTableWithSysUsers();
     }
 
@@ -149,7 +149,7 @@ public class UserController extends RootController implements Initializable {
         appUser.setId(id);
         appUser.setName(costName.getText());
         appUser.setEmail(custEmail.getText());
-        appUser.setActivated(custActive.isSelected());
+     //   appUser.setActivated(custActive.isSelected());
 
         AppRole appRole = new AppRole(roleId,"user");
         appUser.setRoles(List.of(appRole));

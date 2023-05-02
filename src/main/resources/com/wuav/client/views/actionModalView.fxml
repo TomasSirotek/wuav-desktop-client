@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
-<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
@@ -23,13 +22,12 @@
         <rowConstraints>
             <RowConstraints maxHeight="69.9205322265625" minHeight="7.951023578643799" prefHeight="59.19072341918945" vgrow="SOMETIMES" />
           <RowConstraints maxHeight="142.0489764213562" minHeight="10.0" prefHeight="74.30927658081055" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="144.3191680908203" minHeight="10.0" prefHeight="88.20661926269531" vgrow="SOMETIMES" />
           <RowConstraints maxHeight="146.52578735351562" minHeight="10.0" prefHeight="79.79338073730469" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <HBox alignment="TOP_CENTER" GridPane.rowIndex="3">
+            <HBox alignment="TOP_CENTER" GridPane.rowIndex="2">
                <children>
-                  <MFXButton fx:id="createNewProject"  buttonType="RAISED" prefHeight="27.0" prefWidth="212.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Start new project">
+                  <MFXButton fx:id="createNewProject" buttonType="RAISED" prefHeight="27.0" prefWidth="212.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Start new project">
                      <font>
                         <Font name="SansSerif Bold" size="13.0" />
                      </font>
@@ -55,22 +53,9 @@
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
             </VBox>
-            <VBox alignment="TOP_CENTER" GridPane.rowIndex="2">
-               <children>
-                  <Label prefHeight="17.0" prefWidth="209.0" text="Select client type" textFill="#252f4091">
-                     <font>
-                        <Font name="SansSerif Regular" size="12.0" />
-                     </font>
-                     <padding>
-                        <Insets left="2.0" />
-                     </padding>
-                  </Label>
-                  <MFXComboBox maxHeight="33.0" minHeight="33.0" prefHeight="42.0" prefWidth="210.0" />
-               </children>
-            </VBox>
             <HBox alignment="CENTER">
                <children>
-                  <Label  text="Create new project">
+                  <Label text="Create new project">
                      <font>
                         <Font name="SansSerif Bold" size="23.0" />
                      </font>

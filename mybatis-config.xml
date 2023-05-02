@@ -21,9 +21,6 @@
     <typeAliases>
         <typeAlias alias="AppUser" type="com.wuav.client.be.user.AppUser"/>
         <typeAlias alias="AppRole" type="com.wuav.client.be.user.AppRole"/>
-        <typeAlias alias="Event" type="com.wuav.client.be.Event"/>
-        <typeAlias alias="TicketType" type="com.wuav.client.be.TicketType"/>
-        <typeAlias alias="SpecialTicketType" type="com.wuav.client.be.SpecialTicketType"/>
     </typeAliases>
 
     <!-- main environment -->
@@ -45,7 +42,6 @@
 
     <!-- mappers used to map required tables-->
     <mappers>
-        <mapper resource="com/event_bar_easv/mybatis/mapper/AppUser/AppUser.xml"/>
-        <mapper resource="com/event_bar_easv/mybatis/mapper/Event/Event.xml"/>
+        <mapper resource="com/wuav/client/mybatis/mapper/AppUser/AppUser.xml"/>
     </mappers>
 </configuration>

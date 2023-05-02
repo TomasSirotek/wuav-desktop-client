@@ -8,6 +8,9 @@ public interface UserMapper {
 
     List<AppUser> getAllUsers();
 
+    AppUser getUserById(@Param("userId")int id);
+
+    AppUser getUserByEmail(@Param("email")String email);
 
     int createCustomer(AppUser appUser);
 

@@ -1,6 +1,9 @@
 package com.wuav.client.be;
 
+import com.wuav.client.bll.helpers.Status;
+
 import java.util.Date;
+import java.util.List;
 
 public class Project {
 
@@ -10,17 +13,15 @@ public class Project {
 
     private String description;
 
-    private String customerEmail;
-
-    // LATER SHOULD BE ENUM PRIVATE / PUBLIC BIZ
-    private String type;
+    private Customer customer;
 
     private Date createdAt;
 
-    // Later should have installation image
-    // private String image
+    private String mainImageURL;
 
-    private boolean  isImageUploaded;
+    private List<CustomImage> attachedImagesUrl;
+
+    private Status status;  // active, completed, deleted
 
     public int getId() {
         return id;
@@ -46,21 +47,14 @@ public class Project {
         this.description = description;
     }
 
-    public String getCustomerEmail() {
-        return customerEmail;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCustomerEmail(String customerEmail) {
-        this.customerEmail = customerEmail;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public Date getCreatedAt() {
         return createdAt;
@@ -70,11 +64,27 @@ public class Project {
         this.createdAt = createdAt;
     }
 
-    public boolean isImageUploaded() {
-        return isImageUploaded;
+    public String getMainImageURL() {
+        return mainImageURL;
     }
 
-    public void setImageUploaded(boolean imageUploaded) {
-        isImageUploaded = imageUploaded;
+    public void setMainImageURL(String mainImageURL) {
+        this.mainImageURL = mainImageURL;
+    }
+
+    public List<CustomImage> getAttachedImagesUrl() {
+        return attachedImagesUrl;
+    }
+
+    public void setAttachedImagesUrl(List<CustomImage> attachedImagesUrl) {
+        this.attachedImagesUrl = attachedImagesUrl;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }
