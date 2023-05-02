@@ -8,8 +8,10 @@ import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.models.IProjectModel;
+import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.ProjectEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -17,6 +19,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -35,6 +38,10 @@ import javafx.scene.web.WebEngine;
 
 public class ProjectActionController  extends RootController implements Initializable {
 
+    @FXML
+    private MFXTextField descriptionField;
+    @FXML
+    private MFXButton saveImageDesc;
     @FXML
     private Label projectNameField;
     @FXML
@@ -62,6 +69,10 @@ public class ProjectActionController  extends RootController implements Initiali
 
     private final EventBus eventBus;
 
+    private Image defaultImage = new Image("/no_data.png");
+
+    private File selectedImageFile;
+
 
     @Inject
     public ProjectActionController(IControllerFactory controllerFactory, IProjectModel projectModel, EventBus eventBus) {
@@ -72,7 +83,9 @@ public class ProjectActionController  extends RootController implements Initiali
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        selectedImage.setImage(defaultImage);
         selectFile.setOnAction(e -> selectFile());
+        saveImageDesc.setOnAction(e -> saveImageDesc());
       //  eventBus.register(this);
       //  projectNameField.setText(currentProject.getName());
       //  projectNameField.setText(currentProject.getName());
@@ -83,6 +96,34 @@ public class ProjectActionController  extends RootController implements Initiali
 
             }
         });
+    }
+
+    private void saveImageDesc() {
+
+        if(selectedImage != null && !selectedImage.getImage().equals(defaultImage) && !descriptionField.getText().trim().isEmpty()) {
+            System.out.println("Saving image and description" + selectedImage.getImage());
+            System.out.println("Description: " + descriptionField.getText().trim());
+
+            // user id
+            int userId = CurrentUser.getInstance().getLoggedUser().getId();
+            // project id
+            int projectId = currentProject.getId();
+            // create file from image url
+         //   File imageFile = new File(selectedImage.getImage().getUrl().toString());
+            File imageFile = new File(selectedImageFile.toURI());
+            // image description
+            String imageDescription = descriptionField.getText().trim();
+            // is main image
+            boolean isMainImage = true;
+
+            // send image and description to the services with userId and project id to and if its main image or not
+            var uploadedStatus = projectModel.uploadImageWithDescription(userId, projectId, imageFile, imageDescription, isMainImage);
+            System.out.println("Uploaded status: " + uploadedStatus);
+
+        } else {
+            System.out.println("Selected image is equal to default image, not saving.");
+        }
+
     }
 
     @Subscribe
@@ -132,7 +173,7 @@ public class ProjectActionController  extends RootController implements Initiali
             selectedImage.setPreserveRatio(true);
             selectedImage.setFitHeight(600);
             selectedImage.setFitHeight(500);
-
+            selectedImageFile = selectedFile;
             selectedImage.setImage(new javafx.scene.image.Image(selectedFile.toURI().toString()));
             selectedFileHBox.setVisible(true);
             selectFile.setDisable(true);
@@ -201,7 +242,7 @@ public class ProjectActionController  extends RootController implements Initiali
     private void removeImage() {
         selectedImage.setImage(null);
         // set image back to the defualt not data selected no data in resource folder
-        selectedImage.setImage(new javafx.scene.image.Image("/no_data.png"));
+        selectedImage.setImage(defaultImage);
         // remove action button and set label back to no image uploaded
 
         imageActionHandleBox.getChildren().clear();

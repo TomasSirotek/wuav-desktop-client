@@ -19,6 +19,8 @@ module com.wuav.client {
     requires javax.mail;
     requires MaterialFX;
     requires javafx.web;
+    requires com.azure.core;
+    requires com.azure.storage.blob;
 
 
     exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common;
@@ -49,7 +51,7 @@ module com.wuav.client {
     opens com.wuav.client.bll.services to org.mybatis, javafx.fxml, org.slf4j, com.google.guice;
     opens com.wuav.client.bll.services.interfaces to  javafx.fxml, com.google.guice, com.google.common, org.slf4j;
     opens com.wuav.client.gui.models.user to javafx.fxml, com.google.guice, com.google.common, org.slf4j;
-    opens com.wuav.client.dal.repository to org.mybatis,javafx.fxml, com.google.guice, com.google.common, org.slf4j;
+    opens com.wuav.client.dal.repository to org.mybatis,javafx.fxml, com.google.guice, com.google.common, org.slf4j,com.azure.core;
     exports com.wuav.client.be.user to javafx.graphics, org.mybatis;
     opens com.wuav.client.be.user to com.google.guice, javafx.fxml, org.mybatis, org.slf4j;
     exports com.wuav.client.bll.utilities.email;

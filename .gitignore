@@ -42,3 +42,4 @@ build/
 /src/main/resources/config.cfg
 /src/main/resources/com/wuav/client/ticketsTest/
 /src/main/resources/emailConfig.cfg
+/src/main/resources/configBlob.cfg

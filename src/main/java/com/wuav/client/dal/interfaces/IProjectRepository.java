@@ -11,6 +11,8 @@ Project createProjectByName(int userId,int id,String name,String status);
 
     List<Project> getAllProjectsByUserId(int userId);
 
+    Project updateProjectWithImage(int userId, int projectId, String blobUrl, String description, boolean isMainImage);
+
 //    int addSpecialTicketToEvent(SpecialTicketType specialTicketType, int eventId);
 //
 //    int createSpecialTicket(SpecialTicketType specialTicketType);

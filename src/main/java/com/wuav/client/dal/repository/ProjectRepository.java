@@ -36,7 +36,6 @@ public class ProjectRepository implements IProjectRepository {
     // here bring the logger and listener to the GUI
     @Override
     public List<Project> getAllProjectsByUserId(int userId) {
-
         List<Project> fetchedProjects = new ArrayList<>();
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
             ProjectMapper mapper = session.getMapper(ProjectMapper.class);
@@ -45,6 +44,11 @@ public class ProjectRepository implements IProjectRepository {
             logger.error("An error occurred mapping tables", ex);
         }
         return fetchedProjects;
+    }
+
+    @Override
+    public Project updateProjectWithImage(int userId, int projectId, String blobUrl, String description, boolean isMainImage) {
+        return null;
     }
 
 

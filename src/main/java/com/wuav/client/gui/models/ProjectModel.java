@@ -6,6 +6,7 @@ import com.wuav.client.bll.services.interfaces.IProjectService;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
+import java.io.File;
 import java.util.List;
 
 public class ProjectModel implements IProjectModel{
@@ -36,6 +37,12 @@ public class ProjectModel implements IProjectModel{
     public void setCurrentProject(Project project) {
         this.currentProject.set(project);
     }
+
+    @Override
+    public boolean uploadImageWithDescription(int userId, int projectId, File file, String description, boolean isMainImage) {
+        return projectService.uploadImageWithDescription(userId,projectId,file,description,isMainImage);
+    }
+
     @Override
     public Project getCurrentProject() {
         return this.currentProject.get();
