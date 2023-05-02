@@ -2,6 +2,7 @@ package com.wuav.client.dal.repository;
 
 import com.wuav.client.be.Project;
 import com.wuav.client.dal.interfaces.IProjectRepository;
+import com.wuav.client.dal.mappers.ProjectMapper;
 import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -14,19 +15,36 @@ public class ProjectRepository implements IProjectRepository {
     static Logger logger = LoggerFactory.getLogger(UserRepository.class);
 
 
+    @Override
+    public Project createProjectByName(int userId, int id, String name,String status) {
+        Project project = null;
+
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            ProjectMapper mapper = session.getMapper(ProjectMapper.class);
+            mapper.createProjectByName(id, name,status);
+            project = mapper.getProjectById(id);
+            mapper.addUserToProject(userId, id); // Insert the userId and projectId into the user_project table
+            session.commit();
+            return project;
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+
+        return project;
+    }
+
     // here bring the logger and listener to the GUI
     @Override
     public List<Project> getAllProjectsByUserId(int userId) {
 
-//        List<Project> fetchedProjects = new ArrayList<>();
-//        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-//            ProjectMapper mapper = session.getMapper(ProjectMapper.class);
-//            fetchedProjects = mapper.getAllProjectsByUserId(id);
-//        } catch (Exception ex) {
-//            logger.error("An error occurred mapping tables", ex);
-//        }
-//        return fetchedProjects;
-        return null;
+        List<Project> fetchedProjects = new ArrayList<>();
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            ProjectMapper mapper = session.getMapper(ProjectMapper.class);
+            fetchedProjects = mapper.getAllProjectsByUserId(userId);
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return fetchedProjects;
     }
 
 

@@ -1,6 +1,14 @@
 package com.wuav.client.gui.controllers;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
+import com.wuav.client.be.Project;
+import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.gui.controllers.abstractController.RootController;
+import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
+import com.wuav.client.gui.models.IProjectModel;
+import com.wuav.client.gui.utils.ProjectEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -28,6 +36,8 @@ import javafx.scene.web.WebEngine;
 public class ProjectActionController  extends RootController implements Initializable {
 
     @FXML
+    private Label projectNameField;
+    @FXML
     private Tab clientTab;
     @FXML
     private VBox mapVBox;
@@ -43,11 +53,29 @@ public class ProjectActionController  extends RootController implements Initiali
 
     private MFXButton removeImage;
 
+    private final IControllerFactory controllerFactory;
+
+
+    private final IProjectModel projectModel;
+
+    private Project currentProject;
+
+    private final EventBus eventBus;
+
+
+    @Inject
+    public ProjectActionController(IControllerFactory controllerFactory, IProjectModel projectModel, EventBus eventBus) {
+        this.controllerFactory = controllerFactory;
+        this.projectModel = projectModel;
+        this.eventBus = eventBus;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         selectFile.setOnAction(e -> selectFile());
-
+      //  eventBus.register(this);
+      //  projectNameField.setText(currentProject.getName());
+      //  projectNameField.setText(currentProject.getName());
         // execute this code when tab is switched to clientTab
         clientTab.setOnSelectionChanged(e -> {
             if(clientTab.isSelected()) {
@@ -55,6 +83,29 @@ public class ProjectActionController  extends RootController implements Initiali
 
             }
         });
+    }
+
+    @Subscribe
+    public void handleProjectSet(ProjectEvent event) {
+       System.out.println("Handling project event: " + event.eventType());
+       System.out.println("Project: " + event.getProject());
+     //  currentProject = event.getProject();
+     //  System.out.println("current project " + currentProject.toString());
+     //  System.out.println("current project " + currentProject.getName());
+       projectNameField.setText("etesffs");
+    }
+
+    @Subscribe
+    public void handleCategoryEvent(ProjectEvent event) {
+        if (event.eventType() == EventType.SET_CURRENT_PROJECT) {
+            System.out.println("Handling project event: " + event.eventType());
+        }
+    }
+
+    public void setCurrentProject(Project project) {
+        System.out.println("Setting current project: " + project);
+        currentProject = project;
+        projectNameField.setText(currentProject.getName());
     }
 
     private void loadMap() {
@@ -87,6 +138,8 @@ public class ProjectActionController  extends RootController implements Initiali
             selectFile.setDisable(true);
             changeImageActionHandleBox();
             changeSelectedFileHBox();
+
+
         }
 
     }

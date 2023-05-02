@@ -10,14 +10,10 @@ import java.util.*;
 public class DashboardController extends RootController implements Initializable {
 
 
-
-
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
     }
-
 
     @Inject
     public DashboardController() {

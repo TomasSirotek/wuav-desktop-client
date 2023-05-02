@@ -1,8 +1,10 @@
 package com.wuav.client.di;
 
 import com.wuav.client.bll.services.AuthService;
+import com.wuav.client.bll.services.ProjectService;
 import com.wuav.client.bll.services.UserService;
 import com.wuav.client.bll.services.interfaces.IAuthService;
+import com.wuav.client.bll.services.interfaces.IProjectService;
 import com.wuav.client.bll.services.interfaces.IUserService;
 import com.wuav.client.bll.utilities.email.EmailConnectionFactory;
 import com.wuav.client.bll.utilities.email.EmailSender;
@@ -14,6 +16,8 @@ import com.wuav.client.dal.interfaces.IUserRepository;
 import com.wuav.client.dal.repository.ProjectRepository;
 import com.wuav.client.dal.repository.UserRepository;
 
+import com.wuav.client.gui.models.IProjectModel;
+import com.wuav.client.gui.models.ProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.models.user.IUserModel;
 import com.wuav.client.gui.models.user.UserModel;
@@ -51,6 +55,16 @@ public class ConfigModule extends AbstractModule {
         bind(IUserService.class).to(UserService.class);
 
         bind(IAuthService.class).to(AuthService.class);
+        bind(IProjectService.class).to(ProjectService.class);
+        bind(IProjectRepository.class).to(ProjectRepository.class);
+        bind(IProjectModel.class).to(ProjectModel.class);
+
+
+        /*
+         * Bind even bus as in singleton scope
+         * As eager singleton to ensure instantiation asap Injector is created
+         */
+        bind(EventBus.class).asEagerSingleton();
 
         bind(CurrentUser.class).asEagerSingleton();
 

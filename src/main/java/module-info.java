@@ -34,8 +34,11 @@ module com.wuav.client {
     exports com.wuav.client.bll.services.interfaces to com.google.guice;
     exports com.wuav.client.gui.models.user to com.google.guice;
     exports com.wuav.client.bll.utilities.engines;
+    exports com.wuav.client.gui.models to com.google.guice;
+
 
     opens com.wuav.client.gui.controllers to javafx.fxml, com.google.guice, com.google.common;
+    opens com.wuav.client.gui.models to javafx.fxml, com.google.guice, com.google.common;
     opens com.wuav.client to javafx.fxml, com.google.guice, org.slf4j;
     opens com.wuav.client.gui.controllers.abstractController to com.google.guice, javafx.fxml, com.google.common;
     opens com.wuav.client.gui.controllers.controllerFactory to com.google.guice, javafx.fxml, com.google.common;

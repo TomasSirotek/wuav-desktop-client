@@ -19,7 +19,7 @@
             <id property="id" column="idProject"/>
             <result property="name" column="projectName"/>
             <result property="description" column="description"/>
-            <result property="createdAt" javaType="Date" column="createdAt"/>
+            <result property="createdAt" javaType="Date" column="createdAtProject"/>
             <result property="status" column="status"/>
         </collection>
     </resultMap>
@@ -36,8 +36,8 @@
                         r.name          as nameRole,
                         p.id            as idProject,
                         p.name          as projectName,
-                        p.description  ,
-                        p.created_at    ,
+                        p.description,
+                        p.created_at as createdAtProject,
                         p.status
         FROM app_user u
                  INNER JOIN user_role ur ON u.id = ur.user_id
@@ -49,38 +49,6 @@
 
     </select>
 
-
-<!--    &#45;&#45;         SELECT DISTINCT u.id,-->
-<!--    &#45;&#45;                         u.name,-->
-<!--    &#45;&#45;                         u.email,-->
-<!--    &#45;&#45;                         u.password_hash as passwordHash,-->
-<!--    &#45;&#45;                         u.created_at    as createdAt,-->
-<!--    &#45;&#45;                         r.id            as idRole,-->
-<!--    &#45;&#45;                         r.name          as nameRole-->
-<!--    &#45;&#45;-->
-<!--    &#45;&#45;         FROM app_user u-->
-<!--    &#45;&#45;                  INNER JOIN user_role ur ON u.id = ur.user_id-->
-<!--    &#45;&#45;                  INNER JOIN app_role r ON ur.role_id = r.id-->
-<!--    &#45;&#45;-->
-<!--    &#45;&#45;         WHERE u.email = #{email}-->
-
-
-<!--    <select id="getUserByEmail"-->
-<!--            resultMap="userResult">-->
-<!--        SELECT DISTINCT u.id,-->
-<!--                        u.name,-->
-<!--                        u.email,-->
-<!--                        u.password_hash as passwordHash,-->
-<!--                        u.created_at    as createdAt,-->
-<!--                        r.id            as idRole,-->
-<!--                        r.name          as nameRole-->
-
-<!--        FROM app_user u-->
-<!--                 INNER JOIN user_role ur ON u.id = ur.user_id-->
-<!--                 INNER JOIN app_role r ON ur.role_id = r.id-->
-
-<!--        WHERE u.email = #{email}-->
-<!--    </select>-->
 
 
     <select id="getUserById"

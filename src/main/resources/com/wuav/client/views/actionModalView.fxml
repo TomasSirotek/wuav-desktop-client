@@ -47,7 +47,7 @@
                         <Insets left="2.0" />
                      </padding>
                   </Label>
-                  <MFXTextField floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="31.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="212.0" promptText="Nørregade 33" />
+                  <MFXTextField fx:id="projectNameField" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="31.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="212.0" promptText="Address/Custom name... " />
                </children>
                <padding>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

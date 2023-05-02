@@ -15,7 +15,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #F2F2F2;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.BaseController">
@@ -83,8 +82,8 @@
                               <GridPane prefWidth="306.0" GridPane.columnIndex="2">
                                 <columnConstraints>
                                   <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="179.532958984375" minWidth="10.0" prefWidth="179.532958984375" />
-                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="123.6771240234375" minWidth="10.0" prefWidth="48.489013671875" />
-                                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="80.2882080078125" minWidth="10.0" prefWidth="38.010986328125" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="123.6771240234375" minWidth="10.0" prefWidth="48.489013671875" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="80.2882080078125" minWidth="10.0" prefWidth="38.010986328125" />
                                   <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="96.84771728515625" minWidth="10.0" prefWidth="67.09735107421875" />
                                 </columnConstraints>
                                 <rowConstraints>
@@ -92,29 +91,23 @@
                                 </rowConstraints>
                                  <children>
                                     <MFXButton prefHeight="27.0" prefWidth="28.0" style="-fx-background-color: none; -fx-border-radius: 30; -fx-border-image-width: 20;" text="." textFill="#ffffff00" />
-                                    <ImageView fitHeight="20.0" fitWidth="20.0">
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" GridPane.columnIndex="1">
                                        <image>
                                           <Image url="@../images/navItems/notification.png" />
                                        </image>
                                     </ImageView>
                                     <MFXButton prefHeight="27.0" prefWidth="28.0" style="-fx-background-color: none; -fx-border-radius: 30; -fx-border-image-width: 20;" text="." textFill="#ffffff00" GridPane.columnIndex="1" />
-                                    <ImageView fitHeight="20.0" fitWidth="20.0" GridPane.columnIndex="1">
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" GridPane.columnIndex="2">
                                        <image>
                                           <Image url="@../images/navItems/settings.png" />
                                        </image>
                                     </ImageView>
                                     <MFXButton prefHeight="27.0" prefWidth="28.0" style="-fx-background-color: none; -fx-border-radius: 30; -fx-border-image-width: 20;" text="." textFill="#ffffff00" GridPane.columnIndex="2" />
-                                    <ImageView fitHeight="20.0" fitWidth="20.0" GridPane.columnIndex="2">
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" GridPane.columnIndex="3">
                                        <image>
                                           <Image url="@../images/navItems/help.png" />
                                        </image>
                                     </ImageView>
-                                    <ImageView fitHeight="20.0" fitWidth="20.0" GridPane.columnIndex="3">
-                                       <image>
-                                          <Image url="@../images/navItems/Screenshot%202023-04-28%20at%2017.46.15.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Circle fill="#ffffff00" radius="11.0" stroke="#000000ac" strokeType="INSIDE" GridPane.columnIndex="3" />
                                  </children>
                               </GridPane>
                            </children>
@@ -134,25 +127,24 @@
                      <children>
                         <HBox alignment="CENTER" prefHeight="73.0" prefWidth="164.0">
                            <children>
-                              <MFXButton fx:id="createNewProject" prefHeight="37.0" prefWidth="215.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Create project" textFill="#141111">
-                                 <graphic>
-                                    <HBox alignment="CENTER" prefHeight="24.0" prefWidth="31.0">
-                                       <children>
-                                          <ImageView fitHeight="24.0" fitWidth="24.0">
-                                             <image>
-                                                <Image url="@../images/navItems/plus.png" />
-                                             </image>
-                                          </ImageView>
-                                       </children>
-                                    </HBox>
-                                 </graphic>
-                                 <font>
-                                    <Font name="SansSerif Bold" size="15.0" />
-                                 </font>
+                              <ImageView fitHeight="33.0" fitWidth="33.0">
+                                 <image>
+                                    <Image url="@../images/navItems/Screenshot%202023-04-28%20at%2017.46.15.png" />
+                                 </image>
+                              </ImageView>
+                              <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="108.0">
+                                 <children>
+                                    <Label fx:id="userNameField" prefHeight="22.0" prefWidth="98.0" text="Michael">
+                                       <font>
+                                          <Font name="SansSerif Bold" size="19.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="userEmailField" prefHeight="17.0" prefWidth="97.0" text="Label" />
+                                 </children>
                                  <padding>
-                                    <Insets left="6.0" right="20.0" />
+                                    <Insets left="10.0" />
                                  </padding>
-                              </MFXButton>
+                              </VBox>
                            </children>
                         </HBox>
                         <VBox prefHeight="144.0" prefWidth="164.0">

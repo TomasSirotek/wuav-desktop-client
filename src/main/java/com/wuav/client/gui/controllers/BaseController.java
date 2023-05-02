@@ -42,6 +42,10 @@ import java.util.*;
 public class BaseController extends RootController implements Initializable {
 
     @FXML
+    private Label userNameField;
+    @FXML
+    private Label userEmailField;
+    @FXML
     private AnchorPane mainAnchorPane;
     @FXML
     private ImageView workIcon;
@@ -95,7 +99,8 @@ public class BaseController extends RootController implements Initializable {
         menuIcon.setImage(image);
 
         slider.setPrefWidth(80);
-        createNewProject.setText("");
+        userNameField.setText("");
+        userEmailField.setText("");
         sideNavBox.getChildren().forEach(node -> {
             if (node instanceof Label) {
                 ((Label) node).setStyle("-fx-text-fill: transparent;");
@@ -121,7 +126,8 @@ public class BaseController extends RootController implements Initializable {
 
 
         slider.setPrefWidth(210); // Replace with your original sidebar width
-        createNewProject.setText("Create projects"); // Replace with your original text
+        userNameField.setText(CurrentUser.getInstance().getLoggedUser().getName()); // Replace with your original text
+        userEmailField.setText(CurrentUser.getInstance().getLoggedUser().getEmail()); // Replace with your original text
         sideNavBox.getChildren().forEach(node -> {
             if (node instanceof Label) {
                 ((Label) node).setStyle("-fx-text-fill: black;"); // Replace with your original text color
@@ -144,7 +150,6 @@ public class BaseController extends RootController implements Initializable {
             }
         });
     }
-
 
     @FXML
     private void handleDashBoardPageSwitch() {

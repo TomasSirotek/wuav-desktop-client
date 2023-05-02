@@ -7,7 +7,7 @@ import java.util.List;
 public interface IProjectRepository {
 //    List<Event> getAllEvents();
 //
-
+Project createProjectByName(int userId,int id,String name,String status);
 
     List<Project> getAllProjectsByUserId(int userId);
 

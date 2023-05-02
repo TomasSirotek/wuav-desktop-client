@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wuav.client.dal.mappers.ProjectMapper">
+
+    <resultMap id="projectResult" type="Project">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="createdAt" javaType="Date" column="created_at"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+
+    <select
+            id="getAllProjectsByUserId"
+            resultMap="projectResult"
+    >
+        SELECT p.id, p.name, p.description, p.created_at, p.status
+        FROM Project p
+                 INNER JOIN user_project up ON p.id = up.project_id
+        WHERE up.user_id = #{userId}
+    </select>
+
+    <select
+            id="getProjectById"
+            resultMap="projectResult"
+    >
+        SELECT id, name, description, created_at, status FROM Project
+        WHERE id = #{id}
+    </select>
+
+
+
+
+
+    <insert
+            id="createProjectByName"
+            parameterType="Project"
+            flushCache="true"
+            statementType="PREPARED"
+            keyProperty="id"
+            keyColumn="id"
+            timeout="20">
+
+        INSERT INTO Project (id, name,status) VALUES (#{id}, #{name}, #{status})
+
+    </insert>
+
+
+    <insert
+            id="addUserToProject"
+            parameterType="map"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        INSERT INTO user_project (user_id, project_id) VALUES (#{userId}, #{projectId})
+
+    </insert>
+
+
+
+</mapper>
+
+

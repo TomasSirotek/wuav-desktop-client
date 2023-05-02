@@ -44,5 +44,6 @@
     <!-- mappers used to map required tables-->
     <mappers>
         <mapper resource="com/wuav/client/mybatis/mapper/AppUser/AppUser.xml"/>
+        <mapper resource="com/wuav/client/mybatis/mapper/Project.xml"/>
     </mappers>
 </configuration>

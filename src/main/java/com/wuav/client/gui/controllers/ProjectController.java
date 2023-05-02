@@ -1,16 +1,20 @@
 package com.wuav.client.gui.controllers;
 
+import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.wuav.client.be.*;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
+import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
+import com.wuav.client.gui.utils.ProjectEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -21,6 +25,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -28,7 +33,10 @@ import javafx.stage.Window;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
+import com.wuav.client.bll.helpers.EventType;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 public class ProjectController extends RootController implements Initializable {
 
@@ -57,10 +65,18 @@ public class ProjectController extends RootController implements Initializable {
     @FXML
     private TableColumn<Project,String> colType;
 
+    private IProjectModel projectModel;
+    private final EventBus eventBus;
+
+    private Consumer<Project> onProjectSelected;
 
     @Inject
-    public ProjectController(IControllerFactory controllerFactory) {
+    public ProjectController(IControllerFactory controllerFactory, IProjectModel projectModel, EventBus eventBus) {
         this.controllerFactory = controllerFactory;
+        this.projectModel = projectModel;
+        this.eventBus = eventBus;
+
+
     }
 
     @Override
@@ -68,7 +84,7 @@ public class ProjectController extends RootController implements Initializable {
         fillTable();
         createNewProject.setOnAction(e -> openNewProject());
 
-        System.out.println(CurrentUser.getInstance().getLoggedUser().toString());
+       // System.out.println(CurrentUser.getInstance().getLoggedUser().toString());
     }
 
     private void openNewProject() {
@@ -138,7 +154,13 @@ public class ProjectController extends RootController implements Initializable {
 
     private void setTableWithProjects() {
         // get user projects from current logged user singleton class
-        ObservableList<Project> projects = FXCollections.observableList(CurrentUser.getInstance().getLoggedUser().getProjects());
+        List<Project> updatedProjects = projectModel.getProjectByUserId(CurrentUser.getInstance().getLoggedUser().getId());
+
+        // Update projects list in CurrentUser singleton
+        CurrentUser.getInstance().getLoggedUser().setProjects(updatedProjects);
+
+        // Set the updated projects list to the table
+        ObservableList<Project> projects = FXCollections.observableList(updatedProjects);
         projectTable.setItems(projects);
     }
 
@@ -150,7 +172,7 @@ public class ProjectController extends RootController implements Initializable {
             // set to be in the center of the cell
             checkBox.setAlignment(Pos.CENTER);
             checkBox.setOnAction(e -> {
-                System.out.println("Selected: " + col.getValue());
+              //  System.out.println("Selected: " + col.getValue());
             });
             return new SimpleObjectProperty<>(checkBox);
         });
@@ -235,7 +257,13 @@ public class ProjectController extends RootController implements Initializable {
             imageIcon.setFitWidth(15);
             playButton.setGraphic(imageIcon);
             playButton.setOnAction(e -> {
-                System.out.println("Selected: " + col.getValue());
+              //  System.out.println("Selected: " + col.getValue());
+               //  projectModel.setCurrentProject(col.getValue());
+             //   setProjectToView(col.getValue());
+
+
+                runInParallel(ViewType.PROJECT_ACTIONS,col.getValue());
+
             });
             return new SimpleObjectProperty<>(playButton);
         });
@@ -243,6 +271,42 @@ public class ProjectController extends RootController implements Initializable {
         setTableWithProjects();
 
     }
+
+
+    private void setProjectToView(Project project) {
+      //  eventBus.post(new ProjectEvent(EventType.SET_CURRENT_PROJECT, project));
+    }
+
+    private void runInParallel(ViewType type,Project project) {
+        final RootController[] parent = {null};
+        Task<Void> loadDataTask = new Task<>() {
+            @Override
+            protected Void call() throws IOException {
+                parent[0] = loadNodesView(type);
+                return null;
+            }
+        };
+        loadDataTask.setOnSucceeded(event -> {
+            ProjectActionController controller = (ProjectActionController) parent[0];
+            controller.setCurrentProject(project);
+            System.out.println("Loaded controller: " + parent[0].getClass().getName());
+
+            switchToView(parent[0].getView());
+        });
+        new Thread(loadDataTask).start();
+    }
+
+    private void switchToView(Parent parent) {
+        Scene scene = projectAnchorPane.getScene();
+        Window window = scene.getWindow();
+        if (window instanceof Stage) {
+            StackPane layoutPane = (StackPane) scene.lookup("#app_content");
+            layoutPane.getChildren().clear();
+            layoutPane.getChildren().add(parent);
+        }
+
+    }
+
 
 
 }
