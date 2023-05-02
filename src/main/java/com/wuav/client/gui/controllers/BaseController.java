@@ -4,8 +4,11 @@ package com.wuav.client.gui.controllers;
 import com.google.inject.Inject;
 
 import com.wuav.client.bll.helpers.ViewType;
+import com.wuav.client.config.StartUp;
+import com.wuav.client.gui.controllers.abstractController.IRootController;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
+import com.wuav.client.gui.models.user.CurrentUser;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.animation.TranslateTransition;
 import javafx.concurrent.Task;
@@ -195,9 +198,20 @@ public class BaseController extends RootController implements Initializable {
         app_content.getChildren().add(parent);
     }
 
-    public void logoutButton(ActionEvent actionEvent) {
 
+    // THIS HAS TO BE FIXED MAYBE I NEED SOME SCENE CONTROLLER SINCE THIS IS MESSSSSS
+    @FXML
+    public void logoutButton(ActionEvent actionEvent) throws IOException {
+        CurrentUser.getInstance().logout();
+        IControllerFactory factory = StartUp.getInjector().getInstance(IControllerFactory.class);
+        IRootController controller = factory.loadFxmlFile(ViewType.LOGIN);
 
+        Stage stage = new Stage();
+        Scene scene = new Scene(controller.getView());
+        stage.setTitle("Wuav-login");
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
     }
     //endregion
 
