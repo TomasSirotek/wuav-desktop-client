@@ -16,6 +16,7 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -38,13 +39,13 @@ import javafx.util.Duration;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ModalActionController extends RootController implements Initializable {
 
+    @FXML
+    private HBox imageContent;
     @FXML
     private ImageView fetchedImage;
     @FXML
@@ -117,25 +118,40 @@ public class ModalActionController extends RootController implements Initializab
     }
 
 
+//    private void startImageFetch(int userId) {
+//        System.out.println("starting image fetch");
+//        imageFetchTimeline = new Timeline(
+//                new KeyFrame(Duration.ZERO, e -> {
+//                    Image image = fetchImageFromServer(userId);
+//                    if (image != null) {
+//                        addImageToSelectedImageVBox(image);
+//
+//
+//
+//                    }else {
+//                        System.out.println("image is null");
+//                    }
+//                }),
+//                new KeyFrame(Duration.seconds(5)) // Adjust the duration based on how often you want to poll the server
+//        );
+//
+//        imageFetchTimeline.setCycleCount(Animation.INDEFINITE);
+//        imageFetchTimeline.play();
+//    }
+
     private void startImageFetch(int userId) {
+        AtomicBoolean fetched = new AtomicBoolean(false);
         System.out.println("starting image fetch");
         imageFetchTimeline = new Timeline(
                 new KeyFrame(Duration.ZERO, e -> {
-                    Image image = fetchImageFromServer(userId);
-                    if (image != null) {
-                        System.out.println("the image from server is not null  " + image);
-                        if (qrCodee != null) {
-                            qrCodee.setImage(image);
-                            qrCodee.setImage(defaultImage);
-                            System.out.println("Setting image to qrCodee ImageView");
-                        } else {
-                            System.out.println("qrCodee ImageView is null");
-                        }
-                        if (fetchedImage != null) {
-                            fetchedImage.setImage(image);
-                            System.out.println("Setting image to fetchedImage ImageView");
-                        } else {
-                            System.out.println("fetchedImage ImageView is null");
+                    if (!fetched.get()) {
+                        List<Image> images = fetchImagesFromServer(userId);
+                        if (!images.isEmpty()) {
+                            imageContent.getChildren().clear(); // Clear the imageContent VBox before adding new images
+                            for (Image image : images) {
+                                addImageToSelectedImageVBox(image);
+                            }
+                            fetched.set(true); // Set fetched to true after successfully fetching images
                         }
                     }
                 }),
@@ -144,6 +160,50 @@ public class ModalActionController extends RootController implements Initializab
 
         imageFetchTimeline.setCycleCount(Animation.INDEFINITE);
         imageFetchTimeline.play();
+    }
+
+    private void removeImagesFromServer(int userId) {
+        try {
+            URL url = new URL("http://localhost:5000/api/users/" + userId + "/temp-images");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("DELETE");
+            connection.connect();
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode == 200) {
+                System.out.println("Images removed from server");
+            } else {
+                System.out.println("Error removing images from server: HTTP status code " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+    private void addImageToSelectedImageVBox(Image image) {
+        // Create an HBox to store the ImageView and Label
+        HBox uploadedImage = new HBox();
+
+        // Create and configure ImageView
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(50);
+        imageView.setFitHeight(50);
+
+        // Add ImageView to the HBox
+        uploadedImage.getChildren().add(imageView);
+
+        // Create and configure Label
+        Label selectedFileName = new Label("image.png");
+        selectedFileName.setStyle("-fx-text-fill: black;");
+
+        // Add Label to the HBox
+        uploadedImage.getChildren().add(selectedFileName);
+
+        // Add HBox to the imageContent VBox
+        imageContent.getChildren().add(uploadedImage);
     }
 
     private void stopImageFetch() {
@@ -157,8 +217,12 @@ public class ModalActionController extends RootController implements Initializab
         selectFile.setOnAction(e -> selectFile());
 
 
-
-
+        Platform.runLater(() -> {
+            Stage stage = (Stage) modalPane.getScene().getWindow();
+            stage.setOnCloseRequest(e -> {
+                removeImagesFromServer(340);
+            });
+        });
 
         fillClientTypeChooseField();
 
@@ -169,8 +233,6 @@ public class ModalActionController extends RootController implements Initializab
             Image qrCodeImage = generatedQRCodeImageView.getImage();
             qrCodee.setImage(qrCodeImage);
 
-            qrCodee.setFitWidth(200);
-            qrCodee.setFitHeight(200);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -183,8 +245,8 @@ public class ModalActionController extends RootController implements Initializab
         clientTypeChooseField.getItems().add("BUSINESS");
     }
 
-
-//    private InputStream fetchImageFromServer(int userId) {
+//
+//    private List<Image> fetchImageFromServer(int userId) {
 //        try {
 //            // Replace with your actual server URL
 //            URL url = new URL("http://localhost:5000/api/users/" + userId + "/temp-images");
@@ -192,13 +254,29 @@ public class ModalActionController extends RootController implements Initializab
 //            connection.setRequestMethod("GET");
 //            connection.connect();
 //            int responseCode = connection.getResponseCode();
-//            System.out.println(responseCode);
+//
+//
 //            if (responseCode == 200) {
 //                InputStream inputStream = connection.getInputStream();
-//                System.out.println("image fetched");
-//                System.out.println(inputStream);
+//                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+//                StringBuilder responseBuilder = new StringBuilder();
+//                String line;
+//                while ((line = reader.readLine()) != null) {
+//                    responseBuilder.append(line);
+//                }
+//                String jsonResponse = responseBuilder.toString();
 //
-//                return inputStream;
+//                // Deserialize JSON response into a list of strings
+//                Gson gson = new Gson();
+//                TypeToken<List<String>> token = new TypeToken<List<String>>() {};
+//                List<String> base64Images = gson.fromJson(jsonResponse, token.getType());
+//
+//                if (!base64Images.isEmpty()) {
+//                    String base64Image = base64Images.get(0); // Get the first base64 string
+//                    byte[] decodedBytes = Base64.getDecoder().decode(base64Image);
+//                    InputStream decodedInputStream = new ByteArrayInputStream(decodedBytes);
+//                    return new Image(decodedInputStream);
+//                }
 //            }
 //        } catch (Exception e) {
 //            e.printStackTrace();
@@ -206,15 +284,16 @@ public class ModalActionController extends RootController implements Initializab
 //        return null;
 //    }
 
-    private Image fetchImageFromServer(int userId) {
+
+
+    private List<Image> fetchImagesFromServer(int userId) {
+        List<Image> images = new ArrayList<>();
         try {
-            // Replace with your actual server URL
             URL url = new URL("http://localhost:5000/api/users/" + userId + "/temp-images");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
             int responseCode = connection.getResponseCode();
-
 
             if (responseCode == 200) {
                 InputStream inputStream = connection.getInputStream();
@@ -231,18 +310,19 @@ public class ModalActionController extends RootController implements Initializab
                 TypeToken<List<String>> token = new TypeToken<List<String>>() {};
                 List<String> base64Images = gson.fromJson(jsonResponse, token.getType());
 
-                if (!base64Images.isEmpty()) {
-                    String base64Image = base64Images.get(0); // Get the first base64 string
+                for (String base64Image : base64Images) {
                     byte[] decodedBytes = Base64.getDecoder().decode(base64Image);
                     InputStream decodedInputStream = new ByteArrayInputStream(decodedBytes);
-                    return new Image(decodedInputStream);
+                    images.add(new Image(decodedInputStream));
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return images;
     }
+
+
 
 
 
@@ -259,6 +339,10 @@ public class ModalActionController extends RootController implements Initializab
                     currentTab[0]++;
                     tabs[currentTab[0]].setDisable(false);
                     tabPaneCreate.getSelectionModel().selectNext();
+
+                    if(currentTab[0] == 3) {
+                        startImageFetch(340);
+                    }
 
                     if (currentTab[0] > 0) {
                         backBtn.setVisible(true);
@@ -304,14 +388,16 @@ public class ModalActionController extends RootController implements Initializab
 
     private boolean checkTabContent(int tabIndex) {
         // use of validation interface to validate the tabs  efficiently
-        ValidationFunction[] validationFunctions = new ValidationFunction[]{
-                this::validateFirstTab,
-                this::validateSecondTab,
-                this::validateThirdTab,
-                this::validateFourthTab
-        };
+//        ValidationFunction[] validationFunctions = new ValidationFunction[]{
+//                this::validateFirstTab,
+//                this::validateSecondTab,
+//                this::validateThirdTab,
+//                this::validateFourthTab
+//        };
+//
+//        return validationFunctions[tabIndex].validate();
 
-        return validationFunctions[tabIndex].validate();
+        return true;
     }
 
 
@@ -440,7 +526,6 @@ public class ModalActionController extends RootController implements Initializab
         preview.setStyle("-fx-background-color: #E84910; -fx-text-fill: #ffffff;");
         preview.setOnAction(e -> previewImage());
         imageActionHandleBox.getChildren().add(preview);
-
     }
 
     private void changeSelectedFileHBox() {
