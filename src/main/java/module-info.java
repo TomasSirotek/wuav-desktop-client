@@ -21,7 +21,7 @@ module com.wuav.client {
     requires javafx.web;
     requires com.azure.core;
     requires com.azure.storage.blob;
-
+    requires com.google.gson;
 
     exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common;
     exports com.wuav.client.bll.helpers;

@@ -3,6 +3,7 @@ package com.wuav.client.gui.controllers;
 import com.google.inject.Inject;
 import com.wuav.client.be.Project;
 import com.wuav.client.bll.helpers.ViewType;
+import com.wuav.client.bll.utilities.engines.ICodesEngine;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.models.IProjectModel;
@@ -36,6 +37,8 @@ import java.util.ResourceBundle;
 
 public class ModalActionController extends RootController implements Initializable {
 
+    @FXML
+    private ImageView qrCodee;
     @FXML
     private MFXTextField clientNameField;
     @FXML
@@ -92,18 +95,34 @@ public class ModalActionController extends RootController implements Initializab
     @FXML
     private HBox imageActionHandleBox;
 
+    private ICodesEngine codesEngine;
+
     @Inject
-    public ModalActionController(IControllerFactory controllerFactory, IProjectModel projectModel) {
+    public ModalActionController(IControllerFactory controllerFactory, IProjectModel projectModel, ICodesEngine codesEngine) {
         this.controllerFactory = controllerFactory;
         this.projectModel = projectModel;
+        this.codesEngine = codesEngine;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         selectFile.setOnAction(e -> selectFile());
+
         fillClientTypeChooseField();
 
-       handleProgressSwitch();
+
+        // PROJECT ID SHOULD NOT BE THERE SINCE ITS NOT GENERATED YET
+        try {
+            ImageView generatedQRCodeImageView = codesEngine.generateQRCodeImageView(340, 40, 200, 200);
+            Image qrCodeImage = generatedQRCodeImageView.getImage();
+            qrCodee.setImage(qrCodeImage);
+
+            qrCodee.setFitWidth(200);
+            qrCodee.setFitHeight(200);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        handleProgressSwitch();
     }
 
     private void fillClientTypeChooseField() {
@@ -134,6 +153,7 @@ public class ModalActionController extends RootController implements Initializab
                     }
                 }
             } else {
+
                 if (checkTabContent(currentTab[0])) { // Check if the last tab content is valid
                     continueBtn.setText("Finish");
                     System.out.println("Finished");
