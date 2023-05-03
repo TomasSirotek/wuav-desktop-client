@@ -9,6 +9,7 @@ import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
+import com.wuav.client.gui.utils.AlertHelper;
 import com.wuav.client.gui.utils.ProjectEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -17,6 +18,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.image.Image;
@@ -109,16 +111,21 @@ public class ProjectActionController  extends RootController implements Initiali
             // project id
             int projectId = currentProject.getId();
             // create file from image url
-         //   File imageFile = new File(selectedImage.getImage().getUrl().toString());
             File imageFile = new File(selectedImageFile.toURI());
             // image description
             String imageDescription = descriptionField.getText().trim();
             // is main image
             boolean isMainImage = true;
-
             // send image and description to the services with userId and project id to and if its main image or not
             var uploadedStatus = projectModel.uploadImageWithDescription(userId, projectId, imageFile, imageDescription, isMainImage);
             System.out.println("Uploaded status: " + uploadedStatus);
+            if(uploadedStatus) {
+                System.out.println("Image uploaded successfully");
+                // show success message
+                AlertHelper.showDefaultAlert("Saved successfully", Alert.AlertType.CONFIRMATION);
+
+                // move to another tab
+            }
 
         } else {
             System.out.println("Selected image is equal to default image, not saving.");
