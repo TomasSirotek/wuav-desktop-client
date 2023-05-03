@@ -29,14 +29,14 @@
                      </effect>
                      <children>
                         <GridPane layoutX="-1.0" prefHeight="60.0" prefWidth="999.0">
-                          <columnConstraints>
+                           <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
                            <children>
                               <HBox prefWidth="333.0">
                                  <children>
@@ -80,15 +80,15 @@
                                  </children>
                               </HBox>
                               <GridPane prefWidth="306.0" GridPane.columnIndex="2">
-                                <columnConstraints>
-                                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="179.532958984375" minWidth="10.0" prefWidth="179.532958984375" />
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="179.532958984375" minWidth="10.0" prefWidth="179.532958984375" />
                                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="123.6771240234375" minWidth="10.0" prefWidth="48.489013671875" />
                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="80.2882080078125" minWidth="10.0" prefWidth="38.010986328125" />
-                                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="96.84771728515625" minWidth="10.0" prefWidth="67.09735107421875" />
-                                </columnConstraints>
-                                <rowConstraints>
-                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                </rowConstraints>
+                                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="96.84771728515625" minWidth="10.0" prefWidth="67.09735107421875" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
                                  <children>
                                     <MFXButton prefHeight="27.0" prefWidth="28.0" style="-fx-background-color: none; -fx-border-radius: 30; -fx-border-image-width: 20;" text="." textFill="#ffffff00" />
                                     <ImageView fitHeight="20.0" fitWidth="20.0" GridPane.columnIndex="1">

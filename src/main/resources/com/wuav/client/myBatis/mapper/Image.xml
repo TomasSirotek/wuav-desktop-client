@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wuav.client.dal.mappers.ImageMapper">
+
+    <resultMap id="imageResult" type="CustomImage">
+        <id property="id" column="id"/>
+        <result property="imageType" column="image_type"/>
+        <result property="imageUrl" column="image_url"/>
+    </resultMap>
+
+    <select id="getImageById" resultMap="imageResult">
+        SELECT id, image_type, image_url FROM image
+        WHERE id = #{imageId}
+    </select>
+
+    <!-- Define other SQL statements for ImageRepository methods here -->
+
+    <insert
+            id="createImage"
+            parameterType="map"
+            flushCache="true"
+            keyProperty="id"
+            keyColumn="id"
+            statementType="PREPARED"
+            timeout="20">
+
+        INSERT INTO image (id, image_type, image_url) VALUES (#{imageId}, #{imageType}, #{imageUrl})
+
+    </insert>
+
+    <!--    INSERT IMAGE INTO PROJECT_IMAGE TABLE -->
+    <insert
+            id="addImageToProject"
+            parameterType="map"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        INSERT INTO project_image (project_id, image_id,is_main_image) VALUES (#{projectId}, #{imageId}, #{isMainImage})
+    </insert>
+
+</mapper>

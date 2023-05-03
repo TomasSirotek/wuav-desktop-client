@@ -33,9 +33,6 @@
     </select>
 
 
-
-
-
     <insert
             id="createProjectByName"
             parameterType="Project"
@@ -60,6 +57,21 @@
         INSERT INTO user_project (user_id, project_id) VALUES (#{userId}, #{projectId})
 
     </insert>
+
+
+    <update
+            id="updateProjectForUserById"
+            parameterType="Project"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        UPDATE Project
+        SET
+            description = #{description}
+        WHERE id = #{projectId}
+
+    </update>
 
 
 

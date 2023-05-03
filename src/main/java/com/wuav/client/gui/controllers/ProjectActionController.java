@@ -67,7 +67,7 @@ public class ProjectActionController  extends RootController implements Initiali
 
     private Project currentProject;
 
-    private final EventBus eventBus;
+
 
     private Image defaultImage = new Image("/no_data.png");
 
@@ -75,10 +75,10 @@ public class ProjectActionController  extends RootController implements Initiali
 
 
     @Inject
-    public ProjectActionController(IControllerFactory controllerFactory, IProjectModel projectModel, EventBus eventBus) {
+    public ProjectActionController(IControllerFactory controllerFactory, IProjectModel projectModel) {
         this.controllerFactory = controllerFactory;
         this.projectModel = projectModel;
-        this.eventBus = eventBus;
+
     }
 
     @Override

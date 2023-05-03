@@ -54,7 +54,7 @@ public class ModalActionController extends RootController implements Initializab
        int userId =  CurrentUser.getInstance().getLoggedUser().getId();
        Project project = projectModel.createProjectByName(userId,projectNameField.getText().trim());
          if(project != null){
-             projectModel.setCurrentProject(project);
+           //  projectModel.setCurrentProject(project);
              runInParallel(ViewType.PROJECT_ACTIONS);
          }
     }

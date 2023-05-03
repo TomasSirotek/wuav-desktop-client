@@ -2,6 +2,8 @@ package com.wuav.client.dal.blob;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
+import com.wuav.client.be.CustomImage;
+import com.wuav.client.bll.utilities.UniqueIdGenerator;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +18,7 @@ public class BlobStorageHelper {
         this.containerClient = containerClient;
     }
 
-    public String uploadImageToBlobStorage(File imageFile) {
+    public CustomImage uploadImageToBlobStorage(File imageFile) {
         String extension = getFileExtension(imageFile.getName());
         String uniqueName = UUID.randomUUID().toString() + "." + extension;
         BlobClient blobClient = containerClient.getBlobClient(uniqueName);
@@ -27,7 +29,11 @@ public class BlobStorageHelper {
             e.printStackTrace();
         }
 
-        return blobClient.getBlobUrl();
+        var imageId = UniqueIdGenerator.generateUniqueId();
+
+        return new CustomImage(imageId,extension,blobClient.getBlobUrl());
+
+        //return blobClient.getBlobUrl();
     }
 
     private String getFileExtension(String fileName) {

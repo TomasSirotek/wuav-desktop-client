@@ -11,8 +11,10 @@ import com.wuav.client.bll.utilities.email.EmailSender;
 import com.wuav.client.bll.utilities.email.IEmailSender;
 import com.wuav.client.bll.utilities.engines.CodeEngine;
 import com.wuav.client.bll.utilities.engines.ICodesEngine;
+import com.wuav.client.dal.interfaces.IImageRepository;
 import com.wuav.client.dal.interfaces.IProjectRepository;
 import com.wuav.client.dal.interfaces.IUserRepository;
+import com.wuav.client.dal.repository.ImageRepository;
 import com.wuav.client.dal.repository.ProjectRepository;
 import com.wuav.client.dal.repository.UserRepository;
 
@@ -57,14 +59,15 @@ public class ConfigModule extends AbstractModule {
         bind(IAuthService.class).to(AuthService.class);
         bind(IProjectService.class).to(ProjectService.class);
         bind(IProjectRepository.class).to(ProjectRepository.class);
-        bind(IProjectModel.class).to(ProjectModel.class);
+        bind(IImageRepository.class).to(ImageRepository.class);
+
 
 
         /*
          * Bind even bus as in singleton scope
          * As eager singleton to ensure instantiation asap Injector is created
          */
-        bind(EventBus.class).asEagerSingleton();
+      //  bind(EventBus.class).asEagerSingleton();
 
         bind(CurrentUser.class).asEagerSingleton();
 
@@ -83,7 +86,7 @@ public class ConfigModule extends AbstractModule {
         bind(IProjectRepository.class).to(ProjectRepository.class);
 
         bind(ICodesEngine.class).to(CodeEngine.class).in(Singleton.class);
-
+        bind(IProjectModel.class).to(ProjectModel.class);
         bind(IEmailSender.class).to(EmailSender.class);
 
         bind(EmailConnectionFactory.class).asEagerSingleton();
@@ -117,7 +120,7 @@ public class ConfigModule extends AbstractModule {
          * Bind even bus as in singleton scope
          * As eager singleton to ensure instantiation asap Injector is created
          */
-        bind(EventBus.class).asEagerSingleton();
+      //  bind(EventBus.class).asEagerSingleton();
 
         /* *************************************************************************
         *                                                                         *

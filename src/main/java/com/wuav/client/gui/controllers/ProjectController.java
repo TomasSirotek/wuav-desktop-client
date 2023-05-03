@@ -1,14 +1,14 @@
 package com.wuav.client.gui.controllers;
 
-import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.wuav.client.be.*;
 import com.wuav.client.bll.helpers.ViewType;
+import com.wuav.client.dal.interfaces.IImageRepository;
+import com.wuav.client.dal.repository.ImageRepository;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
-import com.wuav.client.gui.utils.ProjectEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -33,7 +33,6 @@ import javafx.stage.Window;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
-import com.wuav.client.bll.helpers.EventType;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -65,24 +64,21 @@ public class ProjectController extends RootController implements Initializable {
     @FXML
     private TableColumn<Project,String> colType;
 
-    private IProjectModel projectModel;
-    private final EventBus eventBus;
+    private final IProjectModel projectModel;
+
 
     private Consumer<Project> onProjectSelected;
 
     @Inject
-    public ProjectController(IControllerFactory controllerFactory, IProjectModel projectModel, EventBus eventBus) {
+    public ProjectController(IControllerFactory controllerFactory, IProjectModel projectModel) {
         this.controllerFactory = controllerFactory;
         this.projectModel = projectModel;
-        this.eventBus = eventBus;
-
-
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        fillTable();
-        createNewProject.setOnAction(e -> openNewProject());
+     //   fillTable();
+       // createNewProject.setOnAction(e -> openNewProject());
 
        // System.out.println(CurrentUser.getInstance().getLoggedUser().toString());
     }

@@ -1,5 +1,6 @@
 package com.wuav.client.dal.repository;
 
+import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Project;
 import com.wuav.client.dal.interfaces.IProjectRepository;
 import com.wuav.client.dal.mappers.ProjectMapper;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectRepository implements IProjectRepository {
-    static Logger logger = LoggerFactory.getLogger(UserRepository.class);
+    static Logger logger = LoggerFactory.getLogger(ProjectRepository.class);
 
 
     @Override
@@ -46,10 +47,34 @@ public class ProjectRepository implements IProjectRepository {
         return fetchedProjects;
     }
 
+
+
+
     @Override
-    public Project updateProjectWithImage(int userId, int projectId, String blobUrl, String description, boolean isMainImage) {
-        return null;
+    public Project updateProject(int projectId, String description) {
+        Project updatedProject = null;
+
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            ProjectMapper mapper = session.getMapper(ProjectMapper.class);
+            mapper.updateProjectForUserById(projectId, description);
+            updatedProject = mapper.getProjectById(projectId);
+            session.commit();
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return updatedProject;
     }
+
+
+
+
+
+
+//    // could be here seperate method add image to project with userId,projectId, blobURL and the boolean value
+//    @Override
+//    Project addImageToProject(int userId, int projectId, String blobUrl, boolean isMainImage){
+//
+//    }
 
 
 //    @Override

@@ -17,11 +17,13 @@
 
     </settings>
 
+
     <!-- table aliases -->
     <typeAliases>
         <typeAlias alias="AppUser" type="com.wuav.client.be.user.AppUser"/>
         <typeAlias alias="AppRole" type="com.wuav.client.be.user.AppRole"/>
         <typeAlias alias="Project" type="com.wuav.client.be.Project"/>
+        <typeAlias alias="CustomImage" type="com.wuav.client.be.CustomImage"/>
     </typeAliases>
 
     <!-- main environment -->
@@ -45,5 +47,6 @@
     <mappers>
         <mapper resource="com/wuav/client/mybatis/mapper/AppUser/AppUser.xml"/>
         <mapper resource="com/wuav/client/mybatis/mapper/Project.xml"/>
+        <mapper resource="com/wuav/client/mybatis/mapper/Image.xml"/>
     </mappers>
 </configuration>

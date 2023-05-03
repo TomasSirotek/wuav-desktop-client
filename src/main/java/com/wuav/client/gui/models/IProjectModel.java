@@ -12,12 +12,7 @@ public interface IProjectModel {
 
     List<Project> getProjectByUserId(int userId);
 
-    void setCurrentProject(Project project);
-
     boolean uploadImageWithDescription(int userId, int projectId, File file, String description, boolean isMainImage);
 
-    ObjectProperty<Project> currentProjectProperty();
-
-    Project getCurrentProject();
 
 }

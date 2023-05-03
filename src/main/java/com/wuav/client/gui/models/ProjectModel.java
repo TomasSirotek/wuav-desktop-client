@@ -14,8 +14,6 @@ public class ProjectModel implements IProjectModel{
 
     private IProjectService projectService;
 
-    private ObjectProperty<Project> currentProject = new SimpleObjectProperty<>();
-
 
     @Inject
     public ProjectModel(IProjectService projectService) {
@@ -32,23 +30,11 @@ public class ProjectModel implements IProjectModel{
         return projectService.getProjectByUserId(userId);
     }
 
-
-    @Override
-    public void setCurrentProject(Project project) {
-        this.currentProject.set(project);
-    }
-
     @Override
     public boolean uploadImageWithDescription(int userId, int projectId, File file, String description, boolean isMainImage) {
         return projectService.uploadImageWithDescription(userId,projectId,file,description,isMainImage);
     }
 
-    @Override
-    public Project getCurrentProject() {
-        return this.currentProject.get();
-    }
-    @Override
-    public ObjectProperty<Project> currentProjectProperty() {
-        return this.currentProject;
-    }
+
+
 }

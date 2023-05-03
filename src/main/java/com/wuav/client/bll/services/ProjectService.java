@@ -1,33 +1,33 @@
 package com.wuav.client.bll.services;
 
-import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
-import com.azure.storage.blob.BlobContainerClientBuilder;
 import com.google.inject.Inject;
+import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Project;
-import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.services.interfaces.IProjectService;
 import com.wuav.client.bll.utilities.UniqueIdGenerator;
 import com.wuav.client.dal.blob.BlobStorageFactory;
 import com.wuav.client.dal.blob.BlobStorageHelper;
+import com.wuav.client.dal.interfaces.IImageRepository;
 import com.wuav.client.dal.interfaces.IProjectRepository;
-import javafx.fxml.FXML;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.List;
 
 public class ProjectService implements IProjectService {
 
-    private IProjectRepository projectRepository;
+    private final IProjectRepository projectRepository;
+
+    private final IImageRepository imageRepository;
 
     private final BlobContainerClient blobContainerClient;
 
     private BlobStorageHelper blobStorageHelper;
 
     @Inject
-    public ProjectService(IProjectRepository projectRepository) {
+    public ProjectService(IProjectRepository projectRepository, IImageRepository imageRepository){
         this.projectRepository = projectRepository;
+        this.imageRepository = imageRepository;
         this.blobContainerClient = BlobStorageFactory.getBlobContainerClient();
         blobStorageHelper=  new BlobStorageHelper(blobContainerClient);
     }
@@ -47,19 +47,41 @@ public class ProjectService implements IProjectService {
 
     @Override
     public boolean uploadImageWithDescription(int userId, int projectId, File file, String description, boolean isMainImage) {
-       // upload the image to the blob storage
-        String blobUrl = blobStorageHelper.uploadImageToBlobStorage(file);
+        CustomImage customImage = uploadImage(file);
 
-        if(blobUrl == null || blobUrl.isEmpty() || blobUrl.isBlank()){
+        if (customImage == null) {
             return false;
         }
-        Project project = projectRepository.updateProjectWithImage(userId,projectId,blobUrl,description,isMainImage);
 
-        if(project == null){
+        CustomImage imageInserted = insertImage(customImage);
+
+        if (imageInserted == null) {
             return false;
         }
-        return true;
+
+        if (!addImageToProject(projectId, customImage.getId(), isMainImage)) {
+            return false;
+        }
+
+        return updateProject(projectId, description) != null;
     }
+
+    private CustomImage uploadImage(File file) {
+        return blobStorageHelper.uploadImageToBlobStorage(file);
+    }
+
+    private CustomImage insertImage(CustomImage customImage) {
+        return imageRepository.createImage(customImage.getId(), customImage.getImageType(), customImage.getImageUrl());
+    }
+
+    private boolean addImageToProject(int projectId, int imageId, boolean isMainImage) {
+        return imageRepository.addImageToProject(projectId, imageId, isMainImage);
+    }
+
+    private Project updateProject(int projectId, String description) {
+        return projectRepository.updateProject(projectId, description);
+    }
+
 
 
 }
