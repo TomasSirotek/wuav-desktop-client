@@ -1,5 +1,6 @@
 package com.wuav.client.di;
 
+import com.azure.storage.blob.BlobContainerClient;
 import com.wuav.client.bll.services.AuthService;
 import com.wuav.client.bll.services.ProjectService;
 import com.wuav.client.bll.services.UserService;
@@ -43,7 +44,6 @@ public class ConfigModule extends AbstractModule {
          * Injection of binding
          */
         bind(IControllerFactory.class).to(ControllerFactory.class);
-
 
         /* *************************************************************************
          *                                                                         *

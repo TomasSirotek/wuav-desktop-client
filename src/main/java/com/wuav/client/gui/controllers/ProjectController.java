@@ -77,8 +77,8 @@ public class ProjectController extends RootController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-     //   fillTable();
-       // createNewProject.setOnAction(e -> openNewProject());
+        fillTable();
+       createNewProject.setOnAction(e -> openNewProject());
 
        // System.out.println(CurrentUser.getInstance().getLoggedUser().toString());
     }

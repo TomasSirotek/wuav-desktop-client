@@ -39,19 +39,19 @@ module com.wuav.client {
     exports com.wuav.client.gui.models to com.google.guice;
 
 
-    opens com.wuav.client.gui.controllers to javafx.fxml, com.google.guice, com.google.common;
-    opens com.wuav.client.gui.models to javafx.fxml, com.google.guice, com.google.common;
-    opens com.wuav.client to javafx.fxml, com.google.guice, org.slf4j;
-    opens com.wuav.client.gui.controllers.abstractController to com.google.guice, javafx.fxml, com.google.common;
-    opens com.wuav.client.gui.controllers.controllerFactory to com.google.guice, javafx.fxml, com.google.common;
-    opens com.wuav.client.config to com.google.guice, javafx.fxml;
-    opens com.wuav.client.di to com.google.guice, javafx.fxml;
-    opens com.wuav.client.dal.myBatis to org.mybatis, javafx.fxml, org.slf4j;
-    opens com.wuav.client.dal.mappers to org.mybatis, com.google.guice;
-    opens com.wuav.client.bll.services to org.mybatis, javafx.fxml, org.slf4j, com.google.guice;
-    opens com.wuav.client.bll.services.interfaces to  javafx.fxml, com.google.guice, com.google.common, org.slf4j;
-    opens com.wuav.client.gui.models.user to javafx.fxml, com.google.guice, com.google.common, org.slf4j;
-    opens com.wuav.client.dal.repository to org.mybatis,javafx.fxml, com.google.guice, com.google.common, org.slf4j,com.azure.core;
+    opens com.wuav.client.gui.controllers to javafx.fxml, com.google.guice, com.google.common,com.azure.core;
+    opens com.wuav.client.gui.models to javafx.fxml, com.google.guice, com.google.common,com.azure.core;
+    opens com.wuav.client to javafx.fxml, com.google.guice, org.slf4j,com.azure.core;
+    opens com.wuav.client.gui.controllers.abstractController to com.google.guice, javafx.fxml, com.google.common,com.azure.core;
+    opens com.wuav.client.gui.controllers.controllerFactory to com.google.guice, javafx.fxml, com.google.common,com.azure.core;
+    opens com.wuav.client.config to com.google.guice, javafx.fxml,com.azure.core;
+    opens com.wuav.client.di to com.google.guice, javafx.fxml,com.azure.core;
+    opens com.wuav.client.dal.myBatis to org.mybatis, javafx.fxml, org.slf4j,com.azure.core;
+    opens com.wuav.client.dal.mappers to org.mybatis, com.google.guice,com.azure.core;
+    opens com.wuav.client.bll.services to org.mybatis, javafx.fxml, org.slf4j, com.google.guice,com.azure.core,com.azure.storage.blob;
+    opens com.wuav.client.bll.services.interfaces to  javafx.fxml, com.google.guice, com.google.common, org.slf4j,com.azure.storage.blob;
+    opens com.wuav.client.gui.models.user to javafx.fxml, com.google.guice, com.google.common, org.slf4j,com.azure.core;
+    opens com.wuav.client.dal.repository to org.mybatis,javafx.fxml, com.google.guice, com.google.common, org.slf4j,com.azure.core,com.azure.storage.blob;
     exports com.wuav.client.be.user to javafx.graphics, org.mybatis;
     opens com.wuav.client.be.user to com.google.guice, javafx.fxml, org.mybatis, org.slf4j;
     exports com.wuav.client.bll.utilities.email;

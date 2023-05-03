@@ -20,16 +20,10 @@ public class ProjectService implements IProjectService {
 
     private final IImageRepository imageRepository;
 
-    private final BlobContainerClient blobContainerClient;
-
-    private BlobStorageHelper blobStorageHelper;
-
     @Inject
     public ProjectService(IProjectRepository projectRepository, IImageRepository imageRepository){
         this.projectRepository = projectRepository;
         this.imageRepository = imageRepository;
-        this.blobContainerClient = BlobStorageFactory.getBlobContainerClient();
-        blobStorageHelper=  new BlobStorageHelper(blobContainerClient);
     }
 
     @Override
@@ -47,6 +41,7 @@ public class ProjectService implements IProjectService {
 
     @Override
     public boolean uploadImageWithDescription(int userId, int projectId, File file, String description, boolean isMainImage) {
+
         CustomImage customImage = uploadImage(file);
 
         if (customImage == null) {
@@ -67,6 +62,9 @@ public class ProjectService implements IProjectService {
     }
 
     private CustomImage uploadImage(File file) {
+        BlobContainerClient blobContainerClient =  BlobStorageFactory.getBlobContainerClient();
+         BlobStorageHelper blobStorageHelper = new BlobStorageHelper(blobContainerClient);
+
         return blobStorageHelper.uploadImageToBlobStorage(file);
     }
 
