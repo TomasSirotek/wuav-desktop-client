@@ -71,7 +71,7 @@
                 </GridPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" GridPane.rowIndex="1">
                     <children>
-                        <TabPane layoutX="-10.0" layoutY="-1.0" prefHeight="511.0" prefWidth="754.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
+                        <TabPane fx:id="tabPane" layoutX="-10.0" layoutY="-1.0" prefHeight="511.0" prefWidth="754.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
                             <tabs>
                                 <Tab text="Project plan">
                                     <content>
@@ -211,18 +211,7 @@
                                                                                         </VBox>
                                                                   <HBox alignment="CENTER_RIGHT" prefHeight="44.0" prefWidth="303.0">
                                                                      <children>
-                                                                        <MFXButton fx:id="saveImageDesc" prefHeight="29.0" prefWidth="157.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Save " textFill="#141111">
-                                                                           <graphic>
-                                                                              <HBox alignment="CENTER" prefHeight="24.0" prefWidth="31.0">
-                                                                                 <children>
-                                                                                    <ImageView cache="true" fitHeight="19.0" fitWidth="19.0">
-                                                                                       <image>
-                                                                                          <Image url="@../images/navItems/save.png" />
-                                                                                       </image>
-                                                                                    </ImageView>
-                                                                                 </children>
-                                                                              </HBox>
-                                                                           </graphic>
+                                                                        <MFXButton fx:id="continueBtn" prefHeight="29.0" prefWidth="102.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Continue" textFill="#141111">
                                                                            <font>
                                                                               <Font name="SansSerif Bold" size="15.0" />
                                                                            </font>

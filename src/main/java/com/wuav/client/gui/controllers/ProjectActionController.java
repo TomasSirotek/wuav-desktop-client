@@ -1,6 +1,5 @@
 package com.wuav.client.gui.controllers;
 
-import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.wuav.client.be.Project;
@@ -21,6 +20,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -41,9 +41,11 @@ import javafx.scene.web.WebEngine;
 public class ProjectActionController  extends RootController implements Initializable {
 
     @FXML
+    private TabPane tabPane;
+    @FXML
     private MFXTextField descriptionField;
     @FXML
-    private MFXButton saveImageDesc;
+    private MFXButton continueBtn;
     @FXML
     private Label projectNameField;
     @FXML
@@ -87,7 +89,16 @@ public class ProjectActionController  extends RootController implements Initiali
     public void initialize(URL url, ResourceBundle resourceBundle) {
         selectedImage.setImage(defaultImage);
         selectFile.setOnAction(e -> selectFile());
-        saveImageDesc.setOnAction(e -> saveImageDesc());
+      //  saveImageDesc.setOnAction(e -> saveImageDesc());
+
+        tabPane.getTabs().get(1).setDisable(true);
+        tabPane.getTabs().get(2).setDisable(true);
+        continueBtn.setOnAction(e -> {
+            tabPane.getTabs().get(0).setDisable(true);
+            tabPane.getTabs().get(1).setDisable(false);
+            tabPane.getSelectionModel().selectNext();
+        });
+
       //  eventBus.register(this);
       //  projectNameField.setText(currentProject.getName());
       //  projectNameField.setText(currentProject.getName());
