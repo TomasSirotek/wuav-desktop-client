@@ -15,7 +15,6 @@ public class EmailConnectionFactory {
 
     private static Authenticator auth;
 
-
     private void loadConfig() {
         try {
             InputStream inputStream = EmailConnectionFactory.class.getClassLoader().getResourceAsStream(CONFIG_FILE_NAME);
@@ -25,9 +24,9 @@ public class EmailConnectionFactory {
             inputStream.close();
 
             auth = new Authenticator() {
-                //override the getPasswordAuthentication method
+                // override the getPasswordAuthentication method
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(props.getProperty("EMAIL"), props.getProperty("PASSWORD"));
+                    return new PasswordAuthentication(props.getProperty("email"), props.getProperty("password"));
                 }
             };
 
@@ -36,13 +35,16 @@ public class EmailConnectionFactory {
         }
     }
 
-
-
     public static Session getSession() {
         if (session == null) {
             EmailConnectionFactory emailConnectionFactory = new EmailConnectionFactory();
             emailConnectionFactory.loadConfig();
-            session = Session.getInstance(props, auth);
+            Properties mailProps = new Properties();
+            mailProps.put("mail.smtp.host", props.getProperty("mail.smtp.host"));
+            mailProps.put("mail.smtp.port", props.getProperty("mail.smtp.port"));
+            mailProps.put("mail.smtp.auth", props.getProperty("mail.smtp.auth"));
+            mailProps.put("mail.smtp.starttls.enable", props.getProperty("mail.smtp.starttls.enable"));
+            session = Session.getInstance(mailProps, auth);
         }
         return session;
     }

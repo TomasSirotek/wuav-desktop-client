@@ -1,10 +1,14 @@
 package com.wuav.client.gui.controllers;
 
 import com.google.inject.Inject;
+import com.wuav.client.Main;
 import com.wuav.client.be.*;
 import com.wuav.client.bll.helpers.ViewType;
-import com.wuav.client.dal.interfaces.IImageRepository;
-import com.wuav.client.dal.repository.ImageRepository;
+import com.wuav.client.bll.utilities.email.EmailConnectionFactory;
+import com.wuav.client.bll.utilities.email.EmailSender;
+import com.wuav.client.bll.utilities.email.IEmailSender;
+import com.wuav.client.bll.utilities.engines.EmailEngine;
+import com.wuav.client.bll.utilities.engines.IEmailEngine;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.models.IProjectModel;
@@ -31,6 +35,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import javax.mail.Session;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -44,7 +49,7 @@ public class ProjectController extends RootController implements Initializable {
     @FXML
     private MFXButton exportSelected;
     @FXML
-    private TableColumn colEmail;
+    private TableColumn<Project,Button> colEmail;
     @FXML
     private AnchorPane projectAnchorPane;
     @FXML
@@ -68,12 +73,18 @@ public class ProjectController extends RootController implements Initializable {
 
     private final IProjectModel projectModel;
 
+    private final IEmailSender emailSender;
+
+    private final IEmailEngine emailEngine;
+
     private Consumer<Project> onProjectSelected;
 
     @Inject
-    public ProjectController(IControllerFactory controllerFactory, IProjectModel projectModel) {
+    public ProjectController(IControllerFactory controllerFactory, IProjectModel projectModel, IEmailSender emailSender, IEmailEngine emailEngine) {
         this.controllerFactory = controllerFactory;
         this.projectModel = projectModel;
+        this.emailSender = emailSender;
+        this.emailEngine = emailEngine;
     }
 
     @Override
@@ -290,23 +301,52 @@ public class ProjectController extends RootController implements Initializable {
             return new SimpleObjectProperty<>(playButton);
         });
 
-        colEmail.setCellValueFactory(col -> {
-            MFXButton playButton = new MFXButton("");
+        colEmail.setCellValueFactory(col2 -> {
+            MFXButton playButton2 = new MFXButton("");
             //  playButton.getStyleClass().add("success");
-            playButton.setPrefWidth(100);
-            playButton.setPrefHeight(20);
+            playButton2.setPrefWidth(100);
+            playButton2.setPrefHeight(20);
             var imageIcon = new ImageView(new Image(getClass().getResourceAsStream("/edit.png")));
             imageIcon.setFitHeight(15);
             imageIcon.setFitWidth(15);
-            playButton.setGraphic(imageIcon);
-            playButton.setOnAction(e -> {
+            playButton2.setGraphic(imageIcon);
+
+            playButton2.setOnAction(e -> {
                 // open window with choosing to whom to email it
+                sendReportViaEmail(col2.getValue());
             });
-            return new SimpleObjectProperty<>(playButton);
+            return new SimpleObjectProperty<>(playButton2);
         });
 
         setTableWithProjects();
 
+    }
+
+    public static void main(String[] args) {
+        sendReportViaEmail(null);
+    }
+
+    private static void sendReportViaEmail(Project project) {
+
+        IEmailSender emailSender = new EmailSender();
+        IEmailEngine emailEngine = new EmailEngine();
+        Session session =  EmailConnectionFactory.getSession();
+
+        // genereate pdf report and send it via email
+
+
+        // Define the template name and variables
+        String templateName = "email-template";
+        Map<String, Object> templateVariables = new HashMap<>();
+        templateVariables.put("name", "Test");
+        templateVariables.put("subject", "TLSEmail Testing Subject");
+
+
+        // Process the template and generate the email body
+        String emailBody = emailEngine.processTemplate(templateName, templateVariables);
+
+
+        emailSender.sendEmail(session, "leonardo.schowalter@ethereal.email","TLSEmail Testing Subject", emailBody,false,null);
     }
 
 

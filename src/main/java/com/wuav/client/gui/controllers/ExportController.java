@@ -50,7 +50,6 @@ public class ExportController extends RootController implements Initializable {
         this.pdfGenerator = pdfGenerator;
     }
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         exportActionBtn.setOnAction(e -> exportDocument());
