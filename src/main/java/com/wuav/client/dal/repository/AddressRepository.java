@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 public class AddressRepository implements IAddressRepository {
     static Logger logger = LoggerFactory.getLogger(AddressRepository.class);
 
-
     @Override
     public int createAddress(AddressDTO addressDTO) {
         int affectedRowsResult = 0;

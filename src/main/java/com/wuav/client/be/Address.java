@@ -4,11 +4,8 @@ public class Address {
 
     private int id;
     private String street;
-
     private String city;
-
     private String zipCode;
-
 
     public Address(int id, String street, String city, String zipCode) {
         this.id = id;

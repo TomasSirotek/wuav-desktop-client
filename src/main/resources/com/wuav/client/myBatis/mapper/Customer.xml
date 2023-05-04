@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wuav.client.dal.mappers.CustomerMapper">
+
+    <resultMap id="customerResult" type="Customer">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="type" column="type"/>
+        <association property="address" javaType="Address">
+            <id property="id" column="address_id"/>
+            <result property="street" column="street"/>
+            <result property="city" column="city"/>
+            <result property="zipCode" column="zipCode"/>
+        </association>
+    </resultMap>
+
+
+    <select
+            id="getCustomerById"
+            resultMap="customerResult"
+    >
+        SELECT
+            c.id,
+            c.name,
+            c.email,
+            c.phone_number,
+            c.type,
+            a.id as address_id,
+            a.street,
+            a.city,
+            a.zip_code as zipCode
+        FROM customer c
+                 JOIN address a ON c.address_id = a.id
+        WHERE c.id = #{id}
+    </select>
+    <insert
+            id="createCustomer"
+            parameterType="map"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        INSERT INTO customer(id,name,email,phone_number,address_id,type)
+        VALUES (#{id}, #{name},#{email},#{phoneNumber}, #{addressId},#{type})
+
+    </insert>
+
+
+
+
+
+
+</mapper>
+
+
