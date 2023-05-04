@@ -20,7 +20,6 @@
             <result property="name" column="projectName"/>
             <result property="description" column="description"/>
             <result property="createdAt" javaType="Date" column="createdAtProject"/>
-            <result property="status" column="status"/>
         </collection>
     </resultMap>
 
@@ -37,8 +36,7 @@
                         p.id            as idProject,
                         p.name          as projectName,
                         p.description,
-                        p.created_at as createdAtProject,
-                        p.status
+                        p.created_at as createdAtProject
         FROM app_user u
                  INNER JOIN user_role ur ON u.id = ur.user_id
                  INNER JOIN app_role r ON ur.role_id = r.id

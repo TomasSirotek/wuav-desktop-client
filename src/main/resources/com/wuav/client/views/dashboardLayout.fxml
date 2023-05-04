@@ -267,6 +267,6 @@
             </StackPane>
          </center>
       </BorderPane>
-      <Pane fx:id="layoutPane" disable="true" prefHeight="601.0" prefWidth="999.0" />
+      <Pane fx:id="layoutPane" prefHeight="601.0" prefWidth="999.0" visible="false" />
    </children>
 </AnchorPane>

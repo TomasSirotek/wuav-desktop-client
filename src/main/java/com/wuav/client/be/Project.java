@@ -15,7 +15,7 @@ public class Project {
 
     private Date createdAt;
 
-    private String status;  // active, completed, deleted
+    private CustomImage attachedMainImage;
 
    // private List<CustomImage> attachedImagesUrl;
 
@@ -52,12 +52,12 @@ public class Project {
         this.createdAt = createdAt;
     }
 
-    public String getStatus() {
-        return status;
+    public CustomImage getAttachedMainImage() {
+        return attachedMainImage;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setAttachedMainImage(CustomImage attachedMainImage) {
+        this.attachedMainImage = attachedMainImage;
     }
 
 //    public List<CustomImage> getAttachedImagesUrl() {
@@ -69,14 +69,5 @@ public class Project {
 //    }
 
 
-    @Override
-    public String toString() {
-        return "Project{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", createdAt=" + createdAt +
-                ", status='" + status + '\'' +
-                '}';
-    }
+
 }

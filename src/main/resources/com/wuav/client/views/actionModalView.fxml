@@ -307,16 +307,36 @@
                                           </HBox>
                                           <VBox alignment="CENTER" prefHeight="104.0" prefWidth="343.0">
                                              <children>
-                                                <HBox prefHeight="23.0" prefWidth="345.0">
+                                                <HBox>
                                                    <children>
-                                                      <Label text="Address " textFill="#ababab">
-                                                         <font>
-                                                            <Font size="10.0" />
-                                                         </font>
-                                                      </Label>
+                                                      <VBox>
+                                                         <children>
+                                                            <Label prefHeight="17.0" prefWidth="197.0" text="Street" textFill="#252f4091">
+                                                               <font>
+                                                                  <Font name="SansSerif Regular" size="10.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="2.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <MFXTextField fx:id="clientStreetField" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="31.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="313.0" promptText="Email" text="Nørregade" />
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox>
+                                                         <children>
+                                                            <Label prefHeight="17.0" prefWidth="197.0" text="Zip" textFill="#252f4091">
+                                                               <font>
+                                                                  <Font name="SansSerif Regular" size="10.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="2.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <MFXTextField fx:id="clientZipField" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="31.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="313.0" promptText="Email" text="6705" />
+                                                         </children>
+                                                      </VBox>
                                                    </children>
                                                 </HBox>
-                                                <MFXTextField fx:id="clientAddressField" alignment="TOP_LEFT" floatingTextGap="0.0" graphicTextGap="0.0" measureUnitGap="0.0" prefHeight="58.0" prefWidth="338.0" />
                                              </children>
                                           </VBox>
                                        </children>

@@ -90,7 +90,8 @@ public class ProjectController extends RootController implements Initializable {
             Pane layoutPane = (Pane) scene.lookup("#layoutPane");
             if (layoutPane != null) {
                 layoutPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
-                layoutPane.setDisable(false);
+                layoutPane.setDisable(true);
+                layoutPane.setVisible(true);
 
                 var test = tryToLoadView();
                 show(test.getView(), "Create new project",scene);
@@ -117,6 +118,7 @@ public class ProjectController extends RootController implements Initializable {
         stage.setOnCloseRequest(e -> {
             Pane layoutPane = (Pane) previousScene.lookup("#layoutPane");
             if (layoutPane != null) {
+                layoutPane.setVisible(true);
                 layoutPane.setDisable(true);
                 layoutPane.setStyle("-fx-background-color: transparent;");
             }
@@ -202,10 +204,10 @@ public class ProjectController extends RootController implements Initializable {
 //            return new SimpleObjectProperty<>(successInActiveButton);
 //        });
 
-        colStatus.setCellValueFactory(cellData -> {
-            String status = cellData.getValue().getStatus();
-            return new SimpleStringProperty(status);
-        });
+//        colStatus.setCellValueFactory(cellData -> {
+//            String status = cellData.getValue().getStatus();
+//            return new SimpleStringProperty(status);
+//        });
 
         colStatus.setCellFactory(column -> {
             return new TableCell<Project, String>() {
