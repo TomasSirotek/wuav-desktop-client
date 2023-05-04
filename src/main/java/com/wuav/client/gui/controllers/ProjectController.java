@@ -233,10 +233,9 @@ public class ProjectController extends RootController implements Initializable {
         // description
         colDes.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
         // Customer
-    //    colCustomer.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getEmail()));
-
+        colCustomer.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getEmail()));
         // Type
-      //  colType.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getCustomerType().getName()));
+        colType.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getType()));
 
 
         // Date

@@ -17,6 +17,8 @@ public class Project {
 
     private CustomImage attachedMainImage;
 
+    private Customer customer;
+
    // private List<CustomImage> attachedImagesUrl;
 
 
@@ -58,6 +60,14 @@ public class Project {
 
     public void setAttachedMainImage(CustomImage attachedMainImage) {
         this.attachedMainImage = attachedMainImage;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
 //    public List<CustomImage> getAttachedImagesUrl() {

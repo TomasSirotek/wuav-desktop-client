@@ -5,20 +5,12 @@ public class Customer {
     private String name;
 
     private String email;
+
     private String phoneNumber;
 
     private String type;
 
     private Address address; // one to one
-
-//    public Customer(int id, String name, String email, String phoneNumber, String type, Address address) {
-//        this.id = id;
-//        this.name = name;
-//        this.email = email;
-//        this.phoneNumber = phoneNumber;
-//        this.type = type;
-//        this.address = address;
-//    }
 
     public Customer(int id, String name, String email, String phoneNumber, String type) {
         this.id = id;
@@ -49,16 +41,16 @@ public class Customer {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getType() {

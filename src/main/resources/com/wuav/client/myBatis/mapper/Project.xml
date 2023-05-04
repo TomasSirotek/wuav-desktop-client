@@ -10,16 +10,41 @@
         <result property="name" column="name"/>
         <result property="description" column="description"/>
         <result property="createdAt" javaType="Date" column="created_at"/>
+        <association property="customer" javaType="Customer">
+            <id property="id" column="customer_id"/>
+            <result property="name" column="customer_name"/>
+            <result property="email" column="customer_email"/>
+            <result property="phoneNumber" column="customer_phone"/>
+            <result property="type" column="customer_type"/>
+            <association property="address" javaType="Address">
+                <id property="id" column="address_id"/>
+                <result property="street" column="street"/>
+                <result property="city" column="city"/>
+                <result property="zipCode" column="zipCode"/>
+            </association>
+        </association>
     </resultMap>
 
 
-    <select
-            id="getAllProjectsByUserId"
-            resultMap="projectResult"
-    >
-        SELECT p.id, p.name, p.description, p.created_at
+    <select id="getAllProjectsByUserId" resultMap="projectResult">
+        SELECT
+            p.id,
+            p.name,
+            p.description,
+            p.created_at,
+            c.id as customer_id,
+            c.name as customer_name,
+            c.email as customer_email,
+            c.type as customer_type,
+            c.phone_number as customer_phone,
+            a.id as address_id,
+            a.street,
+            a.city,
+            a.zip_code as zipCode
         FROM Project p
                  INNER JOIN user_project up ON p.id = up.project_id
+                 INNER JOIN customer c ON p.customer_id = c.id
+                 INNER JOIN address a ON c.address_id = a.id
         WHERE up.user_id = #{userId}
     </select>
 
