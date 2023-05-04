@@ -5,10 +5,7 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.wuav.client.be.CustomImage;
 import com.wuav.client.bll.utilities.UniqueIdGenerator;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.UUID;
 
 public class BlobStorageHelper {
@@ -33,7 +30,19 @@ public class BlobStorageHelper {
 
         return new CustomImage(imageId,extension,blobClient.getBlobUrl());
 
-        //return blobClient.getBlobUrl();
+    }
+
+    // this is for testiiong now will be propably different
+    public byte[] downloadImageFromBlobStorage(String blobName, String downloadFilePath){
+        BlobClient blobClient = containerClient.getBlobClient(blobName);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        blobClient.download(outputStream);
+
+        byte[] imageBytes = outputStream.toByteArray();
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes);
+
+        return inputStream.readAllBytes();
     }
 
     private String getFileExtension(String fileName) {

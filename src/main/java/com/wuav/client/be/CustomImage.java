@@ -7,6 +7,8 @@ public class CustomImage {
 
     private String imageUrl;
 
+    private boolean isMainImage;
+
     public CustomImage(int id, String imageType, String imageUrl) {
         this.id = id;
         this.imageType = imageType;
@@ -36,5 +38,13 @@ public class CustomImage {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public boolean isMainImage() {
+        return isMainImage;
+    }
+
+    public void setMainImage(boolean mainImage) {
+        isMainImage = mainImage;
     }
 }

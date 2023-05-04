@@ -205,7 +205,15 @@ public class ModalActionController extends RootController implements Initializab
 //        Platform.runLater(() -> {
 //            Stage stage = (Stage) modalPane.getScene().getWindow();
 //            stage.setOnCloseRequest(e -> {
-//                removeImagesFromServer(340);
+//                stopImageFetch();
+//                if (imagesFromApp != null) {
+//                    removeImagesFromServer(340);
+//                    closeStage();
+//                } else {
+//                    System.out.println("No images to remove");
+//                    closeStage();
+//                }
+//
 //            });
 //        });
 
@@ -302,7 +310,6 @@ public class ModalActionController extends RootController implements Initializab
                    // removeImagesFromServer(340); // ADD LATER
                     stopImageFetch();
                     closeStage();
-
 
                     // Perform any additional actions here
                 }
@@ -554,18 +561,6 @@ public class ModalActionController extends RootController implements Initializab
 
 
     private void createNewProject() {
-        // reach project service and create new project and pass the project name
-        // if project is succesfully
-
-        // get current logged user id
-//       int userId =  CurrentUser.getInstance().getLoggedUser().getId();
-//       Project project = projectModel.createProjectByName(userId,projectNameField.getText().trim());
-//         if(project != null){
-//           //  projectModel.setCurrentProject(project);
-//             runInParallel(ViewType.PROJECT_ACTIONS);
-//         }
-
-
 
         // generating all the ids
         var projectId = UniqueIdGenerator.generateUniqueId();
@@ -603,20 +598,13 @@ public class ModalActionController extends RootController implements Initializab
         );
 
         System.out.println(projectToCreate);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        int currentUserId = CurrentUser.getInstance().getLoggedUser().getId();
+        boolean result = projectModel.createProject(currentUserId,projectToCreate);
+        if(result){
+            runInParallel(ViewType.PROJECT_ACTIONS);
+        }else {
+            AlertHelper.showDefaultAlert("Error creating project", Alert.AlertType.ERROR);
+        }
 
     }
 

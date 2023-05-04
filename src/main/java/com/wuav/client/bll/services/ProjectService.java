@@ -10,6 +10,7 @@ import com.wuav.client.dal.blob.BlobStorageFactory;
 import com.wuav.client.dal.blob.BlobStorageHelper;
 import com.wuav.client.dal.interfaces.IImageRepository;
 import com.wuav.client.dal.interfaces.IProjectRepository;
+import com.wuav.client.gui.dto.CreateProjectDTO;
 
 import java.io.File;
 import java.util.List;
@@ -26,13 +27,13 @@ public class ProjectService implements IProjectService {
         this.imageRepository = imageRepository;
     }
 
-    @Override
-    public Project createProjectByName(int userId,String name) {
-        // generate new int UUID for project
-        int id = UniqueIdGenerator.generateUniqueId();
-        String status = "ACTIVE";
-        return projectRepository.createProjectByName(userId,id,name,status);
-    }
+//    @Override
+//    public Project createProjectByName(int userId,String name) {
+//        // generate new int UUID for project
+//        int id = UniqueIdGenerator.generateUniqueId();
+//        String status = "ACTIVE";
+//        return projectRepository.createProjectByName(userId,id,name,status);
+//    }
 
     @Override
     public List<Project> getProjectByUserId(int userId) {
@@ -40,25 +41,42 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
-    public boolean uploadImageWithDescription(int userId, int projectId, File file, String description, boolean isMainImage) {
+    public boolean createProject(int userId, CreateProjectDTO projectToCreate) {
 
-        CustomImage customImage = uploadImage(file);
+        // create address and retreive the id
 
-        if (customImage == null) {
-            return false;
-        }
 
-        CustomImage imageInserted = insertImage(customImage);
 
-        if (imageInserted == null) {
-            return false;
-        }
+        // create customer and retreive the id
 
-        if (!addImageToProject(projectId, customImage.getId(), isMainImage)) {
-            return false;
-        }
+        // create project and retreive the id
 
-        return updateProject(projectId, description) != null;
+
+
+
+
+
+
+
+
+       //  CustomImage customImage = uploadImage(file);
+//        if (customImage == null) {
+//            return false;
+//        }
+//
+//        CustomImage imageInserted = insertImage(customImage);
+//
+//        if (imageInserted == null) {
+//            return false;
+//        }
+//
+//        if (!addImageToProject(projectId, customImage.getId(), isMainImage)) {
+//            return false;
+//        }
+//
+//        return updateProject(projectId, description) != null;
+
+        return false;
     }
 
     private CustomImage uploadImage(File file) {

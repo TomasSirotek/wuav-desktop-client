@@ -3,6 +3,7 @@ package com.wuav.client.gui.models;
 import com.google.inject.Inject;
 import com.wuav.client.be.Project;
 import com.wuav.client.bll.services.interfaces.IProjectService;
+import com.wuav.client.gui.dto.CreateProjectDTO;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
@@ -20,10 +21,10 @@ public class ProjectModel implements IProjectModel{
         this.projectService = projectService;
     }
 
-    @Override
-    public Project createProjectByName(int userId,String name) {
-        return projectService.createProjectByName(userId,name);
-    }
+//    @Override
+//    public Project createProjectByName(int userId,String name) {
+//        return projectService.createProjectByName(userId,name);
+//    }
 
     @Override
     public List<Project> getProjectByUserId(int userId) {
@@ -31,10 +32,9 @@ public class ProjectModel implements IProjectModel{
     }
 
     @Override
-    public boolean uploadImageWithDescription(int userId, int projectId, File file, String description, boolean isMainImage) {
-        return projectService.uploadImageWithDescription(userId,projectId,file,description,isMainImage);
+    public boolean createProject(int userId,CreateProjectDTO projectToCreate) {
+       return projectService.createProject(userId,projectToCreate);
     }
-
 
 
 }

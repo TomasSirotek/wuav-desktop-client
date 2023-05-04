@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wuav.client.dal.mappers.AddressMapper">
+
+    <resultMap id="addressResult" type="Address">
+        <id property="id" column="id"/>
+        <result property="street" column="street"/>
+        <result property="city" column="city"/>
+        <result property="zipCode" column="zip_code"/>
+    </resultMap>
+
+
+    <select
+            id="getAddressById"
+            resultMap="addressResult"
+    >
+        SELECT id, street, city, zip_code
+        FROM address
+        WHERE id = #{id}
+    </select>
+
+
+    <insert
+            id="createAddress"
+            parameterType="map"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        INSERT INTO address(id,street,city,zip_code)
+        VALUES (#{id}, #{street},#{city}, #{zipCode})
+
+    </insert>
+
+
+
+
+
+
+</mapper>
+
+

@@ -7,10 +7,10 @@ public class Address {
 
     private String city;
 
-    private int zipCode;
+    private String zipCode;
 
 
-    public Address(int id, String street, String city, int zipCode) {
+    public Address(int id, String street, String city, String zipCode) {
         this.id = id;
         this.street = street;
         this.city = city;
@@ -41,11 +41,21 @@ public class Address {
         this.city = city;
     }
 
-    public int getZipCode() {
+    public String getZipCode() {
         return zipCode;
     }
 
-    public void setZipCode(int zipCode) {
+    public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "id=" + id +
+                ", street='" + street + '\'' +
+                ", city='" + city + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                '}';
     }
 }

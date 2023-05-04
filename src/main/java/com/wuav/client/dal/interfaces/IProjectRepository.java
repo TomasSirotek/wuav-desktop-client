@@ -6,7 +6,6 @@ import com.wuav.client.be.Project;
 import java.util.List;
 
 public interface IProjectRepository {
-    Project createProjectByName(int userId,int id,String name,String status);
 
     List<Project> getAllProjectsByUserId(int userId);
 
