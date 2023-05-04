@@ -9,6 +9,7 @@ import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
+import com.wuav.client.gui.utils.AlertHelper;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -32,15 +33,18 @@ import javafx.stage.Window;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ProjectController extends RootController implements Initializable {
 
 
     private final IControllerFactory controllerFactory;
+
+    @FXML
+    private MFXButton exportSelected;
+    @FXML
+    private TableColumn colEmail;
     @FXML
     private AnchorPane projectAnchorPane;
     @FXML
@@ -56,8 +60,6 @@ public class ProjectController extends RootController implements Initializable {
     @FXML
     private TableColumn<Project,String> colName;
     @FXML
-    private TableColumn<Project,String> colStatus;
-    @FXML
     private TableColumn<Project,String> colDes;
     @FXML
     private TableColumn<Project,String> colCustomer;
@@ -65,7 +67,6 @@ public class ProjectController extends RootController implements Initializable {
     private TableColumn<Project,String> colType;
 
     private final IProjectModel projectModel;
-
 
     private Consumer<Project> onProjectSelected;
 
@@ -78,12 +79,22 @@ public class ProjectController extends RootController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         fillTable();
-       createNewProject.setOnAction(e -> openNewProject());
+       createNewProject.setOnAction(e -> openActionWindows("Create new project",ViewType.ACTIONS,null));
+       exportSelected.setOnAction(e -> exportSelected());
 
-       // System.out.println(CurrentUser.getInstance().getLoggedUser().toString());
     }
 
-    private void openNewProject() {
+    private void exportSelected() {
+        if(selectedProjects.isEmpty()){
+            AlertHelper.showDefaultAlert("No projects yet to be selected for export ",Alert.AlertType.WARNING);
+            return;
+        }
+        selectedProjects.forEach(p -> System.out.println("now its selected -> " + p.getId()  + " " + p.getName()));
+        openActionWindows("Export selected projects",ViewType.EXPORT,selectedProjects);
+
+    }
+
+    private void openActionWindows(String title,ViewType viewType,List<Project> projectList){
         Scene scene = projectAnchorPane.getScene();
         Window window = scene.getWindow();
         if (window instanceof Stage) {
@@ -93,8 +104,8 @@ public class ProjectController extends RootController implements Initializable {
                 layoutPane.setDisable(true);
                 layoutPane.setVisible(true);
 
-                var test = tryToLoadView();
-                show(test.getView(), "Create new project",scene);
+                var test = tryToLoadView(viewType);
+                show(test.getView(), title,scene,projectList);
 
             } else {
                 System.out.println("AnchorPane not found");
@@ -102,13 +113,32 @@ public class ProjectController extends RootController implements Initializable {
         }
     }
 
+//    private void openNewProject() {
+//        Scene scene = projectAnchorPane.getScene();
+//        Window window = scene.getWindow();
+//        if (window instanceof Stage) {
+//            Pane layoutPane = (Pane) scene.lookup("#layoutPane");
+//            if (layoutPane != null) {
+//                layoutPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
+//                layoutPane.setDisable(true);
+//                layoutPane.setVisible(true);
+//
+//                var test = tryToLoadView(ViewType.ACTIONS);
+//                show(test.getView(), "Create new project",scene);
+//
+//            } else {
+//                System.out.println("AnchorPane not found");
+//            }
+//        }
+//    }
+
     /**
      * private method for showing new stages whenever its need
      *
      * @param parent root that will be set
      * @param title  title for new stage
      */
-    private void show(Parent parent, String title,Scene previousScene) {
+    private void show(Parent parent, String title, Scene previousScene,List<Project> projectList) {
         Stage stage = new Stage();
         Scene scene = new Scene(parent);
 
@@ -127,7 +157,14 @@ public class ProjectController extends RootController implements Initializable {
         stage.setOnShowing(e -> {
             Stage previousStage = (Stage) previousScene.getWindow();
             stage.getProperties().put("previousStage", previousStage);
+
+
         });
+
+        if(projectList != null){
+            stage.getProperties().put("projectsToExport",projectList); // pass optional model here
+        }
+
 
         stage.setResizable(false);
         stage.setScene(scene);
@@ -140,9 +177,9 @@ public class ProjectController extends RootController implements Initializable {
 
 
 
-    private RootController tryToLoadView() {
+    private RootController tryToLoadView(ViewType viewType) {
         try {
-            return loadNodesView(ViewType.ACTIONS);
+            return loadNodesView(viewType);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -162,15 +199,22 @@ public class ProjectController extends RootController implements Initializable {
         projectTable.setItems(projects);
     }
 
+    List<Project> selectedProjects = new ArrayList<>();
     private void fillTable() {
         colSelectAll.setCellValueFactory(col -> {
-
             CheckBox checkBox = new CheckBox();
             checkBox.getStyleClass().add("checked-box");
             // set to be in the center of the cell
             checkBox.setAlignment(Pos.CENTER);
             checkBox.setOnAction(e -> {
-              //  System.out.println("Selected: " + col.getValue());
+                TableCell<Project, CheckBox> cell = (TableCell<Project, CheckBox>) checkBox.getParent();
+                int rowIndex = cell.getIndex();
+                Project project = projectTable.getItems().get(rowIndex);
+                if (checkBox.isSelected()) {
+                    selectedProjects.add(project);
+                } else {
+                    selectedProjects.remove(project);
+                }
             });
             return new SimpleObjectProperty<>(checkBox);
         });
@@ -209,26 +253,7 @@ public class ProjectController extends RootController implements Initializable {
 //            return new SimpleStringProperty(status);
 //        });
 
-        colStatus.setCellFactory(column -> {
-            return new TableCell<Project, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                        getStyleClass().removeAll("active", "completed");
-                    } else {
-                        setText(item);
-                        if (item.equals("ACTIVE")) {
-                            getStyleClass().add("active");
-                        } else if (item.equals("COMPLETED")) {
-                            getStyleClass().add("success");
-                        }
-                    }
-                }
-            };
-        });
+
 
         // description
         colDes.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
@@ -261,6 +286,21 @@ public class ProjectController extends RootController implements Initializable {
 
                 runInParallel(ViewType.PROJECT_ACTIONS,col.getValue());
 
+            });
+            return new SimpleObjectProperty<>(playButton);
+        });
+
+        colEmail.setCellValueFactory(col -> {
+            MFXButton playButton = new MFXButton("");
+            //  playButton.getStyleClass().add("success");
+            playButton.setPrefWidth(100);
+            playButton.setPrefHeight(20);
+            var imageIcon = new ImageView(new Image(getClass().getResourceAsStream("/edit.png")));
+            imageIcon.setFitHeight(15);
+            imageIcon.setFitWidth(15);
+            playButton.setGraphic(imageIcon);
+            playButton.setOnAction(e -> {
+                // open window with choosing to whom to email it
             });
             return new SimpleObjectProperty<>(playButton);
         });

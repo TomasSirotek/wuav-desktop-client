@@ -69,62 +69,114 @@ public class ProjectService implements IProjectService {
         return projectRepository.getAllProjectsByUserId(userId);
     }
 
+
     @Override
     public boolean createProject(int userId, CreateProjectDTO projectToCreate) {
-
-        // create address and retreive the id
-        // test
-      //  AddressDTO addressDTO = new AddressDTO(100, "FROM SERVICE", "test", "test");
-
-        int createdAddressResult = addressService.createAddress(projectToCreate.customer().address());
-
-        if(createdAddressResult > 0) {
-            System.out.println("Address created successfully");
-            Address fetchedAddress = addressService.getAddressById(projectToCreate.customer().address().id());
-            System.out.println("retrieved from db " + fetchedAddress);
-
-            if(fetchedAddress != null){
-                // create customer and retreive the id
-
-               int createdCustomerResult = customerService.createCustomer(projectToCreate.customer());
-               if(createdCustomerResult > 0 ){
-                   System.out.println("Customer created successfully");
-                   Customer customer = customerService.getCustomerById(projectToCreate.customer().id());
-                   if(customer != null){
-                       System.out.println(customer);
-                          // create project and retreive the id
-
-                       int createdProjectResult = projectRepository.createProject(projectToCreate);
-                       if(createdProjectResult > 0 ){
-                           // return project by id
-                           Project project = projectRepository.getProjectById(projectToCreate.id());
-                           // if user is okay then add project to user
-                            if(project != null){
-                                 System.out.println("Project created successfully");
-                                 System.out.println(project);
-                                 // add project to user
-                                 int isProjectAddedToUser = projectRepository.addProjectToUser(userId,project.getId());
-                                 if(isProjectAddedToUser > 0){
-                                      System.out.println("Project added to user successfully");
-                                      // create image to azure blob storage
-
-                                     // if its successfull then create image in database
-
-                                     // if its successfull then add image to project
-
-
-                                      return true;
-                                 }
-                            }
-                       }
-
-
-
-
-                   }
-               }
-            }
+        try {
+            return tryCreateProject(userId, projectToCreate);
+        } catch (Exception e) {
+            System.err.println("Error creating project: " + e.getMessage());
+            return false;
         }
+    }
+
+
+    // THIS HAS TO BE REFACTORED AND INCLUDE ROLL BACKS
+    private boolean tryCreateProject(int userId, CreateProjectDTO projectToCreate) throws Exception {
+        // Create address and retrieve the id
+        int createdAddressResult = addressService.createAddress(projectToCreate.customer().address());
+        if (createdAddressResult <= 0) {
+            throw new Exception("Failed to create address");
+        }
+        System.out.println("Address created successfully");
+
+        // Create customer and retrieve the id
+        int createdCustomerResult = customerService.createCustomer(projectToCreate.customer());
+        if (createdCustomerResult <= 0) {
+            throw new Exception("Failed to create customer");
+        }
+        System.out.println("Customer created successfully");
+
+        // Create project and retrieve the id
+        int createdProjectResult = projectRepository.createProject(projectToCreate);
+        if (createdProjectResult <= 0) {
+            throw new Exception("Failed to create project");
+        }
+        System.out.println("Project created successfully");
+
+        // Add project to user
+        int isProjectAddedToUser = projectRepository.addProjectToUser(userId, projectToCreate.id());
+        if (isProjectAddedToUser <= 0) {
+            throw new Exception("Failed to add project to user");
+        }
+        System.out.println("Project added to user successfully");
+
+        // Create image in Azure Blob Storage and database, then add it to the project
+        // ...
+
+        return true;
+    }
+
+
+
+
+
+//    @Override
+//    public boolean createProject(int userId, CreateProjectDTO projectToCreate) {
+//
+//        // create address and retreive the id
+//        // test
+//      //  AddressDTO addressDTO = new AddressDTO(100, "FROM SERVICE", "test", "test");
+//
+//        int createdAddressResult = addressService.createAddress(projectToCreate.customer().address());
+//
+//        if(createdAddressResult > 0) {
+//            System.out.println("Address created successfully");
+//            Address fetchedAddress = addressService.getAddressById(projectToCreate.customer().address().id());
+//            System.out.println("retrieved from db " + fetchedAddress);
+//
+//            if(fetchedAddress != null){
+//                // create customer and retreive the id
+//
+//               int createdCustomerResult = customerService.createCustomer(projectToCreate.customer());
+//               if(createdCustomerResult > 0 ){
+//                   System.out.println("Customer created successfully");
+//                   Customer customer = customerService.getCustomerById(projectToCreate.customer().id());
+//                   if(customer != null){
+//                       System.out.println(customer);
+//                          // create project and retreive the id
+//
+//                       int createdProjectResult = projectRepository.createProject(projectToCreate);
+//                       if(createdProjectResult > 0 ){
+//                           // return project by id
+//                           Project project = projectRepository.getProjectById(projectToCreate.id());
+//                           // if user is okay then add project to user
+//                            if(project != null){
+//                                 System.out.println("Project created successfully");
+//                                 System.out.println(project);
+//                                 // add project to user
+//                                 int isProjectAddedToUser = projectRepository.addProjectToUser(userId,project.getId());
+//                                 if(isProjectAddedToUser > 0){
+//                                      System.out.println("Project added to user successfully");
+//                                      // create image to azure blob storage
+//
+//                                     // if its successfull then create image in database
+//
+//                                     // if its successfull then add image to project
+//
+//
+//                                      return true;
+//                                 }
+//                            }
+//                       }
+//
+//
+//
+//
+//                   }
+//               }
+//            }
+//        }
 
 
 
@@ -161,8 +213,8 @@ public class ProjectService implements IProjectService {
 //
 //        return updateProject(projectId, description) != null;
 
-        return false;
-    }
+//        return false;
+//    }
 
     private CustomImage uploadImage(File file) {
         BlobContainerClient blobContainerClient =  BlobStorageFactory.getBlobContainerClient();

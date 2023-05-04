@@ -23,6 +23,12 @@ public enum ViewType {
             return "views/projectView.fxml";
         }
     },
+    EXPORT {
+        @Override
+        public String getFXMLView() {
+            return "views/exportView.fxml";
+        }
+    },
     ACTIONS {
         @Override
         public String getFXMLView() {

@@ -45,7 +45,7 @@
                         <Font name="SansSerif Bold" size="32.0" />
                      </font>
                   </Label>
-                  <MFXButton prefHeight="29.0" prefWidth="91.0" text="Export" GridPane.columnIndex="2">
+                  <MFXButton fx:id="exportSelected" prefHeight="29.0" prefWidth="91.0" text="Export" GridPane.columnIndex="2">
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="17.0">
                            <image>
@@ -88,28 +88,28 @@
                   <HBox alignment="CENTER" GridPane.columnIndex="1" />
                </children>
             </GridPane>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" GridPane.rowIndex="1">
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="703.0" GridPane.rowIndex="1">
                <children>
-                  <TabPane layoutX="-10.0" layoutY="-1.0" prefHeight="511.0" prefWidth="744.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="-1.0">
+                  <TabPane layoutX="-10.0" layoutY="-1.0" prefHeight="511.0" prefWidth="744.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
                     <tabs>
-                      <Tab text="Succeeded">
+                      <Tab text="All projects">
                         <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                          <AnchorPane minHeight="0.0" minWidth="0.0">
                                  <children>
-                                    <TableView fx:id="projectTable" layoutX="9.0" layoutY="10.0" prefHeight="430.0" prefWidth="727.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="-2.0" AnchorPane.topAnchor="0.0">
+                                    <TableView fx:id="projectTable" layoutX="12.0" layoutY="30.0" prefHeight="429.0" prefWidth="715.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="20.0">
                                       <columns>
-                                        <TableColumn fx:id="colSelectAll" prefWidth="38.763322830200195" resizable="false">
+                                        <TableColumn fx:id="colSelectAll" prefWidth="45.0">
                                              <graphic>
                                                 <CheckBox mnemonicParsing="false" />
                                              </graphic>
                                           </TableColumn>
                                         <TableColumn fx:id="colName" prefWidth="136.1154022216797" resizable="false" text="Name" />
-                                          <TableColumn fx:id="colStatus" prefWidth="104.88459777832031" resizable="false" />
                                           <TableColumn fx:id="colDes" prefWidth="104.6197509765625" resizable="false" text="Description" />
                                           <TableColumn fx:id="colCustomer" prefWidth="95.38027954101562" resizable="false" text="Customer" />
                                           <TableColumn fx:id="colType" prefWidth="98.28817749023438" resizable="false" text="Type" />
-                                          <TableColumn fx:id="colDate" prefWidth="109.88458251953125" resizable="false" text="Date" />
-                                          <TableColumn fx:id="colEdit" prefWidth="45.11541748046875" resizable="false" />
+                                          <TableColumn fx:id="colDate" prefWidth="129.0" resizable="false" text="Date" />
+                                          <TableColumn fx:id="colEdit" prefWidth="70.0" />
+                                          <TableColumn fx:id="colEmail" minWidth="0.0" prefWidth="90.0" resizable="false" />
                                       </columns>
                                     </TableView>
                                  </children>
@@ -119,16 +119,6 @@
                               </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="In progress">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                        </content>
-                      </Tab>
-                        <Tab text="All projects">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                           </content>
-                        </Tab>
                     </tabs>
                      <cursor>
                         <Cursor fx:constant="DEFAULT" />
