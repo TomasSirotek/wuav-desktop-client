@@ -11,4 +11,7 @@ public record AddressDTO(int id,String street, String city, String zipCode) {
                 ", zipCode='" + zipCode + '\'' +
                 '}';
     }
+
+
+
 }

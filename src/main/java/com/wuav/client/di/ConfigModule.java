@@ -1,23 +1,15 @@
 package com.wuav.client.di;
 
 import com.azure.storage.blob.BlobContainerClient;
-import com.wuav.client.bll.services.AuthService;
-import com.wuav.client.bll.services.ProjectService;
-import com.wuav.client.bll.services.UserService;
-import com.wuav.client.bll.services.interfaces.IAuthService;
-import com.wuav.client.bll.services.interfaces.IProjectService;
-import com.wuav.client.bll.services.interfaces.IUserService;
+import com.wuav.client.bll.services.*;
+import com.wuav.client.bll.services.interfaces.*;
 import com.wuav.client.bll.utilities.email.EmailConnectionFactory;
 import com.wuav.client.bll.utilities.email.EmailSender;
 import com.wuav.client.bll.utilities.email.IEmailSender;
 import com.wuav.client.bll.utilities.engines.CodeEngine;
 import com.wuav.client.bll.utilities.engines.ICodesEngine;
-import com.wuav.client.dal.interfaces.IImageRepository;
-import com.wuav.client.dal.interfaces.IProjectRepository;
-import com.wuav.client.dal.interfaces.IUserRepository;
-import com.wuav.client.dal.repository.ImageRepository;
-import com.wuav.client.dal.repository.ProjectRepository;
-import com.wuav.client.dal.repository.UserRepository;
+import com.wuav.client.dal.interfaces.*;
+import com.wuav.client.dal.repository.*;
 
 import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.ProjectModel;
@@ -60,6 +52,11 @@ public class ConfigModule extends AbstractModule {
         bind(IProjectService.class).to(ProjectService.class);
         bind(IProjectRepository.class).to(ProjectRepository.class);
         bind(IImageRepository.class).to(ImageRepository.class);
+        bind(IAddressRepository.class).to(AddressRepository.class);
+        bind(IAddressService.class).to(AddressService.class);
+        bind(ICustomerRepository.class).to(CustomerRepository.class);
+        bind(ICustomerService.class).to(CustomerService.class);
+
 
 
 
@@ -84,6 +81,7 @@ public class ConfigModule extends AbstractModule {
 
         bind(IUserRepository.class).to(UserRepository.class);
         bind(IProjectRepository.class).to(ProjectRepository.class);
+
 
         bind(ICodesEngine.class).to(CodeEngine.class).in(Singleton.class);
         bind(IProjectModel.class).to(ProjectModel.class);

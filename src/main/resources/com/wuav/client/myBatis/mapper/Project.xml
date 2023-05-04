@@ -10,7 +10,6 @@
         <result property="name" column="name"/>
         <result property="description" column="description"/>
         <result property="createdAt" javaType="Date" column="created_at"/>
-
     </resultMap>
 
 
@@ -28,13 +27,13 @@
             id="getProjectById"
             resultMap="projectResult"
     >
-        SELECT id, name, description, created_at, status FROM Project
+        SELECT id, name, description, created_at FROM Project
         WHERE id = #{id}
     </select>
 
 
     <insert
-            id="createProjectByName"
+            id="createProject"
             parameterType="Project"
             flushCache="true"
             statementType="PREPARED"
@@ -42,7 +41,8 @@
             keyColumn="id"
             timeout="20">
 
-        INSERT INTO Project (id, name,status) VALUES (#{id}, #{name}, #{status})
+        INSERT INTO Project (id, name,description,customer_id)
+        VALUES (#{id}, #{name}, #{description},#{customerId})
 
     </insert>
 

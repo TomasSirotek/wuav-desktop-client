@@ -4,18 +4,22 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.google.inject.Inject;
 import com.wuav.client.be.Address;
 import com.wuav.client.be.CustomImage;
+import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
 import com.wuav.client.bll.services.interfaces.IAddressService;
+import com.wuav.client.bll.services.interfaces.ICustomerService;
 import com.wuav.client.bll.services.interfaces.IProjectService;
 import com.wuav.client.dal.blob.BlobStorageFactory;
 import com.wuav.client.dal.blob.BlobStorageHelper;
 import com.wuav.client.dal.interfaces.IImageRepository;
 import com.wuav.client.dal.interfaces.IProjectRepository;
 import com.wuav.client.dal.repository.AddressRepository;
+import com.wuav.client.dal.repository.CustomerRepository;
 import com.wuav.client.dal.repository.ImageRepository;
 import com.wuav.client.dal.repository.ProjectRepository;
 import com.wuav.client.gui.dto.AddressDTO;
 import com.wuav.client.gui.dto.CreateProjectDTO;
+import com.wuav.client.gui.dto.CustomerDTO;
 
 import java.io.File;
 import java.util.List;
@@ -24,20 +28,42 @@ public class ProjectService implements IProjectService {
 
     private final IProjectRepository projectRepository;
     private final IAddressService addressService;
+
+    private final ICustomerService customerService;
+
     private final IImageRepository imageRepository;
 
+    // testing main
+
+//    public static void main(String[] args) {
+//        var projectService = new ProjectService(new ProjectRepository(), new AddressService(new AddressRepository()), new ImageRepository(), new CustomerService(new CustomerRepository()));
+//
+//
+//        AddressDTO addressDTO2 = new AddressDTO(63234400, "New customer address", "Bulgaria", "63330");
+//
+//
+//        // create new customer
+//        CustomerDTO customerDTO = new CustomerDTO(324234, "tomasek","retardosss@hotmail.com","40303","business",addressDTO2);
+//
+//        CreateProjectDTO  testProjectDto = new CreateProjectDTO(202343400,"Project_test","new testing",null,customerDTO,null);
+//
+//
+//        var resutl = projectService.createProject(2,testProjectDto);
+//        System.out.println(resutl);
+//
+//    }
+
+
+
     @Inject
-    public ProjectService(IProjectRepository projectRepository, IAddressService addressService, IImageRepository imageRepository){
+    public ProjectService(IProjectRepository projectRepository, IAddressService addressService, IImageRepository imageRepository,ICustomerService customerService) {
         this.projectRepository = projectRepository;
         this.addressService = addressService;
         this.imageRepository = imageRepository;
+        this.customerService = customerService;
     }
 
-    public static void main(String[] args) {
-        ProjectService projectService = new ProjectService(new ProjectRepository(), new AddressService(new AddressRepository()), new ImageRepository());
 
-        projectService.createProject(10,null);
-    }
     @Override
     public List<Project> getProjectByUserId(int userId) {
         return projectRepository.getAllProjectsByUserId(userId);
@@ -59,12 +85,56 @@ public class ProjectService implements IProjectService {
 
             if(fetchedAddress != null){
                 // create customer and retreive the id
+
+               int createdCustomerResult = customerService.createCustomer(projectToCreate.customer());
+               if(createdCustomerResult > 0 ){
+                   System.out.println("Customer created successfully");
+                   Customer customer = customerService.getCustomerById(projectToCreate.customer().id());
+                   if(customer != null){
+                       System.out.println(customer);
+                          // create project and retreive the id
+
+                       int createdProjectResult = projectRepository.createProject(projectToCreate);
+                       if(createdProjectResult > 0 ){
+                           // return project by id
+                           Project project = projectRepository.getProjectById(projectToCreate.id());
+                           // if user is okay then add project to user
+                            if(project != null){
+                                 System.out.println("Project created successfully");
+                                 System.out.println(project);
+                                 // add project to user
+                                 int isProjectAddedToUser = projectRepository.addProjectToUser(userId,project.getId());
+                                 if(isProjectAddedToUser > 0){
+                                      System.out.println("Project added to user successfully");
+                                      // create image to azure blob storage
+
+                                     // if its successfull then create image in database
+
+                                     // if its successfull then add image to project
+
+
+                                      return true;
+                                 }
+                            }
+                       }
+
+
+
+
+                   }
+               }
             }
         }
 
 
 
-        // create project and retreive the id
+       // STEPS
+        // create address
+        // create customer
+        // create project
+        // add project to user
+        // create image
+        // add image to project
 
 
 

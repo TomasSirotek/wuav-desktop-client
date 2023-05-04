@@ -3,8 +3,10 @@ package com.wuav.client.dal.repository;
 import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Project;
 import com.wuav.client.dal.interfaces.IProjectRepository;
+import com.wuav.client.dal.mappers.CustomerMapper;
 import com.wuav.client.dal.mappers.ProjectMapper;
 import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
+import com.wuav.client.gui.dto.CreateProjectDTO;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,24 +17,6 @@ import java.util.List;
 public class ProjectRepository implements IProjectRepository {
     static Logger logger = LoggerFactory.getLogger(ProjectRepository.class);
 
-
-//    @Override
-//    public Project createProjectByName(int userId, int id, String name,String status) {
-//        Project project = null;
-//
-//        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-//            ProjectMapper mapper = session.getMapper(ProjectMapper.class);
-//            mapper.createProjectByName(id, name,status);
-//            project = mapper.getProjectById(id);
-//            mapper.addUserToProject(userId, id); // Insert the userId and projectId into the user_project table
-//            session.commit();
-//            return project;
-//        } catch (Exception ex) {
-//            logger.error("An error occurred mapping tables", ex);
-//        }
-//
-//        return project;
-//    }
 
     // here bring the logger and listener to the GUI
     @Override
@@ -47,7 +31,17 @@ public class ProjectRepository implements IProjectRepository {
         return fetchedProjects;
     }
 
-
+    @Override
+    public Project getProjectById(int projectId) {
+        Project fetchedProject = new Project();
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            ProjectMapper mapper = session.getMapper(ProjectMapper.class);
+            fetchedProject = mapper.getProjectById(projectId);
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return fetchedProject;
+    }
 
 
     @Override
@@ -65,7 +59,40 @@ public class ProjectRepository implements IProjectRepository {
         return updatedProject;
     }
 
+    @Override
+    public int createProject(CreateProjectDTO projectDTO) {
+        int affectedRowsResult = 0;
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            ProjectMapper mapper = session.getMapper(ProjectMapper.class);
+            var affectedRows = mapper.createProject(
+                   projectDTO.id(),
+                   projectDTO.name(),
+                   projectDTO.description(),
+                   projectDTO.customer().id()
+            );
 
+            session.commit();
+            affectedRowsResult = affectedRows > 0 ? 1 : 0;
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return affectedRowsResult;
+    }
+
+    @Override
+    public int addProjectToUser(int userId, int projectId) {
+        int finalAffectedRows = 0;
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            ProjectMapper mapper = session.getMapper(ProjectMapper.class);
+            int affectedRows = mapper.addUserToProject(userId,projectId);
+
+            session.commit();
+            finalAffectedRows = affectedRows > 0 ? 1 : 0;
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return finalAffectedRows;
+    }
 
 
 

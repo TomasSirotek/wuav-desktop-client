@@ -13,10 +13,10 @@ public interface ProjectMapper {
     Project getProjectById(@Param("id")int id);
 
     // inserting project to the table
-    int createProjectByName(@Param("id")int id,@Param("name")String name,@Param("status") String status);
+    int createProject(@Param("id")int id,@Param("name")String name,@Param("description") String description,@Param("customerId") int customerId);
 
 
-    void addUserToProject(@Param("userId") int userId,@Param("projectId") int projectId);
+    int addUserToProject(@Param("userId") int userId,@Param("projectId") int projectId);
 
     // updating project with description
     int updateProjectForUserById(@Param("projectId")int projectId,@Param("description") String description);
