@@ -17,6 +17,7 @@ import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -56,25 +57,25 @@ public class PdfGenerator implements IPdfGenerator {
 
     }
 
-    public static void main(String[] args) {
-        PdfGenerator pdfGenerator = new PdfGenerator();
-
-        Customer customer = new Customer(1, "Tomasko", "eail@yahoo.com", "dsafsdfsdf", "Private");
-
-
-        Project project = new Project();
-        project.setName("tomas");
-        project.setDescription(DESCR_TEST);
-        project.setCustomer(customer);
-
-
-        pdfGenerator.generatePdf(null, project, "test");
-    }
+//    public static void main(String[] args) {
+//        PdfGenerator pdfGenerator = new PdfGenerator();
+//
+//        Customer customer = new Customer(1, "Tomasko", "eail@yahoo.com", "dsafsdfsdf", "Private");
+//
+//
+//        Project project = new Project();
+//        project.setName("tomas");
+//        project.setDescription(DESCR_TEST);
+//        project.setCustomer(customer);
+//
+//
+//        pdfGenerator.generatePdf(null, project, "test");
+//    }
 
 
     @Override
-    public String generatePdf(AppUser appUser, Project project, String fileName) {
-
+    public ByteArrayOutputStream generatePdf(AppUser appUser, Project project, String fileName) {
+        var outputStream = new ByteArrayOutputStream();
         try (PDDocument document = new PDDocument()) {
             PDPage page = new PDPage(PDRectangle.A4);
             document.addPage(page);
@@ -208,16 +209,22 @@ public class PdfGenerator implements IPdfGenerator {
             Path resourceFolder = Paths.get(OUTPUT_FOLDER);
             Path filePath = resourceFolder.resolve(fileName + FILE_EXTENSION);
             System.out.println("Saving file");
-            try (OutputStream outputStream = Files.newOutputStream(filePath)) {
+
+
+
+            try {
                 document.save(outputStream);
                 contentStream.close();
+                document.close();
+
+                return outputStream; // Use the return keyword to return the outputStream
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return fileName;
+        return outputStream;
     }
 
     public static List<String> breakTextIntoLines(String text, float maxWidth, PDFont font, float fontSize) throws IOException {

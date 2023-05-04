@@ -23,7 +23,7 @@ module com.wuav.client {
     requires com.azure.storage.blob;
     requires com.google.gson;
 
-    exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common;
+    exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common,org.apache.pdfbox;
     exports com.wuav.client.bll.helpers;
     exports com.wuav.client.bll.services;
     exports com.wuav.client.bll.utilities;
@@ -33,14 +33,15 @@ module com.wuav.client {
     exports com.wuav.client.config;
     exports com.wuav.client.di;
     exports com.wuav.client.gui.controllers.controllerFactory;
-    exports com.wuav.client.bll.services.interfaces to com.google.guice;
+    exports com.wuav.client.bll.services.interfaces to com.google.guice,org.apache.pdfbox;
     exports com.wuav.client.gui.models.user to com.google.guice;
     exports com.wuav.client.bll.utilities.engines;
     exports com.wuav.client.gui.models to com.google.guice;
+    exports  com.wuav.client.bll.utilities.pdf to com.google.guice,org.apache.pdfbox;
 
 
-    opens com.wuav.client.gui.controllers to javafx.fxml, com.google.guice, com.google.common,com.azure.core;
-    opens com.wuav.client.gui.models to javafx.fxml, com.google.guice, com.google.common,com.azure.core;
+    opens com.wuav.client.gui.controllers to javafx.fxml, com.google.guice, com.google.common,com.azure.core,org.apache.pdfbox;
+    opens com.wuav.client.gui.models to javafx.fxml, com.google.guice, com.google.common,com.azure.core,org.apache.pdfbox;
     opens com.wuav.client to javafx.fxml, com.google.guice, org.slf4j,com.azure.core;
     opens com.wuav.client.gui.controllers.abstractController to com.google.guice, javafx.fxml, com.google.common,com.azure.core;
     opens com.wuav.client.gui.controllers.controllerFactory to com.google.guice, javafx.fxml, com.google.common,com.azure.core;
