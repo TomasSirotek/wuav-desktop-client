@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.ChoiceBox?>
@@ -13,6 +14,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="exportAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" style="-fx-background-color: #F2F2F2;" stylesheets="@../css/projectCreation.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.ExportController">
@@ -42,11 +44,28 @@
                   <ListView fx:id="selectedProjectsForExport" prefHeight="200.0" prefWidth="200.0" />
                </children>
             </HBox>
-            <HBox alignment="CENTER" GridPane.rowIndex="2">
+            <VBox alignment="CENTER" GridPane.rowIndex="2">
                <children>
-                  <ChoiceBox fx:id="formatSelect" prefWidth="150.0" />
+                  <VBox alignment="CENTER">
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="152.0" text="File name" textFill="#252f4091">
+                           <font>
+                              <Font name="SansSerif Regular" size="10.0" />
+                           </font>
+                           <padding>
+                              <Insets left="2.0" />
+                           </padding>
+                        </Label>
+                        <MFXTextField fx:id="exportNameField" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="31.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="154.0" promptText="Email" text="wuaw ">
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
+                        </MFXTextField>
+                        <ChoiceBox fx:id="formatSelect" prefWidth="150.0" />
+                     </children>
+                  </VBox>
                </children>
-            </HBox>
+            </VBox>
             <HBox alignment="CENTER" GridPane.rowIndex="3">
                <children>
                   <MFXButton fx:id="exportActionBtn" prefHeight="29.0" prefWidth="157.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Export" textFill="#141111">

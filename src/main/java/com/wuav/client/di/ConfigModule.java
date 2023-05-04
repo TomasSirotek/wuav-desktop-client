@@ -8,6 +8,8 @@ import com.wuav.client.bll.utilities.email.EmailSender;
 import com.wuav.client.bll.utilities.email.IEmailSender;
 import com.wuav.client.bll.utilities.engines.CodeEngine;
 import com.wuav.client.bll.utilities.engines.ICodesEngine;
+import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
+import com.wuav.client.bll.utilities.pdf.PdfGenerator;
 import com.wuav.client.dal.interfaces.*;
 import com.wuav.client.dal.repository.*;
 
@@ -57,7 +59,7 @@ public class ConfigModule extends AbstractModule {
         bind(ICustomerRepository.class).to(CustomerRepository.class);
         bind(ICustomerService.class).to(CustomerService.class);
 
-
+        bind(IPdfGenerator.class).to(PdfGenerator.class);
 
 
         /*
