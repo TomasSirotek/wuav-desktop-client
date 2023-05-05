@@ -90,7 +90,7 @@ public class ConfigModule extends AbstractModule {
         bind(ICodesEngine.class).to(CodeEngine.class).in(Singleton.class);
         bind(IEmailSender.class).to(EmailSender.class);
         bind(IEmailEngine.class).to(EmailEngine.class);
-        bind(IProjectModel.class).to(ProjectModel.class);
+        bind(IProjectModel.class).to(ProjectModel.class).in(Singleton.class);
         bind(IEmailSender.class).to(EmailSender.class);
 
         bind(EmailConnectionFactory.class).asEagerSingleton();
