@@ -139,18 +139,20 @@
                                             <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
                                                 <div style='color:#4d4d4d;font-family:Oxygen, Helvetica neue, sans-serif;font-size:32px;font-weight:700;line-height:37px;text-align:center;'>
                                                     Your installation went successfully !
-                                                   <p th:text="${name}">Subject Placeholder</p>
+                                                   <p th:text="${customerName}">Subject Placeholder</p>
                                                 </div>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td align='center' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
                                                 <div style='color:#777777;font-family:Oxygen, Helvetica neue, sans-serif;font-size:14px;line-height:21px;text-align:center;'>
-                                                    Please find attached pdf file with your installation details.
+                                                  Please find attached pdf file with your installation details.
                                                 </div>
                                                 <div style='color:#777777;font-family:Oxygen, Helvetica neue, sans-serif;font-size:14px;line-height:21px;text-align:center;'>
                                                     We will contact you soon to confirm your installation date.
                                                 </div>
+
+
                                             </td>
                                         </tr>
                                     </table>
@@ -167,10 +169,37 @@
         </tr>
         </tbody>
     </table>
-    <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='background:#f7f7f7;background-color:#f7f7f7;width:100%;'>
+    <table text-align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='background:#f7f7f7;background-color:#f7f7f7;width:100%;'>
         <tbody>
         <tr>
-            <td>
+            <td  text-align='center' style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                <div style="text-align: center;">
+                    <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#f7f7f7;background-color:#f7f7f7;margin: 0 auto;width: 100%;max-width: 600px;">
+                        <tbody>
+                        <tr>
+                            <td style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                                <div style="color:#777777;font-family:Oxygen, Helvetica neue, sans-serif;font-size:14px;line-height:21px;text-align:left;">
+                                    <ul style="list-style-type: none; padding-left: 0; text-align: left;">
+                                        <li style="margin-bottom: 5px;">
+                                            <b>Technician:</b> <span th:text="${technician}">Tomas</span>
+                                        </li>
+                                        <li style="margin-bottom: 5px;">
+                                            <b>Technician Email:</b> <span th:text="${technicianEmail}">tech@hotmail.com</span>
+                                        </li>
+                                        <li style="margin-bottom: 5px;">
+                                            <b>Installation Date:</b> <span th:text="${installationDate}">20.03.2023</span>
+                                        </li>
+                                        <li style="margin-bottom: 5px;">
+                                            <b>Installation Type:</b> <span th:text="${customerType}">Private</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
             </td>
         </tr>
         </tbody>

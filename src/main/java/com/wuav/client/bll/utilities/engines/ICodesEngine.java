@@ -8,5 +8,5 @@ public interface ICodesEngine {
 
     byte[] generateQRCodeImage(String barcodeText, int width, int height) throws Exception;
 
-    ImageView generateQRCodeImageView(int userId, int projectId, int width, int height) throws Exception;
+    ImageView generateQRCodeImageView(int userId, String projectName, int width, int height) throws Exception;
 }

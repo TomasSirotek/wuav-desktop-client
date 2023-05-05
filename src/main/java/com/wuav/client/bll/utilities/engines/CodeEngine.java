@@ -32,13 +32,17 @@ public class CodeEngine implements ICodesEngine {
         return convertToBytes(MatrixToImageWriter.toBufferedImage(bitMatrix));
     }
 
-    public ImageView generateQRCodeImageView(int userId, int projectId, int width, int height) throws Exception {
-        Map<String, Integer> qrData = new HashMap<>();
-        qrData.put("userId", userId);
-        qrData.put("projectId", projectId);
+    public ImageView generateQRCodeImageView(int userId, String projectName, int width, int height) throws Exception {
+        Map<String, Object> qrData = new HashMap<>();
 
-         Gson gson = new Gson();
+        qrData.put("userId", userId);
+        qrData.put("projectName", projectName);
+
+        Gson gson = new Gson();
         String jsonString = gson.toJson(qrData);
+
+
+        System.out.println(qrData);
 
         byte[] qrCodeImage = generateQRCodeImage(jsonString, width, height);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(qrCodeImage);

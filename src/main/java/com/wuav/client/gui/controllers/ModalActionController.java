@@ -220,16 +220,11 @@ public class ModalActionController extends RootController implements Initializab
         fillClientTypeChooseField();
 
 
-        // PROJECT ID SHOULD NOT BE THERE SINCE ITS NOT GENERATED YET
-        try {
-            ImageView generatedQRCodeImageView = codesEngine.generateQRCodeImageView(340, 40, 200, 200);
-            Image qrCodeImage = generatedQRCodeImageView.getImage();
-            qrCodee.setImage(qrCodeImage);
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        // PROJECT ID SHOULD NOT BE THERE SINCE ITS NOT GENERATED YET // this qr should be generated only if its forth tab
+
         handleProgressSwitch();
+        closeStage();
     }
 
     private void fillClientTypeChooseField() {
@@ -293,6 +288,7 @@ public class ModalActionController extends RootController implements Initializab
                     tabPaneCreate.getSelectionModel().selectNext();
 
                     if(currentTab[0] == 3) {
+                        tryToGenerateQRForApp();
                         startImageFetch(340);
                     }
 
@@ -307,7 +303,7 @@ public class ModalActionController extends RootController implements Initializab
                 if (checkTabContent(currentTab[0])) { // Check if the last tab content is valid
                     continueBtn.setText("Finish");
                     createNewProject();
-                   // removeImagesFromServer(340); // ADD LATER
+                    removeImagesFromServer(340); // ADD LATER CURRENT USER ID
                     stopImageFetch();
                     closeStage();
 
@@ -341,13 +337,18 @@ public class ModalActionController extends RootController implements Initializab
     }
 
     public void closeStage() {
-        Stage stage = getStage();
-        if (stage != null) {
-            // Trigger the close request
-            stage.getOnCloseRequest().handle(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
-            // Close the stage
-            stage.close();
+        if(this.root != null){
+            Stage stage = getStage();
+            if (stage != null) {
+                stopImageFetch();
+                // Trigger the close request
+                stage.getOnCloseRequest().handle(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
+                removeImagesFromServer(340); // ADD LATER CURRENT USER ID
+                // Close the stage
+                stage.close();
+            }
         }
+
     }
 
 
@@ -365,6 +366,18 @@ public class ModalActionController extends RootController implements Initializab
         return validationFunctions[tabIndex].validate();
 
        // return true;
+    }
+
+
+    private void tryToGenerateQRForApp(){
+        try {
+            ImageView generatedQRCodeImageView = codesEngine.generateQRCodeImageView(340, projectNameField.getText(), 200, 200);
+            Image qrCodeImage = generatedQRCodeImageView.getImage();
+            qrCodee.setImage(qrCodeImage);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

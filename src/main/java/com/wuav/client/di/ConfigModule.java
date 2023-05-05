@@ -7,6 +7,7 @@ import com.wuav.client.bll.utilities.email.EmailConnectionFactory;
 import com.wuav.client.bll.utilities.email.EmailSender;
 import com.wuav.client.bll.utilities.email.IEmailSender;
 import com.wuav.client.bll.utilities.engines.CodeEngine;
+import com.wuav.client.bll.utilities.engines.EmailEngine;
 import com.wuav.client.bll.utilities.engines.ICodesEngine;
 import com.wuav.client.bll.utilities.engines.IEmailEngine;
 import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
@@ -87,8 +88,8 @@ public class ConfigModule extends AbstractModule {
 
 
         bind(ICodesEngine.class).to(CodeEngine.class).in(Singleton.class);
-        bind(IEmailSender.class).to(IEmailSender.class);
-        bind(IEmailEngine.class).to(IEmailEngine.class);
+        bind(IEmailSender.class).to(EmailSender.class);
+        bind(IEmailEngine.class).to(EmailEngine.class);
         bind(IProjectModel.class).to(ProjectModel.class);
         bind(IEmailSender.class).to(EmailSender.class);
 

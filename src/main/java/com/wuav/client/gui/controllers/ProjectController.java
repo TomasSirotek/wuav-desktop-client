@@ -3,12 +3,15 @@ package com.wuav.client.gui.controllers;
 import com.google.inject.Inject;
 import com.wuav.client.Main;
 import com.wuav.client.be.*;
+import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.bll.utilities.email.EmailConnectionFactory;
 import com.wuav.client.bll.utilities.email.EmailSender;
 import com.wuav.client.bll.utilities.email.IEmailSender;
 import com.wuav.client.bll.utilities.engines.EmailEngine;
 import com.wuav.client.bll.utilities.engines.IEmailEngine;
+import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
+import com.wuav.client.bll.utilities.pdf.PdfGenerator;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.models.IProjectModel;
@@ -36,7 +39,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import javax.mail.Session;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.function.Consumer;
@@ -306,14 +309,14 @@ public class ProjectController extends RootController implements Initializable {
             //  playButton.getStyleClass().add("success");
             playButton2.setPrefWidth(100);
             playButton2.setPrefHeight(20);
-            var imageIcon = new ImageView(new Image(getClass().getResourceAsStream("/edit.png")));
+            var imageIcon = new ImageView(new Image(getClass().getResourceAsStream("/emailIcon.png")));
             imageIcon.setFitHeight(15);
             imageIcon.setFitWidth(15);
             playButton2.setGraphic(imageIcon);
 
             playButton2.setOnAction(e -> {
                 // open window with choosing to whom to email it
-                sendReportViaEmail(col2.getValue());
+              //  sendReportViaEmail(col2.getValue());
             });
             return new SimpleObjectProperty<>(playButton2);
         });
@@ -322,31 +325,74 @@ public class ProjectController extends RootController implements Initializable {
 
     }
 
+    private static final String DESCR_TEST = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Molestie at elementum eu facilisis sed odio. Et malesuada fames ac turpis egestas sed tempus. A cras semper auctor neque vitae tempus quam. Eu consequat ac felis donec et odio pellentesque diam volutpat. Adipiscing vitae proin sagittis nisl rhoncus mattis. Condimentum mattis pellentesque id nibh. Ultrices eros in cursus turpis. Egestas tellus rutrum tellus pellentesque eu tincidunt tortor. Enim nulla aliquet porttitor lacus luctus accumsan. Sed vulputate mi sit amet mauris. Molestie ac feugiat sed lectus vestibulum mattis.";
+
     public static void main(String[] args) {
-        sendReportViaEmail(null);
+        AppUser appUser = new AppUser();
+        appUser.setId(340);
+        appUser.setName("Michael");
+        appUser.setEmail("tech@hotmail.com");
+
+        Customer customer = new Customer(1, "Tomas Simko", "technician@hotmail.com", "40 50 50 50", "Private");
+
+
+        Project project = new Project();
+        project.setName("Installation_1_0_1");
+        project.setDescription(DESCR_TEST);
+        project.setCustomer(customer);
+        project.setCreatedAt(new Date("2024/02/04"));
+
+        sendReportViaEmail(appUser,project);
     }
 
-    private static void sendReportViaEmail(Project project) {
+    private static void sendReportViaEmail(AppUser appUser,Project project) {
 
         IEmailSender emailSender = new EmailSender();
         IEmailEngine emailEngine = new EmailEngine();
-        Session session =  EmailConnectionFactory.getSession();
+        Session session = EmailConnectionFactory.getSession();
+
 
         // genereate pdf report and send it via email
 
+        // convert stream to file
+
+        File generatedPdf = null;
+        try {
+            generatedPdf = generatePDFToFile(appUser,project,"installation-report" + project.getCustomer().getId());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         // Define the template name and variables
         String templateName = "email-template";
         Map<String, Object> templateVariables = new HashMap<>();
-        templateVariables.put("name", "Test");
-        templateVariables.put("subject", "TLSEmail Testing Subject");
-
+        templateVariables.put("customerName", project.getCustomer().getName());
+        templateVariables.put("technician", appUser.getName());
+        templateVariables.put("technicianEmail", appUser.getEmail());
+        templateVariables.put("installationDate", project.getCreatedAt());
+        templateVariables.put("customerType", project.getCustomer().getType());
 
         // Process the template and generate the email body
         String emailBody = emailEngine.processTemplate(templateName, templateVariables);
 
+        emailSender.sendEmail(session, "vince.kautzer@ethereal.email","Installation completed", emailBody,true,generatedPdf);
+    }
 
-        emailSender.sendEmail(session, "leonardo.schowalter@ethereal.email","TLSEmail Testing Subject", emailBody,false,null);
+    private static File generatePDFToFile(AppUser appUser,Project project,String fileName) throws IOException {
+        IPdfGenerator pdfGenerator = new PdfGenerator();
+        ByteArrayOutputStream stream = pdfGenerator.generatePdf(appUser,project,fileName);
+
+        // Convert stream to byte array
+        byte[] pdfBytes = stream.toByteArray();
+
+        // Create a temporary file and write the PDF bytes to it
+        File pdfFile = File.createTempFile(fileName, ".pdf");
+        OutputStream os = new FileOutputStream(pdfFile);
+        os.write(pdfBytes);
+        os.close();
+
+        return pdfFile;
+
     }
 
 

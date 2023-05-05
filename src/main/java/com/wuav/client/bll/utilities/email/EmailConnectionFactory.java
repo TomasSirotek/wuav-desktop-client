@@ -39,12 +39,14 @@ public class EmailConnectionFactory {
         if (session == null) {
             EmailConnectionFactory emailConnectionFactory = new EmailConnectionFactory();
             emailConnectionFactory.loadConfig();
-            Properties mailProps = new Properties();
-            mailProps.put("mail.smtp.host", props.getProperty("mail.smtp.host"));
-            mailProps.put("mail.smtp.port", props.getProperty("mail.smtp.port"));
-            mailProps.put("mail.smtp.auth", props.getProperty("mail.smtp.auth"));
-            mailProps.put("mail.smtp.starttls.enable", props.getProperty("mail.smtp.starttls.enable"));
-            session = Session.getInstance(mailProps, auth);
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", true);
+            props.put("mail.smtp.host", "smtp.ethereal.email");
+            props.put("mail.smtp.port", 587);
+            props.put("mail.smtp.starttls.enable", true);
+            props.put("mail.transport.protocol", "smtp");
+
+            session = Session.getInstance(props, auth);
         }
         return session;
     }
