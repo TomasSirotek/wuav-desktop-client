@@ -1,14 +1,11 @@
 package com.wuav.client.gui.controllers;
 
 import com.google.inject.Inject;
-import com.wuav.client.Main;
 import com.wuav.client.be.*;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.bll.utilities.email.EmailConnectionFactory;
-import com.wuav.client.bll.utilities.email.EmailSender;
 import com.wuav.client.bll.utilities.email.IEmailSender;
-import com.wuav.client.bll.utilities.engines.EmailEngine;
 import com.wuav.client.bll.utilities.engines.IEmailEngine;
 import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
 import com.wuav.client.bll.utilities.pdf.PdfGenerator;
@@ -18,6 +15,7 @@ import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -48,6 +46,8 @@ public class ProjectController extends RootController implements Initializable {
 
 
     private final IControllerFactory controllerFactory;
+    @FXML
+    private Pane emailLoadPane;
 
     @FXML
     private MFXButton exportSelected;
@@ -203,7 +203,7 @@ public class ProjectController extends RootController implements Initializable {
 
     private void setTableWithProjects() {
         // get user projects from current logged user singleton class
-        List<Project> updatedProjects = projectModel.getProjectByUserId(CurrentUser.getInstance().getLoggedUser().getId());
+        List<Project> updatedProjects = projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
 
         // Update projects list in CurrentUser singleton
         CurrentUser.getInstance().getLoggedUser().setProjects(updatedProjects);
@@ -235,39 +235,6 @@ public class ProjectController extends RootController implements Initializable {
 
         colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
 
-//        // status
-//        colStatus.setCellValueFactory(cellData -> {
-//            // create button with image and text
-//            MFXButton successInActiveButton = new MFXButton("Success");
-//            successInActiveButton.getStyleClass().add("success");
-//            // set button to be smaller with padding all around
-//            //  successInActiveButton.setMinSize(100, 20);
-//
-//            successInActiveButton.setRippleAnimateBackground(false);
-//            successInActiveButton.setRippleBackgroundOpacity(0);
-//            successInActiveButton.setRippleRadius(0);
-//            successInActiveButton.setPrefWidth(100);
-//            successInActiveButton.setPrefHeight(20);
-//
-//            // successInActiveButton.setPadding(new Insets(5, 5, 5, 5));
-//            successInActiveButton.setOnAction(e -> {
-//                System.out.println("Selected: " + cellData.getValue());
-//            });
-//            // set image to a button
-//            var imageIcon = new ImageView(new Image(getClass().getResourceAsStream("/openExpand.png")));
-//            imageIcon.setFitHeight(15);
-//            imageIcon.setFitWidth(15);
-//            successInActiveButton.setGraphic(imageIcon);
-//
-//            return new SimpleObjectProperty<>(successInActiveButton);
-//        });
-
-//        colStatus.setCellValueFactory(cellData -> {
-//            String status = cellData.getValue().getStatus();
-//            return new SimpleStringProperty(status);
-//        });
-
-
 
         // description
         colDes.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
@@ -293,18 +260,13 @@ public class ProjectController extends RootController implements Initializable {
             imageIcon.setFitWidth(15);
             playButton.setGraphic(imageIcon);
             playButton.setOnAction(e -> {
-              //  System.out.println("Selected: " + col.getValue());
-               //  projectModel.setCurrentProject(col.getValue());
-             //   setProjectToView(col.getValue());
-
-
                 runInParallel(ViewType.PROJECT_ACTIONS,col.getValue());
 
             });
             return new SimpleObjectProperty<>(playButton);
         });
 
-        colEmail.setCellValueFactory(col2 -> {
+        colEmail.setCellValueFactory(project -> {
             MFXButton playButton2 = new MFXButton("");
             //  playButton.getStyleClass().add("success");
             playButton2.setPrefWidth(100);
@@ -316,7 +278,10 @@ public class ProjectController extends RootController implements Initializable {
 
             playButton2.setOnAction(e -> {
                 // open window with choosing to whom to email it
-              //  sendReportViaEmail(col2.getValue());
+                sendReportViaEmail(
+                        CurrentUser.getInstance().getLoggedUser(),
+                        project.getValue()
+                );
             });
             return new SimpleObjectProperty<>(playButton2);
         });
@@ -325,57 +290,61 @@ public class ProjectController extends RootController implements Initializable {
 
     }
 
-    private static final String DESCR_TEST = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Molestie at elementum eu facilisis sed odio. Et malesuada fames ac turpis egestas sed tempus. A cras semper auctor neque vitae tempus quam. Eu consequat ac felis donec et odio pellentesque diam volutpat. Adipiscing vitae proin sagittis nisl rhoncus mattis. Condimentum mattis pellentesque id nibh. Ultrices eros in cursus turpis. Egestas tellus rutrum tellus pellentesque eu tincidunt tortor. Enim nulla aliquet porttitor lacus luctus accumsan. Sed vulputate mi sit amet mauris. Molestie ac feugiat sed lectus vestibulum mattis.";
-
-    public static void main(String[] args) {
-        AppUser appUser = new AppUser();
-        appUser.setId(340);
-        appUser.setName("Michael");
-        appUser.setEmail("tech@hotmail.com");
-
-        Customer customer = new Customer(1, "Tomas Simko", "technician@hotmail.com", "40 50 50 50", "Private");
 
 
-        Project project = new Project();
-        project.setName("Installation_1_0_1");
-        project.setDescription(DESCR_TEST);
-        project.setCustomer(customer);
-        project.setCreatedAt(new Date("2024/02/04"));
+    private void sendReportViaEmail(AppUser appUser,Project project) {
 
-        sendReportViaEmail(appUser,project);
-    }
-
-    private static void sendReportViaEmail(AppUser appUser,Project project) {
-
-        IEmailSender emailSender = new EmailSender();
-        IEmailEngine emailEngine = new EmailEngine();
         Session session = EmailConnectionFactory.getSession();
-
-
         // genereate pdf report and send it via email
-
         // convert stream to file
 
-        File generatedPdf = null;
-        try {
-            generatedPdf = generatePDFToFile(appUser,project,"installation-report" + project.getCustomer().getId());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        new Thread(() -> {
+            try {
 
-        // Define the template name and variables
-        String templateName = "email-template";
-        Map<String, Object> templateVariables = new HashMap<>();
-        templateVariables.put("customerName", project.getCustomer().getName());
-        templateVariables.put("technician", appUser.getName());
-        templateVariables.put("technicianEmail", appUser.getEmail());
-        templateVariables.put("installationDate", project.getCreatedAt());
-        templateVariables.put("customerType", project.getCustomer().getType());
+                emailLoadPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
+                emailLoadPane.setVisible(true);
+                File generatedPdf = null;
+                try {
+                    generatedPdf = generatePDFToFile(appUser,project,"installation-report" + project.getCustomer().getId());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
 
-        // Process the template and generate the email body
-        String emailBody = emailEngine.processTemplate(templateName, templateVariables);
+                // Define the template name and variables
+                String templateName = "email-template";
+                Map<String, Object> templateVariables = new HashMap<>();
+                templateVariables.put("customerName", project.getCustomer().getName());
+                templateVariables.put("technician", appUser.getName());
+                templateVariables.put("technicianEmail", appUser.getEmail());
+                templateVariables.put("installationDate", project.getCreatedAt());
+                templateVariables.put("customerType", project.getCustomer().getType());
 
-        emailSender.sendEmail(session, "vince.kautzer@ethereal.email","Installation completed", emailBody,true,generatedPdf);
+                // Process the template and generate the email body
+                String emailBody = emailEngine.processTemplate(templateName, templateVariables);
+                // Update the UI on the JavaFX application thread
+                var emailResult = emailSender.sendEmail(session, "vince.kautzer@ethereal.email","Installation completed", emailBody,true,generatedPdf);
+                Platform.runLater(() -> {
+                    // Hide the progress bar
+                   // progressLoader.setVisible(false);
+
+                    // Display message
+                    if (emailResult) {
+                        AlertHelper.showDefaultAlert("Email successfully sent ", Alert.AlertType.INFORMATION);
+                        emailLoadPane.setVisible(false);
+                    }
+                });
+            } catch (Exception e) {
+                // Handle sending failure
+                Platform.runLater(() -> {
+                    // Hide the progress bar
+                 //   progressLoader.setVisible(false);
+                    emailLoadPane.setVisible(false);
+                    // Show an error message
+                    AlertHelper.showDefaultAlert("Email sending failed " + e.getMessage(), Alert.AlertType.ERROR);
+                });
+            }
+        }).start();
+
     }
 
     private static File generatePDFToFile(AppUser appUser,Project project,String fileName) throws IOException {

@@ -12,15 +12,14 @@ import com.wuav.client.gui.utils.AlertHelper;
 import com.wuav.client.gui.utils.ProjectEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -40,6 +39,20 @@ import javafx.scene.web.WebEngine;
 
 public class ProjectActionController  extends RootController implements Initializable {
 
+    @FXML
+    private MFXTextField clientNameField;
+    @FXML
+    private MFXTextField clientEmailField;
+    @FXML
+    private ChoiceBox clientTypeChooseField;
+    @FXML
+    private MFXTextField clientPhoneField;
+    @FXML
+    private MFXTextField clientCityField;
+    @FXML
+    private MFXTextField clientAddress;
+    @FXML
+    private MFXButton continueBtn1;
     @FXML
     private TabPane tabPane;
     @FXML
@@ -89,15 +102,17 @@ public class ProjectActionController  extends RootController implements Initiali
     public void initialize(URL url, ResourceBundle resourceBundle) {
         selectedImage.setImage(defaultImage);
         selectFile.setOnAction(e -> selectFile());
+
+
       //  saveImageDesc.setOnAction(e -> saveImageDesc());
 
-        tabPane.getTabs().get(1).setDisable(true);
-        tabPane.getTabs().get(2).setDisable(true);
-        continueBtn.setOnAction(e -> {
-            tabPane.getTabs().get(0).setDisable(true);
-            tabPane.getTabs().get(1).setDisable(false);
-            tabPane.getSelectionModel().selectNext();
-        });
+//        tabPane.getTabs().get(1).setDisable(true);
+//        tabPane.getTabs().get(2).setDisable(true);
+//        continueBtn.setOnAction(e -> {
+//            tabPane.getTabs().get(0).setDisable(true);
+//            tabPane.getTabs().get(1).setDisable(false);
+//            tabPane.getSelectionModel().selectNext();
+//        });
 
       //  eventBus.register(this);
       //  projectNameField.setText(currentProject.getName());
@@ -152,6 +167,7 @@ public class ProjectActionController  extends RootController implements Initiali
      //  System.out.println("current project " + currentProject.toString());
      //  System.out.println("current project " + currentProject.getName());
        projectNameField.setText("etesffs");
+
     }
 
     @Subscribe
@@ -161,10 +177,40 @@ public class ProjectActionController  extends RootController implements Initiali
         }
     }
 
+
+    // if router here set all the info
     public void setCurrentProject(Project project) {
         System.out.println("Setting current project: " + project);
         currentProject = project;
+
+        System.out.println(currentProject);
+
+
         projectNameField.setText(currentProject.getName());
+        descriptionField.setText(currentProject.getDescription());
+        // here should be the image set there
+            // =>
+
+        // here should be the additional images that are not main
+
+        clientNameField.setText(currentProject.getCustomer().getName());
+        clientEmailField.setText(currentProject.getCustomer().getEmail());
+
+        ObservableList<String> options = FXCollections.observableArrayList("PRIVATE", "BUSINESS");
+        clientTypeChooseField.setItems(options);
+        clientTypeChooseField.setValue(currentProject.getCustomer().getType());
+
+
+        clientPhoneField.setText(currentProject.getCustomer().getPhoneNumber());
+        clientCityField.setText(currentProject.getCustomer().getAddress().getCity());
+
+        clientAddress.setText(currentProject.getCustomer().getAddress().getStreet());
+
+        System.out.println("FROM DATAILS FOR PROJECT " + currentProject.getId() + " " + currentProject.getProjectImages());
+
+
+
+
     }
 
     private void loadMap() {
@@ -184,7 +230,7 @@ public class ProjectActionController  extends RootController implements Initiali
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
         );
-        // show open file dialog
+        // show open file dialog<<
         File selectedFile = fileChooser.showOpenDialog(getStage());
         if(selectedFile != null) {
             // set image fit to width and height

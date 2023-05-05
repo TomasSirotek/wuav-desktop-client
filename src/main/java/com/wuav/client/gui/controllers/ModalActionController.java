@@ -13,6 +13,7 @@ import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.dto.AddressDTO;
 import com.wuav.client.gui.dto.CreateProjectDTO;
 import com.wuav.client.gui.dto.CustomerDTO;
+import com.wuav.client.gui.dto.ImageDTO;
 import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
@@ -41,6 +42,9 @@ import javafx.util.Duration;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -106,6 +110,8 @@ public class ModalActionController extends RootController implements Initializab
     private File selectedImageFile;
 
 
+    private List<ImageDTO> listOfUploadImages = new ArrayList<>();
+
     private ImageView selectedImageView;
     @FXML
     private HBox imageActionHandleBox;
@@ -130,11 +136,12 @@ public class ModalActionController extends RootController implements Initializab
         imageFetchTimeline = new Timeline(
                 new KeyFrame(Duration.ZERO, e -> {
                     if (!fetched.get()) {
-                        List<Image> images = fetchImagesFromServer(userId);
+                        List<ImageDTO> images = fetchImagesFromServer(userId);
                         if (!images.isEmpty()) {
                             imageContent.getChildren().clear(); // Clear the imageContent VBox before adding new images
-                            for (Image image : images) {
-                                addImageToSelectedImageVBox(image);
+                            for (ImageDTO imageDTO : images) {
+                                addImageToSelectedImageVBox(new Image(imageDTO.getFile().toURI().toString()));
+                                listOfUploadImages.add(imageDTO);
                             }
                             fetched.set(true); // Set fetched to true after successfully fetching images
                         }
@@ -146,6 +153,29 @@ public class ModalActionController extends RootController implements Initializab
         imageFetchTimeline.setCycleCount(Animation.INDEFINITE);
         imageFetchTimeline.play();
     }
+
+//    private void startImageFetch(int userId) {
+//        AtomicBoolean fetched = new AtomicBoolean(false);
+//        System.out.println("starting image fetch");
+//        imageFetchTimeline = new Timeline(
+//                new KeyFrame(Duration.ZERO, e -> {
+//                    if (!fetched.get()) {
+//                        List<Image> images = fetchImagesFromServer(userId);
+//                        if (!images.isEmpty()) {
+//                            imageContent.getChildren().clear(); // Clear the imageContent VBox before adding new images
+//                            for (Image image : images) {
+//                                addImageToSelectedImageVBox(image);
+//                            }
+//                            fetched.set(true); // Set fetched to true after successfully fetching images
+//                        }
+//                    }
+//                }),
+//                new KeyFrame(Duration.seconds(5)) // Adjust the duration based on how often you want to poll the server
+//        );
+//
+//        imageFetchTimeline.setCycleCount(Animation.INDEFINITE);
+//        imageFetchTimeline.play();
+//    }
 
     private void removeImagesFromServer(int userId) {
         try {
@@ -234,9 +264,8 @@ public class ModalActionController extends RootController implements Initializab
     }
 
 
-
-    private List<Image> fetchImagesFromServer(int userId) {
-        imagesFromApp = new ArrayList<>();
+    private List<ImageDTO> fetchImagesFromServer(int userId) {
+       List<ImageDTO> imagesFromApp = new ArrayList<>();
         try {
             URL url = new URL("http://localhost:5000/api/users/" + userId + "/temp-images");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -259,10 +288,25 @@ public class ModalActionController extends RootController implements Initializab
                 TypeToken<List<String>> token = new TypeToken<List<String>>() {};
                 List<String> base64Images = gson.fromJson(jsonResponse, token.getType());
 
+                int fileIndex = 0;
                 for (String base64Image : base64Images) {
                     byte[] decodedBytes = Base64.getDecoder().decode(base64Image);
-                    InputStream decodedInputStream = new ByteArrayInputStream(decodedBytes);
-                    imagesFromApp.add(new Image(decodedInputStream));
+                    Path tempDir = Paths.get(System.getProperty("java.io.tmpdir"), "tempImages");
+                    Files.createDirectories(tempDir);
+
+                    File tempFile = tempDir.resolve("tempImage" + fileIndex + ".png").toFile();
+                    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+                        fos.write(decodedBytes);
+                    }
+
+                    // Create a new ImageDTO instance and set its properties
+                    ImageDTO imageDTO = new ImageDTO();
+                    imageDTO.setId(UniqueIdGenerator.generateUniqueId());
+                    imageDTO.setFile(tempFile);
+                    imageDTO.setMain(false); // You can set this property based on your needs
+
+                    imagesFromApp.add(imageDTO);
+                    fileIndex++;
                 }
             }
         } catch (Exception e) {
@@ -270,6 +314,46 @@ public class ModalActionController extends RootController implements Initializab
         }
         return imagesFromApp;
     }
+
+
+
+//    private List<Image> fetchImagesFromServer(int userId) {
+//        imagesFromApp = new ArrayList<>();
+//        try {
+//            URL url = new URL("http://localhost:5000/api/users/" + userId + "/temp-images");
+//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//            connection.setRequestMethod("GET");
+//            connection.connect();
+//            int responseCode = connection.getResponseCode();
+//
+//            if (responseCode == 200) {
+//                InputStream inputStream = connection.getInputStream();
+//                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+//                StringBuilder responseBuilder = new StringBuilder();
+//                String line;
+//                while ((line = reader.readLine()) != null) {
+//                    responseBuilder.append(line);
+//                }
+//                String jsonResponse = responseBuilder.toString();
+//
+//                // Deserialize JSON response into a list of strings
+//                Gson gson = new Gson();
+//                TypeToken<List<String>> token = new TypeToken<List<String>>() {};
+//                List<String> base64Images = gson.fromJson(jsonResponse, token.getType());
+//
+//                for (String base64Image : base64Images) {
+//                    byte[] decodedBytes = Base64.getDecoder().decode(base64Image);
+//                    InputStream decodedInputStream = new ByteArrayInputStream(decodedBytes);
+//                    imagesFromApp.add(new Image(decodedInputStream));
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return imagesFromApp;
+//    }
+
+
 
 
 
@@ -487,12 +571,16 @@ public class ModalActionController extends RootController implements Initializab
             selectedImage.setPreserveRatio(true);
             selectedImage.setFitHeight(600);
             selectedImage.setFitHeight(500);
-            selectedImageFile = selectedFile;
+
+            selectedImageFile = selectedFile; // SET TO SELECTED IMAGE
+
             selectedImage.setImage(new javafx.scene.image.Image(selectedFile.toURI().toString()));
             selectedFileHBox.setVisible(true);
             selectFile.setDisable(true);
             changeImageActionHandleBox();
             changeSelectedFileHBox();
+
+
 
 
         }
@@ -600,21 +688,35 @@ public class ModalActionController extends RootController implements Initializab
 
 
 
+        // FIRST UPLOADED IMAGE
+        // selectedImageFile => File (format=
+
+        // construct new DTO and add to the list 1# main image
+        ImageDTO imageToUpload = new ImageDTO();
+        imageToUpload.setId(UniqueIdGenerator.generateUniqueId());
+        imageToUpload.setFile(selectedImageFile);
+        imageToUpload.setMain(true);
+
+
+        // add all to list of images to upload
+        listOfUploadImages.add(imageToUpload);
+
+        // images from app are already added to the list
+
         // collect all info into a project object
         CreateProjectDTO projectToCreate = new CreateProjectDTO(
                 projectId,
                 projectNameField.getText().trim(),
                 descriptionField.getText().trim(),
-                selectedImageFile,
-                customerDTO,
-                imagesFromApp
+                listOfUploadImages,
+                customerDTO
         );
 
-        System.out.println(projectToCreate);
+        System.out.println(projectToCreate.images());
         int currentUserId = CurrentUser.getInstance().getLoggedUser().getId();
         boolean result = projectModel.createProject(currentUserId,projectToCreate);
         if(result){
-            runInParallel(ViewType.PROJECT_ACTIONS);
+            runInParallel(ViewType.PROJECTS);
         }else {
             AlertHelper.showDefaultAlert("Error creating project", Alert.AlertType.ERROR);
         }

@@ -1,7 +1,5 @@
 package com.wuav.client.be;
 
-import com.wuav.client.bll.helpers.Status;
-
 import java.util.Date;
 import java.util.List;
 
@@ -15,12 +13,9 @@ public class Project {
 
     private Date createdAt;
 
-    private CustomImage attachedMainImage;
-
     private Customer customer;
 
-   // private List<CustomImage> attachedImagesUrl;
-
+    private List<CustomImage> projectImages;
 
     public int getId() {
         return id;
@@ -54,13 +49,6 @@ public class Project {
         this.createdAt = createdAt;
     }
 
-    public CustomImage getAttachedMainImage() {
-        return attachedMainImage;
-    }
-
-    public void setAttachedMainImage(CustomImage attachedMainImage) {
-        this.attachedMainImage = attachedMainImage;
-    }
 
     public Customer getCustomer() {
         return customer;
@@ -70,14 +58,14 @@ public class Project {
         this.customer = customer;
     }
 
-//    public List<CustomImage> getAttachedImagesUrl() {
-//        return attachedImagesUrl;
-//    }
-//
-//    public void setAttachedImagesUrl(List<CustomImage> attachedImagesUrl) {
-//        this.attachedImagesUrl = attachedImagesUrl;
-//    }
 
+    public List<CustomImage> getProjectImages() {
+        return projectImages;
+    }
+
+    public void setProjectImages(List<CustomImage> projectImages) {
+        this.projectImages = projectImages;
+    }
 
     @Override
     public String toString() {
@@ -86,8 +74,8 @@ public class Project {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", createdAt=" + createdAt +
-                ", attachedMainImage=" + attachedMainImage +
                 ", customer=" + customer +
+                ", projectImages=" + projectImages +
                 '}';
     }
 }

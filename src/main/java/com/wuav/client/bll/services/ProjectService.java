@@ -20,6 +20,7 @@ import com.wuav.client.dal.repository.ProjectRepository;
 import com.wuav.client.gui.dto.AddressDTO;
 import com.wuav.client.gui.dto.CreateProjectDTO;
 import com.wuav.client.gui.dto.CustomerDTO;
+import com.wuav.client.gui.dto.ImageDTO;
 
 import java.io.File;
 import java.util.List;
@@ -33,27 +34,6 @@ public class ProjectService implements IProjectService {
 
     private final IImageRepository imageRepository;
 
-    // testing main
-
-//    public static void main(String[] args) {
-//        var projectService = new ProjectService(new ProjectRepository(), new AddressService(new AddressRepository()), new ImageRepository(), new CustomerService(new CustomerRepository()));
-//
-//
-//        AddressDTO addressDTO2 = new AddressDTO(63234400, "New customer address", "Bulgaria", "63330");
-//
-//
-//        // create new customer
-//        CustomerDTO customerDTO = new CustomerDTO(324234, "tomasek","retardosss@hotmail.com","40303","business",addressDTO2);
-//
-//        CreateProjectDTO  testProjectDto = new CreateProjectDTO(202343400,"Project_test","new testing",null,customerDTO,null);
-//
-//
-//        var resutl = projectService.createProject(2,testProjectDto);
-//        System.out.println(resutl);
-//
-//    }
-
-
 
     @Inject
     public ProjectService(IProjectRepository projectRepository, IAddressService addressService, IImageRepository imageRepository,ICustomerService customerService) {
@@ -65,7 +45,7 @@ public class ProjectService implements IProjectService {
 
 
     @Override
-    public List<Project> getProjectByUserId(int userId) {
+    public List<Project> getProjectsByUserId(int userId) {
         return projectRepository.getAllProjectsByUserId(userId);
     }
 
@@ -113,126 +93,38 @@ public class ProjectService implements IProjectService {
 
         // Create image in Azure Blob Storage and database, then add it to the project
         // ...
+        for (ImageDTO imageDTO : projectToCreate.images()) {
+            // Upload image to Azure Blob Storage
+            CustomImage customImage = uploadImage(imageDTO.getFile());
+            System.out.println("Image uploaded to Blob Storage successfully");
+
+            // Save image information in the image table
+            CustomImage createdImageResult = imageRepository.createImage(
+                    customImage.getId(),
+                    customImage.getImageType(),
+                    customImage.getImageUrl()
+            );
+            if (createdImageResult == null) {
+                throw new Exception("Failed to save image to the image table");
+            }
+            System.out.println("Image saved to the image table successfully");
+
+            // Add image to the project_image table
+            boolean isImageAddedToProject = imageRepository.addImageToProject(projectToCreate.id(), createdImageResult.getId(),imageDTO.isMain());
+            if (!isImageAddedToProject) {
+                throw new Exception("Failed to add image to the project_image table");
+            }
+            System.out.println("Image added to the project_image table successfully");
+        }
 
         return true;
     }
 
-
-
-
-
-//    @Override
-//    public boolean createProject(int userId, CreateProjectDTO projectToCreate) {
-//
-//        // create address and retreive the id
-//        // test
-//      //  AddressDTO addressDTO = new AddressDTO(100, "FROM SERVICE", "test", "test");
-//
-//        int createdAddressResult = addressService.createAddress(projectToCreate.customer().address());
-//
-//        if(createdAddressResult > 0) {
-//            System.out.println("Address created successfully");
-//            Address fetchedAddress = addressService.getAddressById(projectToCreate.customer().address().id());
-//            System.out.println("retrieved from db " + fetchedAddress);
-//
-//            if(fetchedAddress != null){
-//                // create customer and retreive the id
-//
-//               int createdCustomerResult = customerService.createCustomer(projectToCreate.customer());
-//               if(createdCustomerResult > 0 ){
-//                   System.out.println("Customer created successfully");
-//                   Customer customer = customerService.getCustomerById(projectToCreate.customer().id());
-//                   if(customer != null){
-//                       System.out.println(customer);
-//                          // create project and retreive the id
-//
-//                       int createdProjectResult = projectRepository.createProject(projectToCreate);
-//                       if(createdProjectResult > 0 ){
-//                           // return project by id
-//                           Project project = projectRepository.getProjectById(projectToCreate.id());
-//                           // if user is okay then add project to user
-//                            if(project != null){
-//                                 System.out.println("Project created successfully");
-//                                 System.out.println(project);
-//                                 // add project to user
-//                                 int isProjectAddedToUser = projectRepository.addProjectToUser(userId,project.getId());
-//                                 if(isProjectAddedToUser > 0){
-//                                      System.out.println("Project added to user successfully");
-//                                      // create image to azure blob storage
-//
-//                                     // if its successfull then create image in database
-//
-//                                     // if its successfull then add image to project
-//
-//
-//                                      return true;
-//                                 }
-//                            }
-//                       }
-//
-//
-//
-//
-//                   }
-//               }
-//            }
-//        }
-
-
-
-       // STEPS
-        // create address
-        // create customer
-        // create project
-        // add project to user
-        // create image
-        // add image to project
-
-
-
-
-
-
-
-
-
-       //  CustomImage customImage = uploadImage(file);
-//        if (customImage == null) {
-//            return false;
-//        }
-//
-//        CustomImage imageInserted = insertImage(customImage);
-//
-//        if (imageInserted == null) {
-//            return false;
-//        }
-//
-//        if (!addImageToProject(projectId, customImage.getId(), isMainImage)) {
-//            return false;
-//        }
-//
-//        return updateProject(projectId, description) != null;
-
-//        return false;
-//    }
-
     private CustomImage uploadImage(File file) {
         BlobContainerClient blobContainerClient =  BlobStorageFactory.getBlobContainerClient();
-         BlobStorageHelper blobStorageHelper = new BlobStorageHelper(blobContainerClient);
+        BlobStorageHelper blobStorageHelper = new BlobStorageHelper(blobContainerClient);
 
         return blobStorageHelper.uploadImageToBlobStorage(file);
-    }
-
-    private CustomImage insertImage(CustomImage customImage) {
-        return imageRepository.createImage(customImage.getId(), customImage.getImageType(), customImage.getImageUrl());
-    }
-
-    private boolean addImageToProject(int projectId, int imageId, boolean isMainImage) {
-        return imageRepository.addImageToProject(projectId, imageId, isMainImage);
-    }
-
-    private Project updateProject(int projectId, String description) {
-        return projectRepository.updateProject(projectId, description);
     }
 
 

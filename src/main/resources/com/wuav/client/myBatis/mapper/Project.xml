@@ -23,6 +23,12 @@
                 <result property="zipCode" column="zipCode"/>
             </association>
         </association>
+        <collection property="projectImages" javaType="ArrayList" column="id" ofType="CustomImage">
+            <id property="id" column="imageId"/>
+            <result property="imageType" column="image_type"/>
+            <result property="imageUrl" column="image_url"/>
+            <result property="isMainImage" column="is_main_image"/>
+        </collection>
     </resultMap>
 
 
@@ -40,11 +46,17 @@
             a.id as address_id,
             a.street,
             a.city,
-            a.zip_code as zipCode
+            a.zip_code as zipCode,
+            i.id as imageId,
+            i.image_type,
+            i.image_url,
+            pi.is_main_image
         FROM Project p
                  INNER JOIN user_project up ON p.id = up.project_id
                  INNER JOIN customer c ON p.customer_id = c.id
                  INNER JOIN address a ON c.address_id = a.id
+                 LEFT JOIN project_image pi ON p.id = pi.project_id
+                 LEFT JOIN image i ON pi.image_id = i.id
         WHERE up.user_id = #{userId}
     </select>
 

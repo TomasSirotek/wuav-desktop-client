@@ -47,4 +47,15 @@ public class CustomImage {
     public void setMainImage(boolean mainImage) {
         isMainImage = mainImage;
     }
+
+
+    @Override
+    public String toString() {
+        return "CustomImage{" +
+                "id=" + id +
+                ", imageType='" + imageType + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", isMainImage=" + isMainImage +
+                '}';
+    }
 }

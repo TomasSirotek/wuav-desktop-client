@@ -5,5 +5,5 @@ import java.io.File;
 
 public interface IEmailSender {
 
-    void  sendEmail(Session session, String toEmail, String subject, String body,boolean attachPdf, File pdfFile);
+    boolean  sendEmail(Session session, String toEmail, String subject, String body,boolean attachPdf, File pdfFile);
 }

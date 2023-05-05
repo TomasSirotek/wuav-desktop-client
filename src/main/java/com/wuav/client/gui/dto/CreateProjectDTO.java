@@ -8,19 +8,9 @@ import java.util.List;
 public record CreateProjectDTO(int id,
                                String name,
                                String description,
-                               File mainImage,
-                               CustomerDTO customer,
-                               List<Image> imagesFromApp
+                               List<ImageDTO> images,
+                               CustomerDTO customer
+
 ) {
-    @Override
-    public String toString() {
-        return "CreateProjectDTO{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", mainImage=" + mainImage +
-                ", customer=" + customer +
-                ", imagesFromApp=" + imagesFromApp +
-                '}';
-    }
+
 }

@@ -15,7 +15,7 @@ public class EmailSender implements IEmailSender {
 
 
     @Override
-    public void sendEmail(Session session, String toEmail, String subject, String body,boolean attachPdf, File pdfFile) {
+    public boolean sendEmail(Session session, String toEmail, String subject, String body,boolean attachPdf, File pdfFile) {
         try
         {
             MimeMessage msg = new MimeMessage(session);
@@ -58,10 +58,11 @@ public class EmailSender implements IEmailSender {
 
             Transport.send(msg);
 
-            System.out.println("EMail Sent Successfully!!");
+            return true;
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 }
