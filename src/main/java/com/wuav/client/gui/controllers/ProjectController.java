@@ -46,6 +46,9 @@ public class ProjectController extends RootController implements Initializable {
 
 
     private final IControllerFactory controllerFactory;
+
+    @FXML
+    private Label emailLoadLabel;
     @FXML
     private Pane emailLoadPane;
 
@@ -201,16 +204,46 @@ public class ProjectController extends RootController implements Initializable {
 
 
 
+    // TODO : DEPENDING ON THE ROLE GET PROJECTS BY USER ID
+    // ADMIN - GET ALL PROJECTS FROM ALL APP USERS THAT ARE TECHNICIANS
+    // TECHNICIAN - GET ALL PROJECTS FOR HIM BY ID
+    // SALESMAN - GET ALL PROJECTS FROM ALL TECHNICIANS
     private void setTableWithProjects() {
         // get user projects from current logged user singleton class
-        List<Project> updatedProjects = projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
+        emailLoadPane.setVisible(true);
+        emailLoadPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
+        emailLoadLabel.setText("Loading projects");
+        Task<List<Project>> loadProjectsTask = new Task<List<Project>>() {
+            @Override
+            protected List<Project> call() {
+                // get user projects from current logged user singleton class
+                return projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
+            }
+        };
 
-        // Update projects list in CurrentUser singleton
-        CurrentUser.getInstance().getLoggedUser().setProjects(updatedProjects);
+        // Update the UI when the task is completed
+        loadProjectsTask.setOnSucceeded(event -> {
+            List<Project> updatedProjects = loadProjectsTask.getValue();
 
-        // Set the updated projects list to the table
-        ObservableList<Project> projects = FXCollections.observableList(updatedProjects);
-        projectTable.setItems(projects);
+            // Update projects list in CurrentUser singleton
+            CurrentUser.getInstance().getLoggedUser().setProjects(updatedProjects);
+
+            // Set the updated projects list to the table
+            ObservableList<Project> projects = FXCollections.observableList(updatedProjects);
+            projectTable.setItems(projects);
+
+            emailLoadPane.setVisible(false);
+            emailLoadPane.setStyle("-fx-background-color: transparent");
+            emailLoadLabel.setText("");
+        });
+
+        // Handle any errors during the task execution
+        loadProjectsTask.setOnFailed(event -> {
+            // Handle error appropriately
+        });
+
+        // Run the task in a new thread
+        new Thread(loadProjectsTask).start();
     }
 
     List<Project> selectedProjects = new ArrayList<>();
@@ -303,6 +336,7 @@ public class ProjectController extends RootController implements Initializable {
 
                 emailLoadPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
                 emailLoadPane.setVisible(true);
+                emailLoadLabel.setText("Sending email ...");
                 File generatedPdf = null;
                 try {
                     generatedPdf = generatePDFToFile(appUser,project,"installation-report" + project.getCustomer().getId());
