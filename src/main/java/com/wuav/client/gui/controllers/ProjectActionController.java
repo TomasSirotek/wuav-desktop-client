@@ -2,8 +2,10 @@ package com.wuav.client.gui.controllers;
 
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Project;
 import com.wuav.client.bll.helpers.EventType;
+import com.wuav.client.cache.ImageCache;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.models.IProjectModel;
@@ -33,12 +35,18 @@ import javafx.stage.StageStyle;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import javafx.scene.web.WebEngine;
 
 
 
 public class ProjectActionController  extends RootController implements Initializable {
 
+    @FXML
+    private ImageView firstUploadedImage;
+    @FXML
+    private ImageView secondUploadedImage;
     @FXML
     private MFXTextField clientNameField;
     @FXML
@@ -209,6 +217,21 @@ public class ProjectActionController  extends RootController implements Initiali
         System.out.println("FROM DATAILS FOR PROJECT " + currentProject.getId() + " " + currentProject.getProjectImages());
 
 
+
+        AtomicInteger nonMainImageCounter = new AtomicInteger(0);
+
+        project.getProjectImages().forEach(image -> {
+            if (image.isMainImage()) {
+                selectedImage.setImage(ImageCache.getImage(image.getId()));
+            } else {
+                int nonMainImageIndex = nonMainImageCounter.getAndIncrement();
+                if (nonMainImageIndex == 0) {
+                    firstUploadedImage.setImage(ImageCache.getImage(image.getId()));
+                } else if (nonMainImageIndex == 1) {
+                    secondUploadedImage.setImage(ImageCache.getImage(image.getId()));
+                }
+            }
+        });
 
 
     }

@@ -12,6 +12,7 @@ import com.wuav.client.bll.utilities.engines.ICodesEngine;
 import com.wuav.client.bll.utilities.engines.IEmailEngine;
 import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
 import com.wuav.client.bll.utilities.pdf.PdfGenerator;
+import com.wuav.client.cache.ImageCache;
 import com.wuav.client.dal.interfaces.*;
 import com.wuav.client.dal.repository.*;
 
@@ -91,6 +92,7 @@ public class ConfigModule extends AbstractModule {
         bind(IEmailSender.class).to(EmailSender.class);
         bind(IEmailEngine.class).to(EmailEngine.class);
         bind(IProjectModel.class).to(ProjectModel.class).in(Singleton.class);
+        bind(ImageCache.class).asEagerSingleton();
         bind(IEmailSender.class).to(EmailSender.class);
 
         bind(EmailConnectionFactory.class).asEagerSingleton();

@@ -121,7 +121,7 @@ public class ProjectService implements IProjectService {
     }
 
     private CustomImage uploadImage(File file) {
-        BlobContainerClient blobContainerClient =  BlobStorageFactory.getBlobContainerClient();
+        BlobContainerClient blobContainerClient = BlobStorageFactory.getBlobContainerClient();
         BlobStorageHelper blobStorageHelper = new BlobStorageHelper(blobContainerClient);
 
         return blobStorageHelper.uploadImageToBlobStorage(file);

@@ -39,6 +39,7 @@ module com.wuav.client {
     exports com.wuav.client.bll.utilities.engines;
     exports com.wuav.client.gui.models to com.google.guice;
     exports  com.wuav.client.bll.utilities.pdf to com.google.guice,org.apache.pdfbox;
+    exports com.wuav.client.cache to com.google.guice;
 
 
     opens com.wuav.client.gui.controllers to javafx.fxml, com.google.guice, com.google.common,com.azure.core,org.apache.pdfbox;

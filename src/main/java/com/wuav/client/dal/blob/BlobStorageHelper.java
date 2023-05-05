@@ -1,11 +1,15 @@
 package com.wuav.client.dal.blob;
 
 import com.azure.storage.blob.BlobClient;
+import com.azure.storage.blob.BlobClientBuilder;
 import com.azure.storage.blob.BlobContainerClient;
 import com.wuav.client.be.CustomImage;
 import com.wuav.client.bll.utilities.UniqueIdGenerator;
+import javafx.scene.image.Image;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.UUID;
 
 public class BlobStorageHelper {
@@ -32,17 +36,23 @@ public class BlobStorageHelper {
 
     }
 
-    // this is for testiiong now will be propably different
-    public byte[] downloadImageFromBlobStorage(String blobName, String downloadFilePath){
+    public Image downloadImageFromBlobStorage(BlobContainerClient containerClient, String blobUrl) {
+        URL url;
+        try {
+            url = new URL(blobUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        String blobName = url.getPath().substring(url.getPath().lastIndexOf('/') + 1);
         BlobClient blobClient = containerClient.getBlobClient(blobName);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         blobClient.download(outputStream);
 
         byte[] imageBytes = outputStream.toByteArray();
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes);
-
-        return inputStream.readAllBytes();
+        return new Image(new ByteArrayInputStream(imageBytes));
     }
 
     private String getFileExtension(String fileName) {

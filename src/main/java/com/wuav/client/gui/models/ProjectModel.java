@@ -1,9 +1,12 @@
 package com.wuav.client.gui.models;
 
+import com.azure.storage.blob.BlobContainerClient;
 import com.google.inject.Inject;
 import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Project;
 import com.wuav.client.bll.services.interfaces.IProjectService;
+import com.wuav.client.cache.ImageCache;
+import com.wuav.client.dal.blob.BlobStorageFactory;
 import com.wuav.client.gui.dto.CreateProjectDTO;
 
 import java.util.HashMap;
@@ -26,7 +29,7 @@ public class ProjectModel implements IProjectModel{
 
         if (projects == null) {
             projects = projectService.getProjectsByUserId(userId);
-           // cacheProjectsImages(projects);
+            cacheProjectsImages(projects);
             projectsCache.put(userId, projects);
         }
 
@@ -34,9 +37,11 @@ public class ProjectModel implements IProjectModel{
     }
 
     private void cacheProjectsImages(List<Project> projects) {
+        BlobContainerClient blobContainerClient = BlobStorageFactory.getBlobContainerClient();
+
         for (Project project : projects) {
             for (CustomImage image : project.getProjectImages()) {
-              //  ImageCache.loadImage(image.getImageUrl(), image.getId());
+                ImageCache.loadImage(blobContainerClient, image.getImageUrl(), image.getId());
             }
         }
     }
