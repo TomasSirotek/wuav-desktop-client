@@ -10,6 +10,8 @@ public interface IProjectRepository {
 
     List<Project> getAllProjectsByUserId(int userId);
 
+    List<Project> getAllProjects();
+
     Project getProjectById(int projectId);
 
     Project updateProject(int projectId, String description);

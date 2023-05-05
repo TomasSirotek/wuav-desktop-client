@@ -714,12 +714,28 @@ public class ModalActionController extends RootController implements Initializab
 
         System.out.println(projectToCreate.images());
         int currentUserId = CurrentUser.getInstance().getLoggedUser().getId();
-        boolean result = projectModel.createProject(currentUserId,projectToCreate);
-        if(result){
-            runInParallel(ViewType.PROJECTS);
-        }else {
-            AlertHelper.showDefaultAlert("Error creating project", Alert.AlertType.ERROR);
-        }
+
+        Task<Boolean> loadDataTask = new Task<>() {
+            @Override
+            protected Boolean call() throws IOException {
+                return projectModel.createProject(currentUserId, projectToCreate);
+            }
+        };
+
+        loadDataTask.setOnSucceeded(event -> {
+            boolean result = loadDataTask.getValue();
+
+            if (result) {
+                runInParallel(ViewType.PROJECTS);
+            } else {
+                AlertHelper.showDefaultAlert("Error creating project", Alert.AlertType.ERROR);
+            }
+        });
+
+        new Thread(loadDataTask).start();
+
+
+
 
     }
 

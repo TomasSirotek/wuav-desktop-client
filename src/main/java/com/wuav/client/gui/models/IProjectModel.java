@@ -12,4 +12,6 @@ public interface IProjectModel {
     List<Project> getProjectsByUserId(int userId);
 
     boolean createProject(int userId,CreateProjectDTO projectToCreate);
+
+    List<Project> getAllProjects();
 }

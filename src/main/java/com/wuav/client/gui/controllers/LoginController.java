@@ -7,10 +7,7 @@ import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.google.inject.Inject;
 import com.wuav.client.gui.utils.AlertHelper;
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXPasswordField;
-import io.github.palexdev.materialfx.controls.MFXProgressBar;
-import io.github.palexdev.materialfx.controls.MFXTextField;
+import io.github.palexdev.materialfx.controls.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,6 +16,7 @@ import javafx.scene.Parent;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -33,7 +31,9 @@ public class LoginController extends RootController implements Initializable {
 
 
     @FXML
-    private MFXProgressBar progressLoader;
+    private Pane loadingPane;
+    @FXML
+    private MFXProgressSpinner progressLoader;
     @FXML
     private MFXPasswordField userPswField;
 
@@ -68,7 +68,8 @@ public class LoginController extends RootController implements Initializable {
     private void login() {
         // Show the progress bar while the application is loading
         progressLoader.setVisible(true);
-
+        loadingPane.setVisible(true);
+        loadingPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
         // Use a new thread to authenticate the user and check authorization
         new Thread(() -> {
             try {
@@ -80,6 +81,7 @@ public class LoginController extends RootController implements Initializable {
                 Platform.runLater(() -> {
                     // Hide the progress bar
                     progressLoader.setVisible(false);
+                    loadingPane.setStyle("-fx-background-color: transparent");
 
                     // Show the logged view if the user is authorized
                     if (isAuthorized) {

@@ -48,6 +48,9 @@ public class ProjectController extends RootController implements Initializable {
     private final IControllerFactory controllerFactory;
 
     @FXML
+    private Label projectLabelMain;
+
+    @FXML
     private Label emailLoadLabel;
     @FXML
     private Pane emailLoadPane;
@@ -195,11 +198,17 @@ public class ProjectController extends RootController implements Initializable {
         emailLoadPane.setVisible(true);
         emailLoadPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
         emailLoadLabel.setText("Loading projects");
-        Task<List<Project>> loadProjectsTask = new Task<List<Project>>() {
+
+        Task<List<Project>> loadProjectsTask = new Task<>() {
             @Override
             protected List<Project> call() {
-                // get user projects from current logged user singleton class
-                return projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
+                if (CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("TECHNICIAN")) {
+                    // get user projects from current logged user singleton class
+                    return projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
+                } else {
+                    projectLabelMain.setText("Projects");
+                    return projectModel.getAllProjects();
+                }
             }
         };
 
@@ -227,6 +236,7 @@ public class ProjectController extends RootController implements Initializable {
         // Run the task in a new thread
         new Thread(loadProjectsTask).start();
     }
+
 
     List<Project> selectedProjects = new ArrayList<>();
     private void fillTable() {

@@ -42,7 +42,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label prefHeight="46.0" prefWidth="248.0" text="My projects">
+                  <Label fx:id="projectLabelMain" prefHeight="46.0" prefWidth="248.0" text="My projects">
                      <font>
                         <Font name="SansSerif Bold" size="32.0" />
                      </font>

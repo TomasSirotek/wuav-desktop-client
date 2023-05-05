@@ -49,6 +49,11 @@ public class ProjectService implements IProjectService {
         return projectRepository.getAllProjectsByUserId(userId);
     }
 
+    @Override
+    public List<Project> getAllProjects() {
+        return projectRepository.getAllProjects();
+    }
+
 
     @Override
     public boolean createProject(int userId, CreateProjectDTO projectToCreate) {

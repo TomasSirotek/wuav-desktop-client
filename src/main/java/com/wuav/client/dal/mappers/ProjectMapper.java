@@ -10,6 +10,8 @@ public interface ProjectMapper {
 
     List<Project> getAllProjectsByUserId(@Param("userId")int userId);
 
+    List<Project> getAllProjects();
+
     Project getProjectById(@Param("id")int id);
 
     // inserting project to the table

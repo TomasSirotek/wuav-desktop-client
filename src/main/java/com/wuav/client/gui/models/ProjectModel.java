@@ -18,6 +18,8 @@ public class ProjectModel implements IProjectModel{
 
     private Map<Integer, List<Project>> projectsCache = new HashMap<>();
 
+    private final int ALL_PROJECTS_KEY = -1;
+
     @Inject
     public ProjectModel(IProjectService projectService) {
         this.projectService = projectService;
@@ -29,12 +31,25 @@ public class ProjectModel implements IProjectModel{
 
         if (projects == null) {
             projects = projectService.getProjectsByUserId(userId);
-            cacheProjectsImages(projects);
+          //  cacheProjectsImages(projects);
             projectsCache.put(userId, projects);
         }
 
         return projects;
     }
+
+    @Override
+    public List<Project> getAllProjects() {
+        List<Project> projects = projectsCache.get(ALL_PROJECTS_KEY);
+
+        if (projects == null) {
+            projects = projectService.getAllProjects();
+            projectsCache.put(ALL_PROJECTS_KEY, projects);
+        }
+
+        return projects;
+    }
+
 
     private void cacheProjectsImages(List<Project> projects) {
         BlobContainerClient blobContainerClient = BlobStorageFactory.getBlobContainerClient();
@@ -50,4 +65,6 @@ public class ProjectModel implements IProjectModel{
     public boolean createProject(int userId,CreateProjectDTO projectToCreate) {
        return projectService.createProject(userId,projectToCreate);
     }
+
+
 }

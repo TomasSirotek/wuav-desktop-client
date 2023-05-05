@@ -32,6 +32,18 @@ public class ProjectRepository implements IProjectRepository {
     }
 
     @Override
+    public List<Project> getAllProjects() {
+        List<Project> fetchedProjects = new ArrayList<>();
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            ProjectMapper mapper = session.getMapper(ProjectMapper.class);
+            fetchedProjects = mapper.getAllProjects();
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return fetchedProjects;
+    }
+
+    @Override
     public Project getProjectById(int projectId) {
         Project fetchedProject = new Project();
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {

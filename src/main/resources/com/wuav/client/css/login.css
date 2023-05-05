@@ -1,1 +1,34 @@
+.mfx-text-field, .mfx-password-field{
+    -fx-border-color: #c5c1c1 !important;
+}
 
+
+
+.mfx-progress-bar .track{
+    -fx-background-color: red !important;
+    -fx-text-fill: red !important;
+}
+
+.mfx-progress-bar .bar {
+    -fx-accent: red !important;
+}
+
+.mfx-progress-bar {
+    -fx-base: red !important;
+}
+
+.mfx-progress-bar .track {
+    -fx-control-inner-background: red !important;
+}
+
+.mfx-progress-bar .bar {
+    -fx-accent: red !important;
+}
+
+.progress-bar .bar {
+    -fx-background-color:
+            -fx-box-border,
+            red; /* this line is the background color of the bar */
+    -fx-background-insets: 0, 1, 2;
+    -fx-padding: 0.416667em; /* 5 */
+}

@@ -9,5 +9,8 @@ public interface IProjectService {
 
     List<Project> getProjectsByUserId(int userId);
 
+    List<Project> getAllProjects();
+
     boolean createProject(int userId, CreateProjectDTO projectToCreate);
+
 }

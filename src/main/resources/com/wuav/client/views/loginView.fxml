@@ -2,7 +2,7 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
-<?import io.github.palexdev.materialfx.controls.MFXProgressBar?>
+<?import io.github.palexdev.materialfx.controls.MFXProgressSpinner?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import io.github.palexdev.materialfx.controls.MFXToggleButton?>
 <?import javafx.geometry.Insets?>
@@ -15,12 +15,24 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #F2F2F2;" stylesheets="@../css/login.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.LoginController">
    <children>
+      <ImageView fitHeight="310.0" fitWidth="375.0" layoutX="561.0" layoutY="188.0">
+         <image>
+            <Image url="@../images/undraw_circuit_sdmr.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="81.0" fitWidth="123.0" layoutX="689.0" layoutY="96.0">
+         <image>
+            <Image url="@../images/wuav-logo.png" />
+         </image>
+      </ImageView>
       <HBox alignment="CENTER" layoutX="1.0" layoutY="-2.0" prefHeight="600.0" prefWidth="500.0" style="-fx-background-color: #FFFFFF;">
          <effect>
             <DropShadow height="11.33" radius="4.3325" width="8.0" />
@@ -35,7 +47,8 @@
                               <Image url="@../images/LED-storskraeem-pyloner_sort.png" />
                            </image>
                         </ImageView>
-                     </children></HBox>
+                     </children>
+                  </HBox>
                   <HBox prefHeight="83.0" prefWidth="501.0">
                      <children>
                         <VBox prefHeight="83.0" prefWidth="254.0">
@@ -45,7 +58,7 @@
                                     <Font name="SansSerif Bold" size="30.0" />
                                  </font>
                               </Label>
-                              <Label prefHeight="43.0" prefWidth="343.0" text="Welcome Back">
+                              <Label prefHeight="43.0" prefWidth="343.0" text="Welcome Back.">
                                  <font>
                                     <Font name="SansSerif Bold" size="30.0" />
                                  </font>
@@ -131,7 +144,8 @@
                               </HBox>
                            </children>
                         </GridPane>
-                     </children></HBox>
+                     </children>
+                  </HBox>
                   <HBox alignment="CENTER" prefHeight="23.0" prefWidth="254.0">
                      <children>
                         <Label text="Forgot you password ? " textFill="#252f4091">
@@ -159,16 +173,20 @@
             <Insets bottom="80.0" left="80.0" right="80.0" top="80.0" />
          </padding>
       </HBox>
-      <MFXProgressBar fx:id="progressLoader" animationSpeed="0.7" layoutX="-2.0" prefHeight="6.0" prefWidth="503.0" styleClass="mfx-progress-bar" visible="false" />
-      <ImageView fitHeight="310.0" fitWidth="375.0" layoutX="561.0" layoutY="188.0">
-         <image>
-            <Image url="@../images/undraw_circuit_sdmr.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="81.0" fitWidth="123.0" layoutX="689.0" layoutY="96.0">
-         <image>
-            <Image url="@../images/wuav-logo.png" />
-         </image>
-      </ImageView>
+      <Pane fx:id="loadingPane" prefHeight="599.0" prefWidth="506.0" visible="false" />
+      <MFXProgressSpinner fx:id="progressLoader" visible="false" AnchorPane.leftAnchor="220.0" AnchorPane.topAnchor="250.0">
+         <color2>
+            <Color red="0.8500000238418579" green="0.2629333436489105" blue="0.22100000083446503" opacity="0.0" />
+         </color2>
+         <color3>
+            <Color red="0.8999999761581421" green="0.2722499966621399" blue="0.06300000101327896" />
+         </color3>
+         <color4>
+            <Color red="0.061000000685453415" green="0.6100000143051147" blue="0.33550000190734863" opacity="0.0" />
+         </color4>
+         <color1>
+            <Color red="0.9098039269447327" green="0.2862745225429535" blue="0.062745101749897" />
+         </color1>
+      </MFXProgressSpinner>
    </children>
 </AnchorPane>

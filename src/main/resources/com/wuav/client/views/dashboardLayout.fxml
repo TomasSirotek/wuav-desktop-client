@@ -2,6 +2,7 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
@@ -17,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #F2F2F2;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.BaseController">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #F2F2F2;" stylesheets="@../css/dashboard.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.BaseController">
    <children>
       <BorderPane layoutX="206.0" layoutY="40.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
@@ -50,7 +51,7 @@
                                           <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <ImageView fitHeight="24.0" fitWidth="24.0">
+                                          <ImageView fitHeight="27.0" fitWidth="27.0">
                                              <image>
                                                 <Image url="@../images/navItems/menu-bar.png" />
                                              </image>
@@ -125,14 +126,17 @@
                         <DropShadow height="0.0" radius="4.75" />
                      </effect>
                      <children>
-                        <HBox alignment="CENTER" prefHeight="73.0" prefWidth="164.0">
+                        <HBox alignment="CENTER_LEFT" prefHeight="73.0" prefWidth="164.0">
                            <children>
-                              <ImageView fitHeight="33.0" fitWidth="33.0">
+                              <ImageView fx:id="userImage" fitHeight="31.0" fitWidth="31.0">
                                  <image>
                                     <Image url="@../images/navItems/Screenshot%202023-04-28%20at%2017.46.15.png" />
                                  </image>
+                                 <HBox.margin>
+                                    <Insets left="8.0" />
+                                 </HBox.margin>
                               </ImageView>
-                              <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="108.0">
+                              <VBox fx:id="userDetailsBox" alignment="CENTER_LEFT" prefHeight="73.0" prefWidth="146.0" visible="false">
                                  <children>
                                     <Label fx:id="userNameField" prefHeight="22.0" prefWidth="98.0" text="Michael">
                                        <font>
@@ -147,9 +151,9 @@
                               </VBox>
                            </children>
                         </HBox>
-                        <VBox prefHeight="144.0" prefWidth="164.0">
+                        <VBox prefHeight="144.0" prefWidth="185.0">
                            <children>
-                              <MFXButton alignment="BASELINE_LEFT" prefHeight="43.0" prefWidth="164.0" text="Overview" textFill="#141111">
+                              <MFXButton alignment="BASELINE_LEFT" prefHeight="43.0" prefWidth="183.0" styleClass="myButton" text="Overview" textFill="#141111">
                                  <graphic>
                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
                                        <children>
@@ -164,8 +168,11 @@
                                  <font>
                                     <Font name="SansSerif Regular" size="15.0" />
                                  </font>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </MFXButton>
-                              <MFXButton fx:id="projectButton" alignment="BASELINE_LEFT" onAction="#handleDashBoardPageSwitch" prefHeight="44.0" prefWidth="164.0" text="My projects" textFill="#141111">
+                              <MFXButton fx:id="projectButton" alignment="BASELINE_LEFT" onAction="#handleDashBoardPageSwitch" prefHeight="44.0" prefWidth="179.0" styleClass="myButton" text="My projects" textFill="#141111">
                                  <graphic>
                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
                                        <children>
@@ -183,8 +190,11 @@
                                  <VBox.margin>
                                     <Insets />
                                  </VBox.margin>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </MFXButton>
-                              <MFXButton alignment="BASELINE_LEFT" prefHeight="44.0" prefWidth="215.0" text="Invoices " textFill="#141111">
+                              <MFXButton alignment="BASELINE_LEFT" prefHeight="44.0" prefWidth="215.0" styleClass="myButton" text="Invoices " textFill="#141111">
                                  <graphic>
                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
                                        <children>
@@ -202,13 +212,19 @@
                                  <VBox.margin>
                                     <Insets />
                                  </VBox.margin>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </MFXButton>
                            </children>
                         </VBox>
-                        <Label text="Account pages" />
+                        <Label fx:id="menuItemLabel" text="Account pages" visible="false">
+                           <VBox.margin>
+                              <Insets left="10.0" />
+                           </VBox.margin></Label>
                         <VBox prefHeight="90.0" prefWidth="164.0">
                            <children>
-                              <MFXButton alignment="BASELINE_LEFT" prefHeight="44.0" prefWidth="215.0" text="Account" textFill="#141111">
+                              <MFXButton alignment="BASELINE_LEFT" prefHeight="44.0" prefWidth="215.0" styleClass="myButton" text="Account" textFill="#141111">
                                  <graphic>
                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
                                        <children>
@@ -226,13 +242,16 @@
                                  <VBox.margin>
                                     <Insets top="10.0" />
                                  </VBox.margin>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </MFXButton>
                            </children>
                         </VBox>
                         <VBox prefHeight="194.0" prefWidth="164.0">
                            <children>
                               <Pane prefHeight="157.0" prefWidth="164.0" />
-                              <MFXButton alignment="BASELINE_LEFT" onAction="#logoutButton" prefHeight="44.0" prefWidth="215.0" text="Logout" textFill="#141111">
+                              <MFXButton alignment="BASELINE_LEFT" onAction="#logoutButton" prefHeight="44.0" prefWidth="215.0" styleClass="myButton" text="Logout" textFill="#141111">
                                  <graphic>
                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
                                        <children>
@@ -247,24 +266,22 @@
                                  <font>
                                     <Font name="SansSerif Regular" size="15.0" />
                                  </font>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </MFXButton>
                            </children>
                         </VBox>
                      </children>
                      <padding>
-                        <Insets bottom="20.0" left="30.0" right="20.0" />
+                        <Insets bottom="20.0" left="30.0" />
                      </padding>
                   </VBox>
                </children>
             </AnchorPane>
          </left>
          <center>
-            <StackPane fx:id="app_content" prefHeight="541.0" prefWidth="856.0" BorderPane.alignment="CENTER">
-               <VBox prefHeight="200.0" prefWidth="100.0">
-                  <padding>
-                     <Insets bottom="30.0" left="30.0" right="30.0" />
-                  </padding></VBox>
-            </StackPane>
+            <StackPane fx:id="app_content" prefHeight="541.0" prefWidth="856.0" BorderPane.alignment="CENTER" />
          </center>
       </BorderPane>
       <Pane fx:id="layoutPane" prefHeight="601.0" prefWidth="999.0" visible="false" />

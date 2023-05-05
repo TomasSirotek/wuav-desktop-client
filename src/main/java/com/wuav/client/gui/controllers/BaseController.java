@@ -42,6 +42,12 @@ import java.util.*;
 public class BaseController extends RootController implements Initializable {
 
     @FXML
+    private Label menuItemLabel;
+    @FXML
+    private VBox userDetailsBox;
+    @FXML
+    private ImageView userImage;
+    @FXML
     private Label userNameField;
     @FXML
     private Label userEmailField;
@@ -70,6 +76,8 @@ public class BaseController extends RootController implements Initializable {
 
     private boolean isSidebarExpanded = false;
 
+    private Image defaultImage = new Image("/no_data.png");
+
     @Inject
     public BaseController(IControllerFactory controllerFactory) {
         this.controllerFactory = controllerFactory;
@@ -78,6 +86,13 @@ public class BaseController extends RootController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         expand.setStyle("-fx-text-fill: transparent;");
+
+        projectButton.setStyle("-fx-background-color: rgba(234, 234, 234, 0.8);");
+        if(!CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("TECHNICIAN")){
+            projectButton.setText("Projects");
+            userImage.setImage(defaultImage);
+            System.out.println(CurrentUser.getInstance().getLoggedUser().getRoles().get(0));
+        }
 
         handleExpandControl();
         runInParallel(ViewType.PROJECTS);
@@ -88,13 +103,15 @@ public class BaseController extends RootController implements Initializable {
         TranslateTransition slide = new TranslateTransition();
         slide.setDuration(Duration.seconds(0.4));
         slide.setNode(slider);
+        menuItemLabel.setVisible(false);
 
+        userDetailsBox.setVisible(false);
         slide.setToX(0);
         slide.play();
 
         Image image = new Image(getClass().getClassLoader().getResource("openExpand.png").toExternalForm());
         app_content.setStyle("-fx-background-color: none;");
-        sideNavBox.setPadding(new Insets(0, 20, 0, 30));
+      //  sideNavBox.setPadding(new Insets(0, 20, 0, 30));
 
         menuIcon.setImage(image);
 
@@ -116,7 +133,8 @@ public class BaseController extends RootController implements Initializable {
         TranslateTransition slide = new TranslateTransition();
         slide.setDuration(Duration.seconds(0.4));
         slide.setNode(slider);
-
+        userDetailsBox.setVisible(true);
+        menuItemLabel.setVisible(true);
         //  slide.setToX(slider.getPrefWidth());
 
         Image image = new Image(getClass().getClassLoader().getResource("closeExpand.png").toExternalForm());
@@ -130,7 +148,7 @@ public class BaseController extends RootController implements Initializable {
         userEmailField.setText(CurrentUser.getInstance().getLoggedUser().getEmail()); // Replace with your original text
         sideNavBox.getChildren().forEach(node -> {
             if (node instanceof Label) {
-                ((Label) node).setStyle("-fx-text-fill: black;"); // Replace with your original text color
+                ((Label) node).setStyle("-fx-text-fill: black;");
             }
         });
 
@@ -153,7 +171,7 @@ public class BaseController extends RootController implements Initializable {
 
     @FXML
     private void handleDashBoardPageSwitch() {
-        projectButton.setStyle("-fx-background-color: black; -fx-text-fill: white");
+        projectButton.setStyle("-fx-background-color: rgba(234, 234, 234, 0.8);");
         runInParallel(ViewType.PROJECTS);
     }
     //endregion
