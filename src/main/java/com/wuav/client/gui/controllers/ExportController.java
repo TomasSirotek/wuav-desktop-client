@@ -5,6 +5,7 @@ import com.wuav.client.be.Project;
 import com.wuav.client.bll.utilities.AlertHelper;
 import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
 import com.wuav.client.gui.controllers.abstractController.RootController;
+import com.wuav.client.gui.models.user.CurrentUser;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -77,7 +78,7 @@ public class ExportController extends RootController implements Initializable {
     }
 
     private void exportAsPDF() {
-        ByteArrayOutputStream stream = pdfGenerator.generatePdf(null, projectsToExport.get(0), "project");
+        ByteArrayOutputStream stream = pdfGenerator.generatePdf(CurrentUser.getInstance().getLoggedUser(), projectsToExport.get(0), "project");
 
         // Create a FileChooser instance
         FileChooser fileChooser = new FileChooser();

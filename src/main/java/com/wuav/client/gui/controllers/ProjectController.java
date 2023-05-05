@@ -130,24 +130,6 @@ public class ProjectController extends RootController implements Initializable {
         }
     }
 
-//    private void openNewProject() {
-//        Scene scene = projectAnchorPane.getScene();
-//        Window window = scene.getWindow();
-//        if (window instanceof Stage) {
-//            Pane layoutPane = (Pane) scene.lookup("#layoutPane");
-//            if (layoutPane != null) {
-//                layoutPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
-//                layoutPane.setDisable(true);
-//                layoutPane.setVisible(true);
-//
-//                var test = tryToLoadView(ViewType.ACTIONS);
-//                show(test.getView(), "Create new project",scene);
-//
-//            } else {
-//                System.out.println("AnchorPane not found");
-//            }
-//        }
-//    }
 
     /**
      * private method for showing new stages whenever its need

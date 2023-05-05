@@ -134,38 +134,6 @@ public class ProjectActionController  extends RootController implements Initiali
         });
     }
 
-//    private void saveImageDesc() {
-//
-//        if(selectedImage != null && !selectedImage.getImage().equals(defaultImage) && !descriptionField.getText().trim().isEmpty()) {
-//            System.out.println("Saving image and description" + selectedImage.getImage());
-//            System.out.println("Description: " + descriptionField.getText().trim());
-//
-//            // user id
-//            int userId = CurrentUser.getInstance().getLoggedUser().getId();
-//            // project id
-//            int projectId = currentProject.getId();
-//            // create file from image url
-//            File imageFile = new File(selectedImageFile.toURI());
-//            // image description
-//            String imageDescription = descriptionField.getText().trim();
-//            // is main image
-//            boolean isMainImage = true;
-//            // send image and description to the services with userId and project id to and if its main image or not
-//            var uploadedStatus = projectModel.uploadImageWithDescription(userId, projectId, imageFile, imageDescription, isMainImage);
-//            System.out.println("Uploaded status: " + uploadedStatus);
-//            if(uploadedStatus) {
-//                System.out.println("Image uploaded successfully");
-//                // show success message
-//                AlertHelper.showDefaultAlert("Saved successfully", Alert.AlertType.CONFIRMATION);
-//
-//                // move to another tab
-//            }
-//
-//        } else {
-//            System.out.println("Selected image is equal to default image, not saving.");
-//        }
-//
-//    }
 
     @Subscribe
     public void handleProjectSet(ProjectEvent event) {

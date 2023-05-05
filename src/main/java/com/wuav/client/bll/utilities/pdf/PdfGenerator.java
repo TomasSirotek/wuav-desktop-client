@@ -2,9 +2,13 @@ package com.wuav.client.bll.utilities.pdf;
 
 
 import com.google.inject.Inject;
+import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
 import com.wuav.client.be.user.AppUser;
+import com.wuav.client.cache.ImageCache;
+import io.github.palexdev.materialfx.utils.SwingFXUtils;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -17,20 +21,22 @@ import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.awt.image.BufferedImage;
+import java.io.*;
 
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+
+import javax.imageio.ImageIO;
 
 public class PdfGenerator implements IPdfGenerator {
 
@@ -60,17 +66,38 @@ public class PdfGenerator implements IPdfGenerator {
 //    public static void main(String[] args) {
 //        PdfGenerator pdfGenerator = new PdfGenerator();
 //
-//        Customer customer = new Customer(1, "Tomasko", "eail@yahoo.com", "dsafsdfsdf", "Private");
+//        Customer customer = new Customer(1, "Tomasko", "eail@yahoo.com", "60 50 50 60", "Private");
 //
+//
+//        AppUser appUser = new AppUser();
+//        appUser.setEmail("tech@hotmail.com"); // not added to pdf
+//        appUser.setName("Michael"); // not added to pdf
 //
 //        Project project = new Project();
 //        project.setName("tomas");
 //        project.setDescription(DESCR_TEST);
+//        project.setCreatedAt(new Date("2023/03/04"));
+//
+//
+//
 //        project.setCustomer(customer);
 //
 //
-//        pdfGenerator.generatePdf(null, project, "test");
+//
+//
+//
+//        ByteArrayOutputStream outputStream = pdfGenerator.generatePdf(appUser, project, "test");
+//
+//        // Save the ByteArrayOutputStream to a file in the resources directory
+//        String outputPath = "src/main/resources/test.pdf";
+//        try (FileOutputStream fos = new FileOutputStream(outputPath)) {
+//            fos.write(outputStream.toByteArray());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
 //    }
+
 
 
     @Override
@@ -102,8 +129,9 @@ public class PdfGenerator implements IPdfGenerator {
             // Customer Info List area (right under the full-width image)
             PDRectangle infoRect = new PDRectangle(50, PDRectangle.A4.getHeight() - 800, PDRectangle.A4.getWidth() - 100, 400);
 
-            // Colored Link Text area
-            PDRectangle linkRect = new PDRectangle(50, PDRectangle.A4.getHeight() - 800, PDRectangle.A4.getWidth() - 100, 7);
+            // technician info
+            PDRectangle techInfoRect = new PDRectangle(PDRectangle.A4.getWidth() / 2, PDRectangle.A4.getHeight() - 800, PDRectangle.A4.getWidth() / 2 - 50, 400);
+
 
             // Description Text area
             PDRectangle descriptionRect = new PDRectangle(50, PDRectangle.A4.getHeight() - 800, PDRectangle.A4.getWidth(), 200);
@@ -112,7 +140,13 @@ public class PdfGenerator implements IPdfGenerator {
             contentStream.drawImage(logoImage, logoRect.getLowerLeftX(), logoRect.getLowerLeftY(), logoRect.getWidth(), logoRect.getHeight());
 
             // Full Width Image
-            PDImageXObject image = PDImageXObject.createFromFile(TEST_PLAN, document);
+
+            var filePlan = retrieveInstallationPlanAsFile(project.getProjectImages());
+
+
+            PDImageXObject image = PDImageXObject.createFromFile(filePlan.getAbsolutePath(), document);
+
+            filePlan.delete();
 
             // Calculate the scaling factor based on the original image size and the desired display size
             float originalWidth = image.getWidth();
@@ -143,7 +177,7 @@ public class PdfGenerator implements IPdfGenerator {
             contentStream.beginText();
             // make the font bold
             PDType1Font fontHeader = PDType1Font.HELVETICA_BOLD;
-            contentStream.setFont(fontHeader, 18);
+            contentStream.setFont(fontHeader, 14);
             contentStream.newLineAtOffset(infoRect.getLowerLeftX(), infoRect.getUpperRightY() + 20);
             contentStream.showText(customerInfo);
             // add margin on the bottom
@@ -166,28 +200,47 @@ public class PdfGenerator implements IPdfGenerator {
             }
             contentStream.endText();
 
-            // Colored Link Text
+
+            // Technician Info List
+            String technicianInfo = "Technician Info";
             contentStream.beginText();
+            contentStream.setFont(fontHeader, 14);
+            contentStream.newLineAtOffset(techInfoRect.getLowerLeftX(), techInfoRect.getUpperRightY() + 20);
+            contentStream.showText(technicianInfo);
+            contentStream.newLineAtOffset(0, -20);
+            contentStream.endText();
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMMM dd yyyy");
+            String formattedDate = dateFormat.format(project.getCreatedAt());
+
+            List<String> technicianInfoList = List.of("Technician Name: " + appUser.getName(),
+                    "Technician Email: " +  appUser.getEmail(),
+                    "Installation Date : " + formattedDate
+                   ) ;
+
+            contentStream.beginText();
+            contentStream.newLineAtOffset(0, -5);
             contentStream.setFont(font, 12);
-            contentStream.setNonStrokingColor(blueColor); // Use the blue color defined earlier
-            contentStream.newLineAtOffset(linkRect.getLowerLeftX(), linkRect.getLowerLeftY());
-            contentStream.showText("https://wuav.dk/installation/image/3");
+            contentStream.newLineAtOffset(techInfoRect.getLowerLeftX(), techInfoRect.getUpperRightY());
+
+
+            for (String line : technicianInfoList) {
+                contentStream.showText(line);
+                contentStream.newLineAtOffset(0, -20);
+            }
             contentStream.endText();
 
 
-            // descirption
-
             // Description Text
             contentStream.beginText();
-            contentStream.setFont(fontHeader, 18);
+            contentStream.setFont(fontHeader, 14);
             contentStream.setNonStrokingColor(blackColor);
             contentStream.newLineAtOffset(descriptionRect.getLowerLeftX(), descriptionRect.getLowerLeftY() + 300);
             contentStream.showText("Description");
             contentStream.endText();
 
-
             // Lorem Ipsum Text
-            String loremIpsum = DESCR_TEST;
+           // String loremIpsum = DESCR_TEST;
 
             contentStream.beginText();
             contentStream.setFont(font, 12);
@@ -195,7 +248,7 @@ public class PdfGenerator implements IPdfGenerator {
             contentStream.newLineAtOffset(descriptionRect.getLowerLeftX(), descriptionRect.getLowerLeftY() + 250);
 
             // Break lorem ipsum text into lines and show them
-            List<String> loremLines = breakTextIntoLines(loremIpsum, 500, font, 12);
+            List<String> loremLines = breakTextIntoLines(project.getDescription(), 500, font, 12);
             for (String line : loremLines) {
                 contentStream.showText(line);
                 contentStream.newLineAtOffset(0, -20);
@@ -208,8 +261,6 @@ public class PdfGenerator implements IPdfGenerator {
 
             Path resourceFolder = Paths.get(OUTPUT_FOLDER);
             Path filePath = resourceFolder.resolve(fileName + FILE_EXTENSION);
-            System.out.println("Saving file");
-
 
 
             try {
@@ -217,7 +268,7 @@ public class PdfGenerator implements IPdfGenerator {
                 contentStream.close();
                 document.close();
 
-                return outputStream; // Use the return keyword to return the outputStream
+                return outputStream;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -225,6 +276,31 @@ public class PdfGenerator implements IPdfGenerator {
             throw new RuntimeException(e);
         }
         return outputStream;
+    }
+
+    private File retrieveInstallationPlanAsFile(List<CustomImage> projectImagesList) throws IOException {
+        CustomImage mainImage = projectImagesList.stream()
+                .filter(CustomImage::isMainImage)
+                .findFirst()
+                .orElse(null);
+
+        File tempFile = null;
+
+        if (mainImage != null) {
+            // Retrieve the main image using the ImageCache class
+            Image image = ImageCache.getImage(mainImage.getId());
+
+            // Convert the Image to a BufferedImage
+            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
+
+            // Save the main image to a temporary file
+            tempFile = File.createTempFile("mainImage", ".png");
+            try (FileOutputStream outputStream = new FileOutputStream(tempFile)) {
+                ImageIO.write(bufferedImage, "png", outputStream);
+            }
+        }
+
+        return tempFile;
     }
 
     public static List<String> breakTextIntoLines(String text, float maxWidth, PDFont font, float fontSize) throws IOException {
