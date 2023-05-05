@@ -39,6 +39,7 @@ import javafx.stage.Window;
 import javax.mail.Session;
 import java.io.*;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -46,6 +47,8 @@ public class ProjectController extends RootController implements Initializable {
 
 
     private final IControllerFactory controllerFactory;
+    @FXML
+    private CheckBox selectAllTableCheck;
 
     @FXML
     private Label projectLabelMain;
@@ -88,6 +91,11 @@ public class ProjectController extends RootController implements Initializable {
 
     private Consumer<Project> onProjectSelected;
 
+    private List<CheckBox> checkBoxList = new ArrayList<>();
+
+    List<Project> selectedProjects = new ArrayList<>();
+
+
     @Inject
     public ProjectController(IControllerFactory controllerFactory, IProjectModel projectModel, IEmailSender emailSender, IEmailEngine emailEngine) {
         this.controllerFactory = controllerFactory;
@@ -102,6 +110,22 @@ public class ProjectController extends RootController implements Initializable {
        createNewProject.setOnAction(e -> openActionWindows("Create new project",ViewType.ACTIONS,null));
        exportSelected.setOnAction(e -> exportSelected());
 
+        selectAllTableCheck.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            updateCheckBoxes(newValue);
+        });
+    }
+
+    private void updateCheckBoxes(boolean selectAll) {
+        selectedProjects.clear();
+
+        for (CheckBox checkBox : checkBoxList) {
+            checkBox.setSelected(selectAll);
+            int index = checkBoxList.indexOf(checkBox);
+            Project project = projectTable.getItems().get(index);
+            if (selectAll) {
+                selectedProjects.add(project);
+            }
+        }
     }
 
     private void exportSelected() {
@@ -238,27 +262,36 @@ public class ProjectController extends RootController implements Initializable {
     }
 
 
-    List<Project> selectedProjects = new ArrayList<>();
     private void fillTable() {
-        colSelectAll.setCellValueFactory(col -> {
-            CheckBox checkBox = new CheckBox();
-            checkBox.getStyleClass().add("checked-box");
-            // set to be in the center of the cell
-            checkBox.setAlignment(Pos.CENTER);
-            checkBox.setOnAction(e -> {
-                TableCell<Project, CheckBox> cell = (TableCell<Project, CheckBox>) checkBox.getParent();
-                int rowIndex = cell.getIndex();
-                Project project = projectTable.getItems().get(rowIndex);
-                if (checkBox.isSelected()) {
-                    selectedProjects.add(project);
-                } else {
-                    selectedProjects.remove(project);
-                }
-            });
-            return new SimpleObjectProperty<>(checkBox);
-        });
+        colSelectAll.setCellFactory(param -> new TableCell<Project, CheckBox>() {
+            private CheckBox checkBox;
 
+            @Override
+            protected void updateItem(CheckBox item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    if (checkBox == null) {
+                        checkBox = new CheckBox();
+                        checkBox.getStyleClass().add("checked-box");
+                        checkBox.setAlignment(Pos.CENTER);
+                        checkBox.selectedProperty().addListener((obs, oldSelected, newSelected) -> {
+                            Project project = getTableView().getItems().get(getIndex());
+                            if (newSelected) {
+                                selectedProjects.add(project);
+                            } else {
+                                selectedProjects.remove(project);
+                            }
+                        });
+                        checkBoxList.add(checkBox);
+                    }
+                    setGraphic(checkBox);
+                }
+            }
+        });
         colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+
 
 
         // description
@@ -272,7 +305,10 @@ public class ProjectController extends RootController implements Initializable {
         // Date
         colDate.setCellValueFactory(cellData -> {
             Date date = cellData.getValue().getCreatedAt();
-            return new SimpleStringProperty(date == null ? "No data" : date.toString());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMMM dd yyyy");
+            String formattedDate = dateFormat.format(date);
+
+            return new SimpleStringProperty(date == null ? "No data" : formattedDate);
         });
 
         colEdit.setCellValueFactory(col -> {

@@ -8,6 +8,25 @@
 
 }
 
+
+.check-box {
+  -fx-border-radius: 0; /* Reset border-radius to avoid interference */
+}
+
+.check-box .box {
+  -fx-background-color: transparent;
+  -fx-border-color: #9b9b9b;
+  -fx-border-radius: 100;
+}
+
+.check-box .box:indeterminate {
+  -fx-background-color: #9b9b9b;
+}
+
+.check-box .box:selected {
+  -fx-background-color: #9b9b9b;
+}
+
 .tab{
   -fx-background-insets: 0 1 0 1,0,0;
 
@@ -26,25 +45,25 @@
 
 .tab-pane .tab:selected
 {
-  -fx-text-fill: black;
+  -fx-text-fill: transparent;
   -fx-border-width: 0;
 }
 
 .tab .tab-label {
-  -fx-alignment: CENTER;
-  -fx-text-fill: #828282;
-  -fx-font-size: 14px;
-  -fx-font-weight: bold;
-  -fx-border-color: #9b9b9b;
-  -fx-border-width: 0 0 2 0;
-  -fx-padding: 0 10 5 10;
-  -fx-cursor: HAND;
+  /*-fx-alignment: CENTER;*/
+  /*-fx-text-fill: #828282;*/
+  /*-fx-font-size: 14px;*/
+  /*-fx-font-weight: bold;*/
+  /*-fx-border-color: #9b9b9b;*/
+  /*-fx-border-width: 0 0 2 0;*/
+  /*-fx-padding: 0 10 5 10;*/
+  /*-fx-cursor: HAND;*/
 }
 .tab:selected .tab-label {
   -fx-alignment: CENTER;
-  -fx-text-fill: black;
-  -fx-border-color: black;
-  -fx-border-width: 0 0 2 0;
+  -fx-text-fill: transparent;
+  /*-fx-border-color: black;*/
+  /*-fx-border-width: 0 0 2 0;*/
 }
 
 .success{
