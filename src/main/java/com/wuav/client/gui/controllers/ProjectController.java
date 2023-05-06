@@ -54,6 +54,9 @@ public class ProjectController extends RootController implements Initializable {
     private Label projectLabelMain;
 
     @FXML
+    private TableColumn<Project,Button> colDelete;
+
+    @FXML
     private Label emailLoadLabel;
     @FXML
     private Pane emailLoadPane;
@@ -118,12 +121,17 @@ public class ProjectController extends RootController implements Initializable {
     private void updateCheckBoxes(boolean selectAll) {
         selectedProjects.clear();
 
-        for (CheckBox checkBox : checkBoxList) {
+        List<Project> items = projectTable.getItems();
+
+        for (int i = 0; i < checkBoxList.size(); i++) {
+            CheckBox checkBox = checkBoxList.get(i);
             checkBox.setSelected(selectAll);
-            int index = checkBoxList.indexOf(checkBox);
-            Project project = projectTable.getItems().get(index);
-            if (selectAll) {
-                selectedProjects.add(project);
+
+            if (i < items.size()) {
+                Project project = items.get(i);
+                if (selectAll) {
+                    selectedProjects.add(project);
+                }
             }
         }
     }
@@ -219,9 +227,9 @@ public class ProjectController extends RootController implements Initializable {
     // SALESMAN - GET ALL PROJECTS FROM ALL TECHNICIANS
     private void setTableWithProjects() {
         // get user projects from current logged user singleton class
-        emailLoadPane.setVisible(true);
-        emailLoadPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
-        emailLoadLabel.setText("Loading projects");
+      //  emailLoadPane.setVisible(true);
+      //  emailLoadPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
+      //  emailLoadLabel.setText("Loading projects");
 
         Task<List<Project>> loadProjectsTask = new Task<>() {
             @Override
@@ -247,9 +255,9 @@ public class ProjectController extends RootController implements Initializable {
             ObservableList<Project> projects = FXCollections.observableList(updatedProjects);
             projectTable.setItems(projects);
 
-            emailLoadPane.setVisible(false);
-            emailLoadPane.setStyle("-fx-background-color: transparent");
-            emailLoadLabel.setText("");
+        //    emailLoadPane.setVisible(false);
+        //    emailLoadPane.setStyle("-fx-background-color: transparent");
+         //   emailLoadLabel.setText("");
         });
 
         // Handle any errors during the task execution
@@ -343,6 +351,23 @@ public class ProjectController extends RootController implements Initializable {
                         CurrentUser.getInstance().getLoggedUser(),
                         project.getValue()
                 );
+            });
+            return new SimpleObjectProperty<>(playButton2);
+        });
+
+        colDelete.setCellValueFactory(project -> {
+            MFXButton playButton2 = new MFXButton("");
+            //  playButton.getStyleClass().add("success");
+            playButton2.setPrefWidth(100);
+            playButton2.setPrefHeight(20);
+            var imageIcon = new ImageView(new Image(getClass().getResourceAsStream("/delete.png")));
+            imageIcon.setFitHeight(15);
+            imageIcon.setFitWidth(15);
+            playButton2.setGraphic(imageIcon);
+
+            playButton2.setOnAction(e -> {
+                System.out.println("delete project" + project.getValue());
+
             });
             return new SimpleObjectProperty<>(playButton2);
         });

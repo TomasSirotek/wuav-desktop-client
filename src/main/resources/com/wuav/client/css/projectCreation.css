@@ -33,3 +33,14 @@
     -fx-alignment: CENTER;
     -fx-text-fill: transparent;
 }
+
+.exportHBox {
+    -fx-border-color: transparent transparent rgba(203, 201, 201, 0.92) transparent;
+    -fx-border-width: 0 0 1 0;
+
+}
+
+.exportGridPane:hover {
+    -fx-background-color: rgba(234, 234, 234, 0.8);
+}
+

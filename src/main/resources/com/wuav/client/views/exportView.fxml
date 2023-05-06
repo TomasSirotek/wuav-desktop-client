@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
-<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -17,78 +15,116 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="exportAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" style="-fx-background-color: #F2F2F2;" stylesheets="@../css/projectCreation.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.ExportController">
+<AnchorPane fx:id="exportAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="450.0" style="-fx-background-color: #F2F2F2;" stylesheets="@../css/projectCreation.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.ExportController">
    <children>
-      <GridPane layoutX="50.0" layoutY="98.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane layoutX="50.0" layoutY="98.0" prefHeight="399.0" prefWidth="450.0" AnchorPane.bottomAnchor="51.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints maxHeight="95.0" minHeight="10.0" prefHeight="68.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="168.0" minHeight="10.0" prefHeight="101.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="168.0" minHeight="10.0" prefHeight="77.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="119.0" minHeight="10.0" prefHeight="58.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="185.6986312866211" minHeight="10.0" prefHeight="150.9512939453125" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="270.84259033203125" minHeight="10.0" prefHeight="32.01597595214844" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="270.84259033203125" minHeight="10.0" prefHeight="206.98402404785156" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="53.25527572631836" minHeight="10.0" prefHeight="52.32297897338867" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="39.270809173583984" minHeight="10.0" prefHeight="33.67702102661133" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
                <children>
-                  <Label text="Export Projects">
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label text="Export Projects">
+                           <font>
+                              <Font name="SansSerif Bold" size="28.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+                     <children>
+                        <VBox>
+                           <children>
+                              <Label prefHeight="23.0" prefWidth="400.0" text="Export a PDF file including all uploaded files, documents">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label prefHeight="19.0" prefWidth="236.0" text="and activities made in installations">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="422.0" styleClass="exportHBox" GridPane.rowIndex="2">
+                     <children>
+                        <MFXButton fx:id="exportActionBtn" prefHeight="33.0" prefWidth="165.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Create new export " textFill="#141111">
+                           <font>
+                              <Font name="SansSerif Bold" size="15.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <graphic>
+                              <HBox>
+                                 <children>
+                                    <ImageView fitHeight="15.0" fitWidth="17.0">
+                                       <image>
+                                          <Image url="@../images/navItems/export.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </HBox>
+                           </graphic>
+                        </MFXButton>
+                     </children>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </HBox>
+               </children>
+            </GridPane>
+            <MFXScrollPane fx:id="exportPane" prefWidth="450.0" style="-fx-background-color: transparent;" GridPane.rowIndex="2">
+               <GridPane.margin>
+                  <Insets top="3.0" />
+               </GridPane.margin>
+               <padding>
+                  <Insets left="20.0" top="10.0" />
+               </padding>
+            </MFXScrollPane>
+            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+               <children>
+                  <Label prefHeight="35.0" prefWidth="400.0" text="Projects for export ">
                      <font>
-                        <Font name="SansSerif Bold" size="22.0" />
+                        <Font name="Arial Bold" size="14.0" />
                      </font>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
                   </Label>
                </children>
             </HBox>
-            <HBox alignment="CENTER" GridPane.rowIndex="1">
-               <children>
-                  <ListView fx:id="selectedProjectsForExport" prefHeight="200.0" prefWidth="200.0" />
-               </children>
-            </HBox>
-            <VBox alignment="CENTER" GridPane.rowIndex="2">
-               <children>
-                  <VBox alignment="CENTER">
-                     <children>
-                        <Label prefHeight="17.0" prefWidth="152.0" text="File name" textFill="#252f4091">
-                           <font>
-                              <Font name="SansSerif Regular" size="10.0" />
-                           </font>
-                           <padding>
-                              <Insets left="2.0" />
-                           </padding>
-                        </Label>
-                        <MFXTextField fx:id="exportNameField" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="31.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="154.0" promptText="Email" text="wuaw ">
-                           <VBox.margin>
-                              <Insets bottom="5.0" />
-                           </VBox.margin>
-                        </MFXTextField>
-                        <ChoiceBox fx:id="formatSelect" prefWidth="150.0" />
-                     </children>
-                  </VBox>
-               </children>
-            </VBox>
-            <HBox alignment="CENTER" GridPane.rowIndex="3">
-               <children>
-                  <MFXButton fx:id="exportActionBtn" prefHeight="29.0" prefWidth="157.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Export" textFill="#141111">
-                     <font>
-                        <Font name="SansSerif Bold" size="15.0" />
-                     </font>
-                     <padding>
-                        <Insets left="6.0" right="20.0" />
-                     </padding>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                     <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="17.0">
-                           <image>
-                              <Image url="@../images/navItems/export.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </MFXButton>
-               </children>
-            </HBox>
          </children>
+         <padding>
+            <Insets top="10.0" />
+         </padding>
       </GridPane>
    </children>
 </AnchorPane>
