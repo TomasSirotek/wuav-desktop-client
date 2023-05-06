@@ -18,6 +18,7 @@ import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -50,6 +51,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ModalActionController extends RootController implements Initializable {
 
+    @FXML
+    private Pane imagesPaneFinal;
+    @FXML
+    private MFXProgressSpinner uploadProgress;
+    @FXML
+    private Label uploadTextProgress;
     @FXML
     private Label imageText;
     @FXML
@@ -139,17 +146,28 @@ public class ModalActionController extends RootController implements Initializab
     private void startImageFetch(int userId) {
         AtomicBoolean fetched = new AtomicBoolean(false);
         System.out.println("starting image fetch");
+        // SETTING UI TO INDICATE TO END USER
+        uploadProgress.setVisible(true);
+        uploadTextProgress.setVisible(true);
+
+
         imageFetchTimeline = new Timeline(
                 new KeyFrame(Duration.ZERO, e -> {
                     if (!fetched.get()) {
                         List<ImageDTO> images = fetchImagesFromServer(userId);
                         if (!images.isEmpty()) {
-                            imageContent.getChildren().clear(); // Clear the imageContent VBox before adding new images
+                        imagesPaneFinal.getChildren().clear();
                             for (ImageDTO imageDTO : images) {
                                 addImageToSelectedImageVBox(new Image(imageDTO.getFile().toURI().toString()));
+
                                 listOfUploadImages.add(imageDTO);
                             }
                             fetched.set(true); // Set fetched to true after successfully fetching images
+                            // set back once all fetched
+                            uploadProgress.setVisible(false);
+                            uploadTextProgress.setVisible(false);
+                            imagesPaneFinal.getChildren().add(imagesPaneFinal2);
+
                         }
                     }
                 }),
@@ -203,28 +221,46 @@ public class ModalActionController extends RootController implements Initializab
 
 
 
+    @FXML
+    private GridPane imagesPaneFinal2 = new GridPane();
+
+
+    private int currentRow = 0;
+    private int currentColumn = 0;
 
     private void addImageToSelectedImageVBox(Image image) {
-        // Create an HBox to store the ImageView and Label
+        System.out.println("Adding image to imagesPaneFinal");
+
         HBox uploadedImage = new HBox();
+        uploadedImage.setSpacing(10);
+        uploadedImage.setStyle("-fx-margin-bottom: 20px;-fx-padding:10 0 10 25");
+
 
         // Create and configure ImageView
         ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(50);
-        imageView.setFitHeight(50);
+        imageView.setFitWidth(60);
+        imageView.setFitHeight(60);
 
-        // Add ImageView to the HBox
+        // Add ImageView to the VBox
         uploadedImage.getChildren().add(imageView);
 
         // Create and configure Label
         Label selectedFileName = new Label("image.png");
-        selectedFileName.setStyle("-fx-text-fill: black;");
+        selectedFileName.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial';");
 
-        // Add Label to the HBox
+
+        // Add Label to the VBox
         uploadedImage.getChildren().add(selectedFileName);
 
-        // Add HBox to the imageContent VBox
-        imageContent.getChildren().add(uploadedImage);
+        // Add VBox to the GridPane
+        imagesPaneFinal2.add(uploadedImage, currentColumn, currentRow);
+
+        // Update the row and column index for the next image
+        currentColumn++;
+        if (currentColumn >= imagesPaneFinal2.getColumnConstraints().size()) {
+            currentColumn = 0;
+            currentRow++;
+        }
     }
 
     private void stopImageFetch() {
@@ -238,20 +274,6 @@ public class ModalActionController extends RootController implements Initializab
         selectFile.setOnAction(e -> selectFile());
 
 
-//        Platform.runLater(() -> {
-//            Stage stage = (Stage) modalPane.getScene().getWindow();
-//            stage.setOnCloseRequest(e -> {
-//                stopImageFetch();
-//                if (imagesFromApp != null) {
-//                    removeImagesFromServer(340);
-//                    closeStage();
-//                } else {
-//                    System.out.println("No images to remove");
-//                    closeStage();
-//                }
-//
-//            });
-//        });
 
         fillClientTypeChooseField();
 
@@ -380,6 +402,7 @@ public class ModalActionController extends RootController implements Initializab
                     if(currentTab[0] == 3) {
                         tryToGenerateQRForApp();
                         startImageFetch(340);
+                        continueBtn.setText("Finish");
                     }
 
                     if (currentTab[0] > 0) {
@@ -391,10 +414,10 @@ public class ModalActionController extends RootController implements Initializab
             } else {
 
                 if (checkTabContent(currentTab[0])) { // Check if the last tab content is valid
+                  //  createNewProject();
                     continueBtn.setText("Finish");
-                    createNewProject();
-                    removeImagesFromServer(340); // ADD LATER CURRENT USER ID
                     stopImageFetch();
+                    removeImagesFromServer(340); // ADD LATER CURRENT USER ID
                     closeStage();
 
                     // Perform any additional actions here
@@ -427,13 +450,16 @@ public class ModalActionController extends RootController implements Initializab
     }
 
     public void closeStage() {
+        removeImagesFromServer(340); // ADD LATER CURRENT USER ID
         if(this.root != null){
+            removeImagesFromServer(340); // ADD LATER CURRENT USER ID
             Stage stage = getStage();
             if (stage != null) {
+                removeImagesFromServer(340); // ADD LATER CURRENT USER ID
                 stopImageFetch();
                 // Trigger the close request
                 stage.getOnCloseRequest().handle(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
-                removeImagesFromServer(340); // ADD LATER CURRENT USER ID
+
                 // Close the stage
                 stage.close();
             }
