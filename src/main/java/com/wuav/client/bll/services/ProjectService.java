@@ -100,32 +100,32 @@ public class ProjectService implements IProjectService {
             throw new Exception("Failed to add project to user");
         }
         System.out.println("Project added to user successfully");
-//
-//        // Create image in Azure Blob Storage and database, then add it to the project
-//        // ...
-//        for (ImageDTO imageDTO : projectToCreate.images()) {
-//            // Upload image to Azure Blob Storage
-//            CustomImage customImage = uploadImage(imageDTO.getFile());
-//            System.out.println("Image uploaded to Blob Storage successfully");
-//
-//            // Save image information in the image table
-//            CustomImage createdImageResult = imageRepository.createImage(
-//                    customImage.getId(),
-//                    customImage.getImageType(),
-//                    customImage.getImageUrl()
-//            );
-//            if (createdImageResult == null) {
-//                throw new Exception("Failed to save image to the image table");
-//            }
-//            System.out.println("Image saved to the image table successfully");
-//
-//            // Add image to the project_image table
-//            boolean isImageAddedToProject = imageRepository.addImageToProject(projectToCreate.id(), createdImageResult.getId(),imageDTO.isMain());
-//            if (!isImageAddedToProject) {
-//                throw new Exception("Failed to add image to the project_image table");
-//            }
-//            System.out.println("Image added to the project_image table successfully");
-//        }
+
+        // Create image in Azure Blob Storage and database, then add it to the project
+        // ...
+        for (ImageDTO imageDTO : projectToCreate.images()) {
+            // Upload image to Azure Blob Storage
+            CustomImage customImage = uploadImage(imageDTO.getFile());
+            System.out.println("Image uploaded to Blob Storage successfully");
+
+            // Save image information in the image table
+            CustomImage createdImageResult = imageRepository.createImage(
+                    customImage.getId(),
+                    customImage.getImageType(),
+                    customImage.getImageUrl()
+            );
+            if (createdImageResult == null) {
+                throw new Exception("Failed to save image to the image table");
+            }
+            System.out.println("Image saved to the image table successfully");
+
+            // Add image to the project_image table
+            boolean isImageAddedToProject = imageRepository.addImageToProject(projectToCreate.id(), createdImageResult.getId(),imageDTO.isMain());
+            if (!isImageAddedToProject) {
+                throw new Exception("Failed to add image to the project_image table");
+            }
+            System.out.println("Image added to the project_image table successfully");
+        }
 
         return true;
     }

@@ -19,6 +19,7 @@ import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -34,10 +35,12 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
 import javax.mail.Session;
@@ -51,6 +54,10 @@ public class ProjectController extends RootController implements Initializable {
 
 
     private final IControllerFactory controllerFactory;
+    @FXML
+    private HBox projectCreationStatus;
+    @FXML
+    private MFXProgressSpinner tableDataLoad;
     @FXML
     private CheckBox selectAllTableCheck;
 
@@ -238,7 +245,7 @@ public class ProjectController extends RootController implements Initializable {
       //  emailLoadPane.setVisible(true);
       //  emailLoadPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
       //  emailLoadLabel.setText("Loading projects");
-
+        tableDataLoad.setVisible(true);
 
 
 
@@ -266,6 +273,7 @@ public class ProjectController extends RootController implements Initializable {
             // Set the updated projects list to the table
             ObservableList<Project> projects = FXCollections.observableList(updatedProjects);
 
+            tableDataLoad.setVisible(false);
             projectTable.setItems(projects);
 
         //    emailLoadPane.setVisible(false);
@@ -290,7 +298,7 @@ public class ProjectController extends RootController implements Initializable {
     public void handleCategoryEvent(RefreshEvent event) {
         if (event.eventType() == EventType.UPDATE_TABLE) {
             System.out.println("refreshing event");
-
+            projectCreationStatus.setVisible(true);
             // Retrieve the updated projects list from your data source
             List<Project> updatedProjects = projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
 
@@ -300,6 +308,8 @@ public class ProjectController extends RootController implements Initializable {
             // Refresh the table with the updated projects list
             ObservableList<Project> projects = FXCollections.observableList(updatedProjects);
             projectTable.setItems(projects);
+            projectCreationStatus.setVisible(false);
+
         }
     }
 
@@ -421,9 +431,7 @@ public class ProjectController extends RootController implements Initializable {
         new Thread(() -> {
             try {
 
-                emailLoadPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
-                emailLoadPane.setVisible(true);
-                emailLoadLabel.setText("Sending email ...");
+                projectCreationStatus.setVisible(true);
                 File generatedPdf = null;
                 try {
                     generatedPdf = generatePDFToFile(appUser,project,"installation-report" + project.getCustomer().getId());
@@ -451,7 +459,7 @@ public class ProjectController extends RootController implements Initializable {
                     // Display message
                     if (emailResult) {
                         AlertHelper.showDefaultAlert("Email successfully sent ", Alert.AlertType.INFORMATION);
-                        emailLoadPane.setVisible(false);
+                        projectCreationStatus.setVisible(false);
                     }
                 });
             } catch (Exception e) {
@@ -459,7 +467,7 @@ public class ProjectController extends RootController implements Initializable {
                 Platform.runLater(() -> {
                     // Hide the progress bar
                  //   progressLoader.setVisible(false);
-                    emailLoadPane.setVisible(false);
+                    projectCreationStatus.setVisible(false);
                     // Show an error message
                     AlertHelper.showDefaultAlert("Email sending failed " + e.getMessage(), Alert.AlertType.ERROR);
                 });

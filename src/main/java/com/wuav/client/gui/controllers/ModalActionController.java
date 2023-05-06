@@ -723,8 +723,13 @@ public class ModalActionController extends RootController implements Initializab
 
 
 
-    private void createNewProject() {
+    private void voidTriggerProjectLoadingStatus(){
+        eventBus.post(new RefreshEvent(EventType.START_LOADING_PROJECTS));
+    }
 
+
+    private void createNewProject() {
+        voidTriggerProjectLoadingStatus(); // start loading in the project window
         // generating all the ids
         var projectId = UniqueIdGenerator.generateUniqueId();
         var customerId = UniqueIdGenerator.generateUniqueId();

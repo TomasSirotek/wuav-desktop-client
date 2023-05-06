@@ -44,6 +44,11 @@ import javafx.scene.web.WebEngine;
 public class ProjectActionController  extends RootController implements Initializable {
 
     @FXML
+    private MFXButton expand1;
+
+    @FXML
+    private MFXButton expand2;
+    @FXML
     private ImageView firstUploadedImage;
     @FXML
     private ImageView secondUploadedImage;
@@ -58,13 +63,13 @@ public class ProjectActionController  extends RootController implements Initiali
     @FXML
     private MFXTextField clientCityField;
     @FXML
-    private MFXTextField clientAddress;
+    private TextField clientAddress;
     @FXML
     private MFXButton continueBtn1;
     @FXML
     private TabPane tabPane;
     @FXML
-    private MFXTextField descriptionField;
+    private TextField descriptionField;
     @FXML
     private MFXButton continueBtn;
     @FXML
@@ -195,8 +200,10 @@ public class ProjectActionController  extends RootController implements Initiali
                 int nonMainImageIndex = nonMainImageCounter.getAndIncrement();
                 if (nonMainImageIndex == 0) {
                     firstUploadedImage.setImage(ImageCache.getImage(image.getId()));
+                    expand1.setOnAction(e -> previewImage(firstUploadedImage.getImage()));
                 } else if (nonMainImageIndex == 1) {
                     secondUploadedImage.setImage(ImageCache.getImage(image.getId()));
+                    expand2.setOnAction(e -> previewImage(secondUploadedImage.getImage()));
                 }
             }
         });
@@ -232,7 +239,7 @@ public class ProjectActionController  extends RootController implements Initiali
             selectedImage.setImage(new javafx.scene.image.Image(selectedFile.toURI().toString()));
             selectedFileHBox.setVisible(true);
             selectFile.setDisable(true);
-            changeImageActionHandleBox();
+         //   changeImageActionHandleBox();
             changeSelectedFileHBox();
 
 
@@ -264,12 +271,12 @@ public class ProjectActionController  extends RootController implements Initiali
         MFXButton preview = new MFXButton("Preview");
         preview.getStyleClass().add("mfx-raised");
         preview.setStyle("-fx-background-color: #E84910; -fx-text-fill: #ffffff;");
-        preview.setOnAction(e -> previewImage());
+      //  preview.setOnAction(e -> previewImage());
         imageActionHandleBox.getChildren().add(preview);
 
     }
 
-    private void previewImage() {
+    private void previewImage(Image image ) {
         // open new scene with image inside
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -277,7 +284,7 @@ public class ProjectActionController  extends RootController implements Initiali
         stage.initStyle(StageStyle.DECORATED);
         stage.setResizable(false);
 
-        ImageView imageView = new ImageView(selectedImage.getImage());
+        ImageView imageView = new ImageView(image);
         imageView.setPreserveRatio(true);
         imageView.setFitHeight(600);
         imageView.setFitHeight(500);

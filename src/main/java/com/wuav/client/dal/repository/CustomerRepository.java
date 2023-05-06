@@ -38,8 +38,8 @@ public class CustomerRepository implements ICustomerRepository {
             var affectedRows = mapper.createCustomer(
                     customerDTO.id(),
                     customerDTO.name(),
-                    customerDTO.phone(),
                     customerDTO.email(),
+                    customerDTO.phone(),
                     customerDTO.address().id(),
                     customerDTO.customerType()
             );

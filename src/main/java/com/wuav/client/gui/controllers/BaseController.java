@@ -203,7 +203,6 @@ public class BaseController extends RootController implements Initializable {
         stage.initOwner(getStage());
         stage.initModality(Modality.WINDOW_MODAL);
         stage.setTitle(title);
-        stage.initStyle(StageStyle.UNDECORATED);
 
         stage.setResizable(false);
         stage.setScene(scene);
@@ -226,18 +225,15 @@ public class BaseController extends RootController implements Initializable {
     public void logoutButton(ActionEvent actionEvent) throws IOException {
         CurrentUser.getInstance().logout();
 
-        getStage().close();
+      getStage().close();
+      // open again new stage with login view
+        RootController parent = null;
+        parent = loadNodesView(ViewType.LOGIN);
+        show(parent.getView(), "Login");
+
+
         // this is bad
-//        IControllerFactory factory = StartUp.getInjector().getInstance(IControllerFactory.class);
-//        IRootController controller = factory.loadFxmlFile(ViewType.LOGIN);
-//
-//
-//        Stage stage = new Stage();
-//        Scene scene = new Scene(controller.getView());
-//        stage.setTitle("Wuav-login");
-//        stage.setResizable(false);
-//        stage.setScene(scene);
-//        stage.show();
+
     }
     //endregion
 

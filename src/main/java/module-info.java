@@ -23,6 +23,7 @@ module com.wuav.client {
     requires com.azure.storage.blob;
     requires com.google.gson;
     requires thymeleaf;
+    requires net.coobird.thumbnailator;
 
     exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common,org.apache.pdfbox;
     exports com.wuav.client.bll.helpers;
