@@ -51,6 +51,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ModalActionController extends RootController implements Initializable {
 
     @FXML
+    private Pane addedFilePane;
+    @FXML
     private MFXTextField clientZipField;
     @FXML
     private MFXTextField clientStreetField;
@@ -72,7 +74,7 @@ public class ModalActionController extends RootController implements Initializab
     private MFXTextField clientCityField;
 
     @FXML
-    private MFXTextField descriptionField;
+    private TextField descriptionField;
     @FXML
     private ImageView selectedImage;
     @FXML
@@ -102,6 +104,8 @@ public class ModalActionController extends RootController implements Initializab
     private MFXButton createNewProject;
 
     private Image defaultImage = new Image("/no_data.png");
+    private Image fileImage = new Image("/image.png");
+
 
     private final IControllerFactory controllerFactory;
 
@@ -575,9 +579,9 @@ public class ModalActionController extends RootController implements Initializab
             selectedImageFile = selectedFile; // SET TO SELECTED IMAGE
 
             selectedImage.setImage(new javafx.scene.image.Image(selectedFile.toURI().toString()));
-            selectedFileHBox.setVisible(true);
+         //   selectedFileHBox.setVisible(true);
             selectFile.setDisable(true);
-            changeImageActionHandleBox();
+           // changeImageActionHandleBox();
             changeSelectedFileHBox();
 
 
@@ -588,30 +592,75 @@ public class ModalActionController extends RootController implements Initializab
     }
 
     private void changeImageActionHandleBox() {
-        imageActionHandleBox.getChildren().clear();
+    //    imageActionHandleBox.getChildren().clear();
         // add new button preview that has png image inside
         MFXButton preview = new MFXButton("Preview");
         preview.getStyleClass().add("mfx-raised");
         preview.setStyle("-fx-background-color: #E84910; -fx-text-fill: #ffffff;");
         preview.setOnAction(e -> previewImage());
-        imageActionHandleBox.getChildren().add(preview);
+       // imageActionHandleBox.getChildren().add(preview);
     }
 
+    private         GridPane gridPane = new GridPane();
     private void changeSelectedFileHBox() {
-        selectedFileHBox.getChildren().clear();
-        // create hbox with label at the start and button at the end with x as text and make the box light red and so that text start at the start and ubtton at the end
-        Label selectedFileLabel = new Label("Selected File: ");
-        selectedFileHBox.setStyle("-fx-text-fill: #ffffff;");
-        selectedFileHBox.setStyle("-fx-background-color: #E84910; -fx-spacing: 10; -fx-opacity: 0.8; -fx-padding: 10;");
-        selectedFileHBox.getChildren().add(selectedFileLabel);
-        Label selectedFileName = new Label("image.png");
-        selectedFileName.setStyle("-fx-text-fill: black;");
-        selectedFileHBox.getChildren().add(selectedFileName);
+//        selectedFileHBox.getChildren().clear();
+//        // create hbox with label at the start and button at the end with x as text and make the box light red and so that text start at the start and ubtton at the end
+//        Label selectedFileLabel = new Label("Selected File: ");
+//        selectedFileHBox.setStyle("-fx-text-fill: #ffffff;");
+//        selectedFileHBox.setStyle("-fx-background-color: #E84910; -fx-spacing: 10; -fx-opacity: 0.8; -fx-padding: 10;");
+//        selectedFileHBox.getChildren().add(selectedFileLabel);
+//        Label selectedFileName = new Label("image.png");
+//        selectedFileName.setStyle("-fx-text-fill: black;");
+//        selectedFileHBox.getChildren().add(selectedFileName);
+//        MFXButton removeFile = new MFXButton("X");
+//        removeFile.getStyleClass().add("mfx-raised");
+//        removeFile.setStyle("-fx-background-color: red; -fx-text-fill: #ffffff;");
+//        removeFile.setOnAction(e -> removeImage());
+//        selectedFileHBox.getChildren().add(removeFile);
+
+        addedFilePane.getChildren().clear();
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10); // Set horizontal gap between grid cells
+        gridPane.setVgap(10); // Set vertical gap between grid cells
+        gridPane.setStyle("-fx-padding: 20 0 0 0 ");
+
+        ColumnConstraints column1 = new ColumnConstraints();
+        column1.setHgrow(Priority.ALWAYS); // Allow column to grow horizontally
+
+        ColumnConstraints column2 = new ColumnConstraints();
+        column2.setPrefWidth(180);
+        column2.setHgrow(Priority.ALWAYS); // Allow column to grow horizontally
+
+        ColumnConstraints column3 = new ColumnConstraints();
+        column3.setPrefWidth(100);
+
+        column3.setHgrow(Priority.ALWAYS); // Allow column to grow horizontally
+
+        ColumnConstraints column4 = new ColumnConstraints();
+        column4.setHgrow(Priority.ALWAYS); // Allow column to grow horizontally
+
+        gridPane.getColumnConstraints().addAll(column1, column2, column3, column4);
+
+        gridPane.setHgrow(gridPane, Priority.ALWAYS); // Make the GridPane fill the available width
+
+        ImageView imageView = new ImageView(fileImage); // Replace `defaultImage` with your image source
+        imageView.setFitWidth(30); // Set the desired width for the ImageView
+        imageView.setFitHeight(30); // Set the desired height for the ImageView
+
+        Label projectNameLabel = new Label(selectedImageFile.getName());
+        projectNameLabel.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial';");
+
         MFXButton removeFile = new MFXButton("X");
         removeFile.getStyleClass().add("mfx-raised");
-        removeFile.setStyle("-fx-background-color: red; -fx-text-fill: #ffffff;");
+        removeFile.setStyle("-fx-background-color:  #E84910; -fx-text-fill: #ffffff;");
         removeFile.setOnAction(e -> removeImage());
-        selectedFileHBox.getChildren().add(removeFile);
+
+// Add the nodes to the grid pane
+        gridPane.add(imageView, 0, 0); // ImageView in the first column
+        gridPane.add(projectNameLabel, 1, 0); // Project Name Label in the second column
+        gridPane.add(removeFile, 3, 0); // Remove button in the fourth column
+
+        addedFilePane.getChildren().add(gridPane);
 
     }
 
@@ -646,16 +695,7 @@ public class ModalActionController extends RootController implements Initializab
         // set image back to the defualt not data selected no data in resource folder
         selectedImage.setImage(defaultImage);
         // remove action button and set label back to no image uploaded
-
-        imageActionHandleBox.getChildren().clear();
-        Label noImageUploaded = new Label("No Image Uploaded");
-        imageActionHandleBox.getChildren().add(noImageUploaded);
-        // clean selected file hbox and set back the text to no file selected
-        selectedFileHBox.getChildren().clear();
-        Label noFileSelected = new Label("No File Selected");
-        selectedFileHBox.getChildren().add(noFileSelected);
-        // set back the color back to white
-        selectedFileHBox.setStyle("-fx-background-color: #ffffff;");
+        addedFilePane.getChildren().clear();
         selectFile.setDisable(false);
     }
 

@@ -77,7 +77,7 @@
                      <children>
                         <MFXButton fx:id="exportActionBtn" prefHeight="33.0" prefWidth="165.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Create new export " textFill="#141111">
                            <font>
-                              <Font name="SansSerif Bold" size="15.0" />
+                              <Font name="SansSerif Bold" size="13.0" />
                            </font>
                            <cursor>
                               <Cursor fx:constant="HAND" />
@@ -111,7 +111,7 @@
             </MFXScrollPane>
             <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
                <children>
-                  <Label prefHeight="35.0" prefWidth="400.0" text="Projects for export ">
+                  <Label prefHeight="35.0" prefWidth="400.0" text="Projects to export ">
                      <font>
                         <Font name="Arial Bold" size="14.0" />
                      </font>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXDatePicker?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
@@ -9,6 +10,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -16,41 +18,24 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="modalPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #F2F2F2;" stylesheets="@../css/projectCreation.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.ModalActionController">
+<AnchorPane fx:id="modalPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="450.0" style="-fx-background-color: #F2F2F2;" stylesheets="@../css/projectCreation.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.ModalActionController">
    <children>
-      <GridPane prefHeight="603.0" prefWidth="601.0">
+      <GridPane prefHeight="603.0" prefWidth="450.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints maxHeight="118.56525039672852" minHeight="10.0" prefHeight="60.2738037109375" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="457.2112731933594" minHeight="10.0" prefHeight="457.2112731933594" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="300.01863861083984" minHeight="10.0" prefHeight="41.788726806640625" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="457.2112731933594" minHeight="10.0" prefHeight="436.90655517578125" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="300.01863861083984" minHeight="10.0" prefHeight="98.09344482421875" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <GridPane prefWidth="601.0">
-              <columnConstraints>
-                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="196.9617156982422" minWidth="10.0" prefWidth="140.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="259.452392578125" minWidth="10.0" prefWidth="129.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="259.452392578125" minWidth="10.0" prefWidth="108.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="259.452392578125" minWidth="10.0" prefWidth="131.0" />
-                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="226.0" minWidth="10.0" prefWidth="159.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <MFXButton text="Basic info" />
-                  <MFXButton text="Installation plan" GridPane.columnIndex="1" />
-                  <MFXButton text="Finish" GridPane.columnIndex="4" />
-                  <MFXButton text="Photos" GridPane.columnIndex="2" />
-                  <MFXButton text="Customer info" GridPane.columnIndex="3" />
-               </children>
-            </GridPane>
             <GridPane prefWidth="601.0" GridPane.rowIndex="1">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.3147735595703" minWidth="0.0" prefWidth="0.0" />
@@ -62,142 +47,225 @@
                <children>
                   <TabPane fx:id="tabPaneCreate" prefHeight="457.0" prefWidth="664.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnIndex="1">
                     <tabs>
-                      <Tab fx:id="tab1" text="Basic info">
+                      <Tab fx:id="tab1" text="w">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <GridPane prefHeight="431.0" prefWidth="508.0">
+                                    <GridPane prefHeight="408.0" prefWidth="453.0">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                       </columnConstraints>
                                       <rowConstraints>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="404.4181823730469" minHeight="10.0" prefHeight="339.59344482421875" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <VBox alignment="CENTER">
+                                          <HBox prefWidth="413.0" style="-fx-border-radius: 30; -fx-border-width: 2;">
                                              <children>
-                                                <Label prefHeight="17.0" prefWidth="209.0" text="Input project name" textFill="#252f4091">
-                                                   <font>
-                                                      <Font name="SansSerif Regular" size="12.0" />
-                                                   </font>
+                                                <VBox prefHeight="176.0" prefWidth="411.0">
+                                                   <children>
+                                                      <HBox prefHeight="46.0" prefWidth="401.0">
+                                                         <children>
+                                                            <Label prefHeight="17.0" prefWidth="163.0" text="Basic project details">
+                                                               <font>
+                                                                  <Font name="SansSerif Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
+                                                      <Label prefHeight="17.0" prefWidth="209.0" text="Input project name">
+                                                         <font>
+                                                            <Font name="SansSerif Regular" size="12.0" />
+                                                         </font>
+                                                         <padding>
+                                                            <Insets left="2.0" />
+                                                         </padding>
+                                                         <VBox.margin>
+                                                            <Insets />
+                                                         </VBox.margin>
+                                                      </Label>
+                                                      <MFXTextField fx:id="projectNameField" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="37.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="37.0" prefWidth="385.0" promptText="Enter project name" style="-fx-border-color: #c5c1c1;">
+                                                         <VBox.margin>
+                                                            <Insets top="5.0" />
+                                                         </VBox.margin>
+                                                      </MFXTextField>
+                                                      <VBox prefHeight="241.0" prefWidth="401.0">
+                                                         <children>
+                                                            <VBox prefHeight="76.0" prefWidth="389.0">
+                                                               <children>
+                                                                  <Label prefHeight="17.0" prefWidth="209.0" text="Select Date">
+                                                                     <font>
+                                                                        <Font name="SansSerif Regular" size="12.0" />
+                                                                     </font>
+                                                                     <padding>
+                                                                        <Insets left="2.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <MFXDatePicker prefHeight="38.0" prefWidth="384.0" promptText="Select date" style="-fx-border-color: #c5c1c1;" />
+                                                               </children>
+                                                               <VBox.margin>
+                                                                  <Insets bottom="10.0" />
+                                                               </VBox.margin>
+                                                            </VBox>
+                                                            <Label prefHeight="17.0" prefWidth="209.0" text="Description">
+                                                               <font>
+                                                                  <Font name="SansSerif Regular" size="12.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="2.0" />
+                                                               </padding>
+                                                               <VBox.margin>
+                                                                  <Insets bottom="5.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <TextField fx:id="descriptionField" alignment="TOP_LEFT" prefHeight="176.0" prefWidth="374.0" promptText="Enter your installation description  " style="-fx-border-color: #c5c1c1;">
+                                                               <VBox.margin>
+                                                                  <Insets right="17.0" top="2.0" />
+                                                               </VBox.margin>
+                                                               <padding>
+                                                                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                               </padding>
+                                                            </TextField>
+                                                         </children>
+                                                         <VBox.margin>
+                                                            <Insets top="10.0" />
+                                                         </VBox.margin>
+                                                      </VBox>
+                                                   </children>
                                                    <padding>
-                                                      <Insets left="2.0" />
+                                                      <Insets bottom="10.0" left="10.0" top="10.0" />
                                                    </padding>
-                                                </Label>
-                                                <MFXTextField fx:id="projectNameField" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="31.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="212.0" promptText="Address/Custom name... " />
+                                                </VBox>
                                              </children>
-                                          </VBox>
+                                             <GridPane.margin>
+                                                <Insets bottom="20.0" left="20.0" right="20.0" />
+                                             </GridPane.margin>
+                                             <effect>
+                                                <DropShadow height="10.69" radius="5.2125" width="12.16">
+                                                   <color>
+                                                      <Color opacity="0.09942638874053955" />
+                                                   </color>
+                                                </DropShadow>
+                                             </effect>
+                                          </HBox>
                                        </children>
                                     </GridPane>
                                  </children>
                               </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab fx:id="tab2" disable="true" text="Plan">
+                      <Tab fx:id="tab2" text="2">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <GridPane layoutX="-1.0" layoutY="-1.0" prefHeight="424.0" prefWidth="553.0">
+                                    <GridPane layoutX="-1.0" layoutY="-1.0" prefHeight="424.0" prefWidth="451.0">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                       </columnConstraints>
                                       <rowConstraints>
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                        <RowConstraints maxHeight="115.0" minHeight="10.0" prefHeight="115.0" vgrow="SOMETIMES" />
-                                        <RowConstraints maxHeight="101.0" minHeight="10.0" prefHeight="72.0" vgrow="SOMETIMES" />
-                                        <RowConstraints maxHeight="151.0" minHeight="10.0" prefHeight="150.0" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="170.88812255859375" minHeight="10.0" prefHeight="170.88812255859375" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="117.36383056640625" minHeight="10.0" prefHeight="94.61187744140625" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="151.0" minHeight="10.0" prefHeight="123.13616943359375" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <HBox alignment="CENTER" GridPane.rowIndex="1">
+                                          <HBox alignment="CENTER" prefHeight="59.0" prefWidth="303.0" GridPane.rowIndex="2">
                                              <children>
-                                                <HBox alignment="CENTER" prefHeight="50.0" prefWidth="289.0" style="-fx-border-color: gray; -fx-border-style: dotted; -fx-border-radius: 20;">
+                                                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="404.0">
                                                    <children>
-                                                      <GridPane>
-                                                         <columnConstraints>
-                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="52.192596435546875" minWidth="10.0" prefWidth="38.98101806640625" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="144.00848388671875" minWidth="10.0" prefWidth="132.4942626953125" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="113.38397216796875" minWidth="10.0" prefWidth="86.5057373046875" />
-                                                         </columnConstraints>
-                                                         <rowConstraints>
-                                                            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                                         </rowConstraints>
+                                                      <HBox alignment="CENTER" prefHeight="80.0" prefWidth="398.0" style="-fx-border-color: gray; -fx-border-style: dotted; -fx-border-radius: 20;">
                                                          <children>
-                                                            <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                                                               <image>
-                                                                  <Image url="@../images/navItems/upload.png" />
-                                                               </image>
-                                                            </ImageView>
-                                                            <Label prefHeight="18.0" prefWidth="125.0" text="Select a file to upload " GridPane.columnIndex="1" />
-                                                            <MFXButton fx:id="selectFile" prefHeight="29.0" prefWidth="86.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Select file" textFill="#141111" GridPane.columnIndex="2">
-                                                               <font>
-                                                                  <Font name="SansSerif Bold" size="15.0" />
-                                                               </font>
-                                                               <cursor>
-                                                                  <Cursor fx:constant="HAND" />
-                                                               </cursor>
-                                                               <effect>
-                                                                  <DropShadow height="12.16" radius="3.3675" width="3.31" />
-                                                               </effect>
-                                                            </MFXButton>
+                                                            <GridPane prefHeight="78.0" prefWidth="278.0">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="52.192596435546875" minWidth="10.0" prefWidth="38.98101806640625" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="144.00848388671875" minWidth="10.0" prefWidth="132.4942626953125" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="113.38397216796875" minWidth="10.0" prefWidth="86.5057373046875" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <ImageView fitHeight="29.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true">
+                                                                     <image>
+                                                                        <Image url="@../images/navItems/upload.png" />
+                                                                     </image>
+                                                                  </ImageView>
+                                                                  <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
+                                                                     <children>
+                                                                        <Label prefHeight="18.0" prefWidth="125.0" text="Select a file to upload ">
+                                                                           <font>
+                                                                              <Font size="11.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <Label text="*Accepted .png .jpeg">
+                                                                           <font>
+                                                                              <Font size="11.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                                     </children>
+                                                                  </VBox>
+                                                                  <MFXButton fx:id="selectFile" prefHeight="29.0" prefWidth="86.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Add file" textFill="#141111" GridPane.columnIndex="2">
+                                                                     <font>
+                                                                        <Font name="SansSerif Bold" size="12.0" />
+                                                                     </font>
+                                                                     <cursor>
+                                                                        <Cursor fx:constant="HAND" />
+                                                                     </cursor>
+                                                                     <effect>
+                                                                        <DropShadow height="12.16" radius="3.3675" width="3.31" />
+                                                                     </effect>
+                                                                  </MFXButton>
+                                                               </children>
+                                                            </GridPane>
                                                          </children>
-                                                      </GridPane>
+                                                      </HBox>
                                                    </children>
+                                                   <padding>
+                                                      <Insets bottom="20.0" left="10.0" right="10.0" top="20.0" />
+                                                   </padding>
                                                 </HBox>
                                              </children>
-                                             <padding>
-                                                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-                                             </padding>
                                           </HBox>
-                                          <HBox fx:id="selectedFileHBox" alignment="CENTER" prefHeight="59.0" prefWidth="303.0" GridPane.rowIndex="2">
+                                          <HBox alignment="CENTER" prefWidth="397.0" GridPane.rowIndex="1">
                                              <children>
-                                                <Label text="No file selected yet ..." />
-                                             </children>
-                                          </HBox>
-                                          <VBox alignment="CENTER" GridPane.rowIndex="3">
-                                             <children>
-                                                <Label text="Edit you installation notes" textFill="#ababab">
-                                                   <font>
-                                                      <Font size="10.0" />
-                                                   </font>
-                                                </Label>
-                                                <MFXTextField fx:id="descriptionField" alignment="TOP_LEFT" floatingTextGap="0.0" graphicTextGap="0.0" measureUnitGap="0.0" prefHeight="92.0" prefWidth="303.0" />
-                                             </children>
-                                          </VBox>
-                                          <HBox alignment="CENTER" prefWidth="397.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                             <children>
-                                                <ImageView fx:id="selectedImage" fitHeight="93.0" fitWidth="95.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fx:id="selectedImage" fitHeight="149.0" fitWidth="154.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../images/navItems/no_data.png" />
                                                    </image>
                                                 </ImageView>
                                              </children>
                                           </HBox>
-                                          <HBox fx:id="imageActionHandleBox" alignment="TOP_CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                          <VBox GridPane.rowIndex="3">
                                              <children>
-                                                <Label text="No image uploaded">
+                                                <Label prefHeight="17.0" prefWidth="452.0" text="Added files">
                                                    <font>
-                                                      <Font name="SansSerif Bold" size="21.0" />
+                                                      <Font name="SansSerif Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <Pane fx:id="addedFilePane" prefHeight="200.0" prefWidth="392.0" />
+                                             </children>
+                                             <padding>
+                                                <Insets left="30.0" right="25.0" />
+                                             </padding>
+                                          </VBox>
+                                          <HBox prefHeight="55.0" prefWidth="430.0">
+                                             <children>
+                                                <Label prefHeight="17.0" prefWidth="163.0" text="Basic project details">
+                                                   <font>
+                                                      <Font name="SansSerif Bold" size="15.0" />
                                                    </font>
                                                 </Label>
                                              </children>
+                                             <padding>
+                                                <Insets left="30.0" top="8.0" />
+                                             </padding>
                                           </HBox>
                                        </children>
                                     </GridPane>
-                                    <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="38.0" prefWidth="496.0">
-                                       <children>
-                                          <Label text="Plan install">
-                                             <font>
-                                                <Font name="SansSerif Bold" size="25.0" />
-                                             </font>
-                                          </Label>
-                                       </children>
-                                    </HBox>
                                  </children>
                               </AnchorPane>
                         </content>
                       </Tab>
-                        <Tab fx:id="tab3" disable="true" text="Info">
+                        <Tab fx:id="tab3" disable="true" text="2">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="403.0">
                                  <children>
@@ -348,7 +416,7 @@
                               </AnchorPane>
                            </content>
                         </Tab>
-                        <Tab fx:id="tab4" disable="true" text="FInish">
+                        <Tab fx:id="tab4" disable="true" text="2">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="341.0">
                                  <children>
@@ -393,23 +461,41 @@
             </GridPane>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
                <children>
-                  <MFXButton fx:id="backBtn" buttonType="RAISED" prefHeight="27.0" prefWidth="212.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Back">
+                  <MFXButton fx:id="backBtn" buttonType="RAISED" prefHeight="27.0" prefWidth="193.0" style="-fx-background-color: gray; -fx-text-fill: white;" text="Back">
                      <font>
                         <Font name="SansSerif Bold" size="13.0" />
                      </font>
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
                   </MFXButton>
-                  <MFXButton fx:id="continueBtn" buttonType="RAISED" prefHeight="27.0" prefWidth="212.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Next">
+                  <MFXButton fx:id="continueBtn" buttonType="RAISED" prefHeight="27.0" prefWidth="191.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Next">
                      <font>
                         <Font name="SansSerif Bold" size="13.0" />
                      </font>
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
                   </MFXButton>
                </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Create project">
+                     <font>
+                        <Font name="SansSerif Bold" size="28.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="25.0" />
+               </padding>
             </HBox>
          </children>
       </GridPane>
