@@ -95,8 +95,31 @@
             id="getProjectById"
             resultMap="projectResult"
     >
-        SELECT id, name, description, created_at FROM Project
-        WHERE id = #{id}
+        SELECT
+            p.id,
+            p.name,
+            p.description,
+            p.created_at,
+            c.id as customer_id,
+            c.name as customer_name,
+            c.email as customer_email,
+            c.type as customer_type,
+            c.phone_number as customer_phone,
+            a.id as address_id,
+            a.street,
+            a.city,
+            a.zip_code as zipCode,
+            i.id as imageId,
+            i.image_type,
+            i.image_url,
+            pi.is_main_image
+        FROM Project p
+                 INNER JOIN user_project up ON p.id = up.project_id
+                 INNER JOIN customer c ON p.customer_id = c.id
+                 INNER JOIN address a ON c.address_id = a.id
+                 LEFT JOIN project_image pi ON p.id = pi.project_id
+                 LEFT JOIN image i ON pi.image_id = i.id
+        WHERE p.id = #{id}
     </select>
 
 

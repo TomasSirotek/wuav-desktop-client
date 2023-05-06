@@ -5,6 +5,7 @@ import com.wuav.client.be.Project;
 import com.wuav.client.bll.utilities.AlertHelper;
 import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
 import com.wuav.client.gui.controllers.abstractController.RootController;
+import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXScrollPane;
@@ -53,16 +54,20 @@ public class ExportController extends RootController implements Initializable {
 
     private final IPdfGenerator pdfGenerator;
 
+    private IProjectModel projectModel;
+
     private Image defaultImage = new Image("/pdf.png");
 
     @Inject
-    public ExportController(IPdfGenerator pdfGenerator) {
+    public ExportController(IPdfGenerator pdfGenerator, IProjectModel projectModel) {
         this.pdfGenerator = pdfGenerator;
+        this.projectModel = projectModel;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         exportActionBtn.setOnAction(e -> exportDocument());
+
         Platform.runLater(() -> {
             Stage stage = (Stage) exportAnchorPane.getScene().getWindow();
             projectsToExport = (List<Project>) stage.getProperties().get("projectsToExport");

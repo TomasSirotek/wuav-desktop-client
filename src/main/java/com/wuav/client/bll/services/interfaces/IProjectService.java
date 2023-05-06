@@ -13,4 +13,5 @@ public interface IProjectService {
 
     boolean createProject(int userId, CreateProjectDTO projectToCreate);
 
+    Project getProjectById(int projectId);
 }

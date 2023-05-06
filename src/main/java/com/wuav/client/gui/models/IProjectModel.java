@@ -11,7 +11,15 @@ public interface IProjectModel {
 
     List<Project> getProjectsByUserId(int userId);
 
-    boolean createProject(int userId,CreateProjectDTO projectToCreate);
+    void updateProjectsCache(int userId, List<Project> updatedProjects);
+
+    boolean createProject(int userId, CreateProjectDTO projectToCreate);
+
+    List<Project> getCachedProjectsByUserId(int userId);
+
+    void updateCacheForUser(int userId, Project newProject);
 
     List<Project> getAllProjects();
+
+    Project getProjectById(int projectId);
 }

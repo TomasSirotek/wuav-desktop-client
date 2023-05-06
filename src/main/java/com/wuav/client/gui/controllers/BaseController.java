@@ -1,13 +1,14 @@
 package com.wuav.client.gui.controllers;
 
 
+import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 
+import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
-import com.wuav.client.config.StartUp;
-import com.wuav.client.gui.controllers.abstractController.IRootController;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
+import com.wuav.client.gui.controllers.event.RefreshEvent;
 import com.wuav.client.gui.models.user.CurrentUser;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.animation.TranslateTransition;
@@ -15,20 +16,14 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.effect.Blend;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.effect.ColorAdjust;
-import javafx.scene.effect.ColorInput;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -74,13 +69,16 @@ public class BaseController extends RootController implements Initializable {
 
     private final IControllerFactory controllerFactory;
 
+    private final EventBus eventBus;
+
     private boolean isSidebarExpanded = false;
 
     private Image defaultImage = new Image("/no_data.png");
 
     @Inject
-    public BaseController(IControllerFactory controllerFactory) {
+    public BaseController(IControllerFactory controllerFactory, EventBus eventBus) {
         this.controllerFactory = controllerFactory;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -172,6 +170,7 @@ public class BaseController extends RootController implements Initializable {
     @FXML
     private void handleDashBoardPageSwitch() {
         projectButton.setStyle("-fx-background-color: rgba(234, 234, 234, 0.8);");
+        eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
         runInParallel(ViewType.PROJECTS);
     }
     //endregion

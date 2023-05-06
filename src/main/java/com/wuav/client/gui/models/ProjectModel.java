@@ -9,15 +9,14 @@ import com.wuav.client.cache.ImageCache;
 import com.wuav.client.dal.blob.BlobStorageFactory;
 import com.wuav.client.gui.dto.CreateProjectDTO;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ProjectModel implements IProjectModel{
     private IProjectService projectService;
 
-    private Map<Integer, List<Project>> projectsCache = new HashMap<>();
+   //  private Map<Integer, List<Project>> projectsCache = new HashMap<>();
 
+    private final Map<Integer, List<Project>> projectsCache = Collections.synchronizedMap(new HashMap<>());
     private final int ALL_PROJECTS_KEY = -1;
 
     @Inject
@@ -29,13 +28,36 @@ public class ProjectModel implements IProjectModel{
     public List<Project> getProjectsByUserId(int userId) {
         List<Project> projects = projectsCache.get(userId);
 
+
         if (projects == null) {
             projects = projectService.getProjectsByUserId(userId);
-          //  cacheProjectsImages(projects);
+            //  cacheProjectsImages(projects);
             projectsCache.put(userId, projects);
         }
 
         return projects;
+    }
+
+    @Override
+    public List<Project> getCachedProjectsByUserId(int userId) {
+        return projectsCache.get(userId);
+    }
+
+    @Override
+    public void updateCacheForUser(int userId, Project newProject) {
+        List<Project> projects = projectsCache.get(userId);
+        if (projects != null) {
+            projects.add(newProject);
+        } else {
+            projects = new ArrayList<>();
+            projects.add(newProject);
+            projectsCache.put(userId, projects);
+        }
+    }
+
+    @Override
+    public void updateProjectsCache(int userId, List<Project> updatedProjects) {
+        projectsCache.put(userId, updatedProjects);
     }
 
     @Override
@@ -48,6 +70,11 @@ public class ProjectModel implements IProjectModel{
         }
 
         return projects;
+    }
+
+    @Override
+    public Project getProjectById(int projectId) {
+        return  projectService.getProjectById(projectId);
     }
 
 

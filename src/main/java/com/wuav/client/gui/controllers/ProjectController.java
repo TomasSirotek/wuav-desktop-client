@@ -1,8 +1,11 @@
 package com.wuav.client.gui.controllers;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.wuav.client.be.*;
 import com.wuav.client.be.user.AppUser;
+import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.bll.utilities.email.EmailConnectionFactory;
 import com.wuav.client.bll.utilities.email.IEmailSender;
@@ -11,6 +14,7 @@ import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
 import com.wuav.client.bll.utilities.pdf.PdfGenerator;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
+import com.wuav.client.gui.controllers.event.RefreshEvent;
 import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
@@ -98,13 +102,16 @@ public class ProjectController extends RootController implements Initializable {
 
     List<Project> selectedProjects = new ArrayList<>();
 
+    private final EventBus eventBus;
+
 
     @Inject
-    public ProjectController(IControllerFactory controllerFactory, IProjectModel projectModel, IEmailSender emailSender, IEmailEngine emailEngine) {
+    public ProjectController(IControllerFactory controllerFactory, IProjectModel projectModel, IEmailSender emailSender, IEmailEngine emailEngine, EventBus eventBus) {
         this.controllerFactory = controllerFactory;
         this.projectModel = projectModel;
         this.emailSender = emailSender;
         this.emailEngine = emailEngine;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -112,6 +119,7 @@ public class ProjectController extends RootController implements Initializable {
         fillTable();
        createNewProject.setOnAction(e -> openActionWindows("Create new project",ViewType.ACTIONS,null));
        exportSelected.setOnAction(e -> exportSelected());
+        eventBus.register(this);
 
         selectAllTableCheck.selectedProperty().addListener((observable, oldValue, newValue) -> {
             updateCheckBoxes(newValue);
@@ -231,6 +239,10 @@ public class ProjectController extends RootController implements Initializable {
       //  emailLoadPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
       //  emailLoadLabel.setText("Loading projects");
 
+
+
+
+
         Task<List<Project>> loadProjectsTask = new Task<>() {
             @Override
             protected List<Project> call() {
@@ -253,6 +265,7 @@ public class ProjectController extends RootController implements Initializable {
 
             // Set the updated projects list to the table
             ObservableList<Project> projects = FXCollections.observableList(updatedProjects);
+
             projectTable.setItems(projects);
 
         //    emailLoadPane.setVisible(false);
@@ -263,10 +276,31 @@ public class ProjectController extends RootController implements Initializable {
         // Handle any errors during the task execution
         loadProjectsTask.setOnFailed(event -> {
             // Handle error appropriately
+            System.out.println(event.getSource().getException());
         });
 
         // Run the task in a new thread
         new Thread(loadProjectsTask).start();
+    }
+
+    /**
+     * Registering events
+     */
+    @Subscribe
+    public void handleCategoryEvent(RefreshEvent event) {
+        if (event.eventType() == EventType.UPDATE_TABLE) {
+            System.out.println("refreshing event");
+
+            // Retrieve the updated projects list from your data source
+            List<Project> updatedProjects = projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
+
+            // Update the cache in the ProjectModel
+            projectModel.updateProjectsCache(CurrentUser.getInstance().getLoggedUser().getId(), updatedProjects);
+
+            // Refresh the table with the updated projects list
+            ObservableList<Project> projects = FXCollections.observableList(updatedProjects);
+            projectTable.setItems(projects);
+        }
     }
 
 

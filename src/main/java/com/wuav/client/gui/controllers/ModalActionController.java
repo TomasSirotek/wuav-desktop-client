@@ -1,15 +1,17 @@
 package com.wuav.client.gui.controllers;
 
+import com.google.common.eventbus.EventBus;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
-import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Project;
+import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.bll.utilities.UniqueIdGenerator;
 import com.wuav.client.bll.utilities.engines.ICodesEngine;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
+import com.wuav.client.gui.controllers.event.RefreshEvent;
 import com.wuav.client.gui.dto.AddressDTO;
 import com.wuav.client.gui.dto.CreateProjectDTO;
 import com.wuav.client.gui.dto.CustomerDTO;
@@ -23,7 +25,6 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -112,6 +113,8 @@ public class ModalActionController extends RootController implements Initializab
     @FXML
     private MFXButton createNewProject;
 
+    private final EventBus eventBus;
+
     private Image defaultImage = new Image("/no_data.png");
     private Image fileImage = new Image("/image.png");
 
@@ -136,7 +139,8 @@ public class ModalActionController extends RootController implements Initializab
     private List<Image> imagesFromApp;
 
     @Inject
-    public ModalActionController(IControllerFactory controllerFactory, IProjectModel projectModel, ICodesEngine codesEngine) {
+    public ModalActionController(EventBus eventBus, IControllerFactory controllerFactory, IProjectModel projectModel, ICodesEngine codesEngine) {
+        this.eventBus = eventBus;
         this.controllerFactory = controllerFactory;
         this.projectModel = projectModel;
         this.codesEngine = codesEngine;
@@ -273,10 +277,9 @@ public class ModalActionController extends RootController implements Initializab
     public void initialize(URL url, ResourceBundle resourceBundle) {
         selectFile.setOnAction(e -> selectFile());
 
-
+        System.out.println("from modal " +  projectModel.getCachedProjectsByUserId(340));
 
         fillClientTypeChooseField();
-
 
 
         // PROJECT ID SHOULD NOT BE THERE SINCE ITS NOT GENERATED YET // this qr should be generated only if its forth tab
@@ -414,7 +417,7 @@ public class ModalActionController extends RootController implements Initializab
             } else {
 
                 if (checkTabContent(currentTab[0])) { // Check if the last tab content is valid
-                  //  createNewProject();
+                    createNewProject();
                     continueBtn.setText("Finish");
                     stopImageFetch();
                     removeImagesFromServer(340); // ADD LATER CURRENT USER ID
@@ -785,6 +788,14 @@ public class ModalActionController extends RootController implements Initializab
             boolean result = loadDataTask.getValue();
 
             if (result) {
+
+                Project newProject = projectModel.getProjectById(projectId);
+
+                // Update the cache with the new project
+                projectModel.updateCacheForUser(currentUserId, newProject);
+
+                AlertHelper.showDefaultAlert("Project created successfully", Alert.AlertType.INFORMATION);
+                eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
                 runInParallel(ViewType.PROJECTS);
             } else {
                 AlertHelper.showDefaultAlert("Error creating project", Alert.AlertType.ERROR);

@@ -91,11 +91,17 @@ public class ConfigModule extends AbstractModule {
         bind(ICodesEngine.class).to(CodeEngine.class).in(Singleton.class);
         bind(IEmailSender.class).to(EmailSender.class);
         bind(IEmailEngine.class).to(EmailEngine.class);
-        bind(IProjectModel.class).to(ProjectModel.class).in(Singleton.class);
+        bind(IProjectModel.class).to(ProjectModel.class).asEagerSingleton();
         bind(ImageCache.class).asEagerSingleton();
         bind(IEmailSender.class).to(EmailSender.class);
 
         bind(EmailConnectionFactory.class).asEagerSingleton();
+
+        /*
+         * Bind even bus as in singleton scope
+         * As eager singleton to ensure instantiation asap Injector is created
+         */
+        bind(EventBus.class).asEagerSingleton();
         /* *************************************************************************
         *                                                                         *
         * MODEL                                                                   *
