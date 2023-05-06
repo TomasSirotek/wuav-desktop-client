@@ -51,6 +51,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ModalActionController extends RootController implements Initializable {
 
     @FXML
+    private Label imageText;
+    @FXML
     private Pane addedFilePane;
     @FXML
     private MFXTextField clientZipField;
@@ -581,6 +583,7 @@ public class ModalActionController extends RootController implements Initializab
             selectedImage.setImage(new javafx.scene.image.Image(selectedFile.toURI().toString()));
          //   selectedFileHBox.setVisible(true);
             selectFile.setDisable(true);
+
            // changeImageActionHandleBox();
             changeSelectedFileHBox();
 
@@ -603,20 +606,8 @@ public class ModalActionController extends RootController implements Initializab
 
     private         GridPane gridPane = new GridPane();
     private void changeSelectedFileHBox() {
-//        selectedFileHBox.getChildren().clear();
-//        // create hbox with label at the start and button at the end with x as text and make the box light red and so that text start at the start and ubtton at the end
-//        Label selectedFileLabel = new Label("Selected File: ");
-//        selectedFileHBox.setStyle("-fx-text-fill: #ffffff;");
-//        selectedFileHBox.setStyle("-fx-background-color: #E84910; -fx-spacing: 10; -fx-opacity: 0.8; -fx-padding: 10;");
-//        selectedFileHBox.getChildren().add(selectedFileLabel);
-//        Label selectedFileName = new Label("image.png");
-//        selectedFileName.setStyle("-fx-text-fill: black;");
-//        selectedFileHBox.getChildren().add(selectedFileName);
-//        MFXButton removeFile = new MFXButton("X");
-//        removeFile.getStyleClass().add("mfx-raised");
-//        removeFile.setStyle("-fx-background-color: red; -fx-text-fill: #ffffff;");
-//        removeFile.setOnAction(e -> removeImage());
-//        selectedFileHBox.getChildren().add(removeFile);
+
+        imageText.setVisible(false);
 
         addedFilePane.getChildren().clear();
         GridPane gridPane = new GridPane();
@@ -691,12 +682,14 @@ public class ModalActionController extends RootController implements Initializab
     }
 
     private void removeImage() {
+
         selectedImage.setImage(null);
         // set image back to the defualt not data selected no data in resource folder
         selectedImage.setImage(defaultImage);
         // remove action button and set label back to no image uploaded
         addedFilePane.getChildren().clear();
         selectFile.setDisable(false);
+        imageText.setVisible(true);
     }
 
 
