@@ -71,4 +71,9 @@ public class UserService implements IUserService {
         return isUpdated;
     }
 
+    @Override
+    public boolean changeUserPasswordHash(int id, String newPasswordHash) {
+        return userRepository.changeUserPasswordHash(id,newPasswordHash);
+    }
+
 }

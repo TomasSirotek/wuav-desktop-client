@@ -104,4 +104,24 @@ public class UserRepository implements IUserRepository {
 
         return false;
     }
+
+    @Override
+    public boolean changeUserPasswordHash(int id, String newPasswordHash) {
+        int affectedRows = 0;
+
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            affectedRows = mapper.updateUserPasswordHash(
+                   id,
+                    newPasswordHash
+            );
+            session.commit();
+
+            return affectedRows > 0;
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+
+        return false;
+    }
 }

@@ -124,4 +124,17 @@
     </update>
 
 
+    <update id="updateUserPasswordHash"
+            parameterType="AppUser"
+            flushCache="true"
+            keyProperty=""
+            keyColumn=""
+            statementType="PREPARED">
+        UPDATE app_user
+        SET password_hash = #{passwordHash}
+        WHERE id = #{userId}
+
+    </update>
+
+
 </mapper>

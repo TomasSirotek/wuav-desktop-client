@@ -3,9 +3,13 @@ package com.wuav.client.gui.controllers;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.bll.services.interfaces.IAuthService;
+import com.wuav.client.bll.utilities.email.EmailConnectionFactory;
+import com.wuav.client.bll.utilities.email.IEmailSender;
+import com.wuav.client.bll.utilities.engines.IEmailEngine;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.google.inject.Inject;
+import com.wuav.client.gui.models.user.IUserModel;
 import com.wuav.client.gui.utils.AlertHelper;
 import io.github.palexdev.materialfx.controls.*;
 import javafx.application.Platform;
@@ -20,12 +24,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 
+import javax.mail.Session;
 import javax.naming.AuthenticationException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class LoginController extends RootController implements Initializable {
@@ -42,21 +48,72 @@ public class LoginController extends RootController implements Initializable {
     private MFXTextField userEmailField;
     @FXML
     private MFXButton login;
+
+    @FXML
+    private MFXButton recoverPassword;
     @FXML
     private StackPane baseContent;
     private final IControllerFactory controllerFactory;
 
     private final IAuthService authService;
+    private final IEmailEngine emailEngine;
+    private final IEmailSender emailSender;
+
+
+
+
 
     @Inject
-    public LoginController(IControllerFactory controllerFactory, IAuthService authService) {
+    public LoginController(IControllerFactory controllerFactory, IAuthService authService, IEmailEngine emailEngine, IEmailSender emailSender) {
         this.controllerFactory = controllerFactory;
         this.authService = authService;
+        this.emailEngine = emailEngine;
+        this.emailSender = emailSender;
     }
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        recoverPassword.setOnAction(e -> recoverPasswordByEmail());
+    }
+
+    private void recoverPasswordByEmail() {
+        Session session = EmailConnectionFactory.getSession();
+
+        String newPassword = authService.generateNewPassword(userEmailField.getText());
+
+        if (newPassword.equals("WrongEmail")) {
+          AlertHelper.showDefaultAlert("User with email " + userEmailField.getText() + "was not found", Alert.AlertType.ERROR);
+
+        } else {
+        new Thread(() -> {
+            try {
+
+                // Define the template name and variables
+                String templateName = "email-template-confirm";
+                Map<String, Object> templateVariables = new HashMap<>();
+                templateVariables.put("newPassword", newPassword);
+
+                // Process the template and generate the email body
+                String emailBody = emailEngine.processTemplate(templateName, templateVariables);
+                // Update the UI on the JavaFX application thread
+                var emailResult = emailSender.sendEmail(session, "vince.kautzer@ethereal.email","Installation completed", emailBody,false,null);
+                Platform.runLater(() -> {
+                    // Display message
+                    if (emailResult) {
+                        AlertHelper.showDefaultAlert("Email successfully sent with new password ", Alert.AlertType.INFORMATION);
+
+                    }
+                });
+            } catch (Exception e) {
+                // Handle sending failure
+                Platform.runLater(() -> {
+                    // Show an error message
+                    AlertHelper.showDefaultAlert("Email sending failed " + e.getMessage(), Alert.AlertType.ERROR);
+                });
+            }
+        }).start();
+        }
     }
 
 

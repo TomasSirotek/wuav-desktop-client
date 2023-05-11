@@ -1,6 +1,10 @@
 package com.wuav.client.bll.utilities.email;
 
 
+import com.wuav.client.gui.utils.AlertHelper;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.mail.*;
@@ -10,6 +14,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.*;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EmailSender implements IEmailSender {
 
@@ -63,6 +69,12 @@ public class EmailSender implements IEmailSender {
         catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
+    }
+
+    @Override
+    public boolean sendSendGridEmail() {
+
         return false;
     }
 }
