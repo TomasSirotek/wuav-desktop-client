@@ -808,10 +808,6 @@ public class ModalActionController extends RootController implements Initializab
         });
 
         new Thread(loadDataTask).start();
-
-
-
-
     }
 
     private void runInParallel(ViewType type) {

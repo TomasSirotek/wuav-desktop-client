@@ -27,8 +27,8 @@ public class UserModel implements IUserModel{
     }
 
     @Override
-    public AppUser createUser(AppUser movie) {
-        return null;
+    public int createUser(String name,String email,String role) {
+        return userService.createUser(name,email,role);
     }
 
     @Override

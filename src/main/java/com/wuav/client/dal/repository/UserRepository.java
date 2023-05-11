@@ -6,6 +6,7 @@ import com.wuav.client.be.user.AppUser;
 import com.wuav.client.dal.interfaces.IUserRepository;
 import com.wuav.client.dal.mappers.UserMapper;
 import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
+import com.wuav.client.gui.dto.CreateUserDTO;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,5 +124,24 @@ public class UserRepository implements IUserRepository {
         }
 
         return false;
+    }
+
+    @Override
+    public int createUser(CreateUserDTO createUserDTO) {
+        int returnedId = 0;
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            int affectedRows = mapper.createUser(
+                    createUserDTO.id(),
+                    createUserDTO.name(),
+                    createUserDTO.email(),
+                    createUserDTO.password()
+            );
+            session.commit();
+            returnedId = affectedRows > 0 ? affectedRows : 0;
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return returnedId;
     }
 }

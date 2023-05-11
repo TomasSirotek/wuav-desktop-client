@@ -90,15 +90,24 @@ public class BaseController extends RootController implements Initializable {
         expand.setStyle("-fx-text-fill: transparent;");
 
         projectButton.setStyle("-fx-background-color: rgba(234, 234, 234, 0.8);");
-        if(!CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("TECHNICIAN")){
+
+        if (!CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("TECHNICIAN")) {
             projectButton.setText("Projects");
-            usersButton.setVisible(false);
             userImage.setImage(defaultImage);
             System.out.println(CurrentUser.getInstance().getLoggedUser().getRoles().get(0));
+
+            if (CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("ADMIN")) {
+                usersButton.setVisible(true);
+            } else {
+                usersButton.setVisible(false);
+            }
+        } else {
+            usersButton.setVisible(false);
         }
 
+
         handleExpandControl();
-        runInParallel(ViewType.PROJECTS);
+        runInParallel(ViewType.ALL_USERS); // change back later
     }
 
 
@@ -172,9 +181,19 @@ public class BaseController extends RootController implements Initializable {
         });
     }
 
+
+    @FXML
+    private void handleAllUsersSwitch() {
+        projectButton.setStyle("-fx-background-color: transparent");
+        accButton.setStyle("-fx-background-color:transparent");
+        usersButton.setStyle("-fx-background-color: rgba(234, 234, 234, 0.8);");
+        runInParallel(ViewType.ALL_USERS);
+    }
+
     @FXML
     private void handleDashBoardPageSwitch() {
         projectButton.setStyle("-fx-background-color: rgba(234, 234, 234, 0.8);");
+        usersButton.setStyle("-fx-background-color:transparent");
         accButton.setStyle("-fx-background-color:transparent");
         eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
         runInParallel(ViewType.PROJECTS);
@@ -183,6 +202,7 @@ public class BaseController extends RootController implements Initializable {
     @FXML
     private void handleUserProfileSwitch() {
         projectButton.setStyle("-fx-background-color: transparent");
+        usersButton.setStyle("-fx-background-color:transparent");
         accButton.setStyle("-fx-background-color: rgba(234, 234, 234, 0.8);");
         runInParallel(ViewType.USER_PROFILE);
     }

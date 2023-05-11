@@ -18,4 +18,6 @@ public interface IUserService {
     boolean updateUserById(AppUser appUser);
 
     boolean changeUserPasswordHash(int id, String newPasswordHash);
+
+    int createUser(String name, String email, String role);
 }

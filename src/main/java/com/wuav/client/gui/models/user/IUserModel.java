@@ -8,7 +8,7 @@ public interface IUserModel {
     ObservableList<AppUser> getAllUsers();
 
 
-    AppUser createUser(AppUser movie);
+    int createUser(String name,String email,String role);
 
 
     AppUser getUserByEmail(String customerEmail);

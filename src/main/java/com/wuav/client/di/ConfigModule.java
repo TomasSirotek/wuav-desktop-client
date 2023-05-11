@@ -63,11 +63,10 @@ public class ConfigModule extends AbstractModule {
         bind(IAddressService.class).to(AddressService.class);
         bind(ICustomerRepository.class).to(CustomerRepository.class);
         bind(ICustomerService.class).to(CustomerService.class);
-
         bind(IPdfGenerator.class).to(PdfGenerator.class);
-
         bind(ICryptoEngine.class).to(CryptoEngine.class);
-
+        bind(IRoleService.class).to(RoleService.class);
+        bind(IRoleRepository.class).to(RoleRepository.class);
 
         /*
          * Bind even bus as in singleton scope

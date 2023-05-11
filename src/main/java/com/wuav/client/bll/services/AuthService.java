@@ -35,7 +35,7 @@ public class AuthService implements IAuthService {
     @Override
     // Method to check whether the user is authorized
     public boolean isAuthorized(AppUser user) {
-        return true; 
+        return true;
     }
 
     @Override

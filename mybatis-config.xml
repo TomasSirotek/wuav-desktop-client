@@ -50,6 +50,7 @@
     <mappers>
         <mapper resource="com/wuav/client/mybatis/mapper/AppUser/AppUser.xml"/>
         <mapper resource="com/wuav/client/mybatis/mapper/Project.xml"/>
+        <mapper resource="com/wuav/client/mybatis/mapper/AppUser/AppRole.xml"/>
         <mapper resource="com/wuav/client/mybatis/mapper/Image.xml"/>
         <mapper resource="com/wuav/client/mybatis/mapper/Address.xml"/>
         <mapper resource="com/wuav/client/mybatis/mapper/Customer.xml"/>
