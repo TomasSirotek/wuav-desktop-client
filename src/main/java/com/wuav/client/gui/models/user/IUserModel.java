@@ -19,4 +19,6 @@ public interface IUserModel {
     boolean updateUserById(AppUser appUser);
 
     boolean updateUserRole(int id, String appRole);
+
+    boolean sendRecoveryEmail(String email);
 }

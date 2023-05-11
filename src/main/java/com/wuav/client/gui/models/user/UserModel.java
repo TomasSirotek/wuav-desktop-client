@@ -54,4 +54,9 @@ public class UserModel implements IUserModel{
     public boolean updateUserRole(int id, String appRole) {
         return userService.updateUserRole(id,appRole);
     }
+
+    @Override
+    public boolean sendRecoveryEmail(String email) {
+        return userService.sendRecoveryEmail(email);
+    }
 }

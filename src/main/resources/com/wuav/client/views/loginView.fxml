@@ -147,14 +147,6 @@
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="23.0" prefWidth="254.0">
-                     <children>
-                        <Label text="Forgot you password ? " textFill="#252f4091">
-                           <font>
-                              <Font name="SansSerif Regular" size="12.0" />
-                           </font>
-                        </Label>
-                        <MFXButton fx:id="recoverPassword" style="-fx-text-fill: #E84910;" text="Recover" textFill="#e84910" underline="true" />
-                     </children>
                      <padding>
                         <Insets right="10.0" />
                      </padding>

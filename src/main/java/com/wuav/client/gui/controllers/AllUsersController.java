@@ -124,7 +124,6 @@ public class AllUsersController  extends RootController implements Initializable
             stage.getProperties().put("previousStage", previousStage);
         });
 
-
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();

@@ -22,4 +22,6 @@ public interface IUserService {
     int createUser(String name, String email, String role);
 
     boolean updateUserRole(int id, String appRole);
+
+    boolean sendRecoveryEmail(String email);
 }

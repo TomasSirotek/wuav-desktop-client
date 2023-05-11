@@ -5,33 +5,33 @@ import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.services.interfaces.IRoleService;
 import com.wuav.client.bll.services.interfaces.IUserService;
 import com.wuav.client.bll.utilities.UniqueIdGenerator;
-import com.wuav.client.bll.utilities.engines.cryptoEngine.CryptoEngine;
+import com.wuav.client.bll.utilities.engines.IEmailEngine;
 import com.wuav.client.bll.utilities.engines.cryptoEngine.ICryptoEngine;
 import com.wuav.client.dal.interfaces.IUserRepository;
 import com.google.inject.Inject;
-import com.wuav.client.dal.repository.RoleRepository;
-import com.wuav.client.dal.repository.UserRepository;
 import com.wuav.client.gui.dto.CreateUserDTO;
 import com.wuav.client.gui.models.user.CurrentUser;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class UserService implements IUserService {
 
     private final IUserRepository userRepository;
     private final IRoleService roleService;
-
-
     private final ICryptoEngine cryptoEngine;
 
+    private final IEmailEngine emailEngine;
 
 
     @Inject
-    public UserService(IUserRepository userRepository, IRoleService roleService, ICryptoEngine cryptoEngine) {
+    public UserService(IUserRepository userRepository, IRoleService roleService, ICryptoEngine cryptoEngine, IEmailEngine emailEngine) {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.cryptoEngine = cryptoEngine;
+        this.emailEngine = emailEngine;
     }
 
 
@@ -140,6 +140,38 @@ public class UserService implements IUserService {
                 return userRepository.addUserToRole(id,roleId) > 0;
            }
         }
+        return false;
+    }
+
+    @Override
+    public boolean sendRecoveryEmail(String email) {
+
+        // here implement the email sending logic and return true if email is sent successfully
+        String generatedPassword = generateRandomNumberAsString(6);
+
+        // hash the password
+        String newPasswordHash = cryptoEngine.Hash(generatedPassword);
+        // get user by email and update the password hash
+        AppUser appUser = getUserByEmail(email);
+        if(appUser != null){
+            // update user password hash
+             var isChanged = changeUserPasswordHash(appUser.getId(),newPasswordHash);
+             if(isChanged){
+                    // send email
+             }
+            // if it updated send email with generated password
+        }
+
+
+        String templateName = "email-template-confirm";
+        Map<String, Object> templateVariables = new HashMap<>();
+        templateVariables.put("newPassword", generatedPassword);
+
+        //Process the template and generate the email body
+        String emailBody = emailEngine.processTemplate(templateName, templateVariables);
+
+    //      var emailResult = emailSender.sendEmail(session, "vince.kautzer@ethereal.email","Installation completed", emailBody,false,null);
+
         return false;
     }
 
