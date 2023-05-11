@@ -69,12 +69,10 @@ public class UserProfileController  extends RootController implements Initializa
         // validate if name email or password are the same if there are disable the button
 
         if(validateInput()){
-
            AppUser updatedUser = new AppUser();
            updatedUser.setId(CurrentUser.getInstance().getLoggedUser().getId());
            updatedUser.setName(userNameField.getText());
            updatedUser.setEmail(userEmail.getText());
-           updatedUser.setPasswordHash(userPsw.getText());
 
            boolean updateResult = userModel.updateUserById(updatedUser);
            if(updateResult){
@@ -93,9 +91,7 @@ public class UserProfileController  extends RootController implements Initializa
 
         List<UserProfileController.FormField> fieldsToValidate = Arrays.asList(
                 new UserProfileController.FormField(userNameField, "User name is required!"),
-                new UserProfileController.FormField(userEmail, "Email is required" ),
-                new UserProfileController.FormField(userPsw, "Password is required")
-
+                new UserProfileController.FormField(userEmail, "Email is required" )
         );
 
         for (UserProfileController.FormField field : fieldsToValidate) {
@@ -167,7 +163,7 @@ public class UserProfileController  extends RootController implements Initializa
 
         userNameField.setText(loggedUser.getName());
         userEmail.setText(loggedUser.getEmail());
-        userPsw.setText(loggedUser.getPasswordHash());
+        userPsw.setDisable(true);
         userRole.setText(loggedUser.getRoles().get(0).getName());
         userCreated.setText(loggedUser.getCreatedAt().toString());
 

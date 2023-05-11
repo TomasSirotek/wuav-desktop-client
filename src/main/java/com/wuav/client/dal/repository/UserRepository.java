@@ -93,8 +93,7 @@ public class UserRepository implements IUserRepository {
             affectedRows = mapper.updateUser(
                     appUser.getId(),
                     appUser.getName(),
-                    appUser.getEmail(),
-                    appUser.getPasswordHash()
+                    appUser.getEmail()
                     );
             session.commit();
 

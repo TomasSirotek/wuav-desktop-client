@@ -2,9 +2,9 @@ package com.wuav.client.bll.services;
 
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.services.interfaces.IUserService;
+import com.wuav.client.bll.utilities.engines.cryptoEngine.ICryptoEngine;
 import com.wuav.client.dal.interfaces.IUserRepository;
 import com.google.inject.Inject;
-import com.wuav.client.dal.repository.UserRepository;
 import com.wuav.client.gui.models.user.CurrentUser;
 
 import java.util.List;
@@ -13,10 +13,13 @@ public class UserService implements IUserService {
 
     private final IUserRepository userRepository;
 
+    private final ICryptoEngine cryptoEngine;
+
 
     @Inject
-    public UserService(IUserRepository userRepository) {
+    public UserService(IUserRepository userRepository, ICryptoEngine cryptoEngine) {
         this.userRepository = userRepository;
+        this.cryptoEngine = cryptoEngine;
     }
 
 
@@ -57,11 +60,8 @@ public class UserService implements IUserService {
     @Override
     public boolean updateUserById(AppUser appUser) {
         boolean isUpdated;
-        // take the user and hash his password
 
-
-
-        isUpdated = userRepository.updateUserById(appUser);
+         isUpdated = userRepository.updateUserById(appUser);
 
         if(isUpdated){
             AppUser updatedUser = getUserById(appUser.getId());

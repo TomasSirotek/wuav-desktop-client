@@ -118,8 +118,7 @@
             statementType="PREPARED">
         UPDATE app_user
         SET name = #{name},
-            email = #{email},
-            password_hash = #{passwordHash}
+            email = #{email}
         WHERE id = #{userId}
 
     </update>

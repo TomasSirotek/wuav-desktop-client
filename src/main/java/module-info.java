@@ -24,6 +24,7 @@ module com.wuav.client {
     requires com.google.gson;
     requires thymeleaf;
     requires net.coobird.thumbnailator;
+    requires spring.security.crypto;
 
     exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common,org.apache.pdfbox;
     exports com.wuav.client.bll.helpers;
@@ -52,13 +53,14 @@ module com.wuav.client {
     opens com.wuav.client.di to com.google.guice, javafx.fxml,com.azure.core;
     opens com.wuav.client.dal.myBatis to org.mybatis, javafx.fxml, org.slf4j,com.azure.core;
     opens com.wuav.client.dal.mappers to org.mybatis, com.google.guice,com.azure.core;
-    opens com.wuav.client.bll.services to org.mybatis, javafx.fxml, org.slf4j, com.google.guice,com.azure.core,com.azure.storage.blob;
-    opens com.wuav.client.bll.services.interfaces to  javafx.fxml, com.google.guice, com.google.common, org.slf4j,com.azure.storage.blob;
+    opens com.wuav.client.bll.services to org.mybatis, javafx.fxml, org.slf4j, com.google.guice,com.azure.core,com.azure.storage.blob,spring.security.crypto;
+    opens com.wuav.client.bll.services.interfaces to  javafx.fxml, com.google.guice, com.google.common, org.slf4j,com.azure.storage.blob,spring.security.crypto;
     opens com.wuav.client.gui.models.user to javafx.fxml, com.google.guice, com.google.common, org.slf4j,com.azure.core;
     opens com.wuav.client.dal.repository to org.mybatis,javafx.fxml, com.google.guice, com.google.common, org.slf4j,com.azure.core,com.azure.storage.blob;
     exports com.wuav.client.be.user to javafx.graphics, org.mybatis;
     opens com.wuav.client.be.user to com.google.guice, javafx.fxml, org.mybatis, org.slf4j;
     exports com.wuav.client.bll.utilities.email;
+    opens com.wuav.client.bll.utilities.engines.cryptoEngine to com.google.guice;
     opens com.wuav.client.bll.utilities.engines to com.google.guice;
     exports com.wuav.client.be to com.google.guice, javafx.graphics, org.mybatis;
     opens com.wuav.client.be to com.google.common, com.google.guice, javafx.fxml, org.mybatis, org.slf4j;
