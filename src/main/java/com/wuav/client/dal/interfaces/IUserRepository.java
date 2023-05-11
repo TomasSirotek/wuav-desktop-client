@@ -22,4 +22,6 @@ public interface IUserRepository {
     boolean changeUserPasswordHash(int id, String newPasswordHash);
 
     int createUser(CreateUserDTO createUserDTO);
+
+    int removeUserFromRole(int userId);
 }

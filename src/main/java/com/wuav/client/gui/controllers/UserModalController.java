@@ -41,15 +41,15 @@ public class UserModalController  extends RootController implements Initializabl
     public UserModalController(IUserModel userModel, EventBus eventBus) {
         this.userModel = userModel;
         this.eventBus = eventBus;
-
     }
 
     @FXML
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        fillClientTypeChooseField();
-        createUserBtn.setOnAction(e-> createNewUser());
+            // fill form with user data
+            fillClientTypeChooseField();
+            createUserBtn.setOnAction(e-> createNewUser());
     }
 
     private void fillClientTypeChooseField() {
@@ -65,11 +65,10 @@ public class UserModalController  extends RootController implements Initializabl
     private void createNewUser() {
         if(validateInput()){
 
-          int result =  userModel.createUser(
+          int result = userModel.createUser(
                     userNameField.getText(),
                     userEmailField.getText(),
                     roleField.getSelectionModel().getSelectedItem().toString()
-
             );
           if(result == 1){
               AlertHelper.showDefaultAlert("User created successfully", Alert.AlertType.INFORMATION);
@@ -109,6 +108,7 @@ public class UserModalController  extends RootController implements Initializabl
         return isValid;
 
     }
+
 
     @FunctionalInterface
     private interface ValidationFunction {

@@ -59,6 +59,12 @@ public enum ViewType {
             return "views/userModalView.fxml";
         }
     },
+    USER_SETTINGS{
+        @Override
+        public String getFXMLView() {
+            return "views/userSettingsView.fxml";
+        }
+    },
     DASHBOARD {
         @Override
         public String getFXMLView() {

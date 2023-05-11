@@ -1,6 +1,7 @@
 package com.wuav.client.gui.models.user;
 
 
+import com.wuav.client.be.user.AppRole;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.services.interfaces.IUserService;
 import com.google.inject.Inject;
@@ -47,5 +48,10 @@ public class UserModel implements IUserModel{
     @Override
     public boolean updateUserById(AppUser appUser) {
         return userService.updateUserById(appUser);
+    }
+
+    @Override
+    public boolean updateUserRole(int id, String appRole) {
+        return userService.updateUserRole(id,appRole);
     }
 }

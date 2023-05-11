@@ -60,6 +60,8 @@ public class AllUsersController  extends RootController implements Initializable
 
     private final EventBus eventBus;
 
+    private boolean isSettings = false;
+
 
     @Inject
     public AllUsersController(IUserModel userModel, IControllerFactory controllerFactory, EventBus eventBus) {
@@ -72,11 +74,12 @@ public class AllUsersController  extends RootController implements Initializable
     public void initialize(URL url, ResourceBundle resourceBundle) {
         fillTable();
         eventBus.register(this);
-        createNewUser.setOnAction(e -> openCreateUserWindow("Create new user",ViewType.USER_MODAL));
+        createNewUser.setOnAction(e -> openCreateUserWindow("Create new user",ViewType.USER_MODAL, null));
 
     }
 
-    private void openCreateUserWindow(String title,ViewType viewType) {
+
+    private void openCreateUserWindow(String title, ViewType viewType, AppUser value) {
         Scene scene = userAnchorPane.getScene();
         Window window = scene.getWindow();
         if (window instanceof Stage) {
@@ -86,8 +89,13 @@ public class AllUsersController  extends RootController implements Initializable
                 layoutPane.setDisable(true);
                 layoutPane.setVisible(true);
 
-                var test = tryToLoadView(viewType);
-                show(test.getView(), title,scene);
+                RootController controller = tryToLoadView(viewType);
+
+                if(this.isSettings && value != null){
+                    UserSettingsController userSettingsController = (UserSettingsController) controller;
+                    userSettingsController.setUserSettings(value);
+                }
+                show(controller.getView(), title,scene);
 
             } else {
                 System.out.println("AnchorPane not found");
@@ -114,8 +122,6 @@ public class AllUsersController  extends RootController implements Initializable
         stage.setOnShowing(e -> {
             Stage previousStage = (Stage) previousScene.getWindow();
             stage.getProperties().put("previousStage", previousStage);
-
-
         });
 
 
@@ -166,7 +172,9 @@ public class AllUsersController  extends RootController implements Initializable
             playButton.setGraphic(imageIcon);
             playButton.setOnAction(e -> {
                // sout e
-
+                // open modal window with the inputed data from the table
+                this.isSettings = true;
+                openCreateUserWindow("User settings",ViewType.USER_SETTINGS, col.getValue());
             });
             return new SimpleObjectProperty<>(playButton);
         });

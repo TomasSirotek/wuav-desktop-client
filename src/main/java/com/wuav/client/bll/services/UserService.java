@@ -127,12 +127,20 @@ public class UserService implements IUserService {
             }
         }
         return 0;
-        // create new user
+    }
 
-        // add user to role
-
-
-
+    @Override
+    public boolean updateUserRole(int id, String appRole) {
+        AppRole role = roleService.getRoleByName(appRole);
+        if(role != null){
+            int roleId = role.getId();
+            // remove user from role and add to new role
+           int result = userRepository.removeUserFromRole(id);
+           if(result > 0){
+                return userRepository.addUserToRole(id,roleId) > 0;
+           }
+        }
+        return false;
     }
 
     private String generateRandomNumberAsString(int length) {

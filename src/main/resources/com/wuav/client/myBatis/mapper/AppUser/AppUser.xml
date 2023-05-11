@@ -136,5 +136,15 @@
 
     </update>
 
+    <delete id="removeUserFromRole"
+            parameterType="AppUser"
+            flushCache="true"
+            statementType="PREPARED">
+        --  executes delete query
+        DELETE
+        FROM user_role
+        WHERE user_id = #{userId}
+    </delete>
+
 
 </mapper>

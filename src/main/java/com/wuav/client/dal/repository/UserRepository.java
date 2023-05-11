@@ -144,4 +144,18 @@ public class UserRepository implements IUserRepository {
         }
         return returnedId;
     }
+
+    @Override
+    public int removeUserFromRole(int userId) {
+        int finalAffectedRows = 0;
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            int affectedRows = mapper.removeUserFromRole(userId);
+            session.commit();
+            return affectedRows;
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return finalAffectedRows;
+    }
 }
