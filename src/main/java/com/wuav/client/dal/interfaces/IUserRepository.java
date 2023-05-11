@@ -15,4 +15,6 @@ public interface IUserRepository {
     int createCustomer(AppUser appUser);
 
     int addUserToRole(int userId, int roleId);
+
+    boolean updateUserById(AppUser appUser);
 }

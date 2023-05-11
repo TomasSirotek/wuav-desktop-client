@@ -14,4 +14,6 @@ public interface IUserModel {
     AppUser getUserByEmail(String customerEmail);
 
     int createCustomerService(AppUser appUser);
+
+    boolean updateUserById(AppUser appUser);
 }

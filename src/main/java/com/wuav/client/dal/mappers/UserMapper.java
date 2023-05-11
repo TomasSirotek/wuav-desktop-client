@@ -16,4 +16,5 @@ public interface UserMapper {
 
     int addUserToRole(@Param("userId")int userId, @Param("roleId") int roleId);
 
+    int updateUser(@Param("userId") int userId,@Param("name") String userName,@Param("email") String email,@Param("passwordHash") String passwordHash);
 }
