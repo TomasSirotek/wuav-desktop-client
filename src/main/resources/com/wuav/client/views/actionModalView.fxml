@@ -10,7 +10,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -32,8 +31,8 @@
         </columnConstraints>
         <rowConstraints>
           <RowConstraints maxHeight="118.56525039672852" minHeight="10.0" prefHeight="60.2738037109375" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="457.2112731933594" minHeight="10.0" prefHeight="436.90655517578125" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="300.01863861083984" minHeight="10.0" prefHeight="98.09344482421875" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="465.0" minHeight="10.0" prefHeight="465.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="300.01863861083984" minHeight="10.0" prefHeight="74.5" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <GridPane prefWidth="601.0" GridPane.rowIndex="1">
@@ -51,17 +50,18 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <GridPane prefHeight="408.0" prefWidth="453.0">
+                                    <GridPane prefHeight="441.0" prefWidth="453.0">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                       </columnConstraints>
                                       <rowConstraints>
-                                        <RowConstraints maxHeight="404.4181823730469" minHeight="10.0" prefHeight="339.59344482421875" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="441.0" minHeight="10.0" prefHeight="441.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="404.4181823730469" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <HBox prefWidth="413.0" style="-fx-border-radius: 30; -fx-border-width: 2;">
+                                          <HBox prefHeight="431.0" prefWidth="413.0" style="-fx-border-radius: 30; -fx-border-width: 2;">
                                              <children>
-                                                <VBox prefHeight="176.0" prefWidth="411.0">
+                                                <VBox prefHeight="442.0" prefWidth="411.0">
                                                    <children>
                                                       <HBox prefHeight="46.0" prefWidth="401.0">
                                                          <children>
@@ -88,7 +88,7 @@
                                                             <Insets top="5.0" />
                                                          </VBox.margin>
                                                       </MFXTextField>
-                                                      <VBox prefHeight="241.0" prefWidth="401.0">
+                                                      <VBox prefHeight="314.0" prefWidth="401.0">
                                                          <children>
                                                             <VBox prefHeight="76.0" prefWidth="389.0">
                                                                <children>
@@ -117,14 +117,16 @@
                                                                   <Insets bottom="5.0" />
                                                                </VBox.margin>
                                                             </Label>
-                                                            <TextField fx:id="descriptionField" alignment="TOP_LEFT" prefHeight="176.0" prefWidth="374.0" promptText="Enter your installation description  " style="-fx-border-color: #c5c1c1;">
-                                                               <VBox.margin>
-                                                                  <Insets right="17.0" top="2.0" />
-                                                               </VBox.margin>
-                                                               <padding>
-                                                                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                                               </padding>
-                                                            </TextField>
+                                                            <VBox fx:id="test" prefHeight="259.0" prefWidth="401.0" />
+
+<!--                                                            <TextField fx:id="descriptionField" alignment="TOP_LEFT" prefHeight="176.0" prefWidth="374.0" promptText="Enter your installation description  " style="-fx-border-color: #c5c1c1;">-->
+<!--                                                               <VBox.margin>-->
+<!--                                                                  <Insets right="17.0" top="2.0" />-->
+<!--                                                               </VBox.margin>-->
+<!--                                                               <padding>-->
+<!--                                                                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />-->
+<!--                                                               </padding>-->
+<!--                                                            </TextField>-->
                                                          </children>
                                                          <VBox.margin>
                                                             <Insets top="10.0" />
@@ -132,12 +134,12 @@
                                                       </VBox>
                                                    </children>
                                                    <padding>
-                                                      <Insets bottom="10.0" left="10.0" top="10.0" />
+                                                      <Insets left="10.0" top="10.0" />
                                                    </padding>
                                                 </VBox>
                                              </children>
                                              <GridPane.margin>
-                                                <Insets bottom="20.0" left="20.0" right="20.0" />
+                                                <Insets left="20.0" right="20.0" />
                                              </GridPane.margin>
                                              <effect>
                                                 <DropShadow height="10.69" radius="5.2125" width="12.16">

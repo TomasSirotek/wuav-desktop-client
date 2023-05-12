@@ -107,7 +107,7 @@ public class BaseController extends RootController implements Initializable {
 
 
         handleExpandControl();
-        runInParallel(ViewType.ALL_USERS); // change back later
+        runInParallel(ViewType.PROJECTS); // change back later
     }
 
 

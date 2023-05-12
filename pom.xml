@@ -233,13 +233,13 @@
         </dependency>
 
 
-
         <!-- https://mvnrepository.com/artifact/org.fluentlenium/fluentlenium-core -->
         <dependency>
             <groupId>org.fluentlenium</groupId>
             <artifactId>fluentlenium-core</artifactId>
             <version>4.8.0</version>
         </dependency>
+
 
 
         <dependency>
