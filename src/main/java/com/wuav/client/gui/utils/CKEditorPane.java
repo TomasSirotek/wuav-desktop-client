@@ -4,6 +4,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Worker;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
@@ -83,4 +86,18 @@ public class CKEditorPane extends VBox {
     public StringProperty editorContentProperty() {
         return editorContent;
     }
+
+    public void setContent(String content) {
+        String escapedContent = content.replace("'", "\\'");
+        webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
+            @Override
+            public void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newValue) {
+                if (newValue == Worker.State.SUCCEEDED) {
+                    webEngine.executeScript("CKEDITOR.instances.editor1.setData('" + escapedContent + "');");
+                    webEngine.getLoadWorker().stateProperty().removeListener(this);  // remove listener to avoid multiple calls
+                }
+            }
+        });
+    }
+
 }

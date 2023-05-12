@@ -33,7 +33,7 @@ public class ProjectModel implements IProjectModel{
 
         if (projects == null) {
             projects = projectService.getProjectsByUserId(userId);
-            cacheProjectsImages(projects); // MOVE BACK
+           // cacheProjectsImages(projects); // MOVE BACK
             projectsCache.put(userId, projects);
         }
 
