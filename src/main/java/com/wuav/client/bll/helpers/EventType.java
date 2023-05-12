@@ -5,4 +5,6 @@ public enum EventType {
     UPDATE_TABLE,
     START_LOADING_PROJECTS,
     UPDATE_USER_TABLE,
+
+    EXPORT_EMAIL,
 }

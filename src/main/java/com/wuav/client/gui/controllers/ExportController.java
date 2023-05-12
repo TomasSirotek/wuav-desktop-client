@@ -144,7 +144,6 @@ public class ExportController extends RootController implements Initializable {
         // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
         stage.setOnShowing(e -> {
             stage.getProperties().put("projectToExport", projectsToExport.get(0));
-
         });
         stage.setResizable(false);
         stage.setScene(scene);
