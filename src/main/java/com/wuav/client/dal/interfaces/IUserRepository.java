@@ -17,4 +17,6 @@ public interface IUserRepository {
     int addUserToRole(int userId, int roleId);
 
     boolean updateUserById(AppUser appUser);
+
+    boolean changeUserPasswordHash(int id, String newPasswordHash);
 }

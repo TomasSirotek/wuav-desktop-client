@@ -8,6 +8,7 @@ import com.wuav.client.bll.utilities.engines.cryptoEngine.ICryptoEngine;
 import com.wuav.client.gui.models.user.CurrentUser;
 
 import javax.naming.AuthenticationException;
+import java.util.Random;
 
 public class AuthService implements IAuthService {
     private IUserService userService;
@@ -34,6 +35,41 @@ public class AuthService implements IAuthService {
     @Override
     // Method to check whether the user is authorized
     public boolean isAuthorized(AppUser user) {
-        return true; // user.getRoles().stream().anyMatch(role -> role.getName().equals("TECHNICIAN"));
+        return true; 
+    }
+
+    @Override
+    public String generateNewPassword(String email) {
+        String newPassword = "";
+
+        AppUser user = userService.getUserByEmail(email);
+
+        if(user != null){
+            // generate new password
+            newPassword = generateRandomNumberAsString(8);
+            // hash it
+            String newPasswordHash = cryptoEngine.Hash(newPassword);
+            // update it in the database
+            boolean isPasswordChanged = userService.changeUserPasswordHash(user.getId(),newPasswordHash);
+            if(isPasswordChanged){
+                return newPassword;
+            }
+        }else {
+            newPassword = "WrongEmail";
+        }
+
+        return newPassword;
+    }
+
+    private String generateRandomNumberAsString(int length) {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            int digit = random.nextInt(10);
+            sb.append(digit);
+        }
+
+        return sb.toString();
     }
 }

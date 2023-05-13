@@ -16,4 +16,6 @@ public interface IUserService {
     int createCustomer(AppUser appUser);
 
     boolean updateUserById(AppUser appUser);
+
+    boolean changeUserPasswordHash(int id, String newPasswordHash);
 }
