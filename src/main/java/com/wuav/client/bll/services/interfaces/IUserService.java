@@ -1,7 +1,11 @@
 package com.wuav.client.bll.services.interfaces;
 
+import com.wuav.client.be.Project;
 import com.wuav.client.be.user.AppUser;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 
 public interface IUserService {
@@ -23,9 +27,11 @@ public interface IUserService {
 
     boolean updateUserRole(int id, String appRole);
 
-    boolean sendRecoveryEmail(String email);
+    boolean sendRecoveryEmail(String email) throws GeneralSecurityException, IOException;
 
     boolean deleteUser(AppUser value);
 
     AppUser getUserByProjectId(int projectId);
+
+    boolean sendEmailWithAttachement(AppUser appUser,Project project, ByteArrayOutputStream value) throws GeneralSecurityException, IOException;
 }

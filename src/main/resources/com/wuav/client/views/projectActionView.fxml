@@ -72,18 +72,6 @@
                               <Insets right="10.0" />
                            </HBox.margin>
                         </MFXProgressSpinner>
-                              <MFXButton prefHeight="29.0" prefWidth="97.0" text="Delete">
-                                  <graphic>
-                                      <ImageView fitHeight="21.0" fitWidth="22.0">
-                                          <image>
-                                              <Image url="@../images/navItems/delete.png" />
-                                          </image>
-                                      </ImageView>
-                                  </graphic>
-                                  <cursor>
-                                      <Cursor fx:constant="HAND" />
-                                  </cursor>
-                        </MFXButton>
                      </children>
                         </HBox>
                         <HBox alignment="CENTER" GridPane.columnIndex="1" />

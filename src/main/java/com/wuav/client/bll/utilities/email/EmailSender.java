@@ -1,103 +1,127 @@
 package com.wuav.client.bll.utilities.email;
 
-
-import java.io.DataOutputStream;
-import java.io.File;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.file.Files;
+import java.io.*;
+import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.util.Base64;
+import java.util.Properties;
+import java.util.Set;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.sendgrid.SendGrid;
-import com.sendgrid.helpers.mail.Mail;
-import com.sendgrid.helpers.mail.objects.*;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
+import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.services.gmail.Gmail;
+import com.google.api.services.gmail.model.Message;
+
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.*;
+
+import static com.google.api.services.gmail.GmailScopes.GMAIL_SEND;
 
 public class EmailSender implements IEmailSender {
 
 
+    private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT,GsonFactory gsonFactory)
+            throws IOException {
+
+        String clientSecretFilePath = System.getenv("CLIENT_SECRET_FILE_PATH");
+        GoogleClientSecrets clientSecrets =
+                GoogleClientSecrets.load(gsonFactory,
+                        new InputStreamReader(EmailSender.class.getResourceAsStream(clientSecretFilePath)));
+
+        // Build flow and trigger user authorization request.
+        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+                HTTP_TRANSPORT, gsonFactory, clientSecrets, Set.of(GMAIL_SEND))
+                .setDataStoreFactory(new FileDataStoreFactory(Paths.get("tokens").toFile()))
+                .setAccessType("offline")
+                .build();
+
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+        return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+    }
+
     @Override
-    public boolean sendEmail(String toEmail, String subject, String body, boolean attachPdf, File pdfFile) {
-        String fromEmail = "no_reply@example.com";
-        String fromName = "NoReply-JD";
+    public boolean sendEmail(String toEmail, String subject, String body, boolean attachPdf, File pdfFile) throws GeneralSecurityException, IOException {
+        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 
-        JsonObject from = new JsonObject();
-        from.addProperty("email", fromEmail);
+        GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+        Gmail service = new Gmail.Builder(HTTP_TRANSPORT, jsonFactory, getCredentials(HTTP_TRANSPORT,jsonFactory))
+                .setApplicationName("Test mailer")
+                .build();
 
-        JsonObject to = new JsonObject();
-        to.addProperty("email", toEmail);
-        JsonArray tos = new JsonArray();
-        tos.add(to);
 
-        JsonObject personalization = new JsonObject();
-        personalization.add("to", tos);
-        JsonArray personalizations = new JsonArray();
-        personalizations.add(personalization);
-
-        JsonObject content = new JsonObject();
-        content.addProperty("type", "text/html");
-        content.addProperty("value", body);
-        JsonArray contents = new JsonArray();
-        contents.add(content);
-
-        JsonObject mail = new JsonObject();
-        mail.add("from", from);
-        mail.addProperty("subject", subject);
-        mail.add("personalizations", personalizations);
-        mail.add("content", contents);
-
-        if (attachPdf && pdfFile != null) {
-            Base64.Encoder encoder = Base64.getEncoder();
-            try {
-                String encodedString = encoder.encodeToString(Files.readAllBytes(pdfFile.toPath()));
-
-                JsonObject attachment = new JsonObject();
-                attachment.addProperty("content", encodedString);
-                attachment.addProperty("type", "application/pdf");
-                attachment.addProperty("filename", pdfFile.getName());
-                attachment.addProperty("disposition", "attachment");
-                JsonArray attachments = new JsonArray();
-                attachments.add(attachment);
-
-                mail.add("attachments", attachments);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
 
         try {
-            URL url = new URL("https://api.sendgrid.com/v3/mail/send");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            // Build the email with the provided details.
+            MimeMessage mimeMessage = createEmailWithAttachment(toEmail, "me", subject, body, attachPdf, pdfFile);
 
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Authorization", "Bearer " + "null");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setDoOutput(true);
+            // Convert MimeMessage to Gmail's Message.
+            Message message = createMessageWithEmail(mimeMessage);
 
-            try (DataOutputStream output = new DataOutputStream(connection.getOutputStream())) {
-                String json = new Gson().toJson(mail);
-                output.write(json.getBytes("UTF-8"));
-            }
+            // Send the email.
+            service.users().messages().send("me", message).execute();
 
-            int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_OK) {
-                return true;
-            } else {
-                System.err.println("SendGrid API responded with status code: " + responseCode);
-                return false;
-            }
-        } catch (IOException e) {
+            return true;
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
 
-
     }
 
+    private MimeMessage createEmailWithAttachment(String to, String from, String subject, String bodyText, boolean attachPdf, File pdfFile) throws MessagingException, IOException, MessagingException {
+        Properties props = new Properties();
+        Session session = Session.getDefaultInstance(props, null);
+
+        MimeMessage email = new MimeMessage(session);
+
+        email.setFrom(new InternetAddress(from));
+        email.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(to));
+        email.setSubject(subject);
+
+        // Create a multipart message
+        MimeMultipart multipart = new MimeMultipart();
+
+        // Add the email body
+        MimeBodyPart bodyPart = new MimeBodyPart();
+        bodyPart.setContent(bodyText, "text/html; charset=utf-8");
+        multipart.addBodyPart(bodyPart);
+
+        // Attach the PDF file if necessary
+        if (attachPdf && pdfFile != null) {
+            MimeBodyPart attachmentPart = new MimeBodyPart();
+            FileDataSource fileDataSource = new FileDataSource(pdfFile);
+            attachmentPart.setDataHandler(new DataHandler(fileDataSource));
+            attachmentPart.setFileName(pdfFile.getName());
+            multipart.addBodyPart(attachmentPart);
+        }
+
+        // Set the email content
+        email.setContent(multipart);
+
+        return email;
     }
+
+    private Message createMessageWithEmail(MimeMessage emailContent) throws MessagingException, IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        emailContent.writeTo(buffer);
+        byte[] bytes = buffer.toByteArray();
+        String encodedEmail = Base64.getUrlEncoder().encodeToString(bytes);
+        Message message = new Message();
+        message.setRaw(encodedEmail);
+        return message;
+    }
+
+
+
+}
 

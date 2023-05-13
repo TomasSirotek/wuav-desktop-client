@@ -1,5 +1,6 @@
 package com.wuav.client.bll.services;
 
+import com.wuav.client.be.Project;
 import com.wuav.client.be.user.AppRole;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.services.interfaces.IRoleService;
@@ -8,11 +9,16 @@ import com.wuav.client.bll.utilities.UniqueIdGenerator;
 import com.wuav.client.bll.utilities.email.IEmailSender;
 import com.wuav.client.bll.utilities.engines.IEmailEngine;
 import com.wuav.client.bll.utilities.engines.cryptoEngine.ICryptoEngine;
+import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
+import com.wuav.client.bll.utilities.pdf.PdfGenerator;
 import com.wuav.client.dal.interfaces.IUserRepository;
 import com.google.inject.Inject;
 import com.wuav.client.gui.dto.CreateUserDTO;
 import com.wuav.client.gui.models.user.CurrentUser;
+import com.wuav.client.gui.utils.enums.EmailSubjectType;
 
+import java.io.*;
+import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -147,7 +153,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public boolean sendRecoveryEmail(String email) {
+    public boolean sendRecoveryEmail(String email) throws GeneralSecurityException, IOException {
         boolean isSent = false;
         // here implement the email sending logic and return true if email is sent successfully
         String generatedPassword = generateRandomNumberAsString(6);
@@ -169,7 +175,7 @@ public class UserService implements IUserService {
                  //Process the template and generate the email body
                  String emailBody = emailEngine.processTemplate(templateName, templateVariables);
 
-                 boolean emailSent = emailSender.sendEmail("felipe.orn25@ethereal.email", "Hello!", emailBody, false, null);
+                 boolean emailSent = emailSender.sendEmail(appUser.getEmail(), EmailSubjectType.PROJECT_REPORT.toString().toLowerCase(), emailBody, false, null);
                  if (emailSent) {
                      System.out.println("Email sent successfully");
                      isSent = true;
@@ -191,6 +197,60 @@ public class UserService implements IUserService {
     @Override
     public AppUser getUserByProjectId(int projectId) {
         return userRepository.getUserByProjectId(projectId);
+    }
+
+    @Override
+    public boolean sendEmailWithAttachement(AppUser appUser, Project project, ByteArrayOutputStream value) throws GeneralSecurityException, IOException {
+        boolean isSent = false;
+
+
+        File generatedPdf = null;
+        try {
+            generatedPdf = generatePDFToFile(appUser,project,"installation-report" + project.getCustomer().getId());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Define the template name and variables
+        String templateName = "email-template";
+        Map<String, Object> templateVariables = new HashMap<>();
+        templateVariables.put("customerName", project.getCustomer().getName());
+        templateVariables.put("technician", appUser.getName());
+        templateVariables.put("technicianEmail", appUser.getEmail());
+        templateVariables.put("installationDate", project.getCreatedAt());
+        templateVariables.put("customerType", project.getCustomer().getType());
+
+        // Process the template and generate the email body
+        String emailBody = emailEngine.processTemplate(templateName, templateVariables);
+
+
+        boolean emailSent = emailSender.sendEmail(project.getCustomer().getEmail(), EmailSubjectType.PROJECT_REPORT.toString().toLowerCase(), emailBody, true, generatedPdf);
+        if (emailSent) {
+            System.out.println("Email sent successfully");
+            isSent = true;
+        } else {
+            System.out.println("Email sending failed");
+            isSent = false;
+        }
+
+        return isSent;
+    }
+
+    private static File generatePDFToFile(AppUser appUser, Project project, String fileName) throws IOException {
+        IPdfGenerator pdfGenerator = new PdfGenerator();
+        ByteArrayOutputStream stream = pdfGenerator.generatePdf(appUser,project,fileName);
+
+        // Convert stream to byte array
+        byte[] pdfBytes = stream.toByteArray();
+
+        // Create a temporary file and write the PDF bytes to it
+        File pdfFile = File.createTempFile(fileName, ".pdf");
+        OutputStream os = new FileOutputStream(pdfFile);
+        os.write(pdfBytes);
+        os.close();
+
+        return pdfFile;
+
     }
 
     private String generateRandomNumberAsString(int length) {

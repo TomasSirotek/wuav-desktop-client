@@ -1,12 +1,17 @@
 package com.wuav.client.gui.models.user;
 
 
+import com.wuav.client.be.Project;
 import com.wuav.client.be.user.AppRole;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.services.interfaces.IUserService;
 import com.google.inject.Inject;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 public class UserModel implements IUserModel{
 
@@ -56,7 +61,7 @@ public class UserModel implements IUserModel{
     }
 
     @Override
-    public boolean sendRecoveryEmail(String email) {
+    public boolean sendRecoveryEmail(String email) throws GeneralSecurityException, IOException {
         return userService.sendRecoveryEmail(email);
     }
 
@@ -69,4 +74,10 @@ public class UserModel implements IUserModel{
     public AppUser getUserByProjectId(int projectId) {
         return userService.getUserByProjectId(projectId);
     }
+
+    @Override
+    public boolean sendEmailWithAttachement(AppUser appUser, Project project, ByteArrayOutputStream value) throws GeneralSecurityException, IOException {
+       return userService.sendEmailWithAttachement(appUser,project,value);
+    }
+
 }

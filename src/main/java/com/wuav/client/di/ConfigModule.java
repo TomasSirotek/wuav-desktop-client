@@ -1,9 +1,7 @@
 package com.wuav.client.di;
 
-import com.azure.storage.blob.BlobContainerClient;
 import com.wuav.client.bll.services.*;
 import com.wuav.client.bll.services.interfaces.*;
-import com.wuav.client.bll.utilities.email.EmailConnectionFactory;
 import com.wuav.client.bll.utilities.email.EmailSender;
 import com.wuav.client.bll.utilities.email.IEmailSender;
 import com.wuav.client.bll.utilities.engines.CodeEngine;
@@ -90,15 +88,12 @@ public class ConfigModule extends AbstractModule {
         bind(IUserRepository.class).to(UserRepository.class);
         bind(IProjectRepository.class).to(ProjectRepository.class);
 
-
         bind(ICodesEngine.class).to(CodeEngine.class).in(Singleton.class);
         bind(IEmailSender.class).to(EmailSender.class);
         bind(IEmailEngine.class).to(EmailEngine.class);
         bind(IProjectModel.class).to(ProjectModel.class).asEagerSingleton();
         bind(ImageCache.class).asEagerSingleton();
         bind(IEmailSender.class).to(EmailSender.class);
-
-        bind(EmailConnectionFactory.class).asEagerSingleton();
 
         /*
          * Bind even bus as in singleton scope

@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class BlobStorageFactory {
-    private static final String CONFIG_FILE_NAME = "configBlob.cfg";
+    private static final String CONFIG_FILE_NAME = System.getenv("CONFIG_BLOB");
     private static BlobContainerClient blobContainerClient;
 
     static {
