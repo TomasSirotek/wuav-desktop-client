@@ -165,6 +165,21 @@
     </update>
 
 
+    <update
+            id="updateNotes"
+            parameterType="Project"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        UPDATE Project
+        SET
+            description = #{content}
+        WHERE id = #{projectId}
+
+    </update>
+
+
 
 </mapper>
 

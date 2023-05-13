@@ -36,6 +36,23 @@
     </insert>
 
 
+    <update
+            id="updateAddress"
+            parameterType="Address"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        UPDATE address
+        SET
+            street = #{street},
+            city = #{city},
+            zip_code = #{zipCode}
+        WHERE id = #{addressId}
+
+    </update>
+
+
 
 
 

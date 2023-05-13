@@ -3,6 +3,7 @@ package com.wuav.client.bll.services;
 import com.azure.storage.blob.BlobContainerClient;
 import com.google.inject.Inject;
 import com.wuav.client.be.CustomImage;
+import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
 import com.wuav.client.bll.services.interfaces.IAddressService;
 import com.wuav.client.bll.services.interfaces.ICustomerService;
@@ -13,6 +14,7 @@ import com.wuav.client.dal.interfaces.IImageRepository;
 import com.wuav.client.dal.interfaces.IProjectRepository;
 import com.wuav.client.gui.dto.CreateProjectDTO;
 import com.wuav.client.gui.dto.ImageDTO;
+import com.wuav.client.gui.dto.PutCustomerDTO;
 
 import java.io.File;
 import java.util.List;
@@ -100,6 +102,29 @@ public class ProjectService implements IProjectService {
                 }
             }
         }
+        return null;
+    }
+
+    @Override
+    public String updateNotes(int projectId, String content) {
+        // try to update the notes for the project and return
+        var result = projectRepository.updateNotes(projectId, content);
+        if(result){
+            return getProjectById(projectId).getDescription();
+        }
+        return "";
+    }
+
+    @Override
+    public Customer updateCustomer(PutCustomerDTO customerDTO) {
+        // get the customer from the database
+       boolean result = addressService.updateAddress(customerDTO.addressDTO());
+       if(result){
+           boolean projectCustomer = customerService.updateCustomer(customerDTO);
+           if(projectCustomer){
+                return customerService.getCustomerById(customerDTO.id());
+           }
+       }
         return null;
     }
 

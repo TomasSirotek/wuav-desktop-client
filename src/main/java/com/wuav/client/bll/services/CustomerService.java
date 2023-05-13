@@ -6,6 +6,7 @@ import com.wuav.client.bll.services.interfaces.ICustomerService;
 import com.wuav.client.dal.interfaces.ICustomerRepository;
 import com.wuav.client.dal.repository.CustomerRepository;
 import com.wuav.client.gui.dto.CustomerDTO;
+import com.wuav.client.gui.dto.PutCustomerDTO;
 
 public class CustomerService implements ICustomerService {
 
@@ -39,5 +40,10 @@ public class CustomerService implements ICustomerService {
     public int createCustomer(CustomerDTO customerDTO) {
         int result = customerRepository.createCustomer(customerDTO);
         return result > 0 ? result : -1;
+    }
+
+    @Override
+    public boolean updateCustomer(PutCustomerDTO customerDTO) {
+        return customerRepository.updateCustomer(customerDTO);
     }
 }

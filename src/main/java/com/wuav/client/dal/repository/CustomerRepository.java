@@ -8,6 +8,7 @@ import com.wuav.client.dal.mappers.CustomerMapper;
 import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
 import com.wuav.client.gui.dto.AddressDTO;
 import com.wuav.client.gui.dto.CustomerDTO;
+import com.wuav.client.gui.dto.PutCustomerDTO;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,25 @@ public class CustomerRepository implements ICustomerRepository {
             logger.error("An error occurred mapping tables", ex);
         }
         return affectedRowsResult;
+    }
+
+    @Override
+    public boolean updateCustomer(PutCustomerDTO customerDTO) {
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            CustomerMapper mapper = session.getMapper(CustomerMapper.class);
+            var affectedRows = mapper.updateCustomer(
+                    customerDTO.id(),
+                    customerDTO.name(),
+                    customerDTO.email(),
+                    customerDTO.phoneNumber(),
+                    customerDTO.type()
+            );
+            session.commit();
+            return affectedRows > 0;
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return false;
     }
 
 

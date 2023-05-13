@@ -23,4 +23,5 @@ public interface ProjectMapper {
     // updating project with description
     int updateProjectForUserById(@Param("projectId")int projectId,@Param("description") String description);
 
+    int updateNotes(@Param("projectId") int projectId,@Param("content") String content);
 }

@@ -3,12 +3,14 @@ package com.wuav.client.gui.models;
 import com.azure.storage.blob.BlobContainerClient;
 import com.google.inject.Inject;
 import com.wuav.client.be.CustomImage;
+import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.services.interfaces.IProjectService;
 import com.wuav.client.cache.ImageCache;
 import com.wuav.client.dal.blob.BlobStorageFactory;
 import com.wuav.client.gui.dto.CreateProjectDTO;
+import com.wuav.client.gui.dto.PutCustomerDTO;
 import com.wuav.client.gui.models.user.IUserModel;
 import javafx.scene.image.Image;
 
@@ -39,7 +41,7 @@ public class ProjectModel implements IProjectModel{
 
         if (projects == null) {
             projects = projectService.getProjectsByUserId(userId);
-            cacheProjectsImages(projects);
+           // cacheProjectsImages(projects); PUT BACK
             projectsCache.put(userId, projects);
         }
 
@@ -130,6 +132,44 @@ public class ProjectModel implements IProjectModel{
         }
 
         return image;
+    }
+
+    @Override
+    public String updateNotes(int projectId, String content) {
+        String updatedNotes = projectService.updateNotes(projectId,content);
+
+        if(updatedNotes != null){
+            // Retrieve the project owner
+            AppUser user = userModel.getUserByProjectId(projectId);
+
+            if (user != null) {
+                // Fetch the updated project from the database
+                Project updatedProject = projectService.getProjectById(projectId);
+
+                // Update the cache with the updated project
+                List<Project> projects = projectsCache.get(user.getId());
+                for (int i = 0; i < projects.size(); i++) {
+                    if (projects.get(i).getId() == projectId) {
+                        projects.set(i, updatedProject);
+                        break;
+                    }
+                }
+                projectsCache.put(user.getId(), projects);
+            }
+        }
+
+        return updatedNotes;
+    }
+
+    @Override
+    public Customer updateCustomer(PutCustomerDTO customerDTO) {
+        // update customer
+        Customer updateCustomer  =  projectService.updateCustomer(customerDTO);
+        // update customer in the cache
+
+        // return customer
+
+        return updateCustomer;
     }
 
 

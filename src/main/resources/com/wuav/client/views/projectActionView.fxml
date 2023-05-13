@@ -439,7 +439,7 @@
                                                                         <Cursor fx:constant="HAND" />
                                                                      </cursor>
                                                                   </MFXButton>
-                                                                  <MFXButton fx:id="updateBtnNotes1" prefHeight="29.0" prefWidth="154.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Update Customer" textFill="#141111">
+                                                                  <MFXButton fx:id="updateClient" prefHeight="29.0" prefWidth="154.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Update Client" textFill="#141111">
                                                                      <font>
                                                                         <Font name="SansSerif Bold" size="15.0" />
                                                                      </font>

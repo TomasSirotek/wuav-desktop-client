@@ -20,6 +20,5 @@ public interface IProjectRepository {
 
     int addProjectToUser(int userId, int projectId);
 
-
-
+    boolean updateNotes(int projectId, String content);
 }

@@ -1,7 +1,9 @@
 package com.wuav.client.gui.models;
 
+import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
 import com.wuav.client.gui.dto.CreateProjectDTO;
+import com.wuav.client.gui.dto.PutCustomerDTO;
 import javafx.scene.image.Image;
 
 import java.io.File;
@@ -28,4 +30,8 @@ public interface IProjectModel {
     boolean deleteProject(Project project);
 
     Image reuploadImage(int projectId, int id, File selectedImageFile);
+
+    String updateNotes(int id, String s);
+
+    Customer updateCustomer(PutCustomerDTO customerDTO);
 }

@@ -20,6 +20,7 @@ import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
 import com.wuav.client.gui.utils.CKEditorPane;
+import com.wuav.client.gui.utils.FormField;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -576,12 +577,6 @@ public class ModalActionController extends RootController implements Initializab
         // Implement phone number validation logic here
         return true;
     }
-
-    @FunctionalInterface
-    private interface FieldValidator {
-        boolean validate(String input);
-    }
-
     private boolean validateFourthTab() {
         // Implement validation logic for the fourth tab here
         return true;
@@ -589,8 +584,6 @@ public class ModalActionController extends RootController implements Initializab
 
 
     // END OF VALIDATIONS
-
-
 
     // show transaction erro however that is just apple not liking javaFx and its not a real error
     private void selectFile() {
@@ -850,46 +843,6 @@ public class ModalActionController extends RootController implements Initializab
     //endregion
 
 
-    private static class FormField {
-        private final Node control;
-        private final String errorMessage;
-        private final FieldValidator validationFunction;
-        private final String errorValidationMessage;
-
-        public FormField(Node control, String errorMessage) {
-            this(control, errorMessage, null, null);
-        }
-
-        public FormField(Node control, String errorMessage, FieldValidator validationFunction, String errorValidationMessage) {
-            this.control = control;
-            this.errorMessage = errorMessage;
-            this.validationFunction = validationFunction;
-            this.errorValidationMessage = errorValidationMessage;
-        }
-
-        public String getText() {
-            if (control instanceof TextInputControl) {
-                return ((TextInputControl) control).getText();
-            } else if (control instanceof ChoiceBox) {
-                Object value = ((ChoiceBox<?>) control).getValue();
-                return value != null ? value.toString() : "";
-            } else {
-                throw new UnsupportedOperationException("Control type not supported: " + control.getClass().getName());
-            }
-        }
-
-        public String getErrorMessage() {
-            return errorMessage;
-        }
-
-        public FieldValidator getValidationFunction() {
-            return validationFunction;
-        }
-
-        public String getErrorValidationMessage() {
-            return errorValidationMessage;
-        }
-    }
 
 
 }

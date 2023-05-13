@@ -6,22 +6,11 @@ import com.wuav.client.bll.services.interfaces.IAddressService;
 import com.wuav.client.dal.interfaces.IAddressRepository;
 import com.wuav.client.dal.repository.AddressRepository;
 import com.wuav.client.gui.dto.AddressDTO;
+import com.wuav.client.gui.dto.PutAddressDTO;
 
 public class AddressService implements IAddressService {
 
     private final IAddressRepository addressRepository;
-
-//    public static void main(String[] args) {
-//        AddressService addressService = new AddressService(new AddressRepository());
-//        AddressDTO addressDTO = new AddressDTO(3, "test", "test", "test");
-//
-//        int result = addressService.createAddress(addressDTO);
-//        System.out.println(result);
-//
-//        Address address = addressService.getAddressById(3); // should return 1
-//        System.out.println(address);
-//
-//    }
 
     @Inject
     public AddressService(IAddressRepository addressRepository) {
@@ -37,5 +26,10 @@ public class AddressService implements IAddressService {
     @Override
     public Address getAddressById(int id) {
         return addressRepository.getAddressById(id);
+    }
+
+    @Override
+    public boolean updateAddress(PutAddressDTO addressDTO) {
+        return addressRepository.updateAddress(addressDTO);
     }
 }

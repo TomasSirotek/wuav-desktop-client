@@ -1,20 +1,14 @@
 package com.wuav.client.dal.repository;
 
 import com.wuav.client.be.Address;
-import com.wuav.client.be.CustomImage;
-import com.wuav.client.be.user.AppUser;
 import com.wuav.client.dal.interfaces.IAddressRepository;
 import com.wuav.client.dal.mappers.AddressMapper;
-import com.wuav.client.dal.mappers.ImageMapper;
-import com.wuav.client.dal.mappers.UserMapper;
 import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
 import com.wuav.client.gui.dto.AddressDTO;
-import javafx.fxml.FXML;
+import com.wuav.client.gui.dto.PutAddressDTO;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
 
 
 public class AddressRepository implements IAddressRepository {
@@ -51,6 +45,24 @@ public class AddressRepository implements IAddressRepository {
             logger.error("An error occurred mapping tables", ex);
         }
         return address;
+    }
+
+    @Override
+    public boolean updateAddress(PutAddressDTO addressDTO) {
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            AddressMapper mapper = session.getMapper(AddressMapper.class);
+            var affectedRows = mapper.updateAddress(
+                    addressDTO.id(),
+                    addressDTO.street(),
+                    addressDTO.city(),
+                    addressDTO.zipCode()
+            );
+            session.commit();
+            return affectedRows > 0;
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return false;
     }
 
 }

@@ -3,19 +3,26 @@ package com.wuav.client.gui.controllers;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.wuav.client.be.CustomImage;
+import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.cache.ImageCache;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
+import com.wuav.client.gui.dto.CustomerDTO;
+import com.wuav.client.gui.dto.PutAddressDTO;
+import com.wuav.client.gui.dto.PutCustomerDTO;
 import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
 import com.wuav.client.gui.utils.CKEditorPane;
+import com.wuav.client.gui.utils.FormField;
 import com.wuav.client.gui.utils.ProjectEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -36,6 +43,8 @@ import javafx.stage.StageStyle;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -46,6 +55,8 @@ import javafx.scene.web.WebEngine;
 public class ProjectActionController  extends RootController implements Initializable {
 
 
+    @FXML
+    private MFXButton updateClient;
     @FXML
     private MFXProgressSpinner statusSpinner;
     @FXML
@@ -112,7 +123,7 @@ public class ProjectActionController  extends RootController implements Initiali
 
     private Image mainImage;
 
-
+    private StringProperty editorContent = new SimpleStringProperty();
 
     private Image defaultImage = new Image("/no_data.png");
 
@@ -131,9 +142,90 @@ public class ProjectActionController  extends RootController implements Initiali
         selectedImage.setImage(defaultImage);
         selectFile.setOnAction(e -> selectFile());
         expandBtn.setOnAction(e -> previewImage(selectedImage.getImage()));
-
+        updateBtnNotes.setOnAction(e -> updateNotes());
         newFileUploadBox.setVisible(false);
         selectedImageFile = null;
+        updateClient.setOnAction(e -> updateClient());
+    }
+
+    private void updateClient() {
+
+      if(validateFields()) {
+          PutAddressDTO addressDTO = new PutAddressDTO(
+                  currentProject.getCustomer().getAddress().getId(),
+                  clientAddress.getText(),
+                  clientCityField.getText(),
+                  clientPhoneField.getText()
+          );
+
+          PutCustomerDTO customerDTO = new PutCustomerDTO(
+                  currentProject.getCustomer().getId(),
+                  clientNameField.getText(),
+                  clientEmailField.getText(),
+                  clientPhoneField.getText(),
+                  clientTypeChooseField.getSelectionModel().getSelectedItem().toString(),
+                  addressDTO
+          );
+
+
+          Customer updatedCustomer = projectModel.updateCustomer(customerDTO);
+          if (updatedCustomer != null) {
+              AlertHelper.showDefaultAlert("Client updated successfully", Alert.AlertType.INFORMATION);
+              currentProject.setCustomer(updatedCustomer);
+          }
+      }
+
+    }
+
+    private boolean validateFields() {
+        boolean isValid = true;
+        List<FormField> fieldsToValidate = Arrays.asList(
+                new FormField(clientNameField, "Client name is required"),
+                new FormField(clientEmailField, "Client email is required", this::isValidEmail, "Invalid email format"),
+                new FormField(clientTypeChooseField, "Client type is required"),
+                new FormField(clientPhoneField, "Client phone is required", this::isValidPhone, "Invalid phone number format"),
+                new FormField(clientCityField, "Client city is required")
+                );
+
+        for (FormField field : fieldsToValidate) {
+            if (field.getText().isEmpty()) {
+                AlertHelper.showDefaultAlert(field.getErrorMessage(), Alert.AlertType.WARNING);
+                isValid = false;
+            } else if (field.getValidationFunction() != null && !field.getValidationFunction().validate(field.getText())) {
+                AlertHelper.showDefaultAlert(field.getErrorValidationMessage(), Alert.AlertType.WARNING);
+                isValid = false;
+            }
+        }
+
+        if (clientTypeChooseField.getSelectionModel().isEmpty()) {
+            AlertHelper.showDefaultAlert("Client type is required", Alert.AlertType.WARNING);
+            isValid = false;
+        }
+
+        return isValid;
+
+    }
+
+    private boolean isValidEmail(String email) {
+        // Implement email validation logic here
+        return true;
+    }
+
+    private boolean isValidPhone(String phone) {
+        // Implement phone number validation logic here
+        return true;
+    }
+
+    private void updateNotes() {
+        if(!editorContent.get().isEmpty()){
+           String content = projectModel.updateNotes(currentProject.getId(), editorContent.get().trim());
+           if(!content.isEmpty()){
+               editorContent.set(content);
+               AlertHelper.showDefaultAlert("Notes updated successfully", Alert.AlertType.INFORMATION);
+              }else{
+               AlertHelper.showDefaultAlert("Notes update failed", Alert.AlertType.ERROR);
+           }
+        }
     }
 
 
@@ -145,6 +237,10 @@ public class ProjectActionController  extends RootController implements Initiali
         CKEditorPane editorPane = new CKEditorPane();
         editorPane.setContent(currentProject.getDescription());
 
+        editorPane.editorContentProperty().addListener((observable, oldValue, newValue) -> {
+            editorContent.set(newValue);
+        });
+
         editorBox.getChildren().add(editorPane);
 
         clientNameField.setText(currentProject.getCustomer().getName());
@@ -153,7 +249,6 @@ public class ProjectActionController  extends RootController implements Initiali
         ObservableList<String> options = FXCollections.observableArrayList("PRIVATE", "BUSINESS");
         clientTypeChooseField.setItems(options);
         clientTypeChooseField.setValue(currentProject.getCustomer().getType());
-
 
         clientPhoneField.setText(currentProject.getCustomer().getPhoneNumber());
         clientCityField.setText(currentProject.getCustomer().getAddress().getCity());
@@ -198,10 +293,7 @@ public class ProjectActionController  extends RootController implements Initiali
             selectedImageFile = selectedFile;
             selectedImage.setImage(new javafx.scene.image.Image(selectedFile.toURI().toString()));
             changeSelectedFileHBox();
-
-
         }
-
     }
 
     private void changeSelectedFileHBox() {
