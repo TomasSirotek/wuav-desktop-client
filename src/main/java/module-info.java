@@ -26,6 +26,7 @@ module com.wuav.client {
     requires net.coobird.thumbnailator;
     requires spring.security.crypto;
 
+
     exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common,org.apache.pdfbox;
     exports com.wuav.client.bll.helpers;
     exports com.wuav.client.bll.services;

@@ -11,6 +11,7 @@ import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
+import com.wuav.client.gui.utils.CKEditorPane;
 import com.wuav.client.gui.utils.ProjectEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -44,6 +45,8 @@ import javafx.scene.web.WebEngine;
 public class ProjectActionController  extends RootController implements Initializable {
 
     @FXML
+    private VBox editorBox;
+    @FXML
     private MFXButton expand1;
 
     @FXML
@@ -68,8 +71,6 @@ public class ProjectActionController  extends RootController implements Initiali
     private MFXButton continueBtn1;
     @FXML
     private TabPane tabPane;
-    @FXML
-    private TextField descriptionField;
     @FXML
     private MFXButton continueBtn;
     @FXML
@@ -168,9 +169,13 @@ public class ProjectActionController  extends RootController implements Initiali
 
 
         projectNameField.setText(currentProject.getName());
-        descriptionField.setText(currentProject.getDescription());
-        // here should be the image set there
-            // =>
+
+        var hedle = currentProject.getDescription();
+        CKEditorPane editorPane = new CKEditorPane();
+        editorPane.setContent(hedle);
+
+        editorBox.getChildren().add(editorPane);
+
 
         // here should be the additional images that are not main
 

@@ -19,12 +19,15 @@ import com.wuav.client.gui.dto.ImageDTO;
 import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
+import com.wuav.client.gui.utils.CKEditorPane;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -52,6 +55,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ModalActionController extends RootController implements Initializable {
 
+    @FXML
+    private VBox editorVbox;
     @FXML
     private Pane imagesPaneFinal;
     @FXML
@@ -82,7 +87,6 @@ public class ModalActionController extends RootController implements Initializab
     private MFXTextField clientPhoneField;
     @FXML
     private MFXTextField clientCityField;
-
     @FXML
     private TextField descriptionField;
     @FXML
@@ -118,8 +122,9 @@ public class ModalActionController extends RootController implements Initializab
     private Image defaultImage = new Image("/no_data.png");
     private Image fileImage = new Image("/image.png");
 
-
     private final IControllerFactory controllerFactory;
+
+    private StringProperty editorContent = new SimpleStringProperty();
 
     private IProjectModel projectModel;
 
@@ -137,6 +142,10 @@ public class ModalActionController extends RootController implements Initializab
     private Timeline imageFetchTimeline;
 
     private List<Image> imagesFromApp;
+    @FXML
+    private GridPane imagesPaneFinal2 = new GridPane();
+    private int currentRow = 0;
+    private int currentColumn = 0;
 
     @Inject
     public ModalActionController(EventBus eventBus, IControllerFactory controllerFactory, IProjectModel projectModel, ICodesEngine codesEngine) {
@@ -225,12 +234,7 @@ public class ModalActionController extends RootController implements Initializab
 
 
 
-    @FXML
-    private GridPane imagesPaneFinal2 = new GridPane();
 
-
-    private int currentRow = 0;
-    private int currentColumn = 0;
 
     private void addImageToSelectedImageVBox(Image image) {
         System.out.println("Adding image to imagesPaneFinal");
@@ -275,17 +279,21 @@ public class ModalActionController extends RootController implements Initializab
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        setupEditor();
         selectFile.setOnAction(e -> selectFile());
-
-        System.out.println("from modal " +  projectModel.getCachedProjectsByUserId(340));
-
         fillClientTypeChooseField();
-
-
-        // PROJECT ID SHOULD NOT BE THERE SINCE ITS NOT GENERATED YET // this qr should be generated only if its forth tab
-
         handleProgressSwitch();
         closeStage();
+    }
+
+    private void setupEditor() {
+        CKEditorPane editorPane = new CKEditorPane();
+        // Set the editor to the editor box
+        editorVbox.getChildren().add(editorPane);
+        // Access the editor content
+        editorPane.editorContentProperty().addListener((observable, oldValue, newValue) -> {
+           editorContent.set(newValue);
+        });
     }
 
     private void fillClientTypeChooseField() {
@@ -402,6 +410,8 @@ public class ModalActionController extends RootController implements Initializab
                     tabs[currentTab[0]].setDisable(false);
                     tabPaneCreate.getSelectionModel().selectNext();
 
+                    System.out.println(editorContent.get());
+
                     if(currentTab[0] == 3) {
                         tryToGenerateQRForApp();
                         startImageFetch(340);
@@ -499,13 +509,6 @@ public class ModalActionController extends RootController implements Initializab
         }
     }
 
-
-    @FXML
-    public void fetchImageAction(ActionEvent actionEvent) {
-        System.out.println("fetching image BUTTON CLICK");
-      //  fetchImageFromServer(340);
-        startImageFetch(340);
-    }
 
     @FunctionalInterface
     private interface ValidationFunction {
@@ -710,7 +713,6 @@ public class ModalActionController extends RootController implements Initializab
     }
 
     private void removeImage() {
-
         selectedImage.setImage(null);
         // set image back to the defualt not data selected no data in resource folder
         selectedImage.setImage(defaultImage);
@@ -719,8 +721,6 @@ public class ModalActionController extends RootController implements Initializab
         selectFile.setDisable(false);
         imageText.setVisible(true);
     }
-
-
 
     private void voidTriggerProjectLoadingStatus(){
         eventBus.post(new RefreshEvent(EventType.START_LOADING_PROJECTS));
@@ -752,8 +752,6 @@ public class ModalActionController extends RootController implements Initializab
                 addressDTO
         );
 
-
-
         // FIRST UPLOADED IMAGE
         // selectedImageFile => File (format=
 
@@ -762,7 +760,6 @@ public class ModalActionController extends RootController implements Initializab
         imageToUpload.setId(UniqueIdGenerator.generateUniqueId());
         imageToUpload.setFile(selectedImageFile);
         imageToUpload.setMain(true);
-
 
         // add all to list of images to upload
         listOfUploadImages.add(imageToUpload);
@@ -773,7 +770,7 @@ public class ModalActionController extends RootController implements Initializab
         CreateProjectDTO projectToCreate = new CreateProjectDTO(
                 projectId,
                 projectNameField.getText().trim(),
-                descriptionField.getText().trim(),
+                editorContent.get().trim(),
                 listOfUploadImages,
                 customerDTO
         );

@@ -94,7 +94,7 @@
                               </HBox>
                               <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
                                  <children>
-                                    <MFXTextField fx:id="userEmailField" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="31.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="212.0" promptText="Email" text="admin@hotmail.com" />
+                                    <MFXTextField fx:id="userEmailField" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="31.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="212.0" promptText="Email" text="tech@hotmail.com" />
                                  </children>
                                  <GridPane.margin>
                                     <Insets left="10.0" />
