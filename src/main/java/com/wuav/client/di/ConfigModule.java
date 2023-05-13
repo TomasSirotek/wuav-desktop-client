@@ -10,6 +10,8 @@ import com.wuav.client.bll.utilities.engines.CodeEngine;
 import com.wuav.client.bll.utilities.engines.EmailEngine;
 import com.wuav.client.bll.utilities.engines.ICodesEngine;
 import com.wuav.client.bll.utilities.engines.IEmailEngine;
+import com.wuav.client.bll.utilities.engines.cryptoEngine.CryptoEngine;
+import com.wuav.client.bll.utilities.engines.cryptoEngine.ICryptoEngine;
 import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
 import com.wuav.client.bll.utilities.pdf.PdfGenerator;
 import com.wuav.client.cache.ImageCache;
@@ -63,6 +65,8 @@ public class ConfigModule extends AbstractModule {
         bind(ICustomerService.class).to(CustomerService.class);
 
         bind(IPdfGenerator.class).to(PdfGenerator.class);
+
+        bind(ICryptoEngine.class).to(CryptoEngine.class);
 
 
         /*

@@ -17,6 +17,7 @@ public class UserRepository implements IUserRepository {
 
     Logger logger = LoggerFactory.getLogger(UserRepository.class);
 
+    @Override
     public List<AppUser> getAllUsers() {
         List<AppUser> allUsers = new ArrayList<>();
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
@@ -81,5 +82,26 @@ public class UserRepository implements IUserRepository {
             logger.error("An error occurred mapping tables", ex);
         }
         return finalAffectedRows;
+    }
+
+    @Override
+    public boolean updateUserById(AppUser appUser) {
+        int affectedRows = 0;
+
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            affectedRows = mapper.updateUser(
+                    appUser.getId(),
+                    appUser.getName(),
+                    appUser.getEmail()
+                    );
+            session.commit();
+
+            return affectedRows > 0;
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+
+        return false;
     }
 }

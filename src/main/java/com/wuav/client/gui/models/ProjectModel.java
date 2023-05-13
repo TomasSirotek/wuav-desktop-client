@@ -55,7 +55,7 @@ public class ProjectModel implements IProjectModel{
             projects.add(newProject);
             projectsCache.put(userId, projects);
         }
-        cacheProjectImages(newProject);
+      //  cacheProjectImages(newProject);
     }
 
     @Override

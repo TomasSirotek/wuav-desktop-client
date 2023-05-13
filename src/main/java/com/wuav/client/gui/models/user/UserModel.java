@@ -43,4 +43,9 @@ public class UserModel implements IUserModel{
     public int createCustomerService(AppUser appUser) {
         return userService.createCustomer(appUser);
     }
+
+    @Override
+    public boolean updateUserById(AppUser appUser) {
+        return userService.updateUserById(appUser);
+    }
 }

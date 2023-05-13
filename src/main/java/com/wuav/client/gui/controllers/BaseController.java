@@ -37,6 +37,10 @@ import java.util.*;
 public class BaseController extends RootController implements Initializable {
 
     @FXML
+    private MFXButton accButton;
+    @FXML
+    private MFXButton usersButton;
+    @FXML
     private Label menuItemLabel;
     @FXML
     private VBox userDetailsBox;
@@ -88,6 +92,7 @@ public class BaseController extends RootController implements Initializable {
         projectButton.setStyle("-fx-background-color: rgba(234, 234, 234, 0.8);");
         if(!CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("TECHNICIAN")){
             projectButton.setText("Projects");
+            usersButton.setVisible(false);
             userImage.setImage(defaultImage);
             System.out.println(CurrentUser.getInstance().getLoggedUser().getRoles().get(0));
         }
@@ -170,8 +175,16 @@ public class BaseController extends RootController implements Initializable {
     @FXML
     private void handleDashBoardPageSwitch() {
         projectButton.setStyle("-fx-background-color: rgba(234, 234, 234, 0.8);");
+        accButton.setStyle("-fx-background-color:transparent");
         eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
         runInParallel(ViewType.PROJECTS);
+    }
+
+    @FXML
+    private void handleUserProfileSwitch() {
+        projectButton.setStyle("-fx-background-color: transparent");
+        accButton.setStyle("-fx-background-color: rgba(234, 234, 234, 0.8);");
+        runInParallel(ViewType.USER_PROFILE);
     }
     //endregion
 

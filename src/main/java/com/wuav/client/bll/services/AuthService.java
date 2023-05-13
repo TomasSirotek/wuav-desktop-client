@@ -4,23 +4,26 @@ import com.google.inject.Inject;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.services.interfaces.IAuthService;
 import com.wuav.client.bll.services.interfaces.IUserService;
+import com.wuav.client.bll.utilities.engines.cryptoEngine.ICryptoEngine;
 import com.wuav.client.gui.models.user.CurrentUser;
 
 import javax.naming.AuthenticationException;
-import java.util.Optional;
 
 public class AuthService implements IAuthService {
     private IUserService userService;
+    private final ICryptoEngine cryptoEngine;
 
     @Inject
-    public AuthService(IUserService userService) {
+    public AuthService(IUserService userService, ICryptoEngine cryptoEngine) {
         this.userService = userService;
+        this.cryptoEngine = cryptoEngine;
     }
 
     @Override
     public AppUser authenticate(String email, String password) throws AuthenticationException {
         AppUser user = userService.getUserByEmail(email);
-        if (user != null && user.getPasswordHash().equals(password)) {
+        var matchedPassword = cryptoEngine.HashCheck(user.getPasswordHash(),password);
+        if (user != null && matchedPassword) {
             CurrentUser.getInstance().setLoggedUser(user);
             return user;
         } else {

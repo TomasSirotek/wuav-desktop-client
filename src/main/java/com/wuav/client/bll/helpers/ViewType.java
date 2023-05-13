@@ -41,6 +41,12 @@ public enum ViewType {
             return "views/projectActionView.fxml";
         }
     },
+    USER_PROFILE{
+        @Override
+        public String getFXMLView() {
+            return "views/userProfileView.fxml";
+        }
+    },
     DASHBOARD {
         @Override
         public String getFXMLView() {

@@ -9,8 +9,6 @@ public class CurrentUser {
     private AppUser currentUser = null;
     private static volatile CurrentUser instance;
 
-
-
     public static CurrentUser getInstance() {
         if (instance == null) {
             synchronized (CurrentUser.class) {

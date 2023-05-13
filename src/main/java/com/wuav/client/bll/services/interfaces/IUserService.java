@@ -14,4 +14,6 @@ public interface IUserService {
     AppUser getUserById(int id);
 
     int createCustomer(AppUser appUser);
+
+    boolean updateUserById(AppUser appUser);
 }
