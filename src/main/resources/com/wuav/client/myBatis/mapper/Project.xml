@@ -180,6 +180,16 @@
     </update>
 
 
+    <delete id="deleteProjectById"
+            parameterType="Project"
+            flushCache="true"
+            statementType="PREPARED">
+        --  executes delete query
+        DELETE
+        FROM project
+        WHERE id = #{projectId}
+    </delete>
+
 
 </mapper>
 

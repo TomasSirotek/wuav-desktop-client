@@ -70,6 +70,18 @@
     </update>
 
 
+    <delete id="deleteCustomer"
+            parameterType="Customer"
+            flushCache="true"
+            statementType="PREPARED">
+        --  executes delete query
+        DELETE
+        FROM customer
+        WHERE id = #{customerId}
+    </delete>
+
+
+
 
 
 

@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.wuav.client.be.Customer;
 import com.wuav.client.bll.services.interfaces.ICustomerService;
 import com.wuav.client.dal.interfaces.ICustomerRepository;
-import com.wuav.client.dal.repository.CustomerRepository;
 import com.wuav.client.gui.dto.CustomerDTO;
 import com.wuav.client.gui.dto.PutCustomerDTO;
 
@@ -14,16 +13,6 @@ public class CustomerService implements ICustomerService {
 
 
         public static void main(String[] args) {
-//        var addressDTO = new AddressDTO(1, "street", "city", "zipCode");
-//        var customerDTO = new CustomerDTO(1, "name", "email@hmail.com", "10234024","private", addressDTO);
-//        var customerRepository = new CustomerRepository();
-//       int result =  customerRepository.createCustomer(customerDTO);
-//        System.out.println(result);
-
-//      var customerService = new CustomerService(new CustomerRepository());
-//        var customer = customerService.getCustomerById(1);
-//        System.out.println(customer);
-
     }
 
     @Inject
@@ -45,5 +34,10 @@ public class CustomerService implements ICustomerService {
     @Override
     public boolean updateCustomer(PutCustomerDTO customerDTO) {
         return customerRepository.updateCustomer(customerDTO);
+    }
+
+    @Override
+    public boolean deleteCustomerById(int id) {
+        return customerRepository.deleteCustomerById(id);
     }
 }

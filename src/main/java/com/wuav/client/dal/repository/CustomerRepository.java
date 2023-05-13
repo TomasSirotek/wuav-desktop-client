@@ -5,6 +5,7 @@ import com.wuav.client.be.Customer;
 import com.wuav.client.dal.interfaces.ICustomerRepository;
 import com.wuav.client.dal.mappers.AddressMapper;
 import com.wuav.client.dal.mappers.CustomerMapper;
+import com.wuav.client.dal.mappers.ImageMapper;
 import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
 import com.wuav.client.gui.dto.AddressDTO;
 import com.wuav.client.gui.dto.CustomerDTO;
@@ -69,6 +70,25 @@ public class CustomerRepository implements ICustomerRepository {
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);
         }
+        return false;
+    }
+
+    @Override
+    public boolean deleteCustomerById(int id) {
+        int affectedRows = 0;
+
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            CustomerMapper mapper = session.getMapper(CustomerMapper.class);
+            affectedRows = mapper.deleteCustomer(
+                    id
+            );
+            session.commit();
+
+            return affectedRows > 0;
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+
         return false;
     }
 

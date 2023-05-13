@@ -112,6 +112,11 @@ public class ProjectController extends RootController implements Initializable {
         createNewProject.setOnAction(e -> openActionWindows("Create new project",ViewType.ACTIONS,null));
         exportSelected.setOnAction(e -> exportSelected());
 
+        // FOR NOW
+        if(CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("ADMIN")){
+            createNewProject.setVisible(false);
+        }
+
         selectAllTableCheck.selectedProperty().addListener((observable, oldValue, newValue) -> {
             updateCheckBoxes(newValue);
         });
@@ -364,7 +369,14 @@ public class ProjectController extends RootController implements Initializable {
 
 
                                     // adding all items to context menu
-                                    var menu = new ContextMenu(editItem, emailItem, deleteItem);
+                                    ContextMenu menu = null;
+
+                                    if(CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("ADMIN")){
+                                        menu = new ContextMenu(editItem, emailItem, deleteItem);
+                                    }else {
+                                        menu = new ContextMenu(editItem, emailItem);
+                                    }
+
                                     editItem.setOnAction(event -> {
                                         // edit here
                                         runInParallel(ViewType.PROJECT_ACTIONS,getTableRow().getItem());
@@ -380,8 +392,9 @@ public class ProjectController extends RootController implements Initializable {
                                         event.consume();
                                     });
 
+                                    ContextMenu finalMenu = menu;
                                     btn.setOnAction(event -> {
-                                        menu.show(btn, Side.BOTTOM, -95, 0);
+                                        finalMenu.show(btn, Side.BOTTOM, -95, 0);
                                     });
                                     setGraphic(btn);
                                     setText(null);
@@ -462,7 +475,7 @@ public class ProjectController extends RootController implements Initializable {
             boolean projectDeleted = projectModel.deleteProject(project);
             if(projectDeleted) {
                 AlertHelper.showDefaultAlert("Project deleted", Alert.AlertType.INFORMATION);
-                refreshTable();
+
             }else {
                 AlertHelper.showDefaultAlert("Project not deleted", Alert.AlertType.ERROR);
             }

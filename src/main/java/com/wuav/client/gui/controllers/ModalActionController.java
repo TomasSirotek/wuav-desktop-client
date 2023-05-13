@@ -529,7 +529,7 @@ public class ModalActionController extends RootController implements Initializab
     private boolean validateSecondTab() {
         // Implement validation logic for the second tab here
         boolean isValid = true;
-        if(descriptionField.getText().trim().equals("") || selectedImageFile == null){
+        if(editorContent.get().isEmpty()|| selectedImageFile == null){
             AlertHelper.showDefaultAlert("Description and Image is required", Alert.AlertType.WARNING);
             isValid = false;
         }

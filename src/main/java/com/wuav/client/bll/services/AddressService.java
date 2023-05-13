@@ -32,4 +32,9 @@ public class AddressService implements IAddressService {
     public boolean updateAddress(PutAddressDTO addressDTO) {
         return addressRepository.updateAddress(addressDTO);
     }
+
+    @Override
+    public boolean deleteAddressById(int id) {
+        return addressRepository.deleteAddressById(id);
+    }
 }

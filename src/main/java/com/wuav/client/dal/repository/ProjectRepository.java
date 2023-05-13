@@ -121,6 +121,21 @@ public class ProjectRepository implements IProjectRepository {
         }
         return false;
     }
+
+    @Override
+    public boolean deleteProjectById(int id) {
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            ProjectMapper mapper = session.getMapper(ProjectMapper.class);
+            var affectedRows = mapper.deleteProjectById(
+                  id
+            );
+            session.commit();
+            return affectedRows > 0;
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return false;
+    }
 }
 
 

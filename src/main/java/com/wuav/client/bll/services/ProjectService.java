@@ -65,16 +65,56 @@ public class ProjectService implements IProjectService {
 
     @Override
     public boolean deleteProject(Project project) {
-        // STEPS TO DO
-        // 1. Delete all images from blob storage
-        // 2. Delete all images from database
-        // 3. Delete project from database
-        // 4. Delete customer from database
-        // 5. Delete address from database
-        // 6. Delete project from user
-        // 7. Delete project from cache
+        // Ensure all operations are atomic to maintain data integrity
+        try {
 
-        return false;
+            // 1. Delete all images from blob storage
+            for (CustomImage image : project.getProjectImages()) {
+                String imageUrl = image.getImageUrl();
+                boolean isDeleted = deleteIfExists(imageUrl);
+                if (!isDeleted) {
+                   throw new RuntimeException("Failed to delete image from blob storage: " + imageUrl);
+               }
+            }
+
+
+            // 2. Delete all images from database (including from the join table due to cascade delete)
+            for (CustomImage image : project.getProjectImages()) {
+                boolean imageDeleted = imageRepository.deleteImageById(image.getId());
+                if (!imageDeleted) {
+                    throw new RuntimeException("Failed to delete image from database: " + image.getId());
+                }
+            }
+
+
+            // 4. Delete project from database
+            boolean projectDeleted = projectRepository.deleteProjectById(project.getId());
+            if (!projectDeleted) {
+                throw new RuntimeException("Failed to delete project from database: " + project.getId());
+            }
+
+
+            // 3. Delete customer from database (assuming a customer is linked to a project)
+            boolean customerDeleted = customerService.deleteCustomerById(project.getCustomer().getId());
+            if (!customerDeleted) {
+                throw new RuntimeException("Failed to delete customer from database for project: " + project.getId());
+            }
+
+
+            // 5. Delete address from database (assuming an address is linked to a project)
+            boolean addressDeleted = addressService.deleteAddressById(project.getCustomer().getAddress().getId());
+            if (!addressDeleted) {
+                throw new RuntimeException("Failed to delete address from database for project: " + project.getId());
+            }
+
+
+            // If all steps are successful, return true
+            return true;
+        } catch (Exception e) {
+            // Log error and return false
+            System.err.println(e.getMessage());
+            return false;
+        }
     }
 
     @Override

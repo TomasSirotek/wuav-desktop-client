@@ -11,4 +11,6 @@ public interface ICustomerService {
     int createCustomer(CustomerDTO customerDTO);
 
     boolean updateCustomer(PutCustomerDTO customerDTO);
+
+    boolean deleteCustomerById(int id);
 }

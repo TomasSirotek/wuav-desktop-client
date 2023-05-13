@@ -91,8 +91,25 @@ public class ProjectModel implements IProjectModel{
 
     @Override
     public boolean deleteProject(Project project) {
-        return projectService.deleteProject(project);
+        AppUser user = userModel.getUserByProjectId(project.getId());
+        boolean result = projectService.deleteProject(project);
+        if (result) {
+            // If the project is successfully deleted from the database, remove it from the cache
+            removeProject(user.getId(), project.getId());
+        }
+
+        return result;
+
     }
+
+    public void removeProject(int userId, int projectId) {
+        List<Project> userProjects = projectsCache.get(userId);
+
+        if (userProjects != null) {
+            userProjects.removeIf(project -> project.getId() == projectId);
+        }
+    }
+
 
     @Override
     public Image reuploadImage(int projectId, int id, File selectedImageFile) {
@@ -164,12 +181,7 @@ public class ProjectModel implements IProjectModel{
     @Override
     public Customer updateCustomer(PutCustomerDTO customerDTO) {
         // update customer
-        Customer updateCustomer  =  projectService.updateCustomer(customerDTO);
-        // update customer in the cache
-
-        // return customer
-
-        return updateCustomer;
+        return projectService.updateCustomer(customerDTO);
     }
 
 

@@ -52,10 +52,15 @@
 
     </update>
 
-
-
-
-
+    <delete id="deleteAddress"
+            parameterType="Address"
+            flushCache="true"
+            statementType="PREPARED">
+        --  executes delete query
+        DELETE
+        FROM address
+        WHERE id = #{addressId}
+    </delete>
 
 </mapper>
 

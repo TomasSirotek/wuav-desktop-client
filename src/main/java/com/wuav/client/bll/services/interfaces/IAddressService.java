@@ -10,4 +10,6 @@ public interface IAddressService {
     Address getAddressById(int id);
 
     boolean updateAddress(PutAddressDTO addressDTO);
+
+    boolean deleteAddressById(int id);
 }

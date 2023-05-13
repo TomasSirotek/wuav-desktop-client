@@ -12,4 +12,6 @@ public interface IImageRepository {
     CustomImage getImageById(int id);
 
     boolean updateImage(int id, String imageType, String imageUrl);
+
+    boolean deleteImageById(int id);
 }

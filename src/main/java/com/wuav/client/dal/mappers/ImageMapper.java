@@ -5,11 +5,8 @@ import org.apache.ibatis.annotations.Param;
 
 public interface ImageMapper {
 
-
-    // retrieving image by id
     CustomImage getImageById(@Param("imageId")int imageId);
 
-    // inserting image to the table
     int createImage(@Param("imageId")int imageId, @Param("imageType") String imageType, @Param("imageUrl") String imageUrl);
 
 
@@ -18,4 +15,7 @@ public interface ImageMapper {
     CustomImage getImageByIdThatIsMain(@Param("imageId") int id);
 
     int updateImage(@Param("imageId") int id,@Param("imageType") String imageType,@Param("imageURL") String imageUrl);
+
+    int deleteImage(@Param("imageId") int id);
+
 }

@@ -3,6 +3,7 @@ package com.wuav.client.dal.repository;
 import com.wuav.client.be.Address;
 import com.wuav.client.dal.interfaces.IAddressRepository;
 import com.wuav.client.dal.mappers.AddressMapper;
+import com.wuav.client.dal.mappers.ImageMapper;
 import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
 import com.wuav.client.gui.dto.AddressDTO;
 import com.wuav.client.gui.dto.PutAddressDTO;
@@ -62,6 +63,25 @@ public class AddressRepository implements IAddressRepository {
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);
         }
+        return false;
+    }
+
+    @Override
+    public boolean deleteAddressById(int id) {
+        int affectedRows = 0;
+
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            AddressMapper mapper = session.getMapper(AddressMapper.class);
+            affectedRows = mapper.deleteAddress(
+                    id
+            );
+            session.commit();
+
+            return affectedRows > 0;
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+
         return false;
     }
 

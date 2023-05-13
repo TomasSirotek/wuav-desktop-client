@@ -49,7 +49,6 @@ public class ImageRepository implements IImageRepository {
         return false;
     }
 
-
     @Override
     public CustomImage createImage(int imageId, String imageType, String imageUrl) {
         CustomImage customImage = null;
@@ -85,6 +84,26 @@ public class ImageRepository implements IImageRepository {
         }
         return isAdded;
     }
+
+    @Override
+    public boolean deleteImageById(int id) {
+        int affectedRows = 0;
+
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            ImageMapper mapper = session.getMapper(ImageMapper.class);
+            affectedRows = mapper.deleteImage(
+                    id
+            );
+            session.commit();
+
+            return affectedRows > 0;
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+
+        return false;
+    }
+
 
 
 }

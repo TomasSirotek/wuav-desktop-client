@@ -64,4 +64,15 @@
         INSERT INTO project_image (project_id, image_id,is_main_image) VALUES (#{projectId}, #{imageId}, #{isMainImage})
     </insert>
 
+    <delete id="deleteImage"
+            parameterType="CustomImage"
+            flushCache="true"
+            statementType="PREPARED">
+        --  executes delete query
+        DELETE
+        FROM image
+        WHERE id = #{imageId}
+    </delete>
+
+
 </mapper>
