@@ -92,7 +92,7 @@
                                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                             </rowConstraints>
                                                             <children>
-                                                                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                                                <AnchorPane prefHeight="200.0" prefWidth="361.0">
                                                                     <children>
                                                                         <GridPane layoutX="2.0" layoutY="1.0" prefHeight="395.0" prefWidth="397.0">
                                                                             <columnConstraints>
@@ -113,6 +113,17 @@
                                                                                 </HBox>
                                                                             </children>
                                                                         </GridPane>
+                                                      <MFXButton fx:id="expandView" layoutX="157.0" layoutY="393.0" prefHeight="29.0" prefWidth="85.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Expand" textFill="#141111">
+                                                         <font>
+                                                            <Font name="SansSerif Bold" size="15.0" />
+                                                         </font>
+                                                         <cursor>
+                                                            <Cursor fx:constant="HAND" />
+                                                         </cursor>
+                                                         <effect>
+                                                            <DropShadow height="12.16" radius="3.3675" width="3.31" />
+                                                         </effect>
+                                                      </MFXButton>
                                                                     </children>
                                                                 </AnchorPane>
                                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
@@ -184,7 +195,7 @@
                                                                         <Insets bottom="10.0" />
                                                                      </VBox.margin>
                                                                                         </VBox>
-                                                                  <MFXButton fx:id="selectFile1" prefHeight="29.0" prefWidth="154.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Update description" textFill="#141111">
+                                                                  <MFXButton fx:id="selectFile11" prefHeight="29.0" prefWidth="154.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Update description" textFill="#141111">
                                                                      <font>
                                                                         <Font name="SansSerif Bold" size="15.0" />
                                                                      </font>

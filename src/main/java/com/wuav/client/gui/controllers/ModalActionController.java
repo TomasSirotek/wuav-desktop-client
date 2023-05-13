@@ -104,6 +104,8 @@ public class ModalActionController extends RootController implements Initializab
     @FXML
     private Tab tab4;
     @FXML
+    private Tab tab5;
+    @FXML
     private MFXButton continueBtn;
 
     @FXML
@@ -397,7 +399,7 @@ public class ModalActionController extends RootController implements Initializab
 
 
     private void handleProgressSwitch() {
-        Tab[] tabs = new Tab[]{tab1, tab2, tab3, tab4}; // Replace with the actual tabs in your TabPane
+        Tab[] tabs = new Tab[]{tab1, tab2, tab3, tab4,tab5}; // Replace with the actual tabs in your TabPane
         final int[] currentTab = {0};
 
         tabs[currentTab[0]].setDisable(false);
