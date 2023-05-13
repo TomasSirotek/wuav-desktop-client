@@ -14,6 +14,7 @@ import com.wuav.client.gui.utils.AlertHelper;
 import com.wuav.client.gui.utils.CKEditorPane;
 import com.wuav.client.gui.utils.ProjectEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -44,6 +45,17 @@ import javafx.scene.web.WebEngine;
 
 public class ProjectActionController  extends RootController implements Initializable {
 
+
+    @FXML
+    private MFXProgressSpinner statusSpinner;
+    @FXML
+    private MFXButton uploadBtn;
+    @FXML
+    private MFXButton cancelBtn;
+    @FXML
+    private Label fileName;
+    @FXML
+    private HBox newFileUploadBox;
     @FXML
     private VBox editorBox;
     @FXML
@@ -51,6 +63,11 @@ public class ProjectActionController  extends RootController implements Initiali
 
     @FXML
     private MFXButton expand2;
+
+    @FXML
+    private MFXButton expandBtn;
+    @FXML
+    private MFXButton updateBtnNotes;
     @FXML
     private ImageView firstUploadedImage;
     @FXML
@@ -68,17 +85,12 @@ public class ProjectActionController  extends RootController implements Initiali
     @FXML
     private TextField clientAddress;
     @FXML
-    private MFXButton continueBtn1;
-    @FXML
     private TabPane tabPane;
-    @FXML
-    private MFXButton continueBtn;
+
     @FXML
     private Label projectNameField;
     @FXML
     private Tab clientTab;
-    @FXML
-    private VBox mapVBox;
     @FXML
     private HBox imageActionHandleBox;
     @FXML
@@ -98,6 +110,8 @@ public class ProjectActionController  extends RootController implements Initiali
 
     private Project currentProject;
 
+    private Image mainImage;
+
 
 
     private Image defaultImage = new Image("/no_data.png");
@@ -116,68 +130,22 @@ public class ProjectActionController  extends RootController implements Initiali
     public void initialize(URL url, ResourceBundle resourceBundle) {
         selectedImage.setImage(defaultImage);
         selectFile.setOnAction(e -> selectFile());
+        expandBtn.setOnAction(e -> previewImage(selectedImage.getImage()));
 
-
-      //  saveImageDesc.setOnAction(e -> saveImageDesc());
-
-//        tabPane.getTabs().get(1).setDisable(true);
-//        tabPane.getTabs().get(2).setDisable(true);
-//        continueBtn.setOnAction(e -> {
-//            tabPane.getTabs().get(0).setDisable(true);
-//            tabPane.getTabs().get(1).setDisable(false);
-//            tabPane.getSelectionModel().selectNext();
-//        });
-
-      //  eventBus.register(this);
-      //  projectNameField.setText(currentProject.getName());
-      //  projectNameField.setText(currentProject.getName());
-        // execute this code when tab is switched to clientTab
-        clientTab.setOnSelectionChanged(e -> {
-            if(clientTab.isSelected()) {
-              //  loadMap();
-
-            }
-        });
-    }
-
-
-    @Subscribe
-    public void handleProjectSet(ProjectEvent event) {
-       System.out.println("Handling project event: " + event.eventType());
-       System.out.println("Project: " + event.getProject());
-     //  currentProject = event.getProject();
-     //  System.out.println("current project " + currentProject.toString());
-     //  System.out.println("current project " + currentProject.getName());
-       projectNameField.setText("etesffs");
-
-    }
-
-    @Subscribe
-    public void handleCategoryEvent(ProjectEvent event) {
-        if (event.eventType() == EventType.SET_CURRENT_PROJECT) {
-            System.out.println("Handling project event: " + event.eventType());
-        }
+        newFileUploadBox.setVisible(false);
+        selectedImageFile = null;
     }
 
 
     // if router here set all the info
     public void setCurrentProject(Project project) {
-        System.out.println("Setting current project: " + project);
         currentProject = project;
-
-        System.out.println(currentProject);
-
-
         projectNameField.setText(currentProject.getName());
 
-        var hedle = currentProject.getDescription();
         CKEditorPane editorPane = new CKEditorPane();
-        editorPane.setContent(hedle);
+        editorPane.setContent(currentProject.getDescription());
 
         editorBox.getChildren().add(editorPane);
-
-
-        // here should be the additional images that are not main
 
         clientNameField.setText(currentProject.getCustomer().getName());
         clientEmailField.setText(currentProject.getCustomer().getEmail());
@@ -192,15 +160,13 @@ public class ProjectActionController  extends RootController implements Initiali
 
         clientAddress.setText(currentProject.getCustomer().getAddress().getStreet());
 
-        System.out.println("FROM DATAILS FOR PROJECT " + currentProject.getId() + " " + currentProject.getProjectImages());
-
-
 
         AtomicInteger nonMainImageCounter = new AtomicInteger(0);
 
         project.getProjectImages().forEach(image -> {
             if (image.isMainImage()) {
                 selectedImage.setImage(ImageCache.getImage(image.getId()));
+                mainImage = ImageCache.getImage(image.getId());
             } else {
                 int nonMainImageIndex = nonMainImageCounter.getAndIncrement();
                 if (nonMainImageIndex == 0) {
@@ -212,20 +178,9 @@ public class ProjectActionController  extends RootController implements Initiali
                 }
             }
         });
-
-
-    }
-
-    private void loadMap() {
-        WebView webView = new WebView();
-        WebEngine webEngine = webView.getEngine();
-        webEngine.load(getClass().getResource("/googleMap.html").toString());
-        mapVBox.getChildren().add(webView);
-
     }
 
 
-    // show transaction erro however that is just apple not liking javaFx and its not a real error
     private void selectFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select File");
@@ -242,9 +197,6 @@ public class ProjectActionController  extends RootController implements Initiali
             selectedImage.setFitHeight(500);
             selectedImageFile = selectedFile;
             selectedImage.setImage(new javafx.scene.image.Image(selectedFile.toURI().toString()));
-            selectedFileHBox.setVisible(true);
-            selectFile.setDisable(true);
-         //   changeImageActionHandleBox();
             changeSelectedFileHBox();
 
 
@@ -253,33 +205,38 @@ public class ProjectActionController  extends RootController implements Initiali
     }
 
     private void changeSelectedFileHBox() {
-        selectedFileHBox.getChildren().clear();
-       // create hbox with label at the start and button at the end with x as text and make the box light red and so that text start at the start and ubtton at the end
-        Label selectedFileLabel = new Label("Selected File: ");
-        selectedFileHBox.setStyle("-fx-text-fill: #ffffff;");
-        selectedFileHBox.setStyle("-fx-background-color: #E84910; -fx-spacing: 10; -fx-opacity: 0.8; -fx-padding: 10;");
-        selectedFileHBox.getChildren().add(selectedFileLabel);
-        Label selectedFileName = new Label("image.png");
-        selectedFileName.setStyle("-fx-text-fill: black;");
-        selectedFileHBox.getChildren().add(selectedFileName);
-        MFXButton removeFile = new MFXButton("X");
-        removeFile.getStyleClass().add("mfx-raised");
-        removeFile.setStyle("-fx-background-color: red; -fx-text-fill: #ffffff;");
-        removeFile.setOnAction(e -> removeImage());
-        selectedFileHBox.getChildren().add(removeFile);
-
+        newFileUploadBox.setVisible(true);
+        fileName.setText(selectedImageFile.getName());
+        uploadBtn.setOnAction(e -> uploadFile());
+        cancelBtn.setOnAction(e -> cancelUpload());
     }
 
-    private void changeImageActionHandleBox() {
-        imageActionHandleBox.getChildren().clear();
-        // add new button preview that has png image inside
-        MFXButton preview = new MFXButton("Preview");
-        preview.getStyleClass().add("mfx-raised");
-        preview.setStyle("-fx-background-color: #E84910; -fx-text-fill: #ffffff;");
-      //  preview.setOnAction(e -> previewImage());
-        imageActionHandleBox.getChildren().add(preview);
+    private void uploadFile() {
+        // here reupload image file
+        statusSpinner.setVisible(true);
+        // find in current projects which is the main
+        int mainImageId = currentProject.getProjectImages().stream().filter(CustomImage::isMainImage).findFirst().get().getId();
 
+        Image isReuploaded = projectModel.reuploadImage(currentProject.getId(),mainImageId, selectedImageFile);
+        if(isReuploaded != null) {
+            mainImage = isReuploaded;
+            AlertHelper.showDefaultAlert("Image uploaded ", Alert.AlertType.INFORMATION);
+            statusSpinner.setVisible(false);
+            return;
+        }
+        AlertHelper.showDefaultAlert("Image not uploaded", Alert.AlertType.ERROR);
+        statusSpinner.setVisible(false);
+        cancelUpload();
     }
+
+    private void cancelUpload() {
+        newFileUploadBox.setVisible(false);
+        fileName.setText("");
+        selectedImageFile = null;
+        selectedImage.setImage(mainImage);
+    }
+
+
 
     private void previewImage(Image image ) {
         // open new scene with image inside
@@ -306,21 +263,5 @@ public class ProjectActionController  extends RootController implements Initiali
 
     }
 
-    private void removeImage() {
-        selectedImage.setImage(null);
-        // set image back to the defualt not data selected no data in resource folder
-        selectedImage.setImage(defaultImage);
-        // remove action button and set label back to no image uploaded
 
-        imageActionHandleBox.getChildren().clear();
-        Label noImageUploaded = new Label("No Image Uploaded");
-        imageActionHandleBox.getChildren().add(noImageUploaded);
-        // clean selected file hbox and set back the text to no file selected
-        selectedFileHBox.getChildren().clear();
-        Label noFileSelected = new Label("No File Selected");
-        selectedFileHBox.getChildren().add(noFileSelected);
-        // set back the color back to white
-        selectedFileHBox.setStyle("-fx-background-color: #ffffff;");
-        selectFile.setDisable(false);
-    }
 }

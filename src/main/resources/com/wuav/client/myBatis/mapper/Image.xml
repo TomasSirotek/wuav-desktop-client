@@ -14,6 +14,30 @@
         WHERE id = #{imageId}
     </select>
 
+    <select id="getImageByIdThatIsMain"
+            resultMap="imageResult"
+    >
+        SELECT image.id, image.image_type, image.image_url
+        FROM image
+                 INNER JOIN project_image
+                     ON image.id = project_image.image_id
+        WHERE image.id = #{imageId}
+          AND project_image.is_main_image = 1
+    </select>
+
+    <update id="updateImage"
+            parameterType="CustomImage"
+            flushCache="true"
+            keyProperty=""
+            keyColumn=""
+            statementType="PREPARED">
+
+        UPDATE image
+        SET image_type = #{imageType},
+            image_url = #{imageURL}
+        WHERE id = #{imageId}
+    </update>
+
     <!-- Define other SQL statements for ImageRepository methods here -->
 
     <insert

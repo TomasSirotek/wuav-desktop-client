@@ -5,6 +5,7 @@ import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.services.interfaces.IRoleService;
 import com.wuav.client.bll.services.interfaces.IUserService;
 import com.wuav.client.bll.utilities.UniqueIdGenerator;
+import com.wuav.client.bll.utilities.email.IEmailSender;
 import com.wuav.client.bll.utilities.engines.IEmailEngine;
 import com.wuav.client.bll.utilities.engines.cryptoEngine.ICryptoEngine;
 import com.wuav.client.dal.interfaces.IUserRepository;
@@ -25,13 +26,15 @@ public class UserService implements IUserService {
 
     private final IEmailEngine emailEngine;
 
+    private final IEmailSender emailSender;
 
     @Inject
-    public UserService(IUserRepository userRepository, IRoleService roleService, ICryptoEngine cryptoEngine, IEmailEngine emailEngine) {
+    public UserService(IUserRepository userRepository, IRoleService roleService, ICryptoEngine cryptoEngine, IEmailEngine emailEngine, IEmailSender emailSender) {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.cryptoEngine = cryptoEngine;
         this.emailEngine = emailEngine;
+        this.emailSender = emailSender;
     }
 
 
@@ -145,7 +148,7 @@ public class UserService implements IUserService {
 
     @Override
     public boolean sendRecoveryEmail(String email) {
-
+        boolean isSent = false;
         // here implement the email sending logic and return true if email is sent successfully
         String generatedPassword = generateRandomNumberAsString(6);
 
@@ -158,21 +161,36 @@ public class UserService implements IUserService {
              var isChanged = changeUserPasswordHash(appUser.getId(),newPasswordHash);
              if(isChanged){
                     // send email
+
+                 String templateName = "email-template-confirm";
+                 Map<String, Object> templateVariables = new HashMap<>();
+                 templateVariables.put("newPassword", generatedPassword);
+
+                 //Process the template and generate the email body
+                 String emailBody = emailEngine.processTemplate(templateName, templateVariables);
+
+                 boolean emailSent = emailSender.sendEmail("felipe.orn25@ethereal.email", "Hello!", emailBody, false, null);
+                 if (emailSent) {
+                     System.out.println("Email sent successfully");
+                     isSent = true;
+                 } else {
+                     System.out.println("Email sending failed");
+                     isSent = false;
+                 }
              }
             // if it updated send email with generated password
         }
+        return isSent;
+    }
 
+    @Override
+    public boolean deleteUser(AppUser value) {
+        return userRepository.deleteUser(value);
+    }
 
-        String templateName = "email-template-confirm";
-        Map<String, Object> templateVariables = new HashMap<>();
-        templateVariables.put("newPassword", generatedPassword);
-
-        //Process the template and generate the email body
-        String emailBody = emailEngine.processTemplate(templateName, templateVariables);
-
-    //      var emailResult = emailSender.sendEmail(session, "vince.kautzer@ethereal.email","Installation completed", emailBody,false,null);
-
-        return false;
+    @Override
+    public AppUser getUserByProjectId(int projectId) {
+        return userRepository.getUserByProjectId(projectId);
     }
 
     private String generateRandomNumberAsString(int length) {

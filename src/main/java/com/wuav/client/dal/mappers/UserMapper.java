@@ -23,4 +23,8 @@ public interface UserMapper {
     int createUser(@Param("userId") int id, @Param("userName") String name,@Param("email") String email, @Param("passwordHash")String password);
 
     int removeUserFromRole(@Param("userId") int userId);
+
+    int deleteUser(@Param("userId") int id);
+
+    AppUser getUserByProjectId(@Param("projectId") int projectId);
 }

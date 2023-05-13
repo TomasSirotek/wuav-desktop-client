@@ -158,4 +158,29 @@ public class UserRepository implements IUserRepository {
         }
         return finalAffectedRows;
     }
+
+    @Override
+    public boolean deleteUser(AppUser value) {
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            int affectedRows = mapper.deleteUser(value.getId());
+            session.commit();
+            return affectedRows > 0;
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return false;
+    }
+
+    @Override
+    public AppUser getUserByProjectId(int projectId) {
+        AppUser fetchedUser = new AppUser();
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            UserMapper mapper = session.getMapper(UserMapper.class);
+            fetchedUser = mapper.getUserByProjectId(projectId);
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return fetchedUser;
+    }
 }

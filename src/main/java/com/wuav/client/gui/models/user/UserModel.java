@@ -59,4 +59,14 @@ public class UserModel implements IUserModel{
     public boolean sendRecoveryEmail(String email) {
         return userService.sendRecoveryEmail(email);
     }
+
+    @Override
+    public boolean deleteUser(AppUser value) {
+        return userService.deleteUser(value);
+    }
+
+    @Override
+    public AppUser getUserByProjectId(int projectId) {
+        return userService.getUserByProjectId(projectId);
+    }
 }

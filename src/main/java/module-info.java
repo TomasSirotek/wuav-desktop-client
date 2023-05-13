@@ -25,6 +25,7 @@ module com.wuav.client {
     requires thymeleaf;
     requires net.coobird.thumbnailator;
     requires spring.security.crypto;
+    requires sendgrid.java;
 
 
     exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common,org.apache.pdfbox;

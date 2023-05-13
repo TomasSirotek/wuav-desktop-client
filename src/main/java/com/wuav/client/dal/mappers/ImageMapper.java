@@ -14,4 +14,8 @@ public interface ImageMapper {
 
 
     int addImageToProject(@Param("projectId") int projectId,@Param("imageId") int imageId,@Param("isMainImage") boolean isMainImage);
+
+    CustomImage getImageByIdThatIsMain(@Param("imageId") int id);
+
+    int updateImage(@Param("imageId") int id,@Param("imageType") String imageType,@Param("imageURL") String imageUrl);
 }

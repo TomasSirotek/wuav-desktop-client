@@ -1,9 +1,11 @@
 package com.wuav.client.dal.repository;
 
 import com.wuav.client.be.CustomImage;
+import com.wuav.client.be.user.AppUser;
 import com.wuav.client.dal.interfaces.IImageRepository;
 import com.wuav.client.dal.mappers.ImageMapper;
 import com.wuav.client.dal.mappers.ProjectMapper;
+import com.wuav.client.dal.mappers.UserMapper;
 import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -12,6 +14,41 @@ import org.slf4j.LoggerFactory;
 public class ImageRepository implements IImageRepository {
 
     static Logger logger = LoggerFactory.getLogger(ImageRepository.class);
+
+
+    @Override
+    public CustomImage getImageById(int id) {
+        CustomImage customImage = new CustomImage();
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            ImageMapper mapper = session.getMapper(ImageMapper.class);
+            customImage = mapper.getImageByIdThatIsMain(id);
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return customImage;
+    }
+
+    @Override
+    public boolean updateImage(int id, String imageType, String imageUrl) {
+        int affectedRows = 0;
+
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            ImageMapper mapper = session.getMapper(ImageMapper.class);
+            affectedRows = mapper.updateImage(
+                    id,
+                    imageType,
+                    imageUrl
+            );
+            session.commit();
+
+            return affectedRows > 0;
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+
+        return false;
+    }
+
 
     @Override
     public CustomImage createImage(int imageId, String imageType, String imageUrl) {
@@ -48,4 +85,6 @@ public class ImageRepository implements IImageRepository {
         }
         return isAdded;
     }
+
+
 }

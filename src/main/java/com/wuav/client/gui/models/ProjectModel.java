@@ -4,11 +4,15 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.google.inject.Inject;
 import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Project;
+import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.services.interfaces.IProjectService;
 import com.wuav.client.cache.ImageCache;
 import com.wuav.client.dal.blob.BlobStorageFactory;
 import com.wuav.client.gui.dto.CreateProjectDTO;
+import com.wuav.client.gui.models.user.IUserModel;
+import javafx.scene.image.Image;
 
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -18,22 +22,24 @@ import java.util.concurrent.Future;
 public class ProjectModel implements IProjectModel{
     private IProjectService projectService;
 
+    private final IUserModel userModel;
+
     private final Map<Integer, List<Project>> projectsCache = Collections.synchronizedMap(new HashMap<>());
     private final int ALL_PROJECTS_KEY = -1;
 
     @Inject
-    public ProjectModel(IProjectService projectService) {
+    public ProjectModel(IProjectService projectService, IUserModel userModel) {
         this.projectService = projectService;
+        this.userModel = userModel;
     }
 
     @Override
     public List<Project> getProjectsByUserId(int userId) {
         List<Project> projects = projectsCache.get(userId);
 
-
         if (projects == null) {
             projects = projectService.getProjectsByUserId(userId);
-           // cacheProjectsImages(projects); // MOVE BACK
+            cacheProjectsImages(projects);
             projectsCache.put(userId, projects);
         }
 
@@ -80,6 +86,52 @@ public class ProjectModel implements IProjectModel{
     public Project getProjectById(int projectId) {
         return projectService.getProjectById(projectId);
     }
+
+    @Override
+    public boolean deleteProject(Project project) {
+        return projectService.deleteProject(project);
+    }
+
+    @Override
+    public Image reuploadImage(int projectId, int id, File selectedImageFile) {
+        CustomImage updatedImage = projectService.reuploadImage(projectId,id, selectedImageFile);
+        updatedImage.setMainImage(true);
+        AppUser user = userModel.getUserByProjectId(projectId);
+        Image image = null;
+
+        if (updatedImage != null && user != null) {
+            var projects = getProjectsByUserId(user.getId());
+
+            // Replace the image in the projects list
+            for (Project project : projects) {
+                List<CustomImage> projectImages = project.getProjectImages();
+                for (int i = 0; i < projectImages.size(); i++) {
+                    if (projectImages.get(i).getId() == id) {
+                        projectImages.set(i, updatedImage);
+                        break;
+                    }
+                }
+            }
+
+            // Remove the old image from the cache
+            ImageCache.removeImage(id);
+
+            // Cache the project images
+            cacheProjectsImages(projects);
+
+            // Update the cache
+            projectsCache.put(user.getId(), projects);
+
+            // Retrieve the uploaded image
+            image = ImageCache.getImage(updatedImage.getId());
+
+
+            cacheProjectImages(getProjectById(projectId));
+        }
+
+        return image;
+    }
+
 
     private void cacheProjectsImages(List<Project> projects) {
         BlobContainerClient blobContainerClient = BlobStorageFactory.getBlobContainerClient();

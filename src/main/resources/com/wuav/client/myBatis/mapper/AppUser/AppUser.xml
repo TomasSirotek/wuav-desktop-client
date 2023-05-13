@@ -40,6 +40,34 @@
         WHERE r.name != 'ADMIN'
     </select>
 
+
+
+
+    <select id="getUserByProjectId"
+            resultMap="userResult">
+
+        SELECT DISTINCT u.id,
+                        u.name,
+                        u.email,
+                        u.password_hash as passwordHash,
+                        u.created_at    as createdAt,
+                        r.id            as idRole,
+                        r.name          as nameRole,
+                        p.id            as idProject,
+                        p.name          as projectName,
+                        p.description,
+                        p.created_at as createdAtProject
+        FROM app_user u
+                 INNER JOIN user_role ur ON u.id = ur.user_id
+                 INNER JOIN app_role r ON ur.role_id = r.id
+                 LEFT JOIN user_project up ON u.id = up.user_id
+                 LEFT JOIN project p ON up.project_id = p.id
+        WHERE p.id = #{projectId}
+
+
+    </select>
+
+
     <select id="getUserByEmail"
             resultMap="userResult">
 
@@ -144,6 +172,16 @@
         DELETE
         FROM user_role
         WHERE user_id = #{userId}
+    </delete>
+
+    <delete id="deleteUser"
+            parameterType="AppUser"
+            flushCache="true"
+            statementType="PREPARED">
+        --  executes delete query
+        DELETE
+        FROM app_user
+        WHERE id = #{userId}
     </delete>
 
 

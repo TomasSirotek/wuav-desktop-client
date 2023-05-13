@@ -24,4 +24,8 @@ public interface IUserService {
     boolean updateUserRole(int id, String appRole);
 
     boolean sendRecoveryEmail(String email);
+
+    boolean deleteUser(AppUser value);
+
+    AppUser getUserByProjectId(int projectId);
 }

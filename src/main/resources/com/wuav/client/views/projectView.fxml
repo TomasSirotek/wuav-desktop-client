@@ -134,7 +134,7 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0">
                                  <children>
-                                    <TableView fx:id="projectTable" layoutX="1.0" layoutY="14.0" minHeight="395.0" prefHeight="471.0" prefWidth="740.0" AnchorPane.bottomAnchor="-6.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="14.0">
+                                    <TableView fx:id="projectTable" layoutX="1.0" layoutY="14.0" minHeight="395.0" prefHeight="471.0" AnchorPane.bottomAnchor="-6.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="14.0">
                                       <columns>
                                         <TableColumn fx:id="colSelectAll" prefWidth="55.11915969848633" sortable="false">
                                              <graphic>
@@ -144,14 +144,12 @@
                                                    </padding></CheckBox>
                                              </graphic>
                                           </TableColumn>
-                                        <TableColumn fx:id="colName" prefWidth="126.38082885742188" resizable="false" text="Name" />
-                                          <TableColumn fx:id="colDes" minWidth="40.0" prefWidth="150.0" resizable="false" text="Description" />
-                                          <TableColumn fx:id="colCustomer" prefWidth="111.59396362304688" resizable="false" text="Customer" />
-                                          <TableColumn fx:id="colType" prefWidth="105.72537231445312" resizable="false" text="Type" />
-                                          <TableColumn fx:id="colDate" minWidth="50.0" prefWidth="91.0" resizable="false" text="Date" />
-                                          <TableColumn fx:id="colEdit" minWidth="52.0" prefWidth="70.0" resizable="false" sortable="false" />
-                                          <TableColumn fx:id="colEmail" minWidth="50.0" prefWidth="66.0" resizable="false" sortable="false" />
-                                          <TableColumn fx:id="colDelete" minWidth="50.0" prefWidth="67.0" resizable="false" sortable="false" />
+                                        <TableColumn fx:id="colName" prefWidth="126.38082885742188" text="Name" />
+                                          <TableColumn fx:id="colDes" minWidth="40.0" prefWidth="200.0" text="Description" />
+                                          <TableColumn fx:id="colCustomer" prefWidth="200.0" text="Customer" />
+                                          <TableColumn fx:id="colType" prefWidth="105.72537231445312" text="Type" />
+                                          <TableColumn fx:id="colDate" minWidth="50.0" prefWidth="107.0" text="Date" />
+                                          <TableColumn fx:id="colEdit" minWidth="52.0" prefWidth="82.0" sortable="false" />
                                       </columns>
                                     </TableView>
                                  </children>
