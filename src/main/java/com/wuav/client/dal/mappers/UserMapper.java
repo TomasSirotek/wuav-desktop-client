@@ -19,4 +19,8 @@ public interface UserMapper {
     int updateUser(@Param("userId") int userId,@Param("name") String userName,@Param("email") String email);
 
     int updateUserPasswordHash(@Param("userId") int id, @Param("passwordHash") String newPasswordHash);
+
+    int createUser(@Param("userId") int id, @Param("userName") String name,@Param("email") String email, @Param("passwordHash")String password);
+
+    int removeUserFromRole(@Param("userId") int userId);
 }

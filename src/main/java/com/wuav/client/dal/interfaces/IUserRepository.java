@@ -1,6 +1,7 @@
 package com.wuav.client.dal.interfaces;
 
 import com.wuav.client.be.user.AppUser;
+import com.wuav.client.gui.dto.CreateUserDTO;
 
 import java.util.List;
 
@@ -19,4 +20,8 @@ public interface IUserRepository {
     boolean updateUserById(AppUser appUser);
 
     boolean changeUserPasswordHash(int id, String newPasswordHash);
+
+    int createUser(CreateUserDTO createUserDTO);
+
+    int removeUserFromRole(int userId);
 }

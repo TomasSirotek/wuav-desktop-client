@@ -47,6 +47,24 @@ public enum ViewType {
             return "views/userProfileView.fxml";
         }
     },
+    ALL_USERS{
+        @Override
+        public String getFXMLView() {
+            return "views/allUsersView.fxml";
+        }
+    },
+    USER_MODAL{
+        @Override
+        public String getFXMLView() {
+            return "views/userModalView.fxml";
+        }
+    },
+    USER_SETTINGS{
+        @Override
+        public String getFXMLView() {
+            return "views/userSettingsView.fxml";
+        }
+    },
     DASHBOARD {
         @Override
         public String getFXMLView() {

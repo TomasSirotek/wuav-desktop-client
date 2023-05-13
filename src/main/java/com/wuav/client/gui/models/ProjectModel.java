@@ -69,7 +69,7 @@ public class ProjectModel implements IProjectModel{
 
         if (projects == null) {
             projects = projectService.getAllProjects();
-            cacheProjectsImages(projects);
+          //  cacheProjectsImages(projects);
             projectsCache.put(ALL_PROJECTS_KEY, projects);
         }
 

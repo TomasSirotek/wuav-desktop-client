@@ -247,9 +247,6 @@ public class ProjectController extends RootController implements Initializable {
       //  emailLoadLabel.setText("Loading projects");
         tableDataLoad.setVisible(true);
 
-
-
-
         Task<List<Project>> loadProjectsTask = new Task<>() {
             @Override
             protected List<Project> call() {

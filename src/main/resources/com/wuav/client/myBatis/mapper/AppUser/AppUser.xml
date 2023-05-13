@@ -23,6 +23,23 @@
         </collection>
     </resultMap>
 
+
+    <!--    this bullshit does not map column names with kebab case psw_has -->
+    <!--    so it needs to be casted -->
+    <select id="getAllUsers" resultMap="userResult">
+        SELECT u.id,
+               u.name,
+               u.email,
+               u.password_hash AS passwordHash,
+               u.created_at as createdAt,
+               r.id AS idRole,
+               r.name AS nameRole
+        FROM app_user AS u
+                 INNER JOIN user_role AS ur ON u.id = ur.user_id
+                 INNER JOIN app_role AS r ON ur.role_id = r.id
+        WHERE r.name != 'ADMIN'
+    </select>
+
     <select id="getUserByEmail"
             resultMap="userResult">
 
@@ -66,33 +83,16 @@
     </select>
 
 
-    <!--    this bullshit does not map column names with kebab case psw_has -->
-    <!--    so it needs to be casted -->
-    <select id="getAllUsers"
-            resultMap="userResult">
-        SELECT u.id,
-               u.name,
-               u.email,
-               u.psw_hash as passWordHash,
-               u.isActivated,
-               r.id       as idRole,-->
-               r.name     as nameRole-->
-        FROM app_user AS u -->
-                 left outer join user_role ur on u.id = ur.user_id
-                 left outer join role r on ur.role_id = r.id
-    </select>
-
-
     <insert
-            id="createCustomer"
+            id="createUser"
             statementType="PREPARED"
             keyProperty="id"
             keyColumn="id"
             parameterType="AppUser"
             useGeneratedKeys="false"
     >
-        INSERT INTO app_user (id, name, email, psw_hash, isActivated)
-        VALUES (#{id}, #{name}, #{email}, #{passwordHash}, #{isActivated});
+        INSERT INTO app_user (id, name, email, password_hash)
+        VALUES (#{userId}, #{userName}, #{email}, #{passwordHash});
     </insert>
 
     <insert
@@ -135,6 +135,16 @@
         WHERE id = #{userId}
 
     </update>
+
+    <delete id="removeUserFromRole"
+            parameterType="AppUser"
+            flushCache="true"
+            statementType="PREPARED">
+        --  executes delete query
+        DELETE
+        FROM user_role
+        WHERE user_id = #{userId}
+    </delete>
 
 
 </mapper>

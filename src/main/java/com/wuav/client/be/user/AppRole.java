@@ -25,6 +25,8 @@ public class AppRole {
         this.name = name;
     }
 
+    public AppRole() {
+    }
 
     public AppRole(int id, String name) {
         this.id = id;

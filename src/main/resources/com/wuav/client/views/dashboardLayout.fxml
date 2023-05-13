@@ -194,7 +194,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </MFXButton>
-                              <MFXButton fx:id="usersButton" alignment="BASELINE_LEFT" prefHeight="44.0" prefWidth="215.0" styleClass="myButton" text="Users" textFill="#141111">
+                              <MFXButton fx:id="usersButton" alignment="BASELINE_LEFT" onAction="#handleAllUsersSwitch" prefHeight="44.0" prefWidth="215.0" styleClass="myButton" text="Users" textFill="#141111" visible="false">
                                  <graphic>
                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
                                        <children>

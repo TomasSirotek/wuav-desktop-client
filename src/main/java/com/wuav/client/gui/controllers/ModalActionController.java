@@ -501,7 +501,6 @@ public class ModalActionController extends RootController implements Initializab
 
 
     @FXML
-
     public void fetchImageAction(ActionEvent actionEvent) {
         System.out.println("fetching image BUTTON CLICK");
       //  fetchImageFromServer(340);
@@ -808,10 +807,6 @@ public class ModalActionController extends RootController implements Initializab
         });
 
         new Thread(loadDataTask).start();
-
-
-
-
     }
 
     private void runInParallel(ViewType type) {
