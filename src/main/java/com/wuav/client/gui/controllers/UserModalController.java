@@ -8,6 +8,7 @@ import com.wuav.client.gui.controllers.event.RefreshEvent;
 import com.wuav.client.gui.models.user.IUserModel;
 import com.wuav.client.gui.utils.AlertHelper;
 import com.wuav.client.gui.utils.FormField;
+import com.wuav.client.gui.utils.enums.UserRoleType;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
@@ -55,10 +56,10 @@ public class UserModalController  extends RootController implements Initializabl
 
     private void fillClientTypeChooseField() {
         // fill client type with two option values
-        roleField.getItems().add("ADMIN");
-        roleField.getItems().add("MANAGER");
-        roleField.getItems().add("SALES");
-        roleField.getItems().add("TECHNICIAN");
+        Arrays.stream(UserRoleType.values())
+                .toList()
+                .forEach(role -> roleField.getItems()
+                        .add(role.toString()));
 
         roleField.getSelectionModel().select(3); // selects technician by default
     }

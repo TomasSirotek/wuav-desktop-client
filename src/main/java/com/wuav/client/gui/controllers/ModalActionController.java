@@ -5,6 +5,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.wuav.client.be.Project;
+import com.wuav.client.be.device.Device;
+import com.wuav.client.be.device.MockDevices;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.bll.utilities.UniqueIdGenerator;
@@ -41,6 +43,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 import javafx.util.Duration;
@@ -53,6 +56,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import javafx.util.StringConverter;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
+import org.controlsfx.control.textfield.TextFields;
 
 public class ModalActionController extends RootController implements Initializable {
 
@@ -104,6 +111,11 @@ public class ModalActionController extends RootController implements Initializab
     private Tab tab3;
     @FXML
     private Tab tab4;
+
+    @FXML
+    private Tab tab5;
+    @FXML
+    private HBox searchBoxField;
     @FXML
     private MFXButton continueBtn;
 
@@ -117,6 +129,8 @@ public class ModalActionController extends RootController implements Initializab
     private AnchorPane modalPane;
     @FXML
     private MFXButton createNewProject;
+    @FXML
+    private VBox deviceBox;
 
     private final EventBus eventBus;
 
@@ -138,6 +152,9 @@ public class ModalActionController extends RootController implements Initializab
     @FXML
     private HBox imageActionHandleBox;
 
+    @FXML
+    private HBox detailsBox;
+
     private ICodesEngine codesEngine;
 
     private Timeline imageFetchTimeline;
@@ -145,8 +162,14 @@ public class ModalActionController extends RootController implements Initializab
     private List<Image> imagesFromApp;
     @FXML
     private GridPane imagesPaneFinal2 = new GridPane();
+    @FXML
+    private MFXTextField deviceName;
     private int currentRow = 0;
     private int currentColumn = 0;
+    private List<Device> selectedDevices = new ArrayList<>();
+
+    @FXML
+    private VBox deviceTypeSelection;
 
     @Inject
     public ModalActionController(EventBus eventBus, IControllerFactory controllerFactory, IProjectModel projectModel, ICodesEngine codesEngine) {
@@ -282,10 +305,58 @@ public class ModalActionController extends RootController implements Initializab
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupEditor();
         selectFile.setOnAction(e -> selectFile());
+        setupSearchField();
         fillClientTypeChooseField();
         handleProgressSwitch();
         closeStage();
+
+
+
     }
+
+    public void setupSearchField() {
+        TextField textField = new TextField();
+        List<Device> devices = MockDevices.generateDevices();
+
+        AutoCompletionBinding<Device> autoCompletionBinding = TextFields.bindAutoCompletion(textField, devices);
+
+        autoCompletionBinding.setOnAutoCompleted(event -> {
+            // Create a new Label for the selected device and add it to the VBox
+            Device selectedDevice = event.getCompletion();
+            selectedDevices.add(selectedDevice);
+
+            HBox deviceContainer = new HBox();
+            Label deviceLabel = new Label(selectedDevice.getName());
+            Button removeButton = new Button("Remove");
+            removeButton.setOnAction(e -> {
+                // Remove this device from the VBox and the selectedDevices list
+                deviceBox.getChildren().remove(deviceContainer);
+                selectedDevices.remove(selectedDevice);
+            });
+
+            deviceContainer.getChildren().addAll(deviceLabel, removeButton);
+            deviceBox.getChildren().add(deviceContainer);
+        });
+
+        textField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                String text = textField.getText();
+                boolean deviceFound = devices.stream().anyMatch(device -> device.getName().equals(text));
+                if (!deviceFound) {
+                    deviceTypeSelection.setVisible(true);
+                    deviceName.setText(text);
+                }
+            }
+        });
+
+
+        searchBoxField.getChildren().add(textField);
+    }
+
+    // ...
+
+
+
 
     private void setupEditor() {
         CKEditorPane editorPane = new CKEditorPane();
@@ -398,7 +469,7 @@ public class ModalActionController extends RootController implements Initializab
 
 
     private void handleProgressSwitch() {
-        Tab[] tabs = new Tab[]{tab1, tab2, tab3, tab4}; // Replace with the actual tabs in your TabPane
+        Tab[] tabs = new Tab[]{tab1, tab2, tab3, tab4,tab5}; // Replace with the actual tabs in your TabPane
         final int[] currentTab = {0};
 
         tabs[currentTab[0]].setDisable(false);
@@ -415,7 +486,7 @@ public class ModalActionController extends RootController implements Initializab
 
                     if(currentTab[0] == 3) {
                         tryToGenerateQRForApp();
-                        startImageFetch(340);
+                      //  startImageFetch(340);
                         continueBtn.setText("Finish");
                     }
 

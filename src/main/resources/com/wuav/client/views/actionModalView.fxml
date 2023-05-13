@@ -434,6 +434,55 @@
                         </Tab>
                         <Tab fx:id="tab4" disable="true" text="2">
                            <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="403.0">
+                                 <children>
+                                    <VBox layoutY="1.0" prefHeight="433.0" prefWidth="442.0">
+                                       <padding>
+                                          <Insets left="30.0" right="30.0" top="30.0" />
+                                       </padding>
+                                       <children>
+                                          <HBox fx:id="searchBoxField" alignment="CENTER_LEFT" prefHeight="49.0" prefWidth="382.0" />
+                                          <VBox fx:id="deviceBox" prefHeight="55.0" prefWidth="382.0" />
+                                          <VBox fx:id="deviceTypeSelection" prefHeight="96.0" prefWidth="382.0" visible="false">
+                                             <children>
+                                                <Label prefHeight="17.0" prefWidth="197.0" text="Client type" textFill="#252f4091">
+                                                   <font>
+                                                      <Font name="SansSerif Regular" size="10.0" />
+                                                   </font>
+                                                   <padding>
+                                                      <Insets left="2.0" />
+                                                   </padding>
+                                                </Label>
+                                                <ChoiceBox fx:id="clientTypeChooseField1" prefHeight="30.0" prefWidth="181.0" style="-fx-background-color: white; -fx-border-color: #c5c1c1;" />
+                                                <Label prefHeight="17.0" prefWidth="209.0" text="Input project name">
+                                                   <font>
+                                                      <Font name="SansSerif Regular" size="12.0" />
+                                                   </font>
+                                                   <padding>
+                                                      <Insets left="2.0" />
+                                                   </padding>
+                                                </Label>
+                                                <MFXTextField fx:id="deviceName" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="37.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="37.0" prefWidth="385.0" promptText="Enter project name" style="-fx-border-color: #c5c1c1;" />
+                                             </children>
+                                          </VBox>
+                                          <HBox fx:id="detailsBox" prefHeight="227.0" prefWidth="382.0" />
+                                       </children>
+                                    </VBox>
+                                    <HBox layoutX="28.0" layoutY="10.0" prefHeight="27.0" prefWidth="420.0">
+                                       <children>
+                                          <Label prefHeight="17.0" prefWidth="163.0" text="Devices">
+                                             <font>
+                                                <Font name="SansSerif Bold" size="15.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab fx:id="tab5" disable="true" text="2">
+                           <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="341.0">
                                  <children>
                                     <GridPane layoutX="-1.0" layoutY="7.0" prefHeight="413.0" prefWidth="451.0">

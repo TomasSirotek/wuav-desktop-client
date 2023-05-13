@@ -33,6 +33,7 @@ module com.wuav.client {
     requires com.google.api.client;
     requires com.google.api.client.json.gson;
     requires com.google.api.services.gmail;
+    requires org.controlsfx.controls;
 
 
     exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common,org.apache.pdfbox;
