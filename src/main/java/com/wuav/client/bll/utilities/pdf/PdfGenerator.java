@@ -42,26 +42,14 @@ public class PdfGenerator implements IPdfGenerator {
 
     private static final String RESOURCE_FOLDER = "src/main/resources/com/wuav/client/images/wuav-logo.png";
 
-    private static final String TEST_PLAN = "src/main/resources/com/wuav/client/images/drawing.png";
+    // private static final String TEST_PLAN = "src/main/resources/com/wuav/client/images/drawing.png";
 
     private static final String OUTPUT_FOLDER = "src/main/resources";
 
     private static final String FILE_EXTENSION = ".pdf";
 
-    private static final String DESCR_TEST = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Molestie at elementum eu facilisis sed odio. Et malesuada fames ac turpis egestas sed tempus. A cras semper auctor neque vitae tempus quam. Eu consequat ac felis donec et odio pellentesque diam volutpat. Adipiscing vitae proin sagittis nisl rhoncus mattis. Condimentum mattis pellentesque id nibh. Ultrices eros in cursus turpis. Egestas tellus rutrum tellus pellentesque eu tincidunt tortor. Enim nulla aliquet porttitor lacus luctus accumsan. Sed vulputate mi sit amet mauris. Molestie ac feugiat sed lectus vestibulum mattis.";
+  //  private static final String DESCR_TEST = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Molestie at elementum eu facilisis sed odio. Et malesuada fames ac turpis egestas sed tempus. A cras semper auctor neque vitae tempus quam. Eu consequat ac felis donec et odio pellentesque diam volutpat. Adipiscing vitae proin sagittis nisl rhoncus mattis. Condimentum mattis pellentesque id nibh. Ultrices eros in cursus turpis. Egestas tellus rutrum tellus pellentesque eu tincidunt tortor. Enim nulla aliquet porttitor lacus luctus accumsan. Sed vulputate mi sit amet mauris. Molestie ac feugiat sed lectus vestibulum mattis.";
 
-
-    private static void writeText(PDPageContentStream contentStream, String text, PDFont font, float leading,
-                                  int size, float xPos, float yPos, RenderingMode renderModeL) throws IOException {
-        contentStream.beginText();
-        contentStream.setFont(font, size);
-        contentStream.newLineAtOffset(xPos, yPos);
-        contentStream.setRenderingMode(renderModeL);
-        contentStream.setLeading(leading);
-        contentStream.showText(text);
-        contentStream.endText();
-
-    }
 
 //    public static void main(String[] args) {
 //        PdfGenerator pdfGenerator = new PdfGenerator();
@@ -107,18 +95,15 @@ public class PdfGenerator implements IPdfGenerator {
             PDPage page = new PDPage(PDRectangle.A4);
             document.addPage(page);
 
-
             PDPageContentStream contentStream = new PDPageContentStream(document, page);
 
             // Set font
             PDType1Font font = PDType1Font.HELVETICA;
+            PDType1Font fontHeader = PDType1Font.HELVETICA_BOLD;
             contentStream.setFont(font, 12);
 
-            // Set colors
-            PDColor blueColor = new PDColor(new float[]{0.25f, 0.55f, 0.79f}, PDDeviceRGB.INSTANCE);
-            PDColor grayColor = new PDColor(new float[]{0.62f, 0.62f, 0.62f}, PDDeviceRGB.INSTANCE);
-            PDColor blackColor = new PDColor(new float[]{0f, 0f, 0f}, PDDeviceRGB.INSTANCE);
-            PDColor whiteColor = new PDColor(new float[]{1f, 1f, 1f}, PDDeviceRGB.INSTANCE);
+
+           /// MAIN RECTANGLES FOR THE PDF ///
 
             // Logo Image area
             PDRectangle logoRect = new PDRectangle(50, PDRectangle.A4.getHeight() - 150, PDRectangle.A4.getWidth() / 4, 75);
@@ -132,9 +117,12 @@ public class PdfGenerator implements IPdfGenerator {
             // technician info
             PDRectangle techInfoRect = new PDRectangle(PDRectangle.A4.getWidth() / 2, PDRectangle.A4.getHeight() - 800, PDRectangle.A4.getWidth() / 2 - 50, 400);
 
-
             // Description Text area
             PDRectangle descriptionRect = new PDRectangle(50, PDRectangle.A4.getHeight() - 800, PDRectangle.A4.getWidth(), 200);
+
+            /// END MAIN RECTANGLES FOR THE PDF ///
+
+
             // Logo Image
             PDImageXObject logoImage = PDImageXObject.createFromFile(RESOURCE_FOLDER, document);
             contentStream.drawImage(logoImage, logoRect.getLowerLeftX(), logoRect.getLowerLeftY(), logoRect.getWidth(), logoRect.getHeight());
@@ -142,8 +130,6 @@ public class PdfGenerator implements IPdfGenerator {
             // Full Width Image
 
             var filePlan = retrieveInstallationPlanAsFile(project.getProjectImages());
-
-
             PDImageXObject image = PDImageXObject.createFromFile(filePlan.getAbsolutePath(), document);
 
             filePlan.delete();
@@ -174,9 +160,8 @@ public class PdfGenerator implements IPdfGenerator {
 
             // Customer Info List
             String customerInfo = "Customer Info";
+
             contentStream.beginText();
-            // make the font bold
-            PDType1Font fontHeader = PDType1Font.HELVETICA_BOLD;
             contentStream.setFont(fontHeader, 14);
             contentStream.newLineAtOffset(infoRect.getLowerLeftX(), infoRect.getUpperRightY() + 20);
             contentStream.showText(customerInfo);
@@ -201,62 +186,64 @@ public class PdfGenerator implements IPdfGenerator {
             contentStream.endText();
 
 
-            // Technician Info List
-            String technicianInfo = "Technician Info";
-            contentStream.beginText();
-            contentStream.setFont(fontHeader, 14);
-            contentStream.newLineAtOffset(techInfoRect.getLowerLeftX(), techInfoRect.getUpperRightY() + 20);
-            contentStream.showText(technicianInfo);
-            contentStream.newLineAtOffset(0, -20);
-            contentStream.endText();
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMMM dd yyyy");
-            String formattedDate = dateFormat.format(project.getCreatedAt());
-
-            List<String> technicianInfoList = List.of("Technician Name: " + appUser.getName(),
-                    "Technician Email: " +  appUser.getEmail(),
-                    "Installation Date : " + formattedDate
-                   ) ;
-
-            contentStream.beginText();
-            contentStream.newLineAtOffset(0, -5);
-            contentStream.setFont(font, 12);
-            contentStream.newLineAtOffset(techInfoRect.getLowerLeftX(), techInfoRect.getUpperRightY());
-
-
-            for (String line : technicianInfoList) {
-                contentStream.showText(line);
-                contentStream.newLineAtOffset(0, -20);
-            }
-            contentStream.endText();
-
-
-            // Description Text
-            contentStream.beginText();
-            contentStream.setFont(fontHeader, 14);
-            contentStream.setNonStrokingColor(blackColor);
-            contentStream.newLineAtOffset(descriptionRect.getLowerLeftX(), descriptionRect.getLowerLeftY() + 300);
-            contentStream.showText("Description");
-            contentStream.endText();
-
-            // Lorem Ipsum Text
-           // String loremIpsum = DESCR_TEST;
-
-            contentStream.beginText();
-            contentStream.setFont(font, 12);
-            contentStream.setNonStrokingColor(blackColor);
-            contentStream.newLineAtOffset(descriptionRect.getLowerLeftX(), descriptionRect.getLowerLeftY() + 250);
-
-            // Break lorem ipsum text into lines and show them
-            List<String> loremLines = breakTextIntoLines(project.getDescription(), 500, font, 12);
-            for (String line : loremLines) {
-                contentStream.showText(line);
-                contentStream.newLineAtOffset(0, -20);
-            }
-            contentStream.endText();
-
-            // close the stream
-            contentStream.close();
+//
+//            // Technician Info List
+//            String technicianInfo = "Technician Info";
+//            contentStream.beginText();
+//            contentStream.setFont(fontHeader, 14);
+//            contentStream.newLineAtOffset(techInfoRect.getLowerLeftX(), techInfoRect.getUpperRightY() + 20);
+//            contentStream.showText(technicianInfo);
+//            contentStream.newLineAtOffset(0, -20);
+//            contentStream.endText();
+//
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMMM dd yyyy");
+//            String formattedDate = dateFormat.format(project.getCreatedAt());
+//
+//            List<String> technicianInfoList = List.of("Technician Name: " + appUser.getName(),
+//                    "Technician Email: " +  appUser.getEmail(),
+//                    "Installation Date : " + formattedDate
+//                   ) ;
+//
+//            contentStream.beginText();
+//            contentStream.newLineAtOffset(0, -5);
+//            contentStream.setFont(font, 12);
+//            contentStream.newLineAtOffset(techInfoRect.getLowerLeftX(), techInfoRect.getUpperRightY());
+//
+//
+//            for (String line : technicianInfoList) {
+//                contentStream.showText(line);
+//                contentStream.newLineAtOffset(0, -20);
+//            }
+//            contentStream.endText();
+//
+//
+//            // Description Text
+//            contentStream.beginText();
+//            contentStream.setFont(fontHeader, 14);
+//            contentStream.setNonStrokingColor(blackColor);
+//            contentStream.newLineAtOffset(descriptionRect.getLowerLeftX(), descriptionRect.getLowerLeftY() + 300);
+//            contentStream.showText("Description");
+//            contentStream.endText();
+//
+//            // Lorem Ipsum Text
+//           // String loremIpsum = DESCR_TEST;
+//
+//            contentStream.beginText();
+//            contentStream.setFont(font, 12);
+//            contentStream.setNonStrokingColor(blackColor);
+//            contentStream.newLineAtOffset(descriptionRect.getLowerLeftX(), descriptionRect.getLowerLeftY() + 250);
+//
+//            // Break lorem ipsum text into lines and show them
+//            List<String> loremLines = breakTextIntoLines(project.getDescription(), 500, font, 12);
+//            for (String line : loremLines) {
+//                contentStream.showText(line);
+//                contentStream.newLineAtOffset(0, -20);
+//            }
+//            contentStream.endText();
+//
+//            // close the stream
+           contentStream.close();
 
 
             Path resourceFolder = Paths.get(OUTPUT_FOLDER);

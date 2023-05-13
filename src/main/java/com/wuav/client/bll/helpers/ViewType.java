@@ -65,6 +65,12 @@ public enum ViewType {
             return "views/userSettingsView.fxml";
         }
     },
+    PDF_BUILDER{
+        @Override
+        public String getFXMLView() {
+            return "views/pdfBuilderView.fxml";
+        }
+    },
     DASHBOARD {
         @Override
         public String getFXMLView() {

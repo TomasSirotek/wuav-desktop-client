@@ -388,10 +388,7 @@ public class ProjectController extends RootController implements Initializable {
 
             playButton2.setOnAction(e -> {
                 // open window with choosing to whom to email it
-                sendReportViaEmail(
-                        CurrentUser.getInstance().getLoggedUser(),
-                        project.getValue()
-                );
+                openPdfBuilder(project.getValue());
             });
             return new SimpleObjectProperty<>(playButton2);
         });
@@ -419,58 +416,26 @@ public class ProjectController extends RootController implements Initializable {
 
 
 
-    private void sendReportViaEmail(AppUser appUser,Project project) {
+    private void openPdfBuilder(Project project) {
+        RootController controller = tryToLoadView(ViewType.PDF_BUILDER);
+        eventBus.post(new RefreshEvent(EventType.EXPORT_EMAIL));
 
-        Session session = EmailConnectionFactory.getSession();
-        // genereate pdf report and send it via email
-        // convert stream to file
+        Stage stage = new Stage();
+        Scene scene = new Scene(controller.getView());
 
-        new Thread(() -> {
-            try {
+        stage.initOwner(getStage());
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setTitle("Build you PDF");
+        stage.setOnCloseRequest(e -> {
 
-                projectCreationStatus.setVisible(true);
-                File generatedPdf = null;
-                try {
-                    generatedPdf = generatePDFToFile(appUser,project,"installation-report" + project.getCustomer().getId());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-                // Define the template name and variables
-                String templateName = "email-template";
-                Map<String, Object> templateVariables = new HashMap<>();
-                templateVariables.put("customerName", project.getCustomer().getName());
-                templateVariables.put("technician", appUser.getName());
-                templateVariables.put("technicianEmail", appUser.getEmail());
-                templateVariables.put("installationDate", project.getCreatedAt());
-                templateVariables.put("customerType", project.getCustomer().getType());
-
-                // Process the template and generate the email body
-                String emailBody = emailEngine.processTemplate(templateName, templateVariables);
-                // Update the UI on the JavaFX application thread
-                var emailResult = emailSender.sendEmail(session, "vince.kautzer@ethereal.email","Installation completed", emailBody,true,generatedPdf);
-                Platform.runLater(() -> {
-                    // Hide the progress bar
-                   // progressLoader.setVisible(false);
-
-                    // Display message
-                    if (emailResult) {
-                        AlertHelper.showDefaultAlert("Email successfully sent ", Alert.AlertType.INFORMATION);
-                        projectCreationStatus.setVisible(false);
-                    }
-                });
-            } catch (Exception e) {
-                // Handle sending failure
-                Platform.runLater(() -> {
-                    // Hide the progress bar
-                 //   progressLoader.setVisible(false);
-                    projectCreationStatus.setVisible(false);
-                    // Show an error message
-                    AlertHelper.showDefaultAlert("Email sending failed " + e.getMessage(), Alert.AlertType.ERROR);
-                });
-            }
-        }).start();
-
+        });
+        // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
+        stage.setOnShowing(e -> {
+            stage.getProperties().put("projectToExport", project);
+        });
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
     }
 
     private static File generatePDFToFile(AppUser appUser,Project project,String fileName) throws IOException {
