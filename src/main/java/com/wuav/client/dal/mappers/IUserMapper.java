@@ -4,7 +4,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface UserMapper {
+public interface IUserMapper {
 
     List<AppUser> getAllUsers();
 
@@ -23,4 +23,8 @@ public interface UserMapper {
     int createUser(@Param("userId") int id, @Param("userName") String name,@Param("email") String email, @Param("passwordHash")String password);
 
     int removeUserFromRole(@Param("userId") int userId);
+
+    int deleteUser(@Param("userId") int id);
+
+    AppUser getUserByProjectId(@Param("projectId") int projectId);
 }

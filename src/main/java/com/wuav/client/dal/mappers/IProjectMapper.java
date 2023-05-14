@@ -1,12 +1,11 @@
 package com.wuav.client.dal.mappers;
 
-import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Project;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface ProjectMapper {
+public interface IProjectMapper {
 
     List<Project> getAllProjectsByUserId(@Param("userId")int userId);
 
@@ -23,4 +22,7 @@ public interface ProjectMapper {
     // updating project with description
     int updateProjectForUserById(@Param("projectId")int projectId,@Param("description") String description);
 
+    int updateNotes(@Param("projectId") int projectId,@Param("content") String content);
+
+    int deleteProjectById(@Param("projectId") int projectId);
 }

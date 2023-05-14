@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.wuav.client.dal.mappers.ProjectMapper">
+<mapper namespace="com.wuav.client.dal.mappers.IProjectMapper">
 
 
 <!--    // NEEDS TO HAVE APP USER THAT IS TECHNICIAN  -->
@@ -164,6 +164,31 @@
 
     </update>
 
+
+    <update
+            id="updateNotes"
+            parameterType="Project"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        UPDATE Project
+        SET
+            description = #{content}
+        WHERE id = #{projectId}
+
+    </update>
+
+
+    <delete id="deleteProjectById"
+            parameterType="Project"
+            flushCache="true"
+            statementType="PREPARED">
+        --  executes delete query
+        DELETE
+        FROM project
+        WHERE id = #{projectId}
+    </delete>
 
 
 </mapper>

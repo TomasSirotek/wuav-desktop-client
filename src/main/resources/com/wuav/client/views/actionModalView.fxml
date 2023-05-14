@@ -432,7 +432,133 @@
                               </AnchorPane>
                            </content>
                         </Tab>
-                        <Tab fx:id="tab4" disable="true" text="2">
+                        <Tab fx:id="tab4" text="2">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="403.0">
+                                 <children>
+                                    <VBox layoutY="1.0" prefHeight="433.0" prefWidth="442.0">
+                                       <padding>
+                                          <Insets left="30.0" right="30.0" top="30.0" />
+                                       </padding>
+                                       <children>
+                                          <HBox fx:id="searchBoxField" alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="382.0" />
+                                          <VBox fx:id="deviceBox" prefHeight="55.0" prefWidth="382.0">
+                                             <padding>
+                                                <Insets top="5.0" />
+                                             </padding>
+                                             <children>
+                                                <HBox fx:id="noDeviceSelectedLabel" alignment="CENTER" prefHeight="45.0" prefWidth="382.0">
+                                                   <children>
+                                                      <Label text="NO DEVICE SELECTED" />
+                                                   </children>
+                                                </HBox>
+                                             </children></VBox>
+                                          <HBox fx:id="deviceTypeSelection" prefHeight="129.0" prefWidth="382.0" visible="false">
+                                             <children>
+                                                <GridPane prefHeight="66.0" prefWidth="382.0">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="218.0" minWidth="10.0" prefWidth="216.0" />
+                                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="186.0" minWidth="10.0" prefWidth="166.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <VBox alignment="CENTER" GridPane.columnIndex="1">
+                                                         <children>
+                                                            <MFXButton fx:id="demoChat" prefHeight="33.0" prefWidth="166.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Demo chat" textFill="#141111">
+                                                               <font>
+                                                                  <Font name="SansSerif Bold" size="13.0" />
+                                                               </font>
+                                                               <cursor>
+                                                                  <Cursor fx:constant="HAND" />
+                                                               </cursor>
+                                                               <graphic>
+                                                                  <HBox />
+                                                               </graphic>
+                                                            </MFXButton>
+                                                            <HBox>
+                                                               <VBox.margin>
+                                                                  <Insets top="5.0" />
+                                                               </VBox.margin>
+                                                               <children>
+                                                                  <MFXButton fx:id="createCRUD" prefHeight="33.0" prefWidth="102.0" style="-fx-background-color: black; -fx-text-fill: white;" text="✔️" textFill="#141111">
+                                                                     <font>
+                                                                        <Font name="SansSerif Bold" size="13.0" />
+                                                                     </font>
+                                                                     <cursor>
+                                                                        <Cursor fx:constant="HAND" />
+                                                                     </cursor>
+                                                                     <graphic>
+                                                                        <HBox />
+                                                                     </graphic>
+                                                                     <HBox.margin>
+                                                                        <Insets right="5.0" />
+                                                                     </HBox.margin>
+                                                                  </MFXButton>
+                                                                  <MFXButton fx:id="cancelCRUD" prefHeight="33.0" prefWidth="102.0" style="-fx-background-color: black; -fx-text-fill: white;" text="X" textFill="#141111">
+                                                                     <font>
+                                                                        <Font name="SansSerif Bold" size="13.0" />
+                                                                     </font>
+                                                                     <cursor>
+                                                                        <Cursor fx:constant="HAND" />
+                                                                     </cursor>
+                                                                     <graphic>
+                                                                        <HBox />
+                                                                     </graphic>
+                                                                  </MFXButton>
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox prefHeight="200.0" prefWidth="100.0">
+                                                         <children>
+                                                            <Label prefHeight="17.0" prefWidth="209.0" text="Input project name">
+                                                               <font>
+                                                                  <Font name="SansSerif Regular" size="12.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="2.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <MFXTextField fx:id="deviceName" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="37.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="206.0" promptText="Enter project name" style="-fx-border-color: #c5c1c1;" />
+                                                            <Label prefHeight="17.0" prefWidth="197.0" text="Device type" textFill="#252f4091">
+                                                               <font>
+                                                                  <Font name="SansSerif Regular" size="10.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="2.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <ChoiceBox fx:id="deviceTypeChooseField" prefHeight="28.0" prefWidth="206.0" style="-fx-background-color: white; -fx-border-color: #c5c1c1;" />
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                   <HBox.margin>
+                                                      <Insets />
+                                                   </HBox.margin>
+                                                </GridPane>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets top="20.0" />
+                                             </VBox.margin></HBox>
+                                          <HBox fx:id="detailsBoxLoad" prefHeight="227.0" prefWidth="382.0" />
+                                       </children>
+                                    </VBox>
+                                    <HBox layoutX="28.0" layoutY="10.0" prefHeight="27.0" prefWidth="420.0">
+                                       <children>
+                                          <Label prefHeight="17.0" prefWidth="163.0" text="Devices">
+                                             <font>
+                                                <Font name="SansSerif Bold" size="15.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab fx:id="tab5" disable="true" text="2">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="341.0">
                                  <children>

@@ -26,4 +26,7 @@ public class ImageCache {
     public static Image getImage(int imageId) {
         return imageCache.get(imageId);
     }
+    public static void removeImage(int imageId) {
+        imageCache.remove(imageId);
+    }
 }

@@ -25,6 +25,15 @@ module com.wuav.client {
     requires thymeleaf;
     requires net.coobird.thumbnailator;
     requires spring.security.crypto;
+    requires sendgrid.java;
+    requires google.api.client;
+    requires com.google.api.client.extensions.jetty.auth;
+    requires com.google.api.client.auth;
+    requires com.google.api.client.extensions.java6.auth;
+    requires com.google.api.client;
+    requires com.google.api.client.json.gson;
+    requires com.google.api.services.gmail;
+    requires org.controlsfx.controls;
 
 
     exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common,org.apache.pdfbox;
@@ -43,6 +52,7 @@ module com.wuav.client {
     exports com.wuav.client.gui.models to com.google.guice;
     exports  com.wuav.client.bll.utilities.pdf to com.google.guice,org.apache.pdfbox;
     exports com.wuav.client.cache to com.google.guice;
+    exports com.wuav.client.be.device to org.mybatis;
 
 
     opens com.wuav.client.gui.controllers to javafx.fxml, com.google.guice, com.google.common,com.azure.core,org.apache.pdfbox;

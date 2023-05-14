@@ -7,14 +7,14 @@ import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.event.RefreshEvent;
 import com.wuav.client.gui.models.user.IUserModel;
 import com.wuav.client.gui.utils.AlertHelper;
+import com.wuav.client.gui.utils.validations.FormField;
+import com.wuav.client.gui.utils.enums.UserRoleType;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextInputControl;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -54,10 +54,10 @@ public class UserModalController  extends RootController implements Initializabl
 
     private void fillClientTypeChooseField() {
         // fill client type with two option values
-        roleField.getItems().add("ADMIN");
-        roleField.getItems().add("MANAGER");
-        roleField.getItems().add("SALES");
-        roleField.getItems().add("TECHNICIAN");
+        Arrays.stream(UserRoleType.values())
+                .toList()
+                .forEach(role -> roleField.getItems()
+                        .add(role.toString()));
 
         roleField.getSelectionModel().select(3); // selects technician by default
     }
@@ -78,8 +78,6 @@ public class UserModalController  extends RootController implements Initializabl
             }else{
               AlertHelper.showDefaultAlert("User creation failed", Alert.AlertType.ERROR);
           }
-
-          // validate result refresh table by sending emit
         }
     }
 
@@ -88,13 +86,13 @@ public class UserModalController  extends RootController implements Initializabl
     private boolean validateInput() {
         boolean isValid = true;
 
-        List<UserModalController.FormField> fieldsToValidate = Arrays.asList(
-                new UserModalController.FormField(userNameField, "User name is required!"),
-                new UserModalController.FormField(userEmailField, "Email is required" ),
-                new UserModalController.FormField(roleField, "Role is required")
+        List<FormField> fieldsToValidate = Arrays.asList(
+                new FormField(userNameField, "User name is required!"),
+                new FormField(userEmailField, "Email is required" ),
+                new FormField(roleField, "Role is required")
         );
 
-        for (UserModalController.FormField field : fieldsToValidate) {
+        for (FormField field : fieldsToValidate) {
             if (field.getText().isEmpty()) {
                 AlertHelper.showDefaultAlert(field.getErrorMessage(), Alert.AlertType.WARNING);
                 isValid = false;
@@ -110,50 +108,8 @@ public class UserModalController  extends RootController implements Initializabl
     }
 
 
-    @FunctionalInterface
-    private interface ValidationFunction {
-        boolean validate();
-    }
 
-    private static class FormField {
-        private final Node control;
-        private final String errorMessage;
-        private final UserModalController.ValidationFunction validationFunction;
-        private final String errorValidationMessage;
 
-        public FormField(Node control, String errorMessage) {
-            this(control, errorMessage, null, null);
-        }
 
-        public FormField(Node control, String errorMessage, UserModalController.ValidationFunction validationFunction, String errorValidationMessage) {
-            this.control = control;
-            this.errorMessage = errorMessage;
-            this.validationFunction = validationFunction;
-            this.errorValidationMessage = errorValidationMessage;
-        }
-
-        public String getText() {
-            if (control instanceof TextInputControl) {
-                return ((TextInputControl) control).getText();
-            } else if (control instanceof ChoiceBox) {
-                Object value = ((ChoiceBox<?>) control).getValue();
-                return value != null ? value.toString() : "";
-            } else {
-                throw new UnsupportedOperationException("Control type not supported: " + control.getClass().getName());
-            }
-        }
-
-        public String getErrorMessage() {
-            return errorMessage;
-        }
-
-        public UserModalController.ValidationFunction getValidationFunction() {
-            return validationFunction;
-        }
-
-        public String getErrorValidationMessage() {
-            return errorValidationMessage;
-        }
-    }
 
 }

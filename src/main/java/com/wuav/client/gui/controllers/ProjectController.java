@@ -7,7 +7,6 @@ import com.wuav.client.be.*;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
-import com.wuav.client.bll.utilities.email.EmailConnectionFactory;
 import com.wuav.client.bll.utilities.email.IEmailSender;
 import com.wuav.client.bll.utilities.engines.IEmailEngine;
 import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
@@ -20,8 +19,6 @@ import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,10 +26,10 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -40,10 +37,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import javafx.util.Callback;
 
-import javax.mail.Session;
 import java.io.*;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -65,23 +61,13 @@ public class ProjectController extends RootController implements Initializable {
     private Label projectLabelMain;
 
     @FXML
-    private TableColumn<Project,Button> colDelete;
-
-    @FXML
-    private Label emailLoadLabel;
-    @FXML
-    private Pane emailLoadPane;
-
-    @FXML
     private MFXButton exportSelected;
-    @FXML
-    private TableColumn<Project,Button> colEmail;
     @FXML
     private AnchorPane projectAnchorPane;
     @FXML
     private MFXButton createNewProject;
     @FXML
-    private TableColumn<Project,Button> colEdit;
+    private TableColumn<Project,String> colEdit;
     @FXML
     private TableView<Project> projectTable;
     @FXML
@@ -103,8 +89,6 @@ public class ProjectController extends RootController implements Initializable {
 
     private final IEmailEngine emailEngine;
 
-    private Consumer<Project> onProjectSelected;
-
     private List<CheckBox> checkBoxList = new ArrayList<>();
 
     List<Project> selectedProjects = new ArrayList<>();
@@ -123,10 +107,15 @@ public class ProjectController extends RootController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        fillTable();
-       createNewProject.setOnAction(e -> openActionWindows("Create new project",ViewType.ACTIONS,null));
-       exportSelected.setOnAction(e -> exportSelected());
         eventBus.register(this);
+        fillTable();
+        createNewProject.setOnAction(e -> openActionWindows("Create new project",ViewType.ACTIONS,null));
+        exportSelected.setOnAction(e -> exportSelected());
+
+        // FOR NOW
+        if(CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("ADMIN")){
+            createNewProject.setVisible(false);
+        }
 
         selectAllTableCheck.selectedProperty().addListener((observable, oldValue, newValue) -> {
             updateCheckBoxes(newValue);
@@ -214,7 +203,6 @@ public class ProjectController extends RootController implements Initializable {
             stage.getProperties().put("projectsToExport",projectList); // pass optional model here
         }
 
-
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
@@ -236,22 +224,13 @@ public class ProjectController extends RootController implements Initializable {
 
 
 
-    // TODO : DEPENDING ON THE ROLE GET PROJECTS BY USER ID
-    // ADMIN - GET ALL PROJECTS FROM ALL APP USERS THAT ARE TECHNICIANS
-    // TECHNICIAN - GET ALL PROJECTS FOR HIM BY ID
-    // SALESMAN - GET ALL PROJECTS FROM ALL TECHNICIANS
     private void setTableWithProjects() {
-        // get user projects from current logged user singleton class
-      //  emailLoadPane.setVisible(true);
-      //  emailLoadPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
-      //  emailLoadLabel.setText("Loading projects");
         tableDataLoad.setVisible(true);
 
         Task<List<Project>> loadProjectsTask = new Task<>() {
             @Override
             protected List<Project> call() {
                 if (CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("TECHNICIAN")) {
-                    // get user projects from current logged user singleton class
                     return projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
                 } else {
                     projectLabelMain.setText("Projects");
@@ -272,20 +251,26 @@ public class ProjectController extends RootController implements Initializable {
 
             tableDataLoad.setVisible(false);
             projectTable.setItems(projects);
-
-        //    emailLoadPane.setVisible(false);
-        //    emailLoadPane.setStyle("-fx-background-color: transparent");
-         //   emailLoadLabel.setText("");
         });
 
         // Handle any errors during the task execution
         loadProjectsTask.setOnFailed(event -> {
-            // Handle error appropriately
-            System.out.println(event.getSource().getException());
+            AlertHelper.showDefaultAlert(event.getSource().getException().toString(), Alert.AlertType.ERROR);
         });
 
         // Run the task in a new thread
         new Thread(loadProjectsTask).start();
+    }
+
+
+    private void refreshTable(){
+        List<Project> updatedProjects = projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
+        // Update the cache in the ProjectModel
+        projectModel.updateProjectsCache(CurrentUser.getInstance().getLoggedUser().getId(), updatedProjects);
+
+        // Refresh the table with the updated projects list
+        ObservableList<Project> projects = FXCollections.observableList(updatedProjects);
+        projectTable.setItems(projects);
     }
 
     /**
@@ -294,17 +279,9 @@ public class ProjectController extends RootController implements Initializable {
     @Subscribe
     public void handleCategoryEvent(RefreshEvent event) {
         if (event.eventType() == EventType.UPDATE_TABLE) {
-            System.out.println("refreshing event");
             projectCreationStatus.setVisible(true);
             // Retrieve the updated projects list from your data source
-            List<Project> updatedProjects = projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
-
-            // Update the cache in the ProjectModel
-            projectModel.updateProjectsCache(CurrentUser.getInstance().getLoggedUser().getId(), updatedProjects);
-
-            // Refresh the table with the updated projects list
-            ObservableList<Project> projects = FXCollections.observableList(updatedProjects);
-            projectTable.setItems(projects);
+            refreshTable();
             projectCreationStatus.setVisible(false);
 
         }
@@ -341,8 +318,6 @@ public class ProjectController extends RootController implements Initializable {
         });
         colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
 
-
-
         // description
         colDes.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
         // Customer
@@ -360,56 +335,81 @@ public class ProjectController extends RootController implements Initializable {
             return new SimpleStringProperty(date == null ? "No data" : formattedDate);
         });
 
-        colEdit.setCellValueFactory(col -> {
-            MFXButton playButton = new MFXButton("");
-            //  playButton.getStyleClass().add("success");
-            playButton.setPrefWidth(100);
-            playButton.setPrefHeight(20);
-            var imageIcon = new ImageView(new Image(getClass().getResourceAsStream("/edit.png")));
-            imageIcon.setFitHeight(15);
-            imageIcon.setFitWidth(15);
-            playButton.setGraphic(imageIcon);
-            playButton.setOnAction(e -> {
-                runInParallel(ViewType.PROJECT_ACTIONS,col.getValue());
+        ImageView editImage = new ImageView("/edit.png");
 
-            });
-            return new SimpleObjectProperty<>(playButton);
-        });
+        ImageView emailImage = new ImageView("/emailIcon.png");
+        ImageView deleteImage = new ImageView("/delete.png");
 
-        colEmail.setCellValueFactory(project -> {
-            MFXButton playButton2 = new MFXButton("");
-            //  playButton.getStyleClass().add("success");
-            playButton2.setPrefWidth(100);
-            playButton2.setPrefHeight(20);
-            var imageIcon = new ImageView(new Image(getClass().getResourceAsStream("/emailIcon.png")));
-            imageIcon.setFitHeight(15);
-            imageIcon.setFitWidth(15);
-            playButton2.setGraphic(imageIcon);
+        editImage.setFitWidth(20);
+        editImage.setFitHeight(20);
+        emailImage.setFitWidth(20);
+        emailImage.setFitHeight(20);
+        deleteImage.setFitWidth(20);
+        deleteImage.setFitHeight(20);
 
-            playButton2.setOnAction(e -> {
-                // open window with choosing to whom to email it
-                openPdfBuilder(project.getValue());
-            });
-            return new SimpleObjectProperty<>(playButton2);
-        });
+        Callback<TableColumn<Project, String>, TableCell<Project, String>> cellFactory
+                = //
+                new Callback<TableColumn<Project, String>, TableCell<Project, String>>() {
+                    @Override
+                    public TableCell call(final TableColumn<Project, String> param) {
+                        final TableCell<Project, String> cell = new TableCell<Project, String>() {
 
-        colDelete.setCellValueFactory(project -> {
-            MFXButton playButton2 = new MFXButton("");
-            //  playButton.getStyleClass().add("success");
-            playButton2.setPrefWidth(100);
-            playButton2.setPrefHeight(20);
-            var imageIcon = new ImageView(new Image(getClass().getResourceAsStream("/delete.png")));
-            imageIcon.setFitHeight(15);
-            imageIcon.setFitWidth(15);
-            playButton2.setGraphic(imageIcon);
+                            final Button btn = new Button("...");
 
-            playButton2.setOnAction(e -> {
-                System.out.println("delete project" + project.getValue());
+                            @Override
+                            public void updateItem(String item, boolean empty) {
+                                super.updateItem(item, empty);
+                                if (empty) {
+                                    setGraphic(null);
+                                    setText(null);
+                                } else {
+                                    MenuItem editItem = new Menu("Edit", editImage); // images with that icon
+                                    MenuItem emailItem = new MenuItem("Send email", emailImage);
+                                    MenuItem deleteItem = new MenuItem("Delete", deleteImage);
 
-            });
-            return new SimpleObjectProperty<>(playButton2);
-        });
 
+                                    // adding all items to context menu
+                                    ContextMenu menu = null;
+
+                                    if(CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("ADMIN")){
+                                        menu = new ContextMenu(editItem, emailItem, deleteItem);
+                                    }else {
+                                        menu = new ContextMenu(editItem, emailItem);
+                                    }
+
+                                    editItem.setOnAction(event -> {
+                                        // edit here
+                                        runInParallel(ViewType.PROJECT_ACTIONS,getTableRow().getItem());
+                                        event.consume();
+                                    });
+                                    emailItem.setOnAction(event -> {
+                                        // email here
+                                        openPdfBuilder(getTableRow().getItem());
+                                        event.consume();
+                                    });
+                                    deleteItem.setOnAction(event -> {
+                                        deleteProject(getTableRow().getItem());
+                                        event.consume();
+                                    });
+
+                                    ContextMenu finalMenu = menu;
+                                    btn.setOnAction(event -> {
+                                        finalMenu.show(btn, Side.BOTTOM, -95, 0);
+                                    });
+                                    setGraphic(btn);
+                                    setText(null);
+                                }
+                            }
+                        };
+                        return cell;
+                    }
+                };
+
+        colEdit.prefWidthProperty().set(40);
+        colEdit.setResizable(false);
+        colEdit.setCellFactory(cellFactory);
+
+        // set final projects list to the table
         setTableWithProjects();
 
     }
@@ -438,27 +438,6 @@ public class ProjectController extends RootController implements Initializable {
         stage.show();
     }
 
-    private static File generatePDFToFile(AppUser appUser,Project project,String fileName) throws IOException {
-        IPdfGenerator pdfGenerator = new PdfGenerator();
-        ByteArrayOutputStream stream = pdfGenerator.generatePdf(appUser,project,fileName);
-
-        // Convert stream to byte array
-        byte[] pdfBytes = stream.toByteArray();
-
-        // Create a temporary file and write the PDF bytes to it
-        File pdfFile = File.createTempFile(fileName, ".pdf");
-        OutputStream os = new FileOutputStream(pdfFile);
-        os.write(pdfBytes);
-        os.close();
-
-        return pdfFile;
-
-    }
-
-
-    private void setProjectToView(Project project) {
-      //  eventBus.post(new ProjectEvent(EventType.SET_CURRENT_PROJECT, project));
-    }
 
     private void runInParallel(ViewType type,Project project) {
         final RootController[] parent = {null};
@@ -488,6 +467,19 @@ public class ProjectController extends RootController implements Initializable {
             layoutPane.getChildren().add(parent);
         }
 
+    }
+
+    private void  deleteProject(Project project){
+        var response = AlertHelper.showOptionalAlertWindow("Action warning !","Are you sure you want to delete this project ? ", Alert.AlertType.CONFIRMATION);
+        if(response.isPresent() && response.get() == ButtonType.OK){
+            boolean projectDeleted = projectModel.deleteProject(project);
+            if(projectDeleted) {
+                AlertHelper.showDefaultAlert("Project deleted", Alert.AlertType.INFORMATION);
+
+            }else {
+                AlertHelper.showDefaultAlert("Project not deleted", Alert.AlertType.ERROR);
+            }
+        }
     }
 
 

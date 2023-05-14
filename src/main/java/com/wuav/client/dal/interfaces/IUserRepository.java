@@ -24,4 +24,8 @@ public interface IUserRepository {
     int createUser(CreateUserDTO createUserDTO);
 
     int removeUserFromRole(int userId);
+
+    boolean deleteUser(AppUser value);
+
+    AppUser getUserByProjectId(int projectId);
 }

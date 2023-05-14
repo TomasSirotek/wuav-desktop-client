@@ -3,13 +3,9 @@ package com.wuav.client.gui.controllers;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.bll.services.interfaces.IAuthService;
-import com.wuav.client.bll.utilities.email.EmailConnectionFactory;
-import com.wuav.client.bll.utilities.email.IEmailSender;
-import com.wuav.client.bll.utilities.engines.IEmailEngine;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.google.inject.Inject;
-import com.wuav.client.gui.models.user.IUserModel;
 import com.wuav.client.gui.utils.AlertHelper;
 import io.github.palexdev.materialfx.controls.*;
 import javafx.application.Platform;
@@ -26,12 +22,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 
-import javax.mail.Session;
 import javax.naming.AuthenticationException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 public class LoginController extends RootController implements Initializable {

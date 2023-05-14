@@ -15,16 +15,6 @@ public class RoleService implements IRoleService {
         this.roleRepository = roleRepository;
     }
 
-
-    public static void main(String[] args) {
-        RoleService roleService = new RoleService(new RoleRepository());
-
-
-        var result = roleService.getRoleByName("ADMIN");
-        System.out.println(result);
-
-
-    }
     @Override
     public AppRole getRoleByName(String name) {
         return roleRepository.getRoleByName(name);

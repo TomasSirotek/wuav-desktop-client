@@ -12,6 +12,7 @@ import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.event.RefreshEvent;
 import com.wuav.client.gui.models.user.CurrentUser;
+import com.wuav.client.gui.models.user.IUserModel;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -40,6 +41,7 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -77,14 +79,17 @@ public class PDFBuilderController extends RootController implements Initializabl
 
     private final IPdfGenerator pdfGenerator;
 
+    private final IUserModel userModel;
+
     private ObjectProperty<ByteArrayOutputStream> finalPDFBytesProperty = new SimpleObjectProperty<>();
 
     private BooleanProperty isExport = new SimpleBooleanProperty(true); // You can set this to true or false as needed
 
     @Inject
-    public PDFBuilderController(EventBus eventBus, IPdfGenerator pdfGenerator) {
+    public PDFBuilderController(EventBus eventBus, IPdfGenerator pdfGenerator, IUserModel userModel) {
         this.eventBus = eventBus;
         this.pdfGenerator = pdfGenerator;
+        this.userModel = userModel;
     }
 
 
@@ -280,7 +285,18 @@ public class PDFBuilderController extends RootController implements Initializabl
 
 
     private void sendEmail() {
-        System.out.println("Sending email");
+        // for now its just technician role
+        AppUser appUser = CurrentUser.getInstance().getLoggedUser();
+        boolean result = false;
+        try {
+            result = userModel.sendEmailWithAttachement(appUser,project, finalPDFBytesProperty.getValue());
+        } catch (GeneralSecurityException | IOException e) {
+            AlertHelper.showDefaultAlert(e.getMessage() , Alert.AlertType.ERROR);
+        }
+        if(result){
+            AlertHelper.showDefaultAlert("Success !" , Alert.AlertType.CONFIRMATION);
+        }
+
     }
 
 

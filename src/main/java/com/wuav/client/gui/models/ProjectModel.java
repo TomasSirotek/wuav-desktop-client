@@ -3,12 +3,18 @@ package com.wuav.client.gui.models;
 import com.azure.storage.blob.BlobContainerClient;
 import com.google.inject.Inject;
 import com.wuav.client.be.CustomImage;
+import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
+import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.services.interfaces.IProjectService;
 import com.wuav.client.cache.ImageCache;
 import com.wuav.client.dal.blob.BlobStorageFactory;
 import com.wuav.client.gui.dto.CreateProjectDTO;
+import com.wuav.client.gui.dto.PutCustomerDTO;
+import com.wuav.client.gui.models.user.IUserModel;
+import javafx.scene.image.Image;
 
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -18,22 +24,24 @@ import java.util.concurrent.Future;
 public class ProjectModel implements IProjectModel{
     private IProjectService projectService;
 
+    private final IUserModel userModel;
+
     private final Map<Integer, List<Project>> projectsCache = Collections.synchronizedMap(new HashMap<>());
     private final int ALL_PROJECTS_KEY = -1;
 
     @Inject
-    public ProjectModel(IProjectService projectService) {
+    public ProjectModel(IProjectService projectService, IUserModel userModel) {
         this.projectService = projectService;
+        this.userModel = userModel;
     }
 
     @Override
     public List<Project> getProjectsByUserId(int userId) {
         List<Project> projects = projectsCache.get(userId);
 
-
         if (projects == null) {
             projects = projectService.getProjectsByUserId(userId);
-           // cacheProjectsImages(projects); // MOVE BACK
+            // cacheProjectsImages(projects);  // remove for speed lulw
             projectsCache.put(userId, projects);
         }
 
@@ -80,6 +88,102 @@ public class ProjectModel implements IProjectModel{
     public Project getProjectById(int projectId) {
         return projectService.getProjectById(projectId);
     }
+
+    @Override
+    public boolean deleteProject(Project project) {
+        AppUser user = userModel.getUserByProjectId(project.getId());
+        boolean result = projectService.deleteProject(project);
+        if (result) {
+            // If the project is successfully deleted from the database, remove it from the cache
+            removeProject(user.getId(), project.getId());
+        }
+
+        return result;
+
+    }
+
+    public void removeProject(int userId, int projectId) {
+        List<Project> userProjects = projectsCache.get(userId);
+
+        if (userProjects != null) {
+            userProjects.removeIf(project -> project.getId() == projectId);
+        }
+    }
+
+
+    @Override
+    public Image reuploadImage(int projectId, int id, File selectedImageFile) {
+        CustomImage updatedImage = projectService.reuploadImage(projectId,id, selectedImageFile);
+        updatedImage.setMainImage(true);
+        AppUser user = userModel.getUserByProjectId(projectId);
+        Image image = null;
+
+        if (updatedImage != null && user != null) {
+            var projects = getProjectsByUserId(user.getId());
+
+            // Replace the image in the projects list
+            for (Project project : projects) {
+                List<CustomImage> projectImages = project.getProjectImages();
+                for (int i = 0; i < projectImages.size(); i++) {
+                    if (projectImages.get(i).getId() == id) {
+                        projectImages.set(i, updatedImage);
+                        break;
+                    }
+                }
+            }
+
+            // Remove the old image from the cache
+            ImageCache.removeImage(id);
+
+            // Cache the project images
+            cacheProjectsImages(projects);
+
+            // Update the cache
+            projectsCache.put(user.getId(), projects);
+
+            // Retrieve the uploaded image
+            image = ImageCache.getImage(updatedImage.getId());
+
+
+            cacheProjectImages(getProjectById(projectId));
+        }
+
+        return image;
+    }
+
+    @Override
+    public String updateNotes(int projectId, String content) {
+        String updatedNotes = projectService.updateNotes(projectId,content);
+
+        if(updatedNotes != null){
+            // Retrieve the project owner
+            AppUser user = userModel.getUserByProjectId(projectId);
+
+            if (user != null) {
+                // Fetch the updated project from the database
+                Project updatedProject = projectService.getProjectById(projectId);
+
+                // Update the cache with the updated project
+                List<Project> projects = projectsCache.get(user.getId());
+                for (int i = 0; i < projects.size(); i++) {
+                    if (projects.get(i).getId() == projectId) {
+                        projects.set(i, updatedProject);
+                        break;
+                    }
+                }
+                projectsCache.put(user.getId(), projects);
+            }
+        }
+
+        return updatedNotes;
+    }
+
+    @Override
+    public Customer updateCustomer(PutCustomerDTO customerDTO) {
+        // update customer
+        return projectService.updateCustomer(customerDTO);
+    }
+
 
     private void cacheProjectsImages(List<Project> projects) {
         BlobContainerClient blobContainerClient = BlobStorageFactory.getBlobContainerClient();

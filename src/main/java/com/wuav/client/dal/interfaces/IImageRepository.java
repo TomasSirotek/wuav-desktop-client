@@ -8,4 +8,10 @@ public interface IImageRepository {
 
 
     boolean addImageToProject(int projectId, int id, boolean isMainImage);
+
+    CustomImage getImageById(int id);
+
+    boolean updateImage(int id, String imageType, String imageUrl);
+
+    boolean deleteImageById(int id);
 }

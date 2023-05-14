@@ -12,9 +12,6 @@
         <setting name="logImpl" value="slf4j"/>
         <setting name="autoMappingBehavior" value="FULL"/>
         <setting name="mapUnderscoreToCamelCase" value="FULL"/>
-<!--        <setting name="autoMappingUnknownColumnBehavior" value="WARNING"/>-->
-<!--        <setting name="useColumnLabel" value="false"/>-->
-
     </settings>
 
 
@@ -26,7 +23,8 @@
         <typeAlias alias="CustomImage" type="com.wuav.client.be.CustomImage"/>
         <typeAlias alias="Address" type="com.wuav.client.be.Address"/>
         <typeAlias alias="Customer" type="com.wuav.client.be.Customer"/>
-
+        <typeAlias alias="Projector" type="com.wuav.client.be.device.Projector"/>
+        <typeAlias alias="Speaker" type="com.wuav.client.be.device.Speaker"/>
     </typeAliases>
 
     <!-- main environment -->
@@ -54,5 +52,7 @@
         <mapper resource="com/wuav/client/mybatis/mapper/Image.xml"/>
         <mapper resource="com/wuav/client/mybatis/mapper/Address.xml"/>
         <mapper resource="com/wuav/client/mybatis/mapper/Customer.xml"/>
+        <mapper resource="com/wuav/client/mybatis/mapper/Projector.xml"/>
+        <mapper resource="com/wuav/client/mybatis/mapper/Speaker.xml"/>
     </mappers>
 </configuration>

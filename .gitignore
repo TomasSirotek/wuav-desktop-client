@@ -42,4 +42,6 @@ build/
 /src/main/resources/config.cfg
 /src/main/resources/com/wuav/client/ticketsTest/
 /src/main/resources/emailConfig.cfg
+/src/main/resources/client_secret_638302483829-bsvudv3vg4np4stmm7a079b80ai5p4r0.apps.googleusercontent.com.json
 /src/main/resources/configBlob.cfg
+/tokens/

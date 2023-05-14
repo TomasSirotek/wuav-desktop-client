@@ -1,10 +1,8 @@
 package com.wuav.client.dal.repository;
 
 import com.wuav.client.be.user.AppRole;
-import com.wuav.client.be.user.AppUser;
 import com.wuav.client.dal.interfaces.IRoleRepository;
-import com.wuav.client.dal.mappers.RoleMapper;
-import com.wuav.client.dal.mappers.UserMapper;
+import com.wuav.client.dal.mappers.IRoleMapper;
 import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -18,7 +16,7 @@ public class RoleRepository implements IRoleRepository {
     public AppRole getRoleByName(String name) {
         AppRole fetchedRole = new AppRole();
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            RoleMapper mapper = session.getMapper(RoleMapper.class);
+            IRoleMapper mapper = session.getMapper(IRoleMapper.class);
             fetchedRole = mapper.getRoleByName(name);
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);

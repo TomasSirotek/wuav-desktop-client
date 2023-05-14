@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.wuav.client.dal.mappers.CustomerMapper">
+<mapper namespace="com.wuav.client.dal.mappers.ICustomerMapper">
 
     <resultMap id="customerResult" type="Customer">
         <id property="id" column="id"/>
@@ -49,6 +49,37 @@
         VALUES (#{id}, #{name},#{email},#{phoneNumber}, #{addressId},#{type})
 
     </insert>
+
+
+
+    <update
+            id="updateCustomer"
+            parameterType="Customer"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        UPDATE customer
+        SET
+            name = #{name},
+            email = #{email},
+            phone_number = #{phoneNumber},
+            type= #{type}
+        WHERE id = #{customerId}
+
+    </update>
+
+
+    <delete id="deleteCustomer"
+            parameterType="Customer"
+            flushCache="true"
+            statementType="PREPARED">
+        --  executes delete query
+        DELETE
+        FROM customer
+        WHERE id = #{customerId}
+    </delete>
+
 
 
 

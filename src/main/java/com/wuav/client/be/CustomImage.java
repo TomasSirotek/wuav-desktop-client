@@ -15,6 +15,10 @@ public class CustomImage {
         this.imageUrl = imageUrl;
     }
 
+    public CustomImage(){
+
+    }
+
 
     public int getId() {
         return id;

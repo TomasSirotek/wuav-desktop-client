@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.wuav.client.dal.mappers.AddressMapper">
+<mapper namespace="com.wuav.client.dal.mappers.IAddressMapper">
 
     <resultMap id="addressResult" type="Address">
         <id property="id" column="id"/>
@@ -36,9 +36,31 @@
     </insert>
 
 
+    <update
+            id="updateAddress"
+            parameterType="Address"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
 
+        UPDATE address
+        SET
+            street = #{street},
+            city = #{city},
+            zip_code = #{zipCode}
+        WHERE id = #{addressId}
 
+    </update>
 
+    <delete id="deleteAddress"
+            parameterType="Address"
+            flushCache="true"
+            statementType="PREPARED">
+        --  executes delete query
+        DELETE
+        FROM address
+        WHERE id = #{addressId}
+    </delete>
 
 </mapper>
 
