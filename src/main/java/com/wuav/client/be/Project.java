@@ -1,5 +1,7 @@
 package com.wuav.client.be;
 
+import com.wuav.client.be.device.Device;
+
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +18,8 @@ public class Project {
     private Customer customer;
 
     private List<CustomImage> projectImages;
+
+    private List<Device> devices;
 
     public int getId() {
         return id;
@@ -77,5 +81,13 @@ public class Project {
                 ", customer=" + customer +
                 ", projectImages=" + projectImages +
                 '}';
+    }
+
+    public List<Device> getDevices() {
+        return devices;
+    }
+
+    public void setDevices(List<Device> devices) {
+        this.devices = devices;
     }
 }

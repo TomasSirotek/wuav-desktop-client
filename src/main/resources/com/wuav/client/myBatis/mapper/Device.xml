@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.wuav.client.dal.mappers.IDeviceMapper">
+
+    <resultMap id="DeviceResultMap" type="Device">
+        <id property="id" column="deviceId" />
+        <result property="name" column="deviceName" />
+        <result property="deviceType" column="device_type" />
+        <!-- Include other properties specific to the Device class -->
+        <!-- For example, <result property="resolution" column="resolution" /> for Projector -->
+        <!-- and <result property="power" column="power" /> for Speaker -->
+    </resultMap>
+
+    <select id="getDevicesByProjectId" resultMap="DeviceResultMap">
+        SELECT
+            d.id as deviceId,
+            d.name as deviceName,
+            d.device_type as device_type
+        FROM project_device pd
+                 INNER JOIN device d ON pd.device_id = d.id
+        WHERE pd.project_id = #{projectId}
+    </select>
+
+</mapper>

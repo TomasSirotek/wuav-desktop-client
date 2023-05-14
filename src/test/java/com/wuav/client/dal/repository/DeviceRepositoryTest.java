@@ -22,7 +22,7 @@ public class DeviceRepositoryTest {
         DeviceRepository deviceRepository = new DeviceRepository();
         var uniqueIdGenerator = UniqueIdGenerator.generateUniqueId();
 
-        Projector projector = new Projector(uniqueIdGenerator, "Projector2");
+        Projector projector = new Projector(uniqueIdGenerator, "Projector2", "PROJECTOR");
         projector.setResolution("1080p");
         projector.setConnectionType("HDMI");
         projector.setDevicePort("USB");

@@ -1,12 +1,15 @@
 package com.wuav.client.be.device;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Speaker extends Device {
 
     public String volume;
     public String power;
 
-    public Speaker(int id,String name) {
-        super(id, name);
+    public Speaker(int id, String name,String deviceType) {
+        super(id, name,deviceType);
     }
 
 

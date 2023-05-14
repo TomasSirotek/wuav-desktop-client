@@ -132,6 +132,7 @@ public class ModalActionController extends RootController implements Initializab
     // FOR SPEAKER
     private TextField power,volume;
 
+    @FXML
     private VBox deviceCRUDBox;
 
     @FXML
@@ -239,6 +240,8 @@ public class ModalActionController extends RootController implements Initializab
 
     }
 
+
+
     public void setupSearchField() {
         this.devices = deviceModel.getAllDevices();
         autoCompletionBinding = TextFields.bindAutoCompletion(textField, devices);
@@ -257,8 +260,31 @@ public class ModalActionController extends RootController implements Initializab
             Button editButton = new Button("Edit");
             editButton.setOnAction(e -> {
                 // Fill the fields with the selected device data
-                deviceName.setText(selectedDevice.getName());
+                deviceTypeSelection.setVisible(true); // set device
+                deviceName.setText(selectedDevice.getName()); // set name
+                // set device type pending on instance is it projector or speaker
+                deviceTypeChooseField.getSelectionModel().select(selectedDevice.getClass().getSimpleName().toUpperCase());
 
+                if(selectedDevice instanceof Projector){
+                    setupProjectorFields();
+                    Projector projector = (Projector) selectedDevice;
+                    resolutionField.setText(projector.getResolution());
+                    connectionType.setText(projector.getConnectionType());
+                    devicePort.setText(projector.getDevicePort());
+                }
+                else if(selectedDevice instanceof Speaker){
+                    setupSpeakerFields();
+                    Speaker speaker = (Speaker) selectedDevice;
+                    power.setText(speaker.getPower());
+                    volume.setText(speaker.getVolume());
+                }
+
+                deviceCRUDBox = new VBox();
+                deviceCRUDBox.setSpacing(10);
+                deviceCRUDBox.setPadding(new Insets(10));
+
+                detailsBoxLoad.getChildren().clear();
+                detailsBoxLoad.getChildren().add(deviceCRUDBox);
             });
 
             removeButton.setOnAction(e -> {
@@ -278,6 +304,7 @@ public class ModalActionController extends RootController implements Initializab
 
 
         fillDeviceTypeChooseField(); // fill be default
+
         textField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 String text = textField.getText();
@@ -285,7 +312,6 @@ public class ModalActionController extends RootController implements Initializab
 
                 boolean deviceFound = devices.stream().anyMatch(device -> device.getName().equals(text));
                 if (!deviceFound) {
-
 
                     deviceTypeChooseField.setOnAction(e -> {
                         String selectedDeviceType = (String) deviceTypeChooseField.getValue();
@@ -298,14 +324,12 @@ public class ModalActionController extends RootController implements Initializab
 
                         if (selectedDeviceType.equals(DeviceType.PROJECTOR.name())) {
                             setupProjectorFields();
-                            selectedDeviceForCreateEdit = new Projector(0,deviceName.getText());
+                            selectedDeviceForCreateEdit = new Projector(0,deviceName.getText(),"PROJECTOR");
                         } else if (selectedDeviceType.equals(DeviceType.SPEAKER.name())) {
                             setupSpeakerFields();
                         }
                         detailsBoxLoad.getChildren().clear();
                         detailsBoxLoad.getChildren().add(deviceCRUDBox);
-
-
 
                     });
 
@@ -330,7 +354,7 @@ public class ModalActionController extends RootController implements Initializab
             if (validateDeviceInput(selectedDeviceForCreateEdit, Arrays.asList(resolutionField, connectionType, devicePort))) {
                 //
                 int generatedId = UniqueIdGenerator.generateUniqueId();
-                Device device = new Projector(generatedId, deviceName.getText());
+                Device device = new Projector(generatedId, deviceName.getText(), "PROJECTOR");
                 ((Projector) device).setResolution(resolutionField.getText());
                 ((Projector) device).setConnectionType(connectionType.getText());
                 ((Projector) device).setDevicePort(devicePort.getText());
@@ -366,25 +390,17 @@ public class ModalActionController extends RootController implements Initializab
         return fields.stream().noneMatch(field -> field.getText().isEmpty());
     }
 
-    private boolean validateInputSpeaker() {
-        boolean isValidated = false;
-        if(power.getText().isEmpty() || volume.getText().isEmpty()) {
-            isValidated = false;
-        } else {
-            isValidated = true;
-        }
-        return isValidated;
-    }
-
-
     // setting different field for the devices
     private void setupSpeakerFields() {
-        power = new TextField();
-        power.setPromptText("Power");
 
-        volume = new TextField();
-        volume.setPromptText("Volume");
+            power = new TextField();
+            power.setPromptText("Power");
+
+            volume = new TextField();
+            volume.setPromptText("Volume");
+
         deviceCRUDBox.getChildren().addAll(power, volume);
+
     }
 
     private void setupProjectorFields() {
@@ -452,7 +468,6 @@ public class ModalActionController extends RootController implements Initializab
                     }
                 }
             } else {
-
                 if (checkTabContent(currentTab[0])) { // Check if the last tab content is valid
                     createNewProject();
                     continueBtn.setText("Finish");
@@ -463,46 +478,30 @@ public class ModalActionController extends RootController implements Initializab
             }
         });
 
-        continueBtn.setOnAction(e -> {
-            if (currentTab[0] < tabs.length - 2) {  // Change from tabs.length - 1 to tabs.length - 2
-                if (checkTabContent(currentTab[0])) {
-                    tabs[currentTab[0]].setDisable(true);
-                    currentTab[0]++;
-                    tabs[currentTab[0]].setDisable(false);
-                    tabPaneCreate.getSelectionModel().selectNext();
 
-                    // Rest of the code...
-                }
-            } else if (currentTab[0] == tabs.length - 1) {
-                if (checkTabContent(currentTab[0])) {
-                    tabs[currentTab[0]].setDisable(true);
-                    currentTab[0]++;
-                    tabs[currentTab[0]].setDisable(false);
-                    tabPaneCreate.getSelectionModel().selectNext();
-                    tryToGenerateQRForApp();
-                    handleFetchImages();
-                    continueBtn.setText("Finish");
+        backBtn.setOnAction(e -> {
+            if (currentTab[0] > 0) {
+                tabs[currentTab[0]].setDisable(true);
+                currentTab[0]--;
+                tabs[currentTab[0]].setDisable(false);
+                tabPaneCreate.getSelectionModel().selectPrevious();
 
-                    if (currentTab[0] > 0) {
-                        backBtn.setVisible(true);
-                    } else {
-                        backBtn.setVisible(false);
-                    }
+                if (currentTab[0] < tabs.length - 1) {
+                    continueBtn.setText("Next");
                 }
-            } else {
-                // Handle the last tab
-                if (checkTabContent(currentTab[0])) {
-                    createNewProject();
-                    continueBtn.setText("Finish");
-                    imageOperationFacade.stopImageFetch();
-                    imageOperationFacade.removeImagesFromServer();
-                    closeStage();
+
+                if (currentTab[0] > 0) {
+                    backBtn.setVisible(true);
+                } else {
+                    backBtn.setVisible(false);
                 }
             }
         });
+
         if (currentTab[0] == 0) {
             backBtn.setVisible(false);
         }
+
     }
 
     private void closeStage() {
@@ -767,8 +766,6 @@ public class ModalActionController extends RootController implements Initializab
                 addressDTO
         );
 
-        // FIRST UPLOADED IMAGE
-        // selectedImageFile => File (format=
 
         // construct new DTO and add to the list 1# main image
         ImageDTO imageToUpload = new ImageDTO();
@@ -787,11 +784,13 @@ public class ModalActionController extends RootController implements Initializab
                 projectNameField.getText().trim(),
                 editorContent.get().trim(),
                 listOfUploadImages,
-                customerDTO
+                customerDTO,
+                selectedDevices
         );
 
-        System.out.println(projectToCreate.images());
         int currentUserId = CurrentUser.getInstance().getLoggedUser().getId();
+
+       // for each selected device print their id's
 
         Task<Boolean> loadDataTask = new Task<>() {
             @Override

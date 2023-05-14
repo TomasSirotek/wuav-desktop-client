@@ -1,7 +1,9 @@
 package com.wuav.client.dal.repository;
 
 import com.wuav.client.be.Project;
+import com.wuav.client.be.device.Device;
 import com.wuav.client.dal.interfaces.IProjectRepository;
+import com.wuav.client.dal.mappers.IDeviceMapper;
 import com.wuav.client.dal.mappers.IProjectMapper;
 import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
 import com.wuav.client.gui.dto.CreateProjectDTO;
@@ -15,14 +17,14 @@ import java.util.List;
 public class ProjectRepository implements IProjectRepository {
     static Logger logger = LoggerFactory.getLogger(ProjectRepository.class);
 
-
-    // here bring the logger and listener to the GUI
     @Override
     public List<Project> getAllProjectsByUserId(int userId) {
         List<Project> fetchedProjects = new ArrayList<>();
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
             IProjectMapper mapper = session.getMapper(IProjectMapper.class);
+
             fetchedProjects = mapper.getAllProjectsByUserId(userId);
+
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);
         }
@@ -103,6 +105,22 @@ public class ProjectRepository implements IProjectRepository {
         }
         return finalAffectedRows;
     }
+
+    @Override
+    public int addDeviceToProject(int projectId, int deviceId) {
+        int finalAffectedRows = 0;
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            IProjectMapper mapper = session.getMapper(IProjectMapper.class);
+            int affectedRows = mapper.addDeviceToProject(projectId, deviceId);
+
+            session.commit();
+            finalAffectedRows = affectedRows > 0 ? 1 : 0;
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return finalAffectedRows;
+    }
+
 
     @Override
     public boolean updateNotes(int projectId, String content) {

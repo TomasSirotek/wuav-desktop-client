@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
+import com.wuav.client.be.device.Device;
 import com.wuav.client.bll.services.interfaces.IAddressService;
 import com.wuav.client.bll.services.interfaces.ICustomerService;
 import com.wuav.client.bll.services.interfaces.IProjectService;
@@ -193,6 +194,14 @@ public class ProjectService implements IProjectService {
         int isProjectAddedToUser = projectRepository.addProjectToUser(userId, projectToCreate.id());
         if (isProjectAddedToUser <= 0) {
             throw new Exception("Failed to add project to user");
+        }
+
+        // add devices to project
+        for(Device device : projectToCreate.selectedDevices()){
+            int isDeviceAddedToProject = projectRepository.addDeviceToProject(projectToCreate.id(), device.getId());
+            if (isDeviceAddedToProject <= 0) {
+                throw new Exception("Failed to add device to project");
+            }
         }
 
         // Create image in Azure Blob Storage and database, then add it to the project
