@@ -1,10 +1,9 @@
 package com.wuav.client.dal.repository;
 
 
-import com.wuav.client.be.Project;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.dal.interfaces.IUserRepository;
-import com.wuav.client.dal.mappers.UserMapper;
+import com.wuav.client.dal.mappers.IUserMapper;
 import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
 import com.wuav.client.gui.dto.CreateUserDTO;
 import org.apache.ibatis.session.SqlSession;
@@ -22,7 +21,7 @@ public class UserRepository implements IUserRepository {
     public List<AppUser> getAllUsers() {
         List<AppUser> allUsers = new ArrayList<>();
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            UserMapper mapper = session.getMapper(UserMapper.class);
+            IUserMapper mapper = session.getMapper(IUserMapper.class);
             allUsers = mapper.getAllUsers();
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);
@@ -35,7 +34,7 @@ public class UserRepository implements IUserRepository {
     public AppUser getUserByEmail(String email) {
         AppUser fetchedUser = new AppUser();
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            UserMapper mapper = session.getMapper(UserMapper.class);
+            IUserMapper mapper = session.getMapper(IUserMapper.class);
             fetchedUser = mapper.getUserByEmail(email);
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);
@@ -47,7 +46,7 @@ public class UserRepository implements IUserRepository {
     public AppUser getUserById(int id) {
         AppUser fetchedUser = new AppUser();
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            UserMapper mapper = session.getMapper(UserMapper.class);
+            IUserMapper mapper = session.getMapper(IUserMapper.class);
             fetchedUser = mapper.getUserById(id);
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);
@@ -59,7 +58,7 @@ public class UserRepository implements IUserRepository {
     public int createCustomer(AppUser appUser) {
         int returnedId = 0;
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            UserMapper mapper = session.getMapper(UserMapper.class);
+            IUserMapper mapper = session.getMapper(IUserMapper.class);
             int affectedRows = mapper.createCustomer(
                     appUser
             );
@@ -75,7 +74,7 @@ public class UserRepository implements IUserRepository {
     public int addUserToRole(int userId, int roleId) {
         int finalAffectedRows = 0;
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            UserMapper mapper = session.getMapper(UserMapper.class);
+            IUserMapper mapper = session.getMapper(IUserMapper.class);
             int affectedRows = mapper.addUserToRole(userId,roleId);
             session.commit();
             return affectedRows;
@@ -90,7 +89,7 @@ public class UserRepository implements IUserRepository {
         int affectedRows = 0;
 
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            UserMapper mapper = session.getMapper(UserMapper.class);
+            IUserMapper mapper = session.getMapper(IUserMapper.class);
             affectedRows = mapper.updateUser(
                     appUser.getId(),
                     appUser.getName(),
@@ -111,7 +110,7 @@ public class UserRepository implements IUserRepository {
         int affectedRows = 0;
 
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            UserMapper mapper = session.getMapper(UserMapper.class);
+            IUserMapper mapper = session.getMapper(IUserMapper.class);
             affectedRows = mapper.updateUserPasswordHash(
                    id,
                     newPasswordHash
@@ -130,7 +129,7 @@ public class UserRepository implements IUserRepository {
     public int createUser(CreateUserDTO createUserDTO) {
         int returnedId = 0;
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            UserMapper mapper = session.getMapper(UserMapper.class);
+            IUserMapper mapper = session.getMapper(IUserMapper.class);
             int affectedRows = mapper.createUser(
                     createUserDTO.id(),
                     createUserDTO.name(),
@@ -149,7 +148,7 @@ public class UserRepository implements IUserRepository {
     public int removeUserFromRole(int userId) {
         int finalAffectedRows = 0;
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            UserMapper mapper = session.getMapper(UserMapper.class);
+            IUserMapper mapper = session.getMapper(IUserMapper.class);
             int affectedRows = mapper.removeUserFromRole(userId);
             session.commit();
             return affectedRows;
@@ -162,7 +161,7 @@ public class UserRepository implements IUserRepository {
     @Override
     public boolean deleteUser(AppUser value) {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            UserMapper mapper = session.getMapper(UserMapper.class);
+            IUserMapper mapper = session.getMapper(IUserMapper.class);
             int affectedRows = mapper.deleteUser(value.getId());
             session.commit();
             return affectedRows > 0;
@@ -176,7 +175,7 @@ public class UserRepository implements IUserRepository {
     public AppUser getUserByProjectId(int projectId) {
         AppUser fetchedUser = new AppUser();
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            UserMapper mapper = session.getMapper(UserMapper.class);
+            IUserMapper mapper = session.getMapper(IUserMapper.class);
             fetchedUser = mapper.getUserByProjectId(projectId);
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);

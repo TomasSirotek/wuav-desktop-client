@@ -1,10 +1,9 @@
 package com.wuav.client.dal.mappers;
 
-import com.wuav.client.be.Address;
 import com.wuav.client.be.Customer;
 import org.apache.ibatis.annotations.Param;
 
-public interface CustomerMapper {
+public interface ICustomerMapper {
     Customer getCustomerById(@Param("id")int id);
 
     int createCustomer(@Param("id")int id,@Param("name")String name,@Param("email")String email,@Param("phoneNumber") String phoneNumber,@Param("addressId") int addressId,@Param("type")String type);

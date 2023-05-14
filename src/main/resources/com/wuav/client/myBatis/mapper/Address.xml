@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.wuav.client.dal.mappers.AddressMapper">
+<mapper namespace="com.wuav.client.dal.mappers.IAddressMapper">
 
     <resultMap id="addressResult" type="Address">
         <id property="id" column="id"/>

@@ -11,10 +11,6 @@ public class CustomerService implements ICustomerService {
 
     private ICustomerRepository customerRepository;
 
-
-        public static void main(String[] args) {
-    }
-
     @Inject
     public CustomerService(ICustomerRepository customerRepository) {
         this.customerRepository = customerRepository;

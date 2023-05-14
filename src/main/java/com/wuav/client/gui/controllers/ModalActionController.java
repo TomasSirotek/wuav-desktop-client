@@ -5,6 +5,8 @@ import com.google.inject.Inject;
 import com.wuav.client.be.Project;
 import com.wuav.client.be.device.Device;
 import com.wuav.client.be.device.MockDevices;
+import com.wuav.client.be.device.Projector;
+import com.wuav.client.be.device.Speaker;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.bll.utilities.UniqueIdGenerator;
@@ -55,6 +57,8 @@ import org.controlsfx.control.textfield.TextFields;
 
 public class ModalActionController extends RootController implements Initializable {
 
+    @FXML
+    private HBox noDeviceSelectedLabel;
     @FXML
     private GridPane imagesPaneFinal2 = new GridPane();
     @FXML
@@ -114,6 +118,24 @@ public class ModalActionController extends RootController implements Initializab
     private final int CURRENT_USER_ID = CurrentUser.getInstance().getLoggedUser().getId();
     private final int BARCODE_WIDTH = 200;
     private final int BARCODE_HEIGHT = 200;
+
+
+    private Device selectedDeviceForCreateEdit = null;
+
+
+    // MAIN BOX
+
+    // FOR PROJECTOR
+    private TextField resolutionField,connectionType,devicePort;
+    // FOR SPEAKER
+    private TextField power,volume;
+
+    private VBox deviceCRUDBox;
+
+    @FXML
+    private MFXButton cancelCRUD;
+    @FXML
+    private MFXButton createCRUD;
 
     @Inject
     public ModalActionController(EventBus eventBus, IControllerFactory controllerFactory, IProjectModel projectModel, ICodesEngine codesEngine) {
@@ -196,7 +218,9 @@ public class ModalActionController extends RootController implements Initializab
         autoCompletionBinding.setOnAutoCompleted(event -> {
             // Create a new Label for the selected device and add it to the VBox
             Device selectedDevice = event.getCompletion();
+
             selectedDevices.add(selectedDevice);
+            noDeviceSelectedLabel.setVisible(false);
 
             HBox deviceContainer = new HBox();
             Label deviceLabel = new Label(selectedDevice.getName());
@@ -205,58 +229,124 @@ public class ModalActionController extends RootController implements Initializab
                 // Remove this device from the VBox and the selectedDevices list
                 deviceBox.getChildren().remove(deviceContainer);
                 selectedDevices.remove(selectedDevice);
+
+                if(selectedDevices.isEmpty()){
+                    noDeviceSelectedLabel.setVisible(true);
+                }
+
             });
 
             deviceContainer.getChildren().addAll(deviceLabel, removeButton);
             deviceBox.getChildren().add(deviceContainer);
         });
 
+
+        fillDeviceTypeChooseField(); // fill be default
         textField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 String text = textField.getText();
+                textField.clear(); // clear current field
+
                 boolean deviceFound = devices.stream().anyMatch(device -> device.getName().equals(text));
                 if (!deviceFound) {
-                    fillDeviceTypeChooseField();
 
 
                     deviceTypeChooseField.setOnAction(e -> {
                         String selectedDeviceType = (String) deviceTypeChooseField.getValue();
                         // Load the FXML file based on the selected device type
-                        if (selectedDeviceType.equals(DeviceType.PROJECTOR.name())) {
-                            // Load projector FXML file
-                            loadDetailsFXML(ViewType.ACTIONS);
-                        } else if (selectedDeviceType.equals(DeviceType.SPEAKER.name())) {
-                            // Load stand FXML file
 
+                        // CONSTRUCT THE VBOX FOR ALL
+                        deviceCRUDBox = new VBox();
+                        deviceCRUDBox.setSpacing(10);
+                        deviceCRUDBox.setPadding(new Insets(10));
+
+                        if (selectedDeviceType.equals(DeviceType.PROJECTOR.name())) {
+                            setupProjectorFields();
+                            selectedDeviceForCreateEdit = new Projector(0,deviceName.getText());
+                        } else if (selectedDeviceType.equals(DeviceType.SPEAKER.name())) {
+                            setupSpeakerFields();
                         }
+                        detailsBoxLoad.getChildren().clear();
+                        detailsBoxLoad.getChildren().add(deviceCRUDBox);
+
+
+
                     });
 
-                    deviceTypeSelection.setVisible(true);
+                    createCRUD.setOnAction(e -> validateNewOrEditDevice());
+
+                    cancelCRUD.setOnAction(e1 -> {
+                        detailsBoxLoad.getChildren().clear();
+                        deviceTypeChooseField.setValue(null);
+                        deviceTypeSelection.setVisible(false);
+                        deviceName.setText("");
+                    });
                     deviceName.setText(text);
+                    deviceTypeSelection.setVisible(true);
                 }
             }
         });
-
-
         searchBoxField.getChildren().add(textField);
     }
 
+    private void validateNewOrEditDevice() {
+        if (selectedDeviceForCreateEdit instanceof Projector) {
+            if (validateDeviceInput(selectedDeviceForCreateEdit, Arrays.asList(resolutionField, connectionType, devicePort))) {
+                System.out.println(selectedDeviceForCreateEdit.getName());
+                // send device for creating
 
-    private void loadDetailsFXML(ViewType viewType) {
-        try {
+                // clear all fields
 
-
-           RootController controller =  loadNodesView(viewType);
-
-            // Clear the detailsViewBox and add the loaded FXML as its child
-            detailsBoxLoad.getChildren().clear();
-            detailsBoxLoad.getChildren().add(root);
-        } catch (IOException e) {
-            e.printStackTrace();
+                // refresh the list of devices
+                // set them to choose device
+            } else {
+                AlertHelper.showDefaultAlert("Please fill all the fields", Alert.AlertType.WARNING);
+            }
+        } else if (selectedDeviceForCreateEdit instanceof Speaker) {
+            if (validateDeviceInput(selectedDeviceForCreateEdit, Arrays.asList(power, volume))) {
+                System.out.println(selectedDeviceForCreateEdit.getName());
+            } else {
+                AlertHelper.showDefaultAlert("Please fill all the fields", Alert.AlertType.WARNING);
+            }
         }
     }
 
+    private boolean validateDeviceInput(Device device, List<TextField> fields) {
+        return fields.stream().noneMatch(field -> field.getText().isEmpty());
+    }
 
+    private boolean validateInputSpeaker() {
+        boolean isValidated = false;
+        if(power.getText().isEmpty() || volume.getText().isEmpty()) {
+            isValidated = false;
+        } else {
+            isValidated = true;
+        }
+        return isValidated;
+    }
+
+
+    // setting different field for the devices
+    private void setupSpeakerFields() {
+        power = new TextField();
+        power.setPromptText("Power");
+
+        volume = new TextField();
+        volume.setPromptText("Volume");
+        deviceCRUDBox.getChildren().addAll(power, volume);
+    }
+
+    private void setupProjectorFields() {
+        resolutionField = new TextField();
+        resolutionField.setPromptText("Resolution");
+
+        connectionType = new TextField();
+        connectionType.setPromptText("Connection Type");
+
+        devicePort = new TextField();
+        devicePort.setPromptText("Device Port");
+        deviceCRUDBox.getChildren().addAll(resolutionField, connectionType, devicePort);
+    }
 
 
     private void setupEditor() {
@@ -332,7 +422,7 @@ public class ModalActionController extends RootController implements Initializab
 
                     // Rest of the code...
                 }
-            } else if (currentTab[0] == tabs.length - 2) {  // Add new condition to handle the second last tab
+            } else if (currentTab[0] == tabs.length - 1) {
                 if (checkTabContent(currentTab[0])) {
                     tabs[currentTab[0]].setDisable(true);
                     currentTab[0]++;

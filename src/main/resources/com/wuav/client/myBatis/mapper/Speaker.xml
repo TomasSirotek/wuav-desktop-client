@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wuav.client.dal.mappers.ISpeakerMapper">
+
+    <resultMap id="speakerResult" type="Speaker">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="power" column="power"/>
+        <result property="volume" column="volume"/>
+    </resultMap>
+
+    <select
+            id="getAllSpeakers"
+            resultMap="speakerResult"
+    >
+        SELECT id, name, power, volume
+        FROM speaker
+    </select>
+
+    <select
+            id="getSpeakerById"
+            resultMap="speakerResult"
+    >
+
+        SELECT id, name, power, volume
+        FROM speaker
+        WHERE id = #{speakerId}
+    </select>
+
+    <insert
+            id="createSpeaker"
+            parameterType="map"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        INSERT INTO speaker (id, name, power, volume)
+        VALUES (#{id}, #{name}, #{power}, #{volume})
+    </insert>
+
+
+    <update
+            id="updateSpeakerById"
+            parameterType="Speaker"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        UPDATE speaker
+        SET name = #{name}, power = #{power}, volume = #{volume}
+        WHERE id = #{speakerId}
+
+    </update>
+
+    <delete id="deleteSpeakerById"
+            parameterType="Speaker"
+            flushCache="true"
+            statementType="PREPARED">
+        --  executes delete query
+        DELETE
+        FROM speaker
+        WHERE id = #{speakerId}
+    </delete>
+
+</mapper>
+
+

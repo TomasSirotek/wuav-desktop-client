@@ -3,7 +3,7 @@ package com.wuav.client.dal.mappers;
 import com.wuav.client.be.CustomImage;
 import org.apache.ibatis.annotations.Param;
 
-public interface ImageMapper {
+public interface IImageMapper {
 
     CustomImage getImageById(@Param("imageId")int imageId);
 

@@ -2,10 +2,11 @@ package com.wuav.client.be.device;
 
 public class Projector extends Device {
 
-    private String resolution;
-    private String connectionType;
-    public Projector(String name) {
-        super(name);
+    public String resolution;
+    public String connectionType;
+    public String devicePort;
+    public Projector(int id,String name) {
+        super(id, name);
     }
 
     public String getResolution() {
@@ -22,5 +23,24 @@ public class Projector extends Device {
 
     public void setConnectionType(String connectionType) {
         this.connectionType = connectionType;
+    }
+
+    public String getDevicePort() {
+        return devicePort;
+    }
+
+    public void setDevicePort(String devicePort) {
+        this.devicePort = devicePort;
+    }
+
+    @Override
+    public String toString() {
+        return "Projector{" +
+                "resolution='" + resolution + '\'' +
+                ", connectionType='" + connectionType + '\'' +
+                ", devicePort='" + devicePort + '\'' +
+                ", id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

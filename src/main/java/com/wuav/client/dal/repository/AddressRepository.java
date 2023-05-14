@@ -2,8 +2,7 @@ package com.wuav.client.dal.repository;
 
 import com.wuav.client.be.Address;
 import com.wuav.client.dal.interfaces.IAddressRepository;
-import com.wuav.client.dal.mappers.AddressMapper;
-import com.wuav.client.dal.mappers.ImageMapper;
+import com.wuav.client.dal.mappers.IAddressMapper;
 import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
 import com.wuav.client.gui.dto.AddressDTO;
 import com.wuav.client.gui.dto.PutAddressDTO;
@@ -19,7 +18,7 @@ public class AddressRepository implements IAddressRepository {
     public int createAddress(AddressDTO addressDTO) {
         int affectedRowsResult = 0;
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            AddressMapper mapper = session.getMapper(AddressMapper.class);
+            IAddressMapper mapper = session.getMapper(IAddressMapper.class);
             var affectedRows = mapper.createAddress(
                     addressDTO.id(),
                     addressDTO.street(),
@@ -40,7 +39,7 @@ public class AddressRepository implements IAddressRepository {
     public Address getAddressById(int id) {
        Address address = null;
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            AddressMapper mapper = session.getMapper(AddressMapper.class);
+            IAddressMapper mapper = session.getMapper(IAddressMapper.class);
             address = mapper.getAddressById(id);
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);
@@ -51,7 +50,7 @@ public class AddressRepository implements IAddressRepository {
     @Override
     public boolean updateAddress(PutAddressDTO addressDTO) {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            AddressMapper mapper = session.getMapper(AddressMapper.class);
+            IAddressMapper mapper = session.getMapper(IAddressMapper.class);
             var affectedRows = mapper.updateAddress(
                     addressDTO.id(),
                     addressDTO.street(),
@@ -71,7 +70,7 @@ public class AddressRepository implements IAddressRepository {
         int affectedRows = 0;
 
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            AddressMapper mapper = session.getMapper(AddressMapper.class);
+            IAddressMapper mapper = session.getMapper(IAddressMapper.class);
             affectedRows = mapper.deleteAddress(
                     id
             );

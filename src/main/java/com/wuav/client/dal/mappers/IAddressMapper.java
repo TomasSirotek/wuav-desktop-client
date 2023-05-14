@@ -1,10 +1,9 @@
 package com.wuav.client.dal.mappers;
 
 import com.wuav.client.be.Address;
-import com.wuav.client.be.Project;
 import org.apache.ibatis.annotations.Param;
 
-public interface AddressMapper {
+public interface IAddressMapper {
 
     Address getAddressById(@Param("id")int id);
 

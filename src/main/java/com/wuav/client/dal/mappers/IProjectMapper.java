@@ -1,12 +1,11 @@
 package com.wuav.client.dal.mappers;
 
-import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Project;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface ProjectMapper {
+public interface IProjectMapper {
 
     List<Project> getAllProjectsByUserId(@Param("userId")int userId);
 

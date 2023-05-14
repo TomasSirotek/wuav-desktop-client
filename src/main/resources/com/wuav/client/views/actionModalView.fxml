@@ -441,8 +441,19 @@
                                           <Insets left="30.0" right="30.0" top="30.0" />
                                        </padding>
                                        <children>
-                                          <HBox fx:id="searchBoxField" alignment="CENTER_LEFT" prefHeight="146.0" prefWidth="382.0" />
-                                          <HBox fx:id="deviceTypeSelection" prefHeight="100.0" prefWidth="200.0">
+                                          <HBox fx:id="searchBoxField" alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="382.0" />
+                                          <VBox fx:id="deviceBox" prefHeight="55.0" prefWidth="382.0">
+                                             <padding>
+                                                <Insets top="5.0" />
+                                             </padding>
+                                             <children>
+                                                <HBox fx:id="noDeviceSelectedLabel" alignment="CENTER" prefHeight="45.0" prefWidth="382.0">
+                                                   <children>
+                                                      <Label text="NO DEVICE SELECTED" />
+                                                   </children>
+                                                </HBox>
+                                             </children></VBox>
+                                          <HBox fx:id="deviceTypeSelection" prefHeight="129.0" prefWidth="382.0" visible="false">
                                              <children>
                                                 <GridPane prefHeight="66.0" prefWidth="382.0">
                                                   <columnConstraints>
@@ -453,17 +464,53 @@
                                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <MFXButton fx:id="preview" prefHeight="33.0" prefWidth="102.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Demo chat" textFill="#141111" GridPane.columnIndex="1">
-                                                         <font>
-                                                            <Font name="SansSerif Bold" size="13.0" />
-                                                         </font>
-                                                         <cursor>
-                                                            <Cursor fx:constant="HAND" />
-                                                         </cursor>
-                                                         <graphic>
-                                                            <HBox />
-                                                         </graphic>
-                                                      </MFXButton>
+                                                      <VBox alignment="CENTER" GridPane.columnIndex="1">
+                                                         <children>
+                                                            <MFXButton fx:id="demoChat" prefHeight="33.0" prefWidth="166.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Demo chat" textFill="#141111">
+                                                               <font>
+                                                                  <Font name="SansSerif Bold" size="13.0" />
+                                                               </font>
+                                                               <cursor>
+                                                                  <Cursor fx:constant="HAND" />
+                                                               </cursor>
+                                                               <graphic>
+                                                                  <HBox />
+                                                               </graphic>
+                                                            </MFXButton>
+                                                            <HBox>
+                                                               <VBox.margin>
+                                                                  <Insets top="5.0" />
+                                                               </VBox.margin>
+                                                               <children>
+                                                                  <MFXButton fx:id="createCRUD" prefHeight="33.0" prefWidth="102.0" style="-fx-background-color: black; -fx-text-fill: white;" text="✔️" textFill="#141111">
+                                                                     <font>
+                                                                        <Font name="SansSerif Bold" size="13.0" />
+                                                                     </font>
+                                                                     <cursor>
+                                                                        <Cursor fx:constant="HAND" />
+                                                                     </cursor>
+                                                                     <graphic>
+                                                                        <HBox />
+                                                                     </graphic>
+                                                                     <HBox.margin>
+                                                                        <Insets right="5.0" />
+                                                                     </HBox.margin>
+                                                                  </MFXButton>
+                                                                  <MFXButton fx:id="cancelCRUD" prefHeight="33.0" prefWidth="102.0" style="-fx-background-color: black; -fx-text-fill: white;" text="X" textFill="#141111">
+                                                                     <font>
+                                                                        <Font name="SansSerif Bold" size="13.0" />
+                                                                     </font>
+                                                                     <cursor>
+                                                                        <Cursor fx:constant="HAND" />
+                                                                     </cursor>
+                                                                     <graphic>
+                                                                        <HBox />
+                                                                     </graphic>
+                                                                  </MFXButton>
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </VBox>
                                                       <VBox prefHeight="200.0" prefWidth="100.0">
                                                          <children>
                                                             <Label prefHeight="17.0" prefWidth="209.0" text="Input project name">
@@ -487,9 +534,14 @@
                                                          </children>
                                                       </VBox>
                                                    </children>
+                                                   <HBox.margin>
+                                                      <Insets />
+                                                   </HBox.margin>
                                                 </GridPane>
-                                             </children></HBox>
-                                          <VBox fx:id="deviceBox" prefHeight="55.0" prefWidth="382.0" />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets top="20.0" />
+                                             </VBox.margin></HBox>
                                           <HBox fx:id="detailsBoxLoad" prefHeight="227.0" prefWidth="382.0" />
                                        </children>
                                     </VBox>

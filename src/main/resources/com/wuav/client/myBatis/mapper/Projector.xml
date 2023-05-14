@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wuav.client.dal.mappers.IProjectorMapper">
+
+    <resultMap id="projectorResult" type="Projector">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="resolution" column="resolution"/>
+        <result property="connectionType" column="connection_type"/>
+        <result property="devicePort" column="device_port"/>
+    </resultMap>
+
+    <select
+            id="getAllProjectors"
+            resultMap="projectorResult"
+    >
+        SELECT id, name, resolution, connection_type, device_port
+        FROM projector
+    </select>
+
+    <select
+            id="getProjectorById"
+            resultMap="projectorResult"
+    >
+
+        SELECT id, name, resolution, connection_type, device_port
+        FROM projector
+        WHERE id = #{projectorId}
+    </select>
+
+    <insert
+            id="createProjector"
+            parameterType="map"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        INSERT INTO projector (id, name, resolution, connection_type, device_port)
+        VALUES (#{id}, #{name}, #{resolution}, #{connectionType}, #{devicePort})
+    </insert>
+
+
+    <update
+            id="updateProjectorById"
+            parameterType="Projector"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        UPDATE projector
+        SET name = #{name}, resolution = #{resolution}, connection_type = #{connectionType}, device_port = #{devicePort}
+        WHERE id = #{projectorId}
+
+    </update>
+
+    <delete id="deleteProjectorById"
+            parameterType="Projector"
+            flushCache="true"
+            statementType="PREPARED">
+        --  executes delete query
+        DELETE
+        FROM projector
+        WHERE id = #{projectorId}
+    </delete>
+
+</mapper>
+
+
