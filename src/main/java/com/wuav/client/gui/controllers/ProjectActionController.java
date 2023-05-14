@@ -1,23 +1,18 @@
 package com.wuav.client.gui.controllers;
 
-import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
-import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.cache.ImageCache;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
-import com.wuav.client.gui.dto.CustomerDTO;
 import com.wuav.client.gui.dto.PutAddressDTO;
 import com.wuav.client.gui.dto.PutCustomerDTO;
 import com.wuav.client.gui.models.IProjectModel;
-import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
 import com.wuav.client.gui.utils.CKEditorPane;
-import com.wuav.client.gui.utils.FormField;
-import com.wuav.client.gui.utils.ProjectEvent;
+import com.wuav.client.gui.utils.validations.FormField;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -35,7 +30,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -47,9 +41,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javafx.scene.web.WebEngine;
-
 
 
 public class ProjectActionController  extends RootController implements Initializable {

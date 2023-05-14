@@ -1,8 +1,6 @@
 package com.wuav.client.gui.controllers;
 
 import com.google.common.eventbus.EventBus;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.wuav.client.be.Project;
 import com.wuav.client.be.device.Device;
@@ -22,22 +20,23 @@ import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
 import com.wuav.client.gui.utils.CKEditorPane;
-import com.wuav.client.gui.utils.FormField;
+import com.wuav.client.gui.utils.enums.DeviceType;
+import com.wuav.client.gui.utils.validations.FormField;
+import com.wuav.client.gui.utils.api.ImageOperationFacade;
+import com.wuav.client.gui.utils.enums.ClientType;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -46,130 +45,75 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.stage.*;
-import javafx.util.Duration;
 
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import javafx.util.StringConverter;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
 
 public class ModalActionController extends RootController implements Initializable {
 
     @FXML
-    private VBox editorVbox;
+    private GridPane imagesPaneFinal2 = new GridPane();
     @FXML
-    private Pane imagesPaneFinal;
+    private Pane imagesPaneFinal,addedFilePane;
     @FXML
     private MFXProgressSpinner uploadProgress;
     @FXML
-    private Label uploadTextProgress;
+    private Label uploadTextProgress,imageText;
     @FXML
-    private Label imageText;
+    private ImageView fetchedImage,qrCodee;
     @FXML
-    private Pane addedFilePane;
+    private ChoiceBox clientTypeChooseField,deviceTypeChooseField;
+
     @FXML
-    private MFXTextField clientZipField;
-    @FXML
-    private MFXTextField clientStreetField;
-    @FXML
-    private HBox imageContent;
-    @FXML
-    private ImageView fetchedImage;
-    @FXML
-    private ImageView qrCodee;
-    @FXML
-    private MFXTextField clientNameField;
-    @FXML
-    private MFXTextField clientEmailField;
-    @FXML
-    private ChoiceBox clientTypeChooseField;
-    @FXML
-    private MFXTextField clientPhoneField;
-    @FXML
-    private MFXTextField clientCityField;
+    private MFXTextField clientCityField,projectNameField,clientPhoneField,clientNameField,clientEmailField,clientStreetField,clientZipField,deviceName;
     @FXML
     private TextField descriptionField;
     @FXML
-    private ImageView selectedImage;
-    @FXML
-    private HBox selectedFileHBox;
-    @FXML
-    private MFXButton selectFile;
-    @FXML
-    private Tab tab1;
-    @FXML
-    private Tab tab2;
-    @FXML
-    private Tab tab3;
-    @FXML
-    private Tab tab4;
+    private ImageView selectedImage,selectedImageView;
 
     @FXML
-    private Tab tab5;
-    @FXML
-    private HBox searchBoxField;
-    @FXML
-    private MFXButton continueBtn;
+    private Tab tab1,tab2,tab3,tab4,tab5;
 
     @FXML
-    private MFXButton backBtn;
+    private HBox searchBoxField, selectedFileHBox,imageContent,imageActionHandleBox,detailsBoxLoad;
+    @FXML
+    private MFXButton continueBtn,selectFile,backBtn,createNewProject;
     @FXML
     private TabPane tabPaneCreate;
     @FXML
-    private MFXTextField projectNameField;
+    private VBox editorVbox,deviceBox;
     @FXML
     private AnchorPane modalPane;
     @FXML
-    private MFXButton createNewProject;
-    @FXML
-    private VBox deviceBox;
+    private HBox deviceTypeSelection;
 
     private final EventBus eventBus;
 
-    private Image defaultImage = new Image("/no_data.png");
-    private Image fileImage = new Image("/image.png");
-
-    private final IControllerFactory controllerFactory;
-
-    private StringProperty editorContent = new SimpleStringProperty();
-
     private IProjectModel projectModel;
-
     private File selectedImageFile;
-
-
-    private List<ImageDTO> listOfUploadImages = new ArrayList<>();
-
-    private ImageView selectedImageView;
-    @FXML
-    private HBox imageActionHandleBox;
-
-    @FXML
-    private HBox detailsBox;
 
     private ICodesEngine codesEngine;
 
     private Timeline imageFetchTimeline;
-
-    private List<Image> imagesFromApp;
-    @FXML
-    private GridPane imagesPaneFinal2 = new GridPane();
-    @FXML
-    private MFXTextField deviceName;
     private int currentRow = 0;
     private int currentColumn = 0;
     private List<Device> selectedDevices = new ArrayList<>();
+    private List<ImageDTO> listOfUploadImages = new ArrayList<>();
+    private StringProperty editorContent = new SimpleStringProperty();
+    private List<Image> imagesFromApp;
+    private Image defaultImage = new Image("/no_data.png");
+    private Image fileImage = new Image("/image.png");
+    private final IControllerFactory controllerFactory;
 
-    @FXML
-    private VBox deviceTypeSelection;
+    private ImageOperationFacade imageOperationFacade;
+
+    private final int CURRENT_USER_ID = CurrentUser.getInstance().getLoggedUser().getId();
+    private final int BARCODE_WIDTH = 200;
+    private final int BARCODE_HEIGHT = 200;
 
     @Inject
     public ModalActionController(EventBus eventBus, IControllerFactory controllerFactory, IProjectModel projectModel, ICodesEngine codesEngine) {
@@ -180,93 +124,31 @@ public class ModalActionController extends RootController implements Initializab
     }
 
 
-    private void startImageFetch(int userId) {
-        AtomicBoolean fetched = new AtomicBoolean(false);
-        System.out.println("starting image fetch");
-        // SETTING UI TO INDICATE TO END USER
+    public void handleFetchImages() {
+        this.imageOperationFacade = new ImageOperationFacade(CURRENT_USER_ID);
         uploadProgress.setVisible(true);
         uploadTextProgress.setVisible(true);
-
-
-        imageFetchTimeline = new Timeline(
-                new KeyFrame(Duration.ZERO, e -> {
-                    if (!fetched.get()) {
-                        List<ImageDTO> images = fetchImagesFromServer(userId);
-                        if (!images.isEmpty()) {
-                        imagesPaneFinal.getChildren().clear();
-                            for (ImageDTO imageDTO : images) {
-                                addImageToSelectedImageVBox(new Image(imageDTO.getFile().toURI().toString()));
-
-                                listOfUploadImages.add(imageDTO);
-                            }
-                            fetched.set(true); // Set fetched to true after successfully fetching images
-                            // set back once all fetched
-                            uploadProgress.setVisible(false);
-                            uploadTextProgress.setVisible(false);
-                            imagesPaneFinal.getChildren().add(imagesPaneFinal2);
-
-                        }
+        imageOperationFacade.startImageFetch(new ImageOperationFacade.ImageFetchCallback() {
+            @Override
+            public void onImagesFetched(List<Image> images) {
+                Platform.runLater(() -> {
+                    for (Image image : images) {
+                        addImageToSelectedImageVBox(image);
                     }
-                }),
-                new KeyFrame(Duration.seconds(5)) // Adjust the duration based on how often you want to poll the server
-        );
 
-        imageFetchTimeline.setCycleCount(Animation.INDEFINITE);
-        imageFetchTimeline.play();
-    }
-
-//    private void startImageFetch(int userId) {
-//        AtomicBoolean fetched = new AtomicBoolean(false);
-//        System.out.println("starting image fetch");
-//        imageFetchTimeline = new Timeline(
-//                new KeyFrame(Duration.ZERO, e -> {
-//                    if (!fetched.get()) {
-//                        List<Image> images = fetchImagesFromServer(userId);
-//                        if (!images.isEmpty()) {
-//                            imageContent.getChildren().clear(); // Clear the imageContent VBox before adding new images
-//                            for (Image image : images) {
-//                                addImageToSelectedImageVBox(image);
-//                            }
-//                            fetched.set(true); // Set fetched to true after successfully fetching images
-//                        }
-//                    }
-//                }),
-//                new KeyFrame(Duration.seconds(5)) // Adjust the duration based on how often you want to poll the server
-//        );
-//
-//        imageFetchTimeline.setCycleCount(Animation.INDEFINITE);
-//        imageFetchTimeline.play();
-//    }
-
-    private void removeImagesFromServer(int userId) {
-        try {
-            URL url = new URL("http://localhost:5000/api/users/" + userId + "/temp-images");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("DELETE");
-            connection.connect();
-            int responseCode = connection.getResponseCode();
-
-            if (responseCode == 200) {
-                System.out.println("Images removed from server");
-            } else {
-                System.out.println("Error removing images from server: HTTP status code " + responseCode);
+                    uploadProgress.setVisible(false);
+                    uploadTextProgress.setVisible(false);
+                    imagesPaneFinal.getChildren().clear();
+                    imagesPaneFinal.getChildren().add(imagesPaneFinal2);
+                });
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
     }
-
-
-
-
 
     private void addImageToSelectedImageVBox(Image image) {
-        System.out.println("Adding image to imagesPaneFinal");
-
         HBox uploadedImage = new HBox();
         uploadedImage.setSpacing(10);
         uploadedImage.setStyle("-fx-margin-bottom: 20px;-fx-padding:10 0 10 25");
-
 
         // Create and configure ImageView
         ImageView imageView = new ImageView(image);
@@ -279,7 +161,6 @@ public class ModalActionController extends RootController implements Initializab
         // Create and configure Label
         Label selectedFileName = new Label("image.png");
         selectedFileName.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial';");
-
 
         // Add Label to the VBox
         uploadedImage.getChildren().add(selectedFileName);
@@ -295,11 +176,6 @@ public class ModalActionController extends RootController implements Initializab
         }
     }
 
-    private void stopImageFetch() {
-        if (imageFetchTimeline != null) {
-            imageFetchTimeline.stop();
-        }
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -309,9 +185,6 @@ public class ModalActionController extends RootController implements Initializab
         fillClientTypeChooseField();
         handleProgressSwitch();
         closeStage();
-
-
-
     }
 
     public void setupSearchField() {
@@ -343,6 +216,21 @@ public class ModalActionController extends RootController implements Initializab
                 String text = textField.getText();
                 boolean deviceFound = devices.stream().anyMatch(device -> device.getName().equals(text));
                 if (!deviceFound) {
+                    fillDeviceTypeChooseField();
+
+
+                    deviceTypeChooseField.setOnAction(e -> {
+                        String selectedDeviceType = (String) deviceTypeChooseField.getValue();
+                        // Load the FXML file based on the selected device type
+                        if (selectedDeviceType.equals(DeviceType.PROJECTOR.name())) {
+                            // Load projector FXML file
+                            loadDetailsFXML(ViewType.ACTIONS);
+                        } else if (selectedDeviceType.equals(DeviceType.SPEAKER.name())) {
+                            // Load stand FXML file
+
+                        }
+                    });
+
                     deviceTypeSelection.setVisible(true);
                     deviceName.setText(text);
                 }
@@ -353,7 +241,20 @@ public class ModalActionController extends RootController implements Initializab
         searchBoxField.getChildren().add(textField);
     }
 
-    // ...
+
+    private void loadDetailsFXML(ViewType viewType) {
+        try {
+
+
+           RootController controller =  loadNodesView(viewType);
+
+            // Clear the detailsViewBox and add the loaded FXML as its child
+            detailsBoxLoad.getChildren().clear();
+            detailsBoxLoad.getChildren().add(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 
@@ -369,107 +270,20 @@ public class ModalActionController extends RootController implements Initializab
     }
 
     private void fillClientTypeChooseField() {
-        // fill client type with two option values
-        clientTypeChooseField.getItems().add("PRIVATE");
-        clientTypeChooseField.getItems().add("BUSINESS");
+        Arrays.stream(ClientType.values())
+                .map(Enum::toString)
+                .forEach(clientTypeChooseField.getItems()::add);
     }
 
-
-    private List<ImageDTO> fetchImagesFromServer(int userId) {
-       List<ImageDTO> imagesFromApp = new ArrayList<>();
-        try {
-            URL url = new URL("http://localhost:5000/api/users/" + userId + "/temp-images");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.connect();
-            int responseCode = connection.getResponseCode();
-
-            if (responseCode == 200) {
-                InputStream inputStream = connection.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuilder responseBuilder = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    responseBuilder.append(line);
-                }
-                String jsonResponse = responseBuilder.toString();
-
-                // Deserialize JSON response into a list of strings
-                Gson gson = new Gson();
-                TypeToken<List<String>> token = new TypeToken<List<String>>() {};
-                List<String> base64Images = gson.fromJson(jsonResponse, token.getType());
-
-                int fileIndex = 0;
-                for (String base64Image : base64Images) {
-                    byte[] decodedBytes = Base64.getDecoder().decode(base64Image);
-                    Path tempDir = Paths.get(System.getProperty("java.io.tmpdir"), "tempImages");
-                    Files.createDirectories(tempDir);
-
-                    File tempFile = tempDir.resolve("tempImage" + fileIndex + ".png").toFile();
-                    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-                        fos.write(decodedBytes);
-                    }
-
-                    // Create a new ImageDTO instance and set its properties
-                    ImageDTO imageDTO = new ImageDTO();
-                    imageDTO.setId(UniqueIdGenerator.generateUniqueId());
-                    imageDTO.setFile(tempFile);
-                    imageDTO.setMain(false); // You can set this property based on your needs
-
-                    imagesFromApp.add(imageDTO);
-                    fileIndex++;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return imagesFromApp;
+    private void fillDeviceTypeChooseField(){
+        Arrays.stream(DeviceType.values())
+                .map(Enum::toString)
+                .forEach(deviceTypeChooseField.getItems()::add);
     }
-
-
-
-//    private List<Image> fetchImagesFromServer(int userId) {
-//        imagesFromApp = new ArrayList<>();
-//        try {
-//            URL url = new URL("http://localhost:5000/api/users/" + userId + "/temp-images");
-//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//            connection.setRequestMethod("GET");
-//            connection.connect();
-//            int responseCode = connection.getResponseCode();
-//
-//            if (responseCode == 200) {
-//                InputStream inputStream = connection.getInputStream();
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-//                StringBuilder responseBuilder = new StringBuilder();
-//                String line;
-//                while ((line = reader.readLine()) != null) {
-//                    responseBuilder.append(line);
-//                }
-//                String jsonResponse = responseBuilder.toString();
-//
-//                // Deserialize JSON response into a list of strings
-//                Gson gson = new Gson();
-//                TypeToken<List<String>> token = new TypeToken<List<String>>() {};
-//                List<String> base64Images = gson.fromJson(jsonResponse, token.getType());
-//
-//                for (String base64Image : base64Images) {
-//                    byte[] decodedBytes = Base64.getDecoder().decode(base64Image);
-//                    InputStream decodedInputStream = new ByteArrayInputStream(decodedBytes);
-//                    imagesFromApp.add(new Image(decodedInputStream));
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return imagesFromApp;
-//    }
-
-
-
 
 
     private void handleProgressSwitch() {
-        Tab[] tabs = new Tab[]{tab1, tab2, tab3, tab4,tab5}; // Replace with the actual tabs in your TabPane
+        Tab[] tabs = new Tab[]{tab1, tab2, tab3, tab4,tab5};
         final int[] currentTab = {0};
 
         tabs[currentTab[0]].setDisable(false);
@@ -484,9 +298,9 @@ public class ModalActionController extends RootController implements Initializab
 
                     System.out.println(editorContent.get());
 
-                    if(currentTab[0] == 3) {
+                    if(currentTab[0] == 4) {
                         tryToGenerateQRForApp();
-                      //  startImageFetch(340);
+                        handleFetchImages();
                         continueBtn.setText("Finish");
                     }
 
@@ -501,50 +315,63 @@ public class ModalActionController extends RootController implements Initializab
                 if (checkTabContent(currentTab[0])) { // Check if the last tab content is valid
                     createNewProject();
                     continueBtn.setText("Finish");
-                    stopImageFetch();
-                    removeImagesFromServer(340); // ADD LATER CURRENT USER ID
+                    imageOperationFacade.stopImageFetch();
+                    imageOperationFacade.removeImagesFromServer();
                     closeStage();
-
-                    // Perform any additional actions here
                 }
             }
         });
 
-        backBtn.setOnAction(e -> {
-            if (currentTab[0] > 0) {
-                tabs[currentTab[0]].setDisable(true);
-                currentTab[0]--;
-                tabs[currentTab[0]].setDisable(false);
-                tabPaneCreate.getSelectionModel().selectPrevious();
+        continueBtn.setOnAction(e -> {
+            if (currentTab[0] < tabs.length - 2) {  // Change from tabs.length - 1 to tabs.length - 2
+                if (checkTabContent(currentTab[0])) {
+                    tabs[currentTab[0]].setDisable(true);
+                    currentTab[0]++;
+                    tabs[currentTab[0]].setDisable(false);
+                    tabPaneCreate.getSelectionModel().selectNext();
 
-                if (currentTab[0] < tabs.length - 1) {
-                    continueBtn.setText("Next");
+                    // Rest of the code...
                 }
+            } else if (currentTab[0] == tabs.length - 2) {  // Add new condition to handle the second last tab
+                if (checkTabContent(currentTab[0])) {
+                    tabs[currentTab[0]].setDisable(true);
+                    currentTab[0]++;
+                    tabs[currentTab[0]].setDisable(false);
+                    tabPaneCreate.getSelectionModel().selectNext();
+                    tryToGenerateQRForApp();
+                    handleFetchImages();
+                    continueBtn.setText("Finish");
 
-                if (currentTab[0] > 0) {
-                    backBtn.setVisible(true);
-                } else {
-                    backBtn.setVisible(false);
+                    if (currentTab[0] > 0) {
+                        backBtn.setVisible(true);
+                    } else {
+                        backBtn.setVisible(false);
+                    }
+                }
+            } else {
+                // Handle the last tab
+                if (checkTabContent(currentTab[0])) {
+                    createNewProject();
+                    continueBtn.setText("Finish");
+                    imageOperationFacade.stopImageFetch();
+                    imageOperationFacade.removeImagesFromServer();
+                    closeStage();
                 }
             }
         });
-
         if (currentTab[0] == 0) {
             backBtn.setVisible(false);
         }
     }
 
-    public void closeStage() {
-        removeImagesFromServer(340); // ADD LATER CURRENT USER ID
+    private void closeStage() {
         if(this.root != null){
-            removeImagesFromServer(340); // ADD LATER CURRENT USER ID
+            imageOperationFacade.removeImagesFromServer();
             Stage stage = getStage();
             if (stage != null) {
-                removeImagesFromServer(340); // ADD LATER CURRENT USER ID
-                stopImageFetch();
+                imageOperationFacade.stopImageFetch();
                 // Trigger the close request
                 stage.getOnCloseRequest().handle(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
-
                 // Close the stage
                 stage.close();
             }
@@ -553,26 +380,30 @@ public class ModalActionController extends RootController implements Initializab
     }
 
 
-
-
     private boolean checkTabContent(int tabIndex) {
         // use of validation interface to validate the tabs  efficiently
         ValidationFunction[] validationFunctions = new ValidationFunction[]{
                 this::validateFirstTab,
                 this::validateSecondTab,
                 this::validateThirdTab,
-                this::validateFourthTab
+                this::validateFourthTab,
+                this::validateFifthTab
         };
 
         return validationFunctions[tabIndex].validate();
+    }
 
-       // return true;
+    private boolean validateFifthTab() {
+        return true;
     }
 
 
     private void tryToGenerateQRForApp(){
         try {
-            ImageView generatedQRCodeImageView = codesEngine.generateQRCodeImageView(340, projectNameField.getText(), 200, 200);
+            ImageView generatedQRCodeImageView = codesEngine.generateQRCodeImageView(
+                    CURRENT_USER_ID,
+                    projectNameField.getText(),
+                    BARCODE_WIDTH, BARCODE_HEIGHT);
             Image qrCodeImage = generatedQRCodeImageView.getImage();
             qrCodee.setImage(qrCodeImage);
 
@@ -612,9 +443,9 @@ public class ModalActionController extends RootController implements Initializab
         boolean isValid = true;
         List<FormField> fieldsToValidate = Arrays.asList(
                 new FormField(clientNameField, "Client name is required"),
-                new FormField(clientEmailField, "Client email is required", this::isValidEmail, "Invalid email format"),
+                new FormField(clientEmailField, "Client email is required" ),
                 new FormField(clientTypeChooseField, "Client type is required"),
-                new FormField(clientPhoneField, "Client phone is required", this::isValidPhone, "Invalid phone number format"),
+                new FormField(clientPhoneField, "Client phone is required"),
                 new FormField(clientCityField, "Client city is required"),
                 new FormField(clientStreetField, "Client street is required"),
                 new FormField(clientZipField, "Client zip code is required")
@@ -639,15 +470,6 @@ public class ModalActionController extends RootController implements Initializab
 
     }
 
-    private boolean isValidEmail(String email) {
-        // Implement email validation logic here
-        return true;
-    }
-
-    private boolean isValidPhone(String phone) {
-        // Implement phone number validation logic here
-        return true;
-    }
     private boolean validateFourthTab() {
         // Implement validation logic for the fourth tab here
         return true;
@@ -668,7 +490,6 @@ public class ModalActionController extends RootController implements Initializab
         File selectedFile = fileChooser.showOpenDialog(getStage());
         if(selectedFile != null) {
             // set image fit to width and height
-
             selectedImage.setPreserveRatio(true);
             selectedImage.setFitHeight(600);
             selectedImage.setFitHeight(500);
@@ -676,15 +497,8 @@ public class ModalActionController extends RootController implements Initializab
             selectedImageFile = selectedFile; // SET TO SELECTED IMAGE
 
             selectedImage.setImage(new javafx.scene.image.Image(selectedFile.toURI().toString()));
-         //   selectedFileHBox.setVisible(true);
             selectFile.setDisable(true);
-
-           // changeImageActionHandleBox();
             changeSelectedFileHBox();
-
-
-
-
         }
 
     }
@@ -699,7 +513,6 @@ public class ModalActionController extends RootController implements Initializab
        // imageActionHandleBox.getChildren().add(preview);
     }
 
-    private         GridPane gridPane = new GridPane();
     private void changeSelectedFileHBox() {
 
         imageText.setVisible(false);
@@ -750,7 +563,6 @@ public class ModalActionController extends RootController implements Initializab
 
     }
 
-
     private void previewImage() {
         // open new scene with image inside
         Stage stage = new Stage();
@@ -770,15 +582,13 @@ public class ModalActionController extends RootController implements Initializab
 
         Scene scene = new Scene(layout);
         stage.setScene(scene);
-
-
         stage.showAndWait();
 
     }
 
     private void removeImage() {
         selectedImage.setImage(null);
-        // set image back to the defualt not data selected no data in resource folder
+        // set image back to the default not data selected no data in resource folder
         selectedImage.setImage(defaultImage);
         // remove action button and set label back to no image uploaded
         addedFilePane.getChildren().clear();
@@ -902,16 +712,6 @@ public class ModalActionController extends RootController implements Initializab
             appContent.getChildren().add(parent);
         }
     }
-
-    private Parent getParent(Scene scene) {
-        Parent parent = scene.getRoot();
-        while (parent != null && !(parent instanceof AnchorPane)) {
-            parent = parent.getParent();
-        }
-        return parent;
-    }
-
-    //endregion
 
 
 

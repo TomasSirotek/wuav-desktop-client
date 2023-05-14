@@ -7,16 +7,14 @@ import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.event.RefreshEvent;
 import com.wuav.client.gui.models.user.IUserModel;
 import com.wuav.client.gui.utils.AlertHelper;
-import com.wuav.client.gui.utils.FormField;
+import com.wuav.client.gui.utils.validations.FormField;
 import com.wuav.client.gui.utils.enums.UserRoleType;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextInputControl;
 
 import java.net.URL;
 import java.util.Arrays;

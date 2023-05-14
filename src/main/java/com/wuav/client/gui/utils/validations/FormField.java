@@ -1,5 +1,6 @@
-package com.wuav.client.gui.utils;
+package com.wuav.client.gui.utils.validations;
 
+import com.wuav.client.gui.utils.validations.FieldValidator;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextInputControl;
