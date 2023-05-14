@@ -35,12 +35,6 @@ public class Projector extends Device {
 
     @Override
     public String toString() {
-        return "Projector{" +
-                "resolution='" + resolution + '\'' +
-                ", connectionType='" + connectionType + '\'' +
-                ", devicePort='" + devicePort + '\'' +
-                ", id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        return name;
     }
 }

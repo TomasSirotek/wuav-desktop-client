@@ -16,6 +16,7 @@ import com.wuav.client.cache.ImageCache;
 import com.wuav.client.dal.interfaces.*;
 import com.wuav.client.dal.repository.*;
 
+import com.wuav.client.gui.models.DeviceModel;
 import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.ProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
@@ -65,6 +66,10 @@ public class ConfigModule extends AbstractModule {
         bind(ICryptoEngine.class).to(CryptoEngine.class);
         bind(IRoleService.class).to(RoleService.class);
         bind(IRoleRepository.class).to(RoleRepository.class);
+
+        bind(IDeviceRepository.class).to(DeviceRepository.class);
+        bind(IDeviceService.class).to(DeviceService.class);
+        bind(DeviceModel.class).asEagerSingleton();
 
         /*
          * Bind even bus as in singleton scope

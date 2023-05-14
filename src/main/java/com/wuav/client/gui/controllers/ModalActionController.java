@@ -18,6 +18,7 @@ import com.wuav.client.gui.dto.AddressDTO;
 import com.wuav.client.gui.dto.CreateProjectDTO;
 import com.wuav.client.gui.dto.CustomerDTO;
 import com.wuav.client.gui.dto.ImageDTO;
+import com.wuav.client.gui.models.DeviceModel;
 import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
@@ -35,7 +36,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -122,6 +122,8 @@ public class ModalActionController extends RootController implements Initializab
 
     private Device selectedDeviceForCreateEdit = null;
 
+    private final DeviceModel deviceModel;
+
 
     // MAIN BOX
 
@@ -137,12 +139,19 @@ public class ModalActionController extends RootController implements Initializab
     @FXML
     private MFXButton createCRUD;
 
+    private List<Device> devices = new ArrayList<>();
+
+    private TextField textField = new TextField();
+
+    private AutoCompletionBinding<Device> autoCompletionBinding = null;
+
     @Inject
-    public ModalActionController(EventBus eventBus, IControllerFactory controllerFactory, IProjectModel projectModel, ICodesEngine codesEngine) {
+    public ModalActionController(EventBus eventBus, IControllerFactory controllerFactory, IProjectModel projectModel, ICodesEngine codesEngine, DeviceModel deviceModel) {
         this.eventBus = eventBus;
         this.controllerFactory = controllerFactory;
         this.projectModel = projectModel;
         this.codesEngine = codesEngine;
+        this.deviceModel = deviceModel;
     }
 
 
@@ -207,13 +216,12 @@ public class ModalActionController extends RootController implements Initializab
         fillClientTypeChooseField();
         handleProgressSwitch();
         closeStage();
+
     }
 
     public void setupSearchField() {
-        TextField textField = new TextField();
-        List<Device> devices = MockDevices.generateDevices();
-
-        AutoCompletionBinding<Device> autoCompletionBinding = TextFields.bindAutoCompletion(textField, devices);
+        this.devices = deviceModel.getAllDevices();
+        autoCompletionBinding = TextFields.bindAutoCompletion(textField, devices);
 
         autoCompletionBinding.setOnAutoCompleted(event -> {
             // Create a new Label for the selected device and add it to the VBox
@@ -225,6 +233,14 @@ public class ModalActionController extends RootController implements Initializab
             HBox deviceContainer = new HBox();
             Label deviceLabel = new Label(selectedDevice.getName());
             Button removeButton = new Button("Remove");
+
+            Button editButton = new Button("Edit");
+            editButton.setOnAction(e -> {
+                // Fill the fields with the selected device data
+                deviceName.setText(selectedDevice.getName());
+
+            });
+
             removeButton.setOnAction(e -> {
                 // Remove this device from the VBox and the selectedDevices list
                 deviceBox.getChildren().remove(deviceContainer);
@@ -236,7 +252,7 @@ public class ModalActionController extends RootController implements Initializab
 
             });
 
-            deviceContainer.getChildren().addAll(deviceLabel, removeButton);
+            deviceContainer.getChildren().addAll(deviceLabel,editButton, removeButton);
             deviceBox.getChildren().add(deviceContainer);
         });
 
@@ -292,13 +308,28 @@ public class ModalActionController extends RootController implements Initializab
     private void validateNewOrEditDevice() {
         if (selectedDeviceForCreateEdit instanceof Projector) {
             if (validateDeviceInput(selectedDeviceForCreateEdit, Arrays.asList(resolutionField, connectionType, devicePort))) {
-                System.out.println(selectedDeviceForCreateEdit.getName());
+                //
+                int generatedId = UniqueIdGenerator.generateUniqueId();
+                Device device = new Projector(generatedId, deviceName.getText());
+                ((Projector) device).setResolution(resolutionField.getText());
+                ((Projector) device).setConnectionType(connectionType.getText());
+                ((Projector) device).setDevicePort(devicePort.getText());
                 // send device for creating
 
-                // clear all fields
+                boolean isDeviceCreated = deviceModel.createDevice(device);
+                if(isDeviceCreated){
+                    this.devices.clear();
+                    this.devices = deviceModel.getAllDevices();
+                    autoCompletionBinding = TextFields.bindAutoCompletion(textField, devices);
+                    deviceTypeSelection.setVisible(false);
+                    deviceName.setText("");
+                    detailsBoxLoad.getChildren().clear();
 
-                // refresh the list of devices
-                // set them to choose device
+
+                    AlertHelper.showDefaultAlert("Device created successfully", Alert.AlertType.INFORMATION);
+                } else {
+                    AlertHelper.showDefaultAlert("Device creation failed", Alert.AlertType.ERROR);
+                }
             } else {
                 AlertHelper.showDefaultAlert("Please fill all the fields", Alert.AlertType.WARNING);
             }

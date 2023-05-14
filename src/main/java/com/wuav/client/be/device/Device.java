@@ -27,10 +27,7 @@ public abstract class Device {
 
     @Override
     public String toString() {
-        return "Device{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        return name;
     }
 }
 

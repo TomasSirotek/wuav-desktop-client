@@ -28,10 +28,7 @@ public class Speaker extends Device {
 
     @Override
     public String toString() {
-        return "Speaker{" +
-                "volume='" + volume + '\'' +
-                ", power='" + power + '\'' +
-                '}';
+        return name;
     }
 }
 
