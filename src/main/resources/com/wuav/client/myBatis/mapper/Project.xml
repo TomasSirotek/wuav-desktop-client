@@ -48,8 +48,6 @@
         </collection>
     </resultMap>
 
-
-
     <select id="getAllProjectsByUserId" resultMap="projectResult">
         SELECT
             p.id,

@@ -1,7 +1,5 @@
 package com.wuav.client.be.device;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class Projector extends Device {
 
@@ -11,7 +9,6 @@ public class Projector extends Device {
     public Projector(int id,String name,String deviceType) {
         super(id, name,deviceType);
     }
-
 
     public String getResolution() {
         return resolution;
