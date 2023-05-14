@@ -71,6 +71,12 @@ public enum ViewType {
             return "views/pdfBuilderView.fxml";
         }
     },
+    CHAT{
+        @Override
+        public String getFXMLView() {
+            return "views/chatView.fxml";
+        }
+    },
     DASHBOARD {
         @Override
         public String getFXMLView() {

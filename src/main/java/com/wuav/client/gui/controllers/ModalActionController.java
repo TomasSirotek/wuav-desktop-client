@@ -135,9 +135,8 @@ public class ModalActionController extends RootController implements Initializab
     private VBox deviceCRUDBox;
 
     @FXML
-    private MFXButton cancelCRUD;
-    @FXML
-    private MFXButton createCRUD;
+    private MFXButton cancelCRUD,createCRUD,demoChat;
+
 
     private List<Device> devices = new ArrayList<>();
 
@@ -212,10 +211,31 @@ public class ModalActionController extends RootController implements Initializab
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupEditor();
         selectFile.setOnAction(e -> selectFile());
+        demoChat.setOnAction(e -> openDemoChat());
         setupSearchField();
         fillClientTypeChooseField();
         handleProgressSwitch();
         closeStage();
+
+    }
+
+    private void openDemoChat() {
+        try {
+            RootController rootController = controllerFactory.loadFxmlFile(ViewType.CHAT);
+            Stage stage = new Stage();
+            Scene scene = new Scene(rootController.getView());
+
+            stage.initOwner(getStage());
+            stage.setTitle("Wuav-assistant");
+            stage.setOnCloseRequest(e -> {
+
+            });
+            stage.setResizable(false);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
