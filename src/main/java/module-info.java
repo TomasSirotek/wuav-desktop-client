@@ -37,7 +37,7 @@ module com.wuav.client {
     requires okhttp3;
 
 
-    exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common,org.apache.pdfbox;
+    exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common,org.apache.pdfbox,org.controlsfx.controls;
     exports com.wuav.client.bll.helpers;
     exports com.wuav.client.bll.services;
     exports com.wuav.client.bll.utilities;

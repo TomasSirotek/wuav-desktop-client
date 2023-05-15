@@ -97,7 +97,7 @@
 
     <update
             id="updateDevice"
-            parameterType="Projector"
+            parameterType="Device"
             flushCache="true"
             statementType="PREPARED"
             timeout="20">
@@ -106,6 +106,17 @@
         SET name = #{name}
         WHERE id = #{deviceId}
     </update>
+
+    <delete id="deleteDeviceById"
+            parameterType="Device"
+            flushCache="true"
+            statementType="PREPARED">
+        --  executes delete query
+        DELETE
+        FROM device
+        WHERE id = #{deviceId}
+    </delete>
+
 
 
 </mapper>

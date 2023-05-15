@@ -10,7 +10,7 @@ public interface ISpeakerMapper {
     Speaker getSpeakerById(@Param("speakerId") int speakerId);
     int createSpeaker(Speaker speaker);
     int updateSpeakerById(Speaker speaker);
-    boolean deleteSpeakerById(@Param("speakerId") int speakerId);
+    int deleteSpeakerById(@Param("speakerId") int speakerId);
 
     int updateSpeaker(Speaker device);
 }

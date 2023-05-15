@@ -90,7 +90,6 @@ public class ProjectService implements IProjectService {
                 }
             }
 
-
             // 4. Delete project from database
             boolean projectDeleted = projectRepository.deleteProjectById(project.getId());
             if (!projectDeleted) {

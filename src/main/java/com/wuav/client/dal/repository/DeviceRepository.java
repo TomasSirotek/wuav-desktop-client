@@ -110,15 +110,19 @@ public class DeviceRepository implements IDeviceRepository {
     @Override
     public boolean deleteDevice(int deviceId, Class<? extends Device> type) {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            IDeviceMapper deviceMapper = session.getMapper(IDeviceMapper.class);
+            int affectedRows = 0;
+
             if (type == Projector.class) {
                 IProjectorMapper mapper = session.getMapper(IProjectorMapper.class);
-                mapper.deleteProjectorById(deviceId);
+                affectedRows += mapper.deleteProjectorById(deviceId);
             } else if (type == Speaker.class) {
                 ISpeakerMapper mapper = session.getMapper(ISpeakerMapper.class);
-                mapper.deleteSpeakerById(deviceId);
+                affectedRows += mapper.deleteSpeakerById(deviceId);
             }
+            affectedRows += deviceMapper.deleteDeviceById(deviceId);
             session.commit();
-            return true;
+            return affectedRows > 0;
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);
             return false;

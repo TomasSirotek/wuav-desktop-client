@@ -3,6 +3,7 @@
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXDatePicker?>
 <?import io.github.palexdev.materialfx.controls.MFXProgressSpinner?>
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
@@ -441,17 +442,81 @@
                                           <Insets left="30.0" right="30.0" top="30.0" />
                                        </padding>
                                        <children>
-                                          <HBox fx:id="searchBoxField" alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="382.0" />
-                                          <VBox fx:id="deviceBox" prefHeight="55.0" prefWidth="382.0">
+                                          <HBox fx:id="searchBoxField" alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="382.0">
+                                             <children>
+                                                <VBox prefHeight="39.0" prefWidth="388.0">
+                                                   <children>
+                                                      <HBox>
+                                                         <VBox.margin>
+                                                            <Insets bottom="10.0" />
+                                                         </VBox.margin>
+                                                         <children>
+                                                            <Label prefHeight="14.0" prefWidth="185.0" text="Select device" textFill="#252f4091">
+                                                               <font>
+                                                                  <Font name="SansSerif Regular" size="11.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="2.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <Label prefHeight="14.0" prefWidth="23.0" textFill="#252f4091">
+                                                               <font>
+                                                                  <Font name="SansSerif Regular" size="11.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="2.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <Label alignment="TOP_CENTER" prefHeight="14.0" prefWidth="185.0" text="Create new device" textFill="#252f4091">
+                                                               <font>
+                                                                  <Font name="SansSerif Regular" size="11.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="2.0" />
+                                                               </padding>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox>
+                                                         <children>
+                                                            <ChoiceBox fx:id="devicesForChooseBox" prefHeight="28.0" prefWidth="192.0" style="-fx-background-color: white; -fx-border-color: #c5c1c1;" />
+                                                            <HBox alignment="CENTER_RIGHT" prefHeight="28.0" prefWidth="191.0">
+                                                               <children>
+                                                                  <MFXButton fx:id="backBtn1" buttonType="RAISED" prefHeight="27.0" prefWidth="182.0" style="-fx-background-color: gray; -fx-text-fill: white;" text="Create device">
+                                                                     <font>
+                                                                        <Font name="SansSerif Bold" size="13.0" />
+                                                                     </font>
+                                                                     <cursor>
+                                                                        <Cursor fx:constant="HAND" />
+                                                                     </cursor>
+                                                                  </MFXButton>
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                   <HBox.margin>
+                                                      <Insets top="10.0" />
+                                                   </HBox.margin>
+                                                </VBox>
+                                             </children></HBox>
+                                          <VBox fx:id="deviceBox" prefHeight="570.0" prefWidth="382.0">
                                              <padding>
                                                 <Insets top="5.0" />
                                              </padding>
                                              <children>
-                                                <HBox fx:id="noDeviceSelectedLabel" alignment="CENTER" prefHeight="45.0" prefWidth="382.0">
-                                                   <children>
-                                                      <Label text="NO DEVICE SELECTED" />
-                                                   </children>
-                                                </HBox>
+                                                <MFXScrollPane fx:id="deviceForProjectList" prefHeight="306.0" prefWidth="382.0" style="-fx-background-color: transparent;">
+                                                   <content>
+                                                      <Label fx:id="noDeviceLabel" prefHeight="15.0" prefWidth="166.0" text="NO DEVICES SELECTED">
+                                                         <font>
+                                                            <Font name="SansSerif Regular" size="12.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </content>
+                                                   <padding>
+                                                      <Insets top="10.0" />
+                                                   </padding>
+                                                </MFXScrollPane>
                                              </children></VBox>
                                           <HBox fx:id="deviceTypeSelection" prefHeight="129.0" prefWidth="382.0" visible="false">
                                              <children>
@@ -551,6 +616,9 @@
                                              <font>
                                                 <Font name="SansSerif Bold" size="15.0" />
                                              </font>
+                                             <HBox.margin>
+                                                <Insets left="3.0" />
+                                             </HBox.margin>
                                           </Label>
                                        </children>
                                     </HBox>

@@ -20,4 +20,6 @@ public interface IDeviceMapper {
     int updateDevice(@Param("deviceId") int id,@Param("name") String name);
 
     String getDeviceTypeById(@Param("deviceId") int id);
+
+    int deleteDeviceById(@Param("deviceId") int deviceId);
 }

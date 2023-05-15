@@ -11,5 +11,5 @@ public interface IProjectorMapper {
     //int updateProjectorById(@Param("projectorId") int id,@Param("resolution") String resolution,@Param("connectionType") String connectionType,@Param("devicePort") String devicePort);
     int updateProjectorById(Projector projector);
 
-    boolean deleteProjectorById(@Param("projectorId") int projectorId);
+    int deleteProjectorById(@Param("projectorId") int projectorId);
 }

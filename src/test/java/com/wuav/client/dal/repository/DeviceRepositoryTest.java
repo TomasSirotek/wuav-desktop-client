@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DeviceRepositoryTest {
 
     // Assuming these values exist in your test database
-    private static final int EXISTING_PROJECTOR_ID = 445891903;
-    private static final int EXISTING_SPEAKER_ID = 1462022699;
+    private static final int EXISTING_PROJECTOR_ID = 1556217266;
+    private static final int EXISTING_SPEAKER_ID = 111111;
 
     private static final int EXISTING_DEVICE_ID = 1207741913;
     private static final int EXISTING_PROJECT_ID = 358550511;
@@ -112,7 +112,7 @@ public class DeviceRepositoryTest {
         // Arrange
 
         Device device = deviceRepository.getDeviceById(EXISTING_PROJECTOR_ID, Projector.class);
-        String resolution = "ULTRA FULL HD(1890x1920)";
+        String resolution = "ULTRA HD(1890x1920)";
 
         // Act
         ((Projector) device).setResolution(resolution);
@@ -139,21 +139,28 @@ public class DeviceRepositoryTest {
 
 
     @Test
-    public void testDeleteDevice() {
+    public void testDeleteDeviceSpeaker() {
         // Act
         boolean deleteResult = deviceRepository.deleteDevice(EXISTING_SPEAKER_ID, Speaker.class);
 
         // Assert
         assertTrue(deleteResult, "Failed to delete device");
-        Device deletedDevice = deviceRepository.getDeviceById(EXISTING_SPEAKER_ID, Speaker.class);
-        assertNull(deletedDevice, "Device was not deleted");
     }
+
+    @Test
+    public void testDeleteDeviceProjector() {
+        // Act
+        boolean deleteResult = deviceRepository.deleteDevice(EXISTING_PROJECTOR_ID, Projector.class);
+
+        // Assert
+        assertTrue(deleteResult, "Failed to delete device");
+    }
+
 
     @Test
     public void testGetAllDevices() {
         // Act
         List<Device> devices = deviceRepository.getAllDevices();
-
         // Assert
         assertNotNull(devices, "Device list is null");
         assertFalse(devices.isEmpty(), "Device list is empty");

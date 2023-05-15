@@ -29,16 +29,20 @@ import com.wuav.client.gui.utils.api.ImageOperationFacade;
 import com.wuav.client.gui.utils.enums.ClientType;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
+import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -52,11 +56,15 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
+import javafx.util.StringConverter;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
 
 public class ModalActionController extends RootController implements Initializable {
-
+    @FXML
+    private Label noDeviceLabel;
+    @FXML
+    private MFXScrollPane deviceForProjectList;
     @FXML
     private HBox noDeviceSelectedLabel;
     @FXML
@@ -70,18 +78,15 @@ public class ModalActionController extends RootController implements Initializab
     @FXML
     private ImageView fetchedImage,qrCodee;
     @FXML
-    private ChoiceBox clientTypeChooseField,deviceTypeChooseField;
-
+    private ChoiceBox clientTypeChooseField,deviceTypeChooseField,devicesForChooseBox;
     @FXML
     private MFXTextField clientCityField,projectNameField,clientPhoneField,clientNameField,clientEmailField,clientStreetField,clientZipField,deviceName;
     @FXML
     private TextField descriptionField;
     @FXML
     private ImageView selectedImage,selectedImageView;
-
     @FXML
     private Tab tab1,tab2,tab3,tab4,tab5;
-
     @FXML
     private HBox searchBoxField, selectedFileHBox,imageContent,imageActionHandleBox,detailsBoxLoad;
     @FXML
@@ -141,9 +146,9 @@ public class ModalActionController extends RootController implements Initializab
 
     private List<Device> devices = new ArrayList<>();
 
-    private TextField textField = new TextField();
+    private MFXTextField textField = new MFXTextField();
 
-    private AutoCompletionBinding<Device> autoCompletionBinding = null;
+
 
     @Inject
     public ModalActionController(EventBus eventBus, IControllerFactory controllerFactory, IProjectModel projectModel, ICodesEngine codesEngine, DeviceModel deviceModel) {
@@ -244,147 +249,221 @@ public class ModalActionController extends RootController implements Initializab
 
     public void setupSearchField() {
         this.devices = deviceModel.getAllDevices();
-        autoCompletionBinding = TextFields.bindAutoCompletion(textField, devices);
-
-        autoCompletionBinding.setOnAutoCompleted(event -> {
-            // Create a new Label for the selected device and add it to the VBox
-            Device selectedDevice = event.getCompletion();
-
-            selectedDevices.add(selectedDevice);
-            noDeviceSelectedLabel.setVisible(false);
-
-            HBox deviceContainer = new HBox();
-            Label deviceLabel = new Label(selectedDevice.getName());
-            Button removeButton = new Button("Remove");
-
-            Button editButton = new Button("Edit");
-            editButton.setOnAction(e -> {
-                // Fill the fields with the selected device data
-                deviceTypeSelection.setVisible(true); // set device
-                deviceName.setText(selectedDevice.getName()); // set name
-                // set device type pending on instance is it projector or speaker
-                deviceTypeChooseField.getSelectionModel().select(selectedDevice.getClass().getSimpleName().toUpperCase());
-
-                if(selectedDevice instanceof Projector){
-                    setupProjectorFields();
-                    Projector projector = (Projector) selectedDevice;
-                    resolutionField.setText(projector.getResolution());
-                    connectionType.setText(projector.getConnectionType());
-                    devicePort.setText(projector.getDevicePort());
-                }
-                else if(selectedDevice instanceof Speaker){
-                    setupSpeakerFields();
-                    Speaker speaker = (Speaker) selectedDevice;
-                    power.setText(speaker.getPower());
-                    volume.setText(speaker.getVolume());
-                }
-
-                deviceCRUDBox = new VBox();
-                deviceCRUDBox.setSpacing(10);
-                deviceCRUDBox.setPadding(new Insets(10));
-
-                detailsBoxLoad.getChildren().clear();
-                detailsBoxLoad.getChildren().add(deviceCRUDBox);
-            });
-
-            removeButton.setOnAction(e -> {
-                // Remove this device from the VBox and the selectedDevices list
-                deviceBox.getChildren().remove(deviceContainer);
-                selectedDevices.remove(selectedDevice);
-
-                if(selectedDevices.isEmpty()){
-                    noDeviceSelectedLabel.setVisible(true);
-                }
-
-            });
-
-            deviceContainer.getChildren().addAll(deviceLabel,editButton, removeButton);
-            deviceBox.getChildren().add(deviceContainer);
-        });
+        devicesForChooseBox.setItems(FXCollections.observableArrayList(devices));
 
 
-        fillDeviceTypeChooseField(); // fill be default
-
-        textField.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                String text = textField.getText();
-                textField.clear(); // clear current field
-
-                boolean deviceFound = devices.stream().anyMatch(device -> device.getName().equals(text));
-                if (!deviceFound) {
-
-                    deviceTypeChooseField.setOnAction(e -> {
-                        String selectedDeviceType = (String) deviceTypeChooseField.getValue();
-                        // Load the FXML file based on the selected device type
-
-                        // CONSTRUCT THE VBOX FOR ALL
-                        deviceCRUDBox = new VBox();
-                        deviceCRUDBox.setSpacing(10);
-                        deviceCRUDBox.setPadding(new Insets(10));
-
-                        if (selectedDeviceType.equals(DeviceType.PROJECTOR.name())) {
-                            setupProjectorFields();
-                            selectedDeviceForCreateEdit = new Projector(0,deviceName.getText(),"PROJECTOR");
-                        } else if (selectedDeviceType.equals(DeviceType.SPEAKER.name())) {
-                            setupSpeakerFields();
-                        }
-                        detailsBoxLoad.getChildren().clear();
-                        detailsBoxLoad.getChildren().add(deviceCRUDBox);
-
-                    });
-
-                    createCRUD.setOnAction(e -> validateNewOrEditDevice());
-
-                    cancelCRUD.setOnAction(e1 -> {
-                        detailsBoxLoad.getChildren().clear();
-                        deviceTypeChooseField.setValue(null);
-                        deviceTypeSelection.setVisible(false);
-                        deviceName.setText("");
-                    });
-                    deviceName.setText(text);
-                    deviceTypeSelection.setVisible(true);
-                }
+        // Set the event handler for device selection
+        devicesForChooseBox.setOnAction(event -> {
+            Device selectedDevice = (Device) devicesForChooseBox.getValue();
+            if (selectedDevice != null) {
+                noDeviceLabel.setVisible(false);
+                selectedDevices.add(selectedDevice);
+                addDeviceToScrollPane(selectedDevice);
+                devicesForChooseBox.getSelectionModel().clearSelection(); // Clear the selected device
             }
         });
-        searchBoxField.getChildren().add(textField);
+
+
+
+//        AutoCompletionBinding<Device> autoCompletionBinding = TextFields.bindAutoCompletion(textField, devices);
+//
+//        autoCompletionBinding.setOnAutoCompleted(event -> {
+//            // Create a new Label for the selected device and add it to the VBox
+//            Device selectedDevice = event.getCompletion();
+//
+//            selectedDevices.add(selectedDevice);
+//            noDeviceSelectedLabel.setVisible(false);
+//
+//            HBox deviceContainer = new HBox();
+//            Label deviceLabel = new Label(selectedDevice.getName());
+//            Button removeButton = new Button("Remove");
+//
+//            Button editButton = new Button("Edit");
+//            editButton.setOnAction(e -> {
+//                // Fill the fields with the selected device data
+//                deviceTypeSelection.setVisible(true); // set device
+//                deviceName.setText(selectedDevice.getName()); // set name
+//                // set device type pending on instance is it projector or speaker
+//                deviceTypeChooseField.getSelectionModel().select(selectedDevice.getClass().getSimpleName().toUpperCase());
+//
+//                if(selectedDevice instanceof Projector){
+//                    setupProjectorFields();
+//                    Projector projector = (Projector) selectedDevice;
+//                    resolutionField.setText(projector.getResolution());
+//                    connectionType.setText(projector.getConnectionType());
+//                    devicePort.setText(projector.getDevicePort());
+//                }
+//                else if(selectedDevice instanceof Speaker){
+//                    setupSpeakerFields();
+//                    Speaker speaker = (Speaker) selectedDevice;
+//                    power.setText(speaker.getPower());
+//                    volume.setText(speaker.getVolume());
+//                }
+//
+//                deviceCRUDBox = new VBox();
+//                deviceCRUDBox.setSpacing(10);
+//                deviceCRUDBox.setPadding(new Insets(10));
+//
+//                detailsBoxLoad.getChildren().clear();
+//                detailsBoxLoad.getChildren().add(deviceCRUDBox);
+//            });
+//
+//            removeButton.setOnAction(e -> {
+//                // Remove this device from the VBox and the selectedDevices list
+//                deviceBox.getChildren().remove(deviceContainer);
+//                selectedDevices.remove(selectedDevice);
+//
+//                if(selectedDevices.isEmpty()){
+//                    noDeviceSelectedLabel.setVisible(true);
+//                }
+//
+//            });
+//
+//            deviceContainer.getChildren().addAll(deviceLabel,editButton, removeButton);
+//            deviceBox.getChildren().add(deviceContainer);
+//        });
+//
+//
+//        fillDeviceTypeChooseField(); // fill be default
+//
+//        textField.setOnKeyPressed(event -> {
+//            if (event.getCode() == KeyCode.ENTER) {
+//                String text = textField.getText();
+//                textField.clear(); // clear current field
+//
+//                boolean deviceFound = devices.stream().anyMatch(device -> device.getName().equals(text));
+//                if (!deviceFound) {
+//
+//                    deviceTypeChooseField.setOnAction(e -> {
+//                        String selectedDeviceType = (String) deviceTypeChooseField.getValue();
+//                        // Load the FXML file based on the selected device type
+//
+//                        // CONSTRUCT THE VBOX FOR ALL
+//                        deviceCRUDBox = new VBox();
+//                        deviceCRUDBox.setSpacing(10);
+//                        deviceCRUDBox.setPadding(new Insets(10));
+//
+//                        if (selectedDeviceType.equals(DeviceType.PROJECTOR.name())) {
+//                            setupProjectorFields();
+//                            selectedDeviceForCreateEdit = new Projector(0,deviceName.getText(),"PROJECTOR");
+//                        } else if (selectedDeviceType.equals(DeviceType.SPEAKER.name())) {
+//                            setupSpeakerFields();
+//                        }
+//                        detailsBoxLoad.getChildren().clear();
+//                        detailsBoxLoad.getChildren().add(deviceCRUDBox);
+//
+//                    });
+//
+//                    createCRUD.setOnAction(e -> validateNewOrEditDevice());
+//
+//                    cancelCRUD.setOnAction(e1 -> {
+//                        detailsBoxLoad.getChildren().clear();
+//                        deviceTypeChooseField.setValue(null);
+//                        deviceTypeSelection.setVisible(false);
+//                        deviceName.setText("");
+//                    });
+//                    deviceName.setText(text);
+//                    deviceTypeSelection.setVisible(true);
+//                }
+//            }
+//        });
+//        searchBoxField.getChildren().add(textField);
     }
 
-    private void validateNewOrEditDevice() {
-        if (selectedDeviceForCreateEdit instanceof Projector) {
-            if (validateDeviceInput(selectedDeviceForCreateEdit, Arrays.asList(resolutionField, connectionType, devicePort))) {
-                //
-                int generatedId = UniqueIdGenerator.generateUniqueId();
-                Device device = new Projector(generatedId, deviceName.getText(), "PROJECTOR");
-                ((Projector) device).setResolution(resolutionField.getText());
-                ((Projector) device).setConnectionType(connectionType.getText());
-                ((Projector) device).setDevicePort(devicePort.getText());
-                // send device for creating
+    private List<HBox> deviceDetailsList = new ArrayList<>();
 
-                boolean isDeviceCreated = deviceModel.createDevice(device);
-                if(isDeviceCreated){
-                    this.devices.clear();
-                    this.devices = deviceModel.getAllDevices();
-                    autoCompletionBinding = TextFields.bindAutoCompletion(textField, devices);
-                    deviceTypeSelection.setVisible(false);
-                    deviceName.setText("");
-                    detailsBoxLoad.getChildren().clear();
+    private void addDeviceToScrollPane(Device selectedDevice) {
+        Label deviceTypeName = new Label(selectedDevice.getName());
+        deviceTypeName.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial'; -fx-min-width: 100px; -fx-max-width: 100px;");
 
+        Label deviceTypeLabel = new Label(selectedDevice.getDeviceType().toLowerCase());
+        deviceTypeLabel.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial'; -fx-min-width: 80px; -fx-max-width: 80px;");
 
-                    AlertHelper.showDefaultAlert("Device created successfully", Alert.AlertType.INFORMATION);
-                } else {
-                    AlertHelper.showDefaultAlert("Device creation failed", Alert.AlertType.ERROR);
-                }
-            } else {
-                AlertHelper.showDefaultAlert("Please fill all the fields", Alert.AlertType.WARNING);
-            }
-        } else if (selectedDeviceForCreateEdit instanceof Speaker) {
-            if (validateDeviceInput(selectedDeviceForCreateEdit, Arrays.asList(power, volume))) {
-                System.out.println(selectedDeviceForCreateEdit.getName());
-            } else {
-                AlertHelper.showDefaultAlert("Please fill all the fields", Alert.AlertType.WARNING);
+        Button editButton = new Button("Edit");
+        editButton.setStyle("-fx-min-width: 82px; -fx-max-width: 82px;");
+        editButton.setOnAction(event -> {
+            removeDeviceFromScrollPane(selectedDevice);
+        });
+
+        // Create a button to remove the device
+        Button removeButton = new Button("Remove️");
+        removeButton.setStyle("-fx-min-width: 82px; -fx-max-width: 82px;");
+        removeButton.setOnAction(event -> {
+            removeDeviceFromScrollPane(selectedDevice);
+        });
+
+        // Create an HBox for the device details
+        HBox deviceDetails = new HBox(deviceTypeName, deviceTypeLabel,editButton, removeButton);
+        deviceDetails.setSpacing(10);
+        deviceDetails.setStyle("-fx-min-height: 20px; -fx-alignment: CENTER_LEFT;");
+
+        // Add the device details HBox to the list
+        deviceDetailsList.add(deviceDetails);
+
+        // Set the scroll pane content to the updated VBox
+        updateScrollPaneContent();
+    }
+
+    private void removeDeviceFromScrollPane(Device selectedDevice) {
+        HBox deviceToRemove = null;
+        for (HBox deviceDetails : deviceDetailsList) {
+            Label deviceTypeNameLabel = (Label) deviceDetails.getChildren().get(0);
+            String deviceName = deviceTypeNameLabel.getText();
+            if (deviceName.equals(selectedDevice.getName())) {
+                deviceToRemove = deviceDetails;
+                break;
             }
         }
+
+        if (deviceToRemove != null) {
+            deviceDetailsList.remove(deviceToRemove);
+            updateScrollPaneContent();
+        }
     }
+
+    private void updateScrollPaneContent() {
+        VBox scrollPaneContent = new VBox();
+        scrollPaneContent.setSpacing(10);
+        scrollPaneContent.getChildren().addAll(deviceDetailsList);
+        deviceForProjectList.setContent(scrollPaneContent);
+    }
+
+//    private void validateNewOrEditDevice() {
+//        if (selectedDeviceForCreateEdit instanceof Projector) {
+//            if (validateDeviceInput(selectedDeviceForCreateEdit, Arrays.asList(resolutionField, connectionType, devicePort))) {
+//                //
+//                int generatedId = UniqueIdGenerator.generateUniqueId();
+//                Device device = new Projector(generatedId, deviceName.getText(), "PROJECTOR");
+//                ((Projector) device).setResolution(resolutionField.getText());
+//                ((Projector) device).setConnectionType(connectionType.getText());
+//                ((Projector) device).setDevicePort(devicePort.getText());
+//                // send device for creating
+//
+//                boolean isDeviceCreated = deviceModel.createDevice(device);
+//                if(isDeviceCreated){
+//                    this.devices.clear();
+//                    this.devices = deviceModel.getAllDevices();
+//                     AutoCompletionBinding<Device> autoCompletionBinding=  TextFields.bindAutoCompletion(textField, devices);
+//                    deviceTypeSelection.setVisible(false);
+//                    deviceName.setText("");
+//                    detailsBoxLoad.getChildren().clear();
+//
+//
+//                    AlertHelper.showDefaultAlert("Device created successfully", Alert.AlertType.INFORMATION);
+//                } else {
+//                    AlertHelper.showDefaultAlert("Device creation failed", Alert.AlertType.ERROR);
+//                }
+//            } else {
+//                AlertHelper.showDefaultAlert("Please fill all the fields", Alert.AlertType.WARNING);
+//            }
+//        } else if (selectedDeviceForCreateEdit instanceof Speaker) {
+//            if (validateDeviceInput(selectedDeviceForCreateEdit, Arrays.asList(power, volume))) {
+//                System.out.println(selectedDeviceForCreateEdit.getName());
+//            } else {
+//                AlertHelper.showDefaultAlert("Please fill all the fields", Alert.AlertType.WARNING);
+//            }
+//        }
+//    }
 
     private boolean validateDeviceInput(Device device, List<TextField> fields) {
         return fields.stream().noneMatch(field -> field.getText().isEmpty());
