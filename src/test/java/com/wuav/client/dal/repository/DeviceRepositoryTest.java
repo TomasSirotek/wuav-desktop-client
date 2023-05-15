@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DeviceRepositoryTest {
 
     // Assuming these values exist in your test database
-    private static final int EXISTING_PROJECTOR_ID = 1556217266;
+    private static final int EXISTING_PROJECTOR_ID = 10387399;
     private static final int EXISTING_SPEAKER_ID = 111111;
 
     private static final int EXISTING_DEVICE_ID = 1207741913;
@@ -77,7 +77,7 @@ public class DeviceRepositoryTest {
         // Arrange
 
         Device device = deviceRepository.getDeviceById(EXISTING_PROJECTOR_ID, Projector.class);
-        String newName = "Updated Projector benq3";
+        String newName = "Updated";
 
         // Act
         device.setName(newName);
@@ -89,6 +89,23 @@ public class DeviceRepositoryTest {
         assertEquals(newName, updatedDevice.getName(), "Device name was not updated");
     }
 
+
+    @Test
+    public void testUpdateCompleteProjector() {
+        // Arrange
+
+        Device device = deviceRepository.getDeviceById(EXISTING_PROJECTOR_ID, Projector.class);
+        String newName = "Updated";
+
+        // Act
+        device.setName(newName);
+        boolean updateResult = deviceRepository.updateDevice(device);
+
+        // Assert
+        assertTrue(updateResult, "Failed to update device");
+        Device updatedDevice = deviceRepository.getDeviceById(EXISTING_PROJECTOR_ID, Projector.class);
+        assertEquals(newName, updatedDevice.getName(), "Device name was not updated");
+    }
     @Test
     public void testUpdateDeviceSpeakerVolume() {
         // Arrange

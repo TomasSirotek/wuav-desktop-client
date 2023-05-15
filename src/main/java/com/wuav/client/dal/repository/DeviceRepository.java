@@ -100,7 +100,7 @@ public class DeviceRepository implements IDeviceRepository {
                 }
 
             session.commit();
-            return affectedRows > 1;
+            return affectedRows > 0;
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);
             return false;

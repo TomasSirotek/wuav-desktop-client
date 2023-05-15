@@ -21,7 +21,7 @@ public class Main extends Application {
         try {
             StartUp.configure();
             IControllerFactory factory = StartUp.getInjector().getInstance(IControllerFactory.class);
-            IRootController controller = factory.loadFxmlFile(ViewType.DEVICE_CRUD);
+            IRootController controller = factory.loadFxmlFile(ViewType.LOGIN);
 
             Scene scene = new Scene(controller.getView());
             stage.setTitle("Wuav-login");

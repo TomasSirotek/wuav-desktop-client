@@ -1,16 +1,21 @@
 package com.wuav.client.gui.controllers;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import com.wuav.client.be.device.Device;
 import com.wuav.client.be.device.Projector;
 import com.wuav.client.be.device.Speaker;
+import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.utilities.UniqueIdGenerator;
 import com.wuav.client.gui.controllers.abstractController.RootController;
+import com.wuav.client.gui.controllers.event.RefreshEvent;
 import com.wuav.client.gui.models.DeviceModel;
 import com.wuav.client.gui.utils.AlertHelper;
 import com.wuav.client.gui.utils.enums.DeviceType;
+import com.wuav.client.gui.utils.event.CustomEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
@@ -22,6 +27,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -80,6 +86,8 @@ public class DeviceCrudController extends RootController implements Initializabl
     // FOR SPEAKER
     private TextField power,volume;
 
+    private final EventBus eventBus;
+
 
     private final DeviceModel deviceModel;
 
@@ -88,12 +96,14 @@ public class DeviceCrudController extends RootController implements Initializabl
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Inject
-    public DeviceCrudController(DeviceModel deviceModel) {
+    public DeviceCrudController(EventBus eventBus, DeviceModel deviceModel) {
+        this.eventBus = eventBus;
         this.deviceModel = deviceModel;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        eventBus.register(this);
         handleExpandActions();
         setupInitialize();
         handleSend.setOnAction(event -> {
@@ -138,10 +148,12 @@ public class DeviceCrudController extends RootController implements Initializabl
             Boolean isDeviceDeleted;
             try {
                 isDeviceDeleted = asyncDeleteDevice(selectedDeviceForCreateEdit,selectedDeviceForCreateEdit.getClass()).get();
+
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
             if (isDeviceDeleted) {
+                finishAndClose();
                 AlertHelper.showDefaultAlert("Device deleted successfully", Alert.AlertType.INFORMATION);
             } else {
                 AlertHelper.showDefaultAlert("Device deleted failed", Alert.AlertType.ERROR);
@@ -171,6 +183,7 @@ public class DeviceCrudController extends RootController implements Initializabl
                 ((Projector) device).setDevicePort(devicePort.getText());
 
                 deviceCall(device);
+                finishAndClose();
             } else {
                 AlertHelper.showDefaultAlert("Please fill all the fields", Alert.AlertType.WARNING);
             }
@@ -182,11 +195,18 @@ public class DeviceCrudController extends RootController implements Initializabl
                 ((Speaker) device).setVolume(volume.getText());
 
                 deviceCall(device);
+                finishAndClose();
             } else {
                 AlertHelper.showDefaultAlert("Please fill all the fields", Alert.AlertType.WARNING);
             }
         }
 
+    }
+
+    private void finishAndClose() {
+        eventBus.post(new RefreshEvent(EventType.REFRESH_DEVICE_LIST));
+        Stage stage = (Stage) toggleCreateEdit.getScene().getWindow();
+        stage.close();
     }
 
     private void deviceCall(Device device) {
@@ -203,6 +223,20 @@ public class DeviceCrudController extends RootController implements Initializabl
         }
     }
 
+    private void deviceCall2(Device device) {
+        Boolean isDeviceCreated;
+        try {
+            isDeviceCreated = asyncCreateDevice2(device).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+        if(isDeviceCreated){
+            AlertHelper.showDefaultAlert("Device updated successfully", Alert.AlertType.INFORMATION);
+        } else {
+            AlertHelper.showDefaultAlert("Device updated failed", Alert.AlertType.ERROR);
+        }
+    }
+
     private Future<Boolean> asyncCreateDevice(Device device) {
         return executorService.submit(() -> {
             try {
@@ -213,6 +247,76 @@ public class DeviceCrudController extends RootController implements Initializabl
                 return false;
             }
         });
+    }
+
+    private Future<Boolean> asyncCreateDevice2(Device device) {
+        return executorService.submit(() -> {
+            try {
+                return deviceModel.updateDevice(device);
+            } catch (Exception e) {
+                // Handle any exceptions that occurred during device creation
+                e.printStackTrace();
+                return false;
+            }
+        });
+    }
+
+    @Subscribe
+    public void handleEdit(CustomEvent event) {
+        if (event.getEventType() == EventType.SET_CURRENT_DEVICE) {
+            deviceTypeField.setDisable(true);
+            toggleCreateEdit.setText("Edit");
+            deleteToggle.setVisible(true);
+            deleteToggle.setOnAction(e -> {
+                deleteDevice();
+            });
+
+            toggleCreateEdit.setOnAction(e -> {
+                editDevice();
+            });
+            this.selectedDeviceForCreateEdit = (Device) event.getData();
+
+            if (selectedDeviceForCreateEdit instanceof Projector) {
+                setupProjectorFields();
+                deviceName.setText(selectedDeviceForCreateEdit.getName());
+                resolutionField.setText(((Projector) selectedDeviceForCreateEdit).getResolution());
+                connectionType.setText(((Projector) selectedDeviceForCreateEdit).getConnectionType());
+                devicePort.setText(((Projector) selectedDeviceForCreateEdit).getDevicePort());
+            } else if (selectedDeviceForCreateEdit instanceof Speaker) {
+                setupSpeakerFields();
+                deviceName.setText(selectedDeviceForCreateEdit.getName());
+                power.setText(((Speaker) selectedDeviceForCreateEdit).getPower());
+                volume.setText(((Speaker) selectedDeviceForCreateEdit).getVolume());
+            }
+        }
+    }
+
+    private void editDevice() {
+        if (selectedDeviceForCreateEdit instanceof Projector) {
+            if (validateDeviceInput(selectedDeviceForCreateEdit, Arrays.asList(resolutionField, connectionType, devicePort))) {
+                //
+                Device device = new Projector(selectedDeviceForCreateEdit.getId(), deviceName.getText(), Projector.class.getSimpleName().toUpperCase());
+                ((Projector) device).setResolution(resolutionField.getText());
+                ((Projector) device).setConnectionType(connectionType.getText());
+                ((Projector) device).setDevicePort(devicePort.getText());
+
+                deviceCall2(device);
+                finishAndClose();
+            } else {
+                AlertHelper.showDefaultAlert("Please fill all the fields", Alert.AlertType.WARNING);
+            }
+        } else if (selectedDeviceForCreateEdit instanceof Speaker) {
+            if (validateDeviceInput(selectedDeviceForCreateEdit, Arrays.asList(power, volume))) {
+                Device device = new Speaker(selectedDeviceForCreateEdit.getId(), deviceName.getText(), Speaker.class.getSimpleName().toUpperCase());
+                ((Speaker) device).setPower(power.getText());
+                ((Speaker) device).setVolume(volume.getText());
+
+                deviceCall2(device);
+                finishAndClose();
+            } else {
+                AlertHelper.showDefaultAlert("Please fill all the fields", Alert.AlertType.WARNING);
+            }
+        }
     }
 
     private boolean validateDeviceInput(Device device, List<TextField> fields) {

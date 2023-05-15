@@ -1,6 +1,7 @@
 package com.wuav.client.gui.controllers;
 
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.wuav.client.be.Project;
 import com.wuav.client.be.device.Device;
@@ -24,6 +25,7 @@ import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
 import com.wuav.client.gui.utils.CKEditorPane;
 import com.wuav.client.gui.utils.enums.DeviceType;
+import com.wuav.client.gui.utils.event.CustomEvent;
 import com.wuav.client.gui.utils.validations.FormField;
 import com.wuav.client.gui.utils.api.ImageOperationFacade;
 import com.wuav.client.gui.utils.enums.ClientType;
@@ -90,7 +92,7 @@ public class ModalActionController extends RootController implements Initializab
     @FXML
     private HBox searchBoxField, selectedFileHBox,imageContent,imageActionHandleBox,detailsBoxLoad;
     @FXML
-    private MFXButton continueBtn,selectFile,backBtn,createNewProject;
+    private MFXButton continueBtn,selectFile,backBtn,deviceCrudToggle;
     @FXML
     private TabPane tabPaneCreate;
     @FXML
@@ -128,7 +130,6 @@ public class ModalActionController extends RootController implements Initializab
     private List<Device> devices = new ArrayList<>();
 
     private MFXTextField textField = new MFXTextField();
-
 
 
     @Inject
@@ -196,13 +197,58 @@ public class ModalActionController extends RootController implements Initializab
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        eventBus.register(this);
         setupEditor();
         selectFile.setOnAction(e -> selectFile());
+        deviceCrudToggle.setOnAction(e -> openDeviceWindow(false,null));
         fillClientTypeChooseField();
         handleProgressSwitch();
         setupSearchField();
         closeStage();
+        
 
+    }
+
+
+    @Subscribe
+    public void handleRefreshDeviceList(RefreshEvent event) {
+        if (event.eventType() == EventType.REFRESH_DEVICE_LIST) {
+            this.devices = deviceModel.getAllDevices();
+            devicesForChooseBox.getItems().clear();
+            devicesForChooseBox.setItems(FXCollections.observableArrayList(devices));
+            // find the if any devices in the devices list changed their values and refresh it
+
+        }
+    }
+
+    private void openDeviceWindow(boolean isEdit, Device device) {
+        try {
+            RootController rootController = controllerFactory.loadFxmlFile(ViewType.DEVICE_CRUD);
+            Stage stage = new Stage();
+            Scene scene = new Scene(rootController.getView());
+
+            stage.initOwner(getStage());
+            stage.setTitle("Create new device");
+            stage.setOnCloseRequest(e -> {
+                // FOR NOW
+                devicesForChooseBox.getItems().clear();
+                devicesForChooseBox.setItems(FXCollections.observableArrayList(devices));
+            });
+
+            if(isEdit){
+                EventType eventType = EventType.SET_CURRENT_DEVICE;
+                CustomEvent event = new CustomEvent(eventType, device);
+                eventBus.post(event);
+            }
+
+
+
+            stage.setResizable(false);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -216,7 +262,6 @@ public class ModalActionController extends RootController implements Initializab
             Device selectedDevice = (Device) devicesForChooseBox.getValue();
             if (selectedDevice != null) {
                 noDeviceLabel.setVisible(false);
-                selectedDevices.add(selectedDevice);
                 addDeviceToScrollPane(selectedDevice);
                 devicesForChooseBox.getSelectionModel().clearSelection(); // Clear the selected device
             }
@@ -226,6 +271,22 @@ public class ModalActionController extends RootController implements Initializab
     private List<HBox> deviceDetailsList = new ArrayList<>();
 
     private void addDeviceToScrollPane(Device selectedDevice) {
+        // if selected device is existing in the list, do not add it again
+
+        boolean deviceExists = false;
+        for (Device device : selectedDevices) {
+            if (device.getId() == selectedDevice.getId()) {
+                deviceExists = true;
+                break;
+            }
+        }
+
+        if (deviceExists) {
+            return;
+        }
+
+        selectedDevices.add(selectedDevice);
+
         Label deviceTypeName = new Label(selectedDevice.getName());
         deviceTypeName.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial'; -fx-min-width: 100px; -fx-max-width: 100px;");
 
@@ -235,7 +296,7 @@ public class ModalActionController extends RootController implements Initializab
         Button editButton = new Button("Edit");
         editButton.setStyle("-fx-min-width: 82px; -fx-max-width: 82px;");
         editButton.setOnAction(event -> {
-            removeDeviceFromScrollPane(selectedDevice);
+            openDeviceWindow(true,selectedDevice);
         });
 
         // Create a button to remove the device
@@ -268,7 +329,10 @@ public class ModalActionController extends RootController implements Initializab
             }
         }
 
+
+
         if (deviceToRemove != null) {
+            selectedDevices.remove(selectedDevice);
             deviceDetailsList.remove(deviceToRemove);
             updateScrollPaneContent();
         }
