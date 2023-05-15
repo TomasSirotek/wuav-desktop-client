@@ -52,6 +52,11 @@ public class LoginController extends RootController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 
+
+    /**
+     * Load the new view
+     * @throws IOException
+     */
     @FXML
     private void login() {
         // Show the progress bar while the application is loading
@@ -87,14 +92,22 @@ public class LoginController extends RootController implements Initializable {
         });
     }
 
+    /**
+     * Load the new view
+     * @throws IOException
+     */
     private void loadNewView() throws IOException {
+        String stageTitle = "WUAV-dashboard";
         RootController rootController = stageManager.loadNodesView(
                 ViewType.MAIN,
                 controllerFactory
         );
-        stageManager.showStage("New Stage", rootController.getView());
+        stageManager.showStage(stageTitle, rootController.getView());
     }
 
+    /**
+     * Handle the error when the user is not authenticated
+     */
     private void handleError() {
         progressLoader.setVisible(false);
         loadingPane.setVisible(false);
