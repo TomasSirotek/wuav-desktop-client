@@ -329,8 +329,6 @@ public class ModalActionController extends RootController implements Initializab
             }
         }
 
-
-
         if (deviceToRemove != null) {
             selectedDevices.remove(selectedDevice);
             deviceDetailsList.remove(deviceToRemove);
@@ -667,8 +665,6 @@ public class ModalActionController extends RootController implements Initializab
         // add all to list of images to upload
         listOfUploadImages.add(imageToUpload);
 
-        // images from app are already added to the list
-
         // collect all info into a project object
         CreateProjectDTO projectToCreate = new CreateProjectDTO(
                 projectId,
@@ -680,8 +676,6 @@ public class ModalActionController extends RootController implements Initializab
         );
 
         int currentUserId = CurrentUser.getInstance().getLoggedUser().getId();
-
-       // for each selected device print their id's
 
         Task<Boolean> loadDataTask = new Task<>() {
             @Override

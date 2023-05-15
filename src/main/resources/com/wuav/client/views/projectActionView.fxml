@@ -2,6 +2,7 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXProgressSpinner?>
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
@@ -238,7 +239,7 @@
                                                                         <Insets bottom="10.0" />
                                                                      </VBox.margin>
                                                                                         </VBox>
-                                                                  <MFXButton fx:id="updateBtnNotes" prefHeight="29.0" prefWidth="154.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Update description" textFill="#141111">
+                                                                  <MFXButton fx:id="updateBtnNotes" prefHeight="29.0" prefWidth="89.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Update " textFill="#141111">
                                                                      <font>
                                                                         <Font name="SansSerif Bold" size="15.0" />
                                                                      </font>
@@ -427,7 +428,7 @@
                                                                         <Cursor fx:constant="HAND" />
                                                                      </cursor>
                                                                   </MFXButton>
-                                                                  <MFXButton fx:id="updateClient" prefHeight="29.0" prefWidth="154.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Update Client" textFill="#141111">
+                                                                  <MFXButton fx:id="updateClient" prefHeight="29.0" prefWidth="71.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Update" textFill="#141111">
                                                                      <font>
                                                                         <Font name="SansSerif Bold" size="15.0" />
                                                                      </font>
@@ -449,9 +450,9 @@
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="387.0" prefWidth="364.0" GridPane.columnIndex="1">
                                                    <children>
-                                                      <Pane prefHeight="381.0" prefWidth="364.0" AnchorPane.bottomAnchor="88.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Pane prefHeight="208.0" prefWidth="364.0" AnchorPane.bottomAnchor="242.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <children>
-                                                            <VBox layoutY="-1.0" prefHeight="364.0" prefWidth="365.0">
+                                                            <VBox layoutY="-1.0" prefHeight="211.0" prefWidth="365.0">
                                                                <children>
                                                                   <HBox alignment="CENTER_LEFT" prefHeight="38.0" prefWidth="303.0">
                                                                      <children>
@@ -571,6 +572,40 @@
                                                             </VBox>
                                                          </children>
                                                       </Pane>
+                                                      <VBox layoutY="205.0" prefHeight="247.0" prefWidth="365.0">
+                                                         <children>
+                                                            <HBox>
+                                                               <VBox.margin>
+                                                                  <Insets bottom="10.0" />
+                                                               </VBox.margin>
+                                                               <children>
+                                                                  <HBox alignment="CENTER_LEFT" prefHeight="38.0" prefWidth="305.0">
+                                                                     <children>
+                                                                        <Label text="Devices">
+                                                                           <font>
+                                                                              <Font name="SansSerif Bold" size="25.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                                     </children>
+                                                                  </HBox>
+                                                               </children>
+                                                               <padding>
+                                                                  <Insets left="30.0" />
+                                                               </padding>
+                                                            </HBox>
+                                                            <MFXScrollPane fx:id="deviceForProjectList" prefHeight="179.0" prefWidth="305.0" style="-fx-background-color: transparent;">
+                                                               <padding>
+                                                                  <Insets top="10.0" />
+                                                               </padding>
+                                                               <VBox.margin>
+                                                                  <Insets left="30.0" right="10.0" />
+                                                               </VBox.margin>
+                                                            </MFXScrollPane>
+                                                         </children>
+                                                         <padding>
+                                                            <Insets top="5.0" />
+                                                         </padding>
+                                                      </VBox>
                                                    </children>
                                                 </AnchorPane>
                                              </children>
