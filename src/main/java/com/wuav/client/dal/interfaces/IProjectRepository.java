@@ -23,4 +23,6 @@ public interface IProjectRepository {
     boolean updateNotes(int projectId, String content);
 
     boolean deleteProjectById(int id);
+
+    int addDeviceToProject(int projectId, int deviceId);
 }

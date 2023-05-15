@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.wuav.client.dal.mappers.IDeviceMapper">
+
+    <resultMap id="DeviceResultMap" type="Device">
+        <id property="id" column="deviceId" />
+        <result property="name" column="deviceName" />
+        <result property="deviceType" column="device_type" />
+        <discriminator javaType="String" column="device_type">
+            <case value="PROJECTOR" resultType="Projector">
+                <result property="resolution" column="resolution"/>
+                <result property="connectionType" column="connection_type"/>
+                <result property="devicePort" column="device_port"/>
+            </case>
+            <case value="SPEAKER" resultType="Speaker">
+                <result property="power" column="power"/>
+                <result property="volume" column="volume"/>
+            </case>
+        </discriminator>
+    </resultMap>
+
+
+    <select id="getAllDevices" resultMap="DeviceResultMap">
+        SELECT
+            d.id as deviceId,
+            d.name as deviceName,
+            d.device_type,
+            p.resolution,
+            p.connection_type,
+            p.device_port,
+            s.power,
+            s.volume
+        FROM device d
+                 LEFT JOIN projector p ON d.id = p.id
+                 LEFT JOIN speaker s ON d.id = s.id
+    </select>
+
+    <select id="getDeviceById" resultMap="DeviceResultMap">
+        SELECT
+            d.id as deviceId,
+            d.name as deviceName,
+            d.device_type,
+            p.resolution,
+            p.connection_type,
+            p.device_port,
+            s.power,
+            s.volume
+        FROM device d
+                 LEFT JOIN projector p ON d.id = p.id
+                 LEFT JOIN speaker s ON d.id = s.id
+        WHERE d.id = #{deviceId}
+    </select>
+
+
+    <select id="getDeviceTypeById" resultMap="DeviceResultMap">
+        SELECT
+            d.id as deviceId,
+            d.name as deviceName,
+            d.device_type,
+            p.resolution,
+            p.connection_type,
+            p.device_port,
+            s.power,
+            s.volume
+        FROM device d
+                 LEFT JOIN projector p ON d.id = p.id
+                 LEFT JOIN speaker s ON d.id = s.id
+        WHERE d.device_type = #{deviceId}
+    </select>
+
+
+    <insert
+            id="createDevice"
+            parameterType="map"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        INSERT INTO device (id, name,device_type) VALUES (#{id}, #{name},#{deviceType})
+    </insert>
+
+
+    <insert
+            id="addDeviceToProject"
+            parameterType="map"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        INSERT INTO project_device (project_id, device_id) VALUES (#{projectId}, #{deviceId})
+    </insert>
+
+
+    <update
+            id="updateDevice"
+            parameterType="Device"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        UPDATE device
+        SET name = #{name}
+        WHERE id = #{deviceId}
+    </update>
+
+    <delete id="deleteDeviceById"
+            parameterType="Device"
+            flushCache="true"
+            statementType="PREPARED">
+        --  executes delete query
+        DELETE
+        FROM device
+        WHERE id = #{deviceId}
+    </delete>
+
+
+
+</mapper>
+
+

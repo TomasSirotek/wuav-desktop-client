@@ -15,6 +15,7 @@ import com.wuav.client.gui.utils.CKEditorPane;
 import com.wuav.client.gui.utils.validations.FormField;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
+import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -37,6 +38,7 @@ import javafx.stage.StageStyle;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -78,6 +80,8 @@ public class ProjectActionController  extends RootController implements Initiali
     private MFXTextField clientNameField;
     @FXML
     private MFXTextField clientEmailField;
+    @FXML
+    private MFXScrollPane deviceForProjectList;
     @FXML
     private ChoiceBox clientTypeChooseField;
     @FXML
@@ -219,7 +223,7 @@ public class ProjectActionController  extends RootController implements Initiali
         }
     }
 
-
+    private List<HBox> deviceDetailsList = new ArrayList<>();
     // if router here set all the info
     public void setCurrentProject(Project project) {
         currentProject = project;
@@ -245,6 +249,37 @@ public class ProjectActionController  extends RootController implements Initiali
         clientCityField.setText(currentProject.getCustomer().getAddress().getCity());
 
         clientAddress.setText(currentProject.getCustomer().getAddress().getStreet());
+
+
+        project.getDevices().forEach(device -> {
+            Label deviceTypeName = new Label(device.getName());
+            deviceTypeName.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial'; -fx-min-width: 100px; -fx-max-width: 100px;");
+
+            Label deviceTypeLabel = new Label(device.getDeviceType().toLowerCase());
+            deviceTypeLabel.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial'; -fx-min-width: 80px; -fx-max-width: 80px;");
+
+            Button editButton = new Button("Edit");
+            editButton.setStyle("-fx-min-width: 82px; -fx-max-width: 82px;");
+            editButton.setOnAction(event -> {
+                // openDeviceWindow(true,selectedDevice);
+                // maybe edit here
+            });
+
+            // Create an HBox for the device details
+            HBox deviceDetails = new HBox(deviceTypeName, deviceTypeLabel,editButton);
+            deviceDetails.setSpacing(10);
+            deviceDetails.setStyle("-fx-min-height: 20px; -fx-alignment: CENTER_LEFT;");
+
+            // Add the device details HBox to the list
+            deviceDetailsList.add(deviceDetails);
+        });
+
+
+
+        VBox scrollPaneContent = new VBox();
+        scrollPaneContent.setSpacing(10);
+        scrollPaneContent.getChildren().addAll(deviceDetailsList);
+        deviceForProjectList.setContent(scrollPaneContent);
 
 
         AtomicInteger nonMainImageCounter = new AtomicInteger(0);

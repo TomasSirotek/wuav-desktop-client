@@ -34,9 +34,10 @@ module com.wuav.client {
     requires com.google.api.client.json.gson;
     requires com.google.api.services.gmail;
     requires org.controlsfx.controls;
+    requires okhttp3;
 
 
-    exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common,org.apache.pdfbox;
+    exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common,org.apache.pdfbox,org.controlsfx.controls;
     exports com.wuav.client.bll.helpers;
     exports com.wuav.client.bll.services;
     exports com.wuav.client.bll.utilities;
@@ -55,7 +56,7 @@ module com.wuav.client {
     exports com.wuav.client.be.device to org.mybatis;
 
 
-    opens com.wuav.client.gui.controllers to javafx.fxml, com.google.guice, com.google.common,com.azure.core,org.apache.pdfbox;
+    opens com.wuav.client.gui.controllers to javafx.fxml, com.google.guice, com.google.common,com.azure.core,org.apache.pdfbox,com.google.gson;
     opens com.wuav.client.gui.models to javafx.fxml, com.google.guice, com.google.common,com.azure.core,org.apache.pdfbox;
     opens com.wuav.client to javafx.fxml, com.google.guice, org.slf4j,com.azure.core;
     opens com.wuav.client.gui.controllers.abstractController to com.google.guice, javafx.fxml, com.google.common,com.azure.core;

@@ -18,5 +18,7 @@ public interface IDeviceRepository {
     boolean updateDevice(Device device);
 
     boolean deleteDevice(int deviceId, Class<? extends Device> type);
+
+    int addDeviceToProject(int projectId, int deviceId);
 }
 

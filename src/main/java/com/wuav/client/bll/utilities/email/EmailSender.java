@@ -33,7 +33,7 @@ public class EmailSender implements IEmailSender {
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT,GsonFactory gsonFactory)
             throws IOException {
 
-        String clientSecretFilePath = System.getenv("CLIENT_SECRET_FILE_PATH");
+        String clientSecretFilePath = System.getenv("CONFIG_CLIENT_SECRET");
         GoogleClientSecrets clientSecrets =
                 GoogleClientSecrets.load(gsonFactory,
                         new InputStreamReader(EmailSender.class.getResourceAsStream(clientSecretFilePath)));
@@ -47,6 +47,15 @@ public class EmailSender implements IEmailSender {
 
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+    }
+
+    public static void main(String[] args) {
+        try {
+            EmailSender emailSender = new EmailSender();
+            emailSender.sendEmail("toma@gail.com", "Test", "Test body", false, null);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override

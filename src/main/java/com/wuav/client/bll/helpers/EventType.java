@@ -7,4 +7,5 @@ public enum EventType {
     UPDATE_USER_TABLE,
 
     EXPORT_EMAIL,
+    REFRESH_DEVICE_LIST, SET_CURRENT_DEVICE,
 }

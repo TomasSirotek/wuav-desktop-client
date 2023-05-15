@@ -5,11 +5,13 @@ import com.google.inject.Inject;
 import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
+import com.wuav.client.be.device.Device;
 import com.wuav.client.bll.services.interfaces.IAddressService;
 import com.wuav.client.bll.services.interfaces.ICustomerService;
 import com.wuav.client.bll.services.interfaces.IProjectService;
 import com.wuav.client.dal.blob.BlobStorageFactory;
 import com.wuav.client.dal.blob.BlobStorageHelper;
+import com.wuav.client.dal.interfaces.IDeviceRepository;
 import com.wuav.client.dal.interfaces.IImageRepository;
 import com.wuav.client.dal.interfaces.IProjectRepository;
 import com.wuav.client.gui.dto.CreateProjectDTO;
@@ -28,13 +30,16 @@ public class ProjectService implements IProjectService {
 
     private final IImageRepository imageRepository;
 
+    private final IDeviceRepository deviceRepository;
+
 
     @Inject
-    public ProjectService(IProjectRepository projectRepository, IAddressService addressService, IImageRepository imageRepository,ICustomerService customerService) {
+    public ProjectService(IProjectRepository projectRepository, IAddressService addressService, IImageRepository imageRepository, ICustomerService customerService, IDeviceRepository deviceRepository) {
         this.projectRepository = projectRepository;
         this.addressService = addressService;
         this.imageRepository = imageRepository;
         this.customerService = customerService;
+        this.deviceRepository = deviceRepository;
     }
 
     @Override
@@ -77,7 +82,6 @@ public class ProjectService implements IProjectService {
                }
             }
 
-
             // 2. Delete all images from database (including from the join table due to cascade delete)
             for (CustomImage image : project.getProjectImages()) {
                 boolean imageDeleted = imageRepository.deleteImageById(image.getId());
@@ -85,7 +89,6 @@ public class ProjectService implements IProjectService {
                     throw new RuntimeException("Failed to delete image from database: " + image.getId());
                 }
             }
-
 
             // 4. Delete project from database
             boolean projectDeleted = projectRepository.deleteProjectById(project.getId());
@@ -122,7 +125,7 @@ public class ProjectService implements IProjectService {
         // 1. retrieve the main image
         CustomImage mainImage = imageRepository.getImageById(imageId); // this retrieves the main image
 
-        // 2. delete brol from the container by image URL (main image)
+        // 2. delete blob from the container by image URL (main image)
         boolean deletedBlob = deleteIfExists(mainImage.getImageUrl());
 
         if(deletedBlob){
@@ -193,6 +196,14 @@ public class ProjectService implements IProjectService {
         int isProjectAddedToUser = projectRepository.addProjectToUser(userId, projectToCreate.id());
         if (isProjectAddedToUser <= 0) {
             throw new Exception("Failed to add project to user");
+        }
+
+        // add devices to project
+        for(Device device : projectToCreate.selectedDevices()){
+            int isDeviceAddedToProject = deviceRepository.addDeviceToProject(projectToCreate.id(), device.getId());
+            if (isDeviceAddedToProject <= 0) {
+                throw new Exception("Failed to add device to project");
+            }
         }
 
         // Create image in Azure Blob Storage and database, then add it to the project

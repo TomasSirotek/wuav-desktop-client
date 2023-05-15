@@ -93,10 +93,6 @@ public class ExportController extends RootController implements Initializable {
         GridPane gridPane = new GridPane();
         gridPane.setHgap(10); // Set horizontal gap between grid cells
         gridPane.setVgap(10); // Set vertical gap between grid cells
-
-
-
-
         // Iterate over the selected projects
         for (int i = 0; i < selectedProjects.size(); i++) {
             Project project = selectedProjects.get(i);

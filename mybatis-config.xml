@@ -14,7 +14,6 @@
         <setting name="mapUnderscoreToCamelCase" value="FULL"/>
     </settings>
 
-
     <!-- table aliases -->
     <typeAliases>
         <typeAlias alias="AppUser" type="com.wuav.client.be.user.AppUser"/>
@@ -25,6 +24,7 @@
         <typeAlias alias="Customer" type="com.wuav.client.be.Customer"/>
         <typeAlias alias="Projector" type="com.wuav.client.be.device.Projector"/>
         <typeAlias alias="Speaker" type="com.wuav.client.be.device.Speaker"/>
+        <typeAlias alias="Device" type="com.wuav.client.be.device.Device"/>
     </typeAliases>
 
     <!-- main environment -->
@@ -54,5 +54,6 @@
         <mapper resource="com/wuav/client/mybatis/mapper/Customer.xml"/>
         <mapper resource="com/wuav/client/mybatis/mapper/Projector.xml"/>
         <mapper resource="com/wuav/client/mybatis/mapper/Speaker.xml"/>
+        <mapper resource="com/wuav/client/mybatis/mapper/Device.xml"/>
     </mappers>
 </configuration>

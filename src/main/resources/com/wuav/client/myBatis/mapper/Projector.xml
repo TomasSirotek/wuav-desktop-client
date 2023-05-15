@@ -7,7 +7,6 @@
 
     <resultMap id="projectorResult" type="Projector">
         <id property="id" column="id"/>
-        <result property="name" column="name"/>
         <result property="resolution" column="resolution"/>
         <result property="connectionType" column="connection_type"/>
         <result property="devicePort" column="device_port"/>
@@ -17,7 +16,7 @@
             id="getAllProjectors"
             resultMap="projectorResult"
     >
-        SELECT id, name, resolution, connection_type, device_port
+        SELECT id, resolution, connection_type, device_port
         FROM projector
     </select>
 
@@ -26,7 +25,7 @@
             resultMap="projectorResult"
     >
 
-        SELECT id, name, resolution, connection_type, device_port
+        SELECT id, resolution, connection_type, device_port
         FROM projector
         WHERE id = #{projectorId}
     </select>
@@ -38,8 +37,8 @@
             statementType="PREPARED"
             timeout="20">
 
-        INSERT INTO projector (id, name, resolution, connection_type, device_port)
-        VALUES (#{id}, #{name}, #{resolution}, #{connectionType}, #{devicePort})
+        INSERT INTO projector (id,resolution, connection_type, device_port)
+        VALUES (#{id},#{resolution}, #{connectionType},#{devicePort})
     </insert>
 
 
@@ -51,8 +50,8 @@
             timeout="20">
 
         UPDATE projector
-        SET name = #{name}, resolution = #{resolution}, connection_type = #{connectionType}, device_port = #{devicePort}
-        WHERE id = #{projectorId}
+        SET resolution = #{resolution}, connection_type = #{connectionType}, device_port = #{devicePort}
+        WHERE id = #{id}
 
     </update>
 
@@ -67,5 +66,4 @@
     </delete>
 
 </mapper>
-
 

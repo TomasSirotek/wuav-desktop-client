@@ -71,6 +71,12 @@ public enum ViewType {
             return "views/pdfBuilderView.fxml";
         }
     },
+    DEVICE_CRUD{
+        @Override
+        public String getFXMLView() {
+            return "views/deviceCrudView.fxml";
+        }
+    },
     DASHBOARD {
         @Override
         public String getFXMLView() {
