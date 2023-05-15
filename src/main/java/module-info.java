@@ -35,6 +35,7 @@ module com.wuav.client {
     requires com.google.api.services.gmail;
     requires org.controlsfx.controls;
     requires okhttp3;
+    requires AnimateFX;
 
 
     exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common,org.apache.pdfbox,org.controlsfx.controls;
