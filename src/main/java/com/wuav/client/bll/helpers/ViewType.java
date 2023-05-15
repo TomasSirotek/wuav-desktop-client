@@ -71,10 +71,10 @@ public enum ViewType {
             return "views/pdfBuilderView.fxml";
         }
     },
-    CHAT{
+    DEVICE_CRUD{
         @Override
         public String getFXMLView() {
-            return "views/chatView.fxml";
+            return "views/deviceCrudView.fxml";
         }
     },
     DASHBOARD {

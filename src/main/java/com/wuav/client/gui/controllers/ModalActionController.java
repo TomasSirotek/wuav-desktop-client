@@ -107,13 +107,11 @@ public class ModalActionController extends RootController implements Initializab
 
     private ICodesEngine codesEngine;
 
-    private Timeline imageFetchTimeline;
     private int currentRow = 0;
     private int currentColumn = 0;
     private List<Device> selectedDevices = new ArrayList<>();
     private List<ImageDTO> listOfUploadImages = new ArrayList<>();
     private StringProperty editorContent = new SimpleStringProperty();
-    private List<Image> imagesFromApp;
     private Image defaultImage = new Image("/no_data.png");
     private Image fileImage = new Image("/image.png");
     private final IControllerFactory controllerFactory;
@@ -124,24 +122,7 @@ public class ModalActionController extends RootController implements Initializab
     private final int BARCODE_WIDTH = 200;
     private final int BARCODE_HEIGHT = 200;
 
-
-    private Device selectedDeviceForCreateEdit = null;
-
     private final DeviceModel deviceModel;
-
-
-    // MAIN BOX
-
-    // FOR PROJECTOR
-    private TextField resolutionField,connectionType,devicePort;
-    // FOR SPEAKER
-    private TextField power,volume;
-
-    @FXML
-    private VBox deviceCRUDBox;
-
-    @FXML
-    private MFXButton cancelCRUD,createCRUD,demoChat;
 
 
     private List<Device> devices = new ArrayList<>();
@@ -217,34 +198,12 @@ public class ModalActionController extends RootController implements Initializab
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupEditor();
         selectFile.setOnAction(e -> selectFile());
-        demoChat.setOnAction(e -> openDemoChat());
-        setupSearchField();
         fillClientTypeChooseField();
         handleProgressSwitch();
+        setupSearchField();
         closeStage();
 
     }
-
-    private void openDemoChat() {
-        try {
-            RootController rootController = controllerFactory.loadFxmlFile(ViewType.CHAT);
-            Stage stage = new Stage();
-            Scene scene = new Scene(rootController.getView());
-
-            stage.initOwner(getStage());
-            stage.setTitle("Wuav-assistant");
-            stage.setOnCloseRequest(e -> {
-
-            });
-            stage.setResizable(false);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
 
 
     public void setupSearchField() {
@@ -262,112 +221,6 @@ public class ModalActionController extends RootController implements Initializab
                 devicesForChooseBox.getSelectionModel().clearSelection(); // Clear the selected device
             }
         });
-
-
-
-//        AutoCompletionBinding<Device> autoCompletionBinding = TextFields.bindAutoCompletion(textField, devices);
-//
-//        autoCompletionBinding.setOnAutoCompleted(event -> {
-//            // Create a new Label for the selected device and add it to the VBox
-//            Device selectedDevice = event.getCompletion();
-//
-//            selectedDevices.add(selectedDevice);
-//            noDeviceSelectedLabel.setVisible(false);
-//
-//            HBox deviceContainer = new HBox();
-//            Label deviceLabel = new Label(selectedDevice.getName());
-//            Button removeButton = new Button("Remove");
-//
-//            Button editButton = new Button("Edit");
-//            editButton.setOnAction(e -> {
-//                // Fill the fields with the selected device data
-//                deviceTypeSelection.setVisible(true); // set device
-//                deviceName.setText(selectedDevice.getName()); // set name
-//                // set device type pending on instance is it projector or speaker
-//                deviceTypeChooseField.getSelectionModel().select(selectedDevice.getClass().getSimpleName().toUpperCase());
-//
-//                if(selectedDevice instanceof Projector){
-//                    setupProjectorFields();
-//                    Projector projector = (Projector) selectedDevice;
-//                    resolutionField.setText(projector.getResolution());
-//                    connectionType.setText(projector.getConnectionType());
-//                    devicePort.setText(projector.getDevicePort());
-//                }
-//                else if(selectedDevice instanceof Speaker){
-//                    setupSpeakerFields();
-//                    Speaker speaker = (Speaker) selectedDevice;
-//                    power.setText(speaker.getPower());
-//                    volume.setText(speaker.getVolume());
-//                }
-//
-//                deviceCRUDBox = new VBox();
-//                deviceCRUDBox.setSpacing(10);
-//                deviceCRUDBox.setPadding(new Insets(10));
-//
-//                detailsBoxLoad.getChildren().clear();
-//                detailsBoxLoad.getChildren().add(deviceCRUDBox);
-//            });
-//
-//            removeButton.setOnAction(e -> {
-//                // Remove this device from the VBox and the selectedDevices list
-//                deviceBox.getChildren().remove(deviceContainer);
-//                selectedDevices.remove(selectedDevice);
-//
-//                if(selectedDevices.isEmpty()){
-//                    noDeviceSelectedLabel.setVisible(true);
-//                }
-//
-//            });
-//
-//            deviceContainer.getChildren().addAll(deviceLabel,editButton, removeButton);
-//            deviceBox.getChildren().add(deviceContainer);
-//        });
-//
-//
-//        fillDeviceTypeChooseField(); // fill be default
-//
-//        textField.setOnKeyPressed(event -> {
-//            if (event.getCode() == KeyCode.ENTER) {
-//                String text = textField.getText();
-//                textField.clear(); // clear current field
-//
-//                boolean deviceFound = devices.stream().anyMatch(device -> device.getName().equals(text));
-//                if (!deviceFound) {
-//
-//                    deviceTypeChooseField.setOnAction(e -> {
-//                        String selectedDeviceType = (String) deviceTypeChooseField.getValue();
-//                        // Load the FXML file based on the selected device type
-//
-//                        // CONSTRUCT THE VBOX FOR ALL
-//                        deviceCRUDBox = new VBox();
-//                        deviceCRUDBox.setSpacing(10);
-//                        deviceCRUDBox.setPadding(new Insets(10));
-//
-//                        if (selectedDeviceType.equals(DeviceType.PROJECTOR.name())) {
-//                            setupProjectorFields();
-//                            selectedDeviceForCreateEdit = new Projector(0,deviceName.getText(),"PROJECTOR");
-//                        } else if (selectedDeviceType.equals(DeviceType.SPEAKER.name())) {
-//                            setupSpeakerFields();
-//                        }
-//                        detailsBoxLoad.getChildren().clear();
-//                        detailsBoxLoad.getChildren().add(deviceCRUDBox);
-//
-//                    });
-//
-//                    createCRUD.setOnAction(e -> validateNewOrEditDevice());
-//
-//                    cancelCRUD.setOnAction(e1 -> {
-//                        detailsBoxLoad.getChildren().clear();
-//                        deviceTypeChooseField.setValue(null);
-//                        deviceTypeSelection.setVisible(false);
-//                        deviceName.setText("");
-//                    });
-//                    deviceName.setText(text);
-//                    deviceTypeSelection.setVisible(true);
-//                }
-//            }
-//        });
-//        searchBoxField.getChildren().add(textField);
     }
 
     private List<HBox> deviceDetailsList = new ArrayList<>();
@@ -428,72 +281,6 @@ public class ModalActionController extends RootController implements Initializab
         deviceForProjectList.setContent(scrollPaneContent);
     }
 
-//    private void validateNewOrEditDevice() {
-//        if (selectedDeviceForCreateEdit instanceof Projector) {
-//            if (validateDeviceInput(selectedDeviceForCreateEdit, Arrays.asList(resolutionField, connectionType, devicePort))) {
-//                //
-//                int generatedId = UniqueIdGenerator.generateUniqueId();
-//                Device device = new Projector(generatedId, deviceName.getText(), "PROJECTOR");
-//                ((Projector) device).setResolution(resolutionField.getText());
-//                ((Projector) device).setConnectionType(connectionType.getText());
-//                ((Projector) device).setDevicePort(devicePort.getText());
-//                // send device for creating
-//
-//                boolean isDeviceCreated = deviceModel.createDevice(device);
-//                if(isDeviceCreated){
-//                    this.devices.clear();
-//                    this.devices = deviceModel.getAllDevices();
-//                     AutoCompletionBinding<Device> autoCompletionBinding=  TextFields.bindAutoCompletion(textField, devices);
-//                    deviceTypeSelection.setVisible(false);
-//                    deviceName.setText("");
-//                    detailsBoxLoad.getChildren().clear();
-//
-//
-//                    AlertHelper.showDefaultAlert("Device created successfully", Alert.AlertType.INFORMATION);
-//                } else {
-//                    AlertHelper.showDefaultAlert("Device creation failed", Alert.AlertType.ERROR);
-//                }
-//            } else {
-//                AlertHelper.showDefaultAlert("Please fill all the fields", Alert.AlertType.WARNING);
-//            }
-//        } else if (selectedDeviceForCreateEdit instanceof Speaker) {
-//            if (validateDeviceInput(selectedDeviceForCreateEdit, Arrays.asList(power, volume))) {
-//                System.out.println(selectedDeviceForCreateEdit.getName());
-//            } else {
-//                AlertHelper.showDefaultAlert("Please fill all the fields", Alert.AlertType.WARNING);
-//            }
-//        }
-//    }
-
-    private boolean validateDeviceInput(Device device, List<TextField> fields) {
-        return fields.stream().noneMatch(field -> field.getText().isEmpty());
-    }
-
-    // setting different field for the devices
-    private void setupSpeakerFields() {
-
-            power = new TextField();
-            power.setPromptText("Power");
-
-            volume = new TextField();
-            volume.setPromptText("Volume");
-
-        deviceCRUDBox.getChildren().addAll(power, volume);
-
-    }
-
-    private void setupProjectorFields() {
-        resolutionField = new TextField();
-        resolutionField.setPromptText("Resolution");
-
-        connectionType = new TextField();
-        connectionType.setPromptText("Connection Type");
-
-        devicePort = new TextField();
-        devicePort.setPromptText("Device Port");
-        deviceCRUDBox.getChildren().addAll(resolutionField, connectionType, devicePort);
-    }
-
 
     private void setupEditor() {
         CKEditorPane editorPane = new CKEditorPane();
@@ -509,12 +296,6 @@ public class ModalActionController extends RootController implements Initializab
         Arrays.stream(ClientType.values())
                 .map(Enum::toString)
                 .forEach(clientTypeChooseField.getItems()::add);
-    }
-
-    private void fillDeviceTypeChooseField(){
-        Arrays.stream(DeviceType.values())
-                .map(Enum::toString)
-                .forEach(deviceTypeChooseField.getItems()::add);
     }
 
 
@@ -722,16 +503,6 @@ public class ModalActionController extends RootController implements Initializab
 
     }
 
-    private void changeImageActionHandleBox() {
-    //    imageActionHandleBox.getChildren().clear();
-        // add new button preview that has png image inside
-        MFXButton preview = new MFXButton("Preview");
-        preview.getStyleClass().add("mfx-raised");
-        preview.setStyle("-fx-background-color: #E84910; -fx-text-fill: #ffffff;");
-        preview.setOnAction(e -> previewImage());
-       // imageActionHandleBox.getChildren().add(preview);
-    }
-
     private void changeSelectedFileHBox() {
 
         imageText.setVisible(false);
@@ -779,29 +550,6 @@ public class ModalActionController extends RootController implements Initializab
         gridPane.add(removeFile, 3, 0); // Remove button in the fourth column
 
         addedFilePane.getChildren().add(gridPane);
-
-    }
-
-    private void previewImage() {
-        // open new scene with image inside
-        Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Authorize yourself");
-        stage.initStyle(StageStyle.DECORATED);
-        stage.setResizable(false);
-
-        ImageView imageView = new ImageView(selectedImage.getImage());
-        imageView.setPreserveRatio(true);
-        imageView.setFitHeight(600);
-        imageView.setFitHeight(500);
-
-        VBox layout = new VBox(10, imageView);
-        layout.setAlignment(Pos.CENTER);
-        layout.setPadding(new Insets(10));
-
-        Scene scene = new Scene(layout);
-        stage.setScene(scene);
-        stage.showAndWait();
 
     }
 

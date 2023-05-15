@@ -482,7 +482,7 @@
                                                             <ChoiceBox fx:id="devicesForChooseBox" prefHeight="28.0" prefWidth="192.0" style="-fx-background-color: white; -fx-border-color: #c5c1c1;" />
                                                             <HBox alignment="CENTER_RIGHT" prefHeight="28.0" prefWidth="191.0">
                                                                <children>
-                                                                  <MFXButton fx:id="backBtn1" buttonType="RAISED" prefHeight="27.0" prefWidth="182.0" style="-fx-background-color: gray; -fx-text-fill: white;" text="Create device">
+                                                                  <MFXButton fx:id="deviceCrudToggle" buttonType="RAISED" prefHeight="27.0" prefWidth="182.0" style="-fx-background-color: gray; -fx-text-fill: white;" text="Create device">
                                                                      <font>
                                                                         <Font name="SansSerif Bold" size="13.0" />
                                                                      </font>
