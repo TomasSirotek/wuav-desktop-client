@@ -54,7 +54,7 @@ module com.wuav.client {
     exports  com.wuav.client.bll.utilities.pdf to com.google.guice,org.apache.pdfbox;
     exports com.wuav.client.cache to com.google.guice;
     exports com.wuav.client.be.device to org.mybatis;
-
+    exports com.wuav.client.gui.manager to org.mybatis,com.google.guice;
 
     opens com.wuav.client.gui.controllers to javafx.fxml, com.google.guice, com.google.common,com.azure.core,org.apache.pdfbox,com.google.gson;
     opens com.wuav.client.gui.models to javafx.fxml, com.google.guice, com.google.common,com.azure.core,org.apache.pdfbox;
@@ -76,5 +76,6 @@ module com.wuav.client {
     opens com.wuav.client.bll.utilities.engines to com.google.guice;
     exports com.wuav.client.be to com.google.guice, javafx.graphics, org.mybatis;
     opens com.wuav.client.be to com.google.common, com.google.guice, javafx.fxml, org.mybatis, org.slf4j;
+    opens com.wuav.client.gui.manager to org.mybatis,com.google.guice;
 
 }

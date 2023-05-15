@@ -14,7 +14,6 @@ public class CustomerRepository implements ICustomerRepository {
 
     static Logger logger = LoggerFactory.getLogger(AddressRepository.class);
 
-
     @Override
     public Customer getCustomerById(int id) {
         Customer customer = null;
@@ -26,7 +25,6 @@ public class CustomerRepository implements ICustomerRepository {
         }
         return customer;
     }
-
 
     @Override
     public int createCustomer(CustomerDTO customerDTO) {

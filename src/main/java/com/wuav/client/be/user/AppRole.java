@@ -1,8 +1,6 @@
 package com.wuav.client.be.user;
 
 
-
-
 public class AppRole {
 
     private int id;

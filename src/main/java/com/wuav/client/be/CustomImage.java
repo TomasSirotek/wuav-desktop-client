@@ -16,9 +16,7 @@ public class CustomImage {
     }
 
     public CustomImage(){
-
     }
-
 
     public int getId() {
         return id;

@@ -64,7 +64,6 @@ class AddressRepositoryTest {
         Address result = addressRepository.getAddressById(EXISTING_ADDRESS_ID);
 
         assertEquals(address, result);
-
     }
 
     @Test

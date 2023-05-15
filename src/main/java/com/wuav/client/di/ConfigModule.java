@@ -16,6 +16,7 @@ import com.wuav.client.cache.ImageCache;
 import com.wuav.client.dal.interfaces.*;
 import com.wuav.client.dal.repository.*;
 
+import com.wuav.client.gui.manager.StageManager;
 import com.wuav.client.gui.models.DeviceModel;
 import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.ProjectModel;
@@ -88,6 +89,7 @@ public class ConfigModule extends AbstractModule {
          */
 
         bind(IUserModel.class).to(UserModel.class).in(Singleton.class);
+        bind(StageManager.class).asEagerSingleton();
 
 
         bind(IUserRepository.class).to(UserRepository.class);

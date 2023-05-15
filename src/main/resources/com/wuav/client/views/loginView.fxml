@@ -4,7 +4,6 @@
 <?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
 <?import io.github.palexdev.materialfx.controls.MFXProgressSpinner?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
-<?import io.github.palexdev.materialfx.controls.MFXToggleButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
@@ -38,7 +37,7 @@
             <DropShadow height="11.33" radius="4.3325" width="8.0" />
          </effect>
          <children>
-            <VBox alignment="CENTER" prefHeight="440.0" prefWidth="254.0">
+            <VBox alignment="CENTER" prefHeight="497.0" prefWidth="287.0">
                <children>
                   <HBox alignment="BOTTOM_LEFT" prefHeight="65.0" prefWidth="501.0">
                      <children>
@@ -79,9 +78,8 @@
                           <rowConstraints>
                             <RowConstraints maxHeight="51.57720947265625" minHeight="10.0" prefHeight="36.4732666015625" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="80.2921142578125" minHeight="10.0" prefHeight="43.493865966796875" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="82.15097045898438" minHeight="10.0" prefHeight="53.006134033203125" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="86.45175170898438" minHeight="10.0" prefHeight="32.121368408203125" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="93.91766357421875" minHeight="10.0" prefHeight="88.25408935546875" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="82.15097045898438" minHeight="10.0" prefHeight="46.5" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="110.0" minHeight="10.0" prefHeight="110.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
                               <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="307.0" GridPane.rowIndex="2">
@@ -115,19 +113,7 @@
                                     <Insets left="10.0" />
                                  </padding>
                               </HBox>
-                              <HBox prefHeight="100.0" prefWidth="254.0" GridPane.rowIndex="3">
-                                 <children>
-                                    <MFXToggleButton graphicTextGap="0.0" prefHeight="41.0" prefWidth="94.0" text="Remember me " textFill="#252f4091">
-                                       <font>
-                                          <Font name="SansSerif Regular" size="12.0" />
-                                       </font>
-                                       <cursor>
-                                          <Cursor fx:constant="HAND" />
-                                       </cursor>
-                                    </MFXToggleButton>
-                                 </children>
-                              </HBox>
-                              <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="4">
+                              <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="3">
                                  <children>
                                     <MFXButton buttonType="RAISED" onAction="#login" prefHeight="27.0" prefWidth="212.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Login">
                                        <font>
@@ -155,7 +141,7 @@
             </VBox>
          </children>
          <padding>
-            <Insets bottom="80.0" left="80.0" right="80.0" top="80.0" />
+            <Insets bottom="80.0" left="100.0" right="80.0" top="80.0" />
          </padding>
       </HBox>
       <Pane fx:id="loadingPane" prefHeight="599.0" prefWidth="506.0" visible="false" />
@@ -173,5 +159,34 @@
             <Color red="0.9098039269447327" green="0.2862745225429535" blue="0.062745101749897" />
          </color1>
       </MFXProgressSpinner>
+      <Pane fx:id="errorPane" layoutX="-2.0" layoutY="-3.0" prefHeight="41.0" prefWidth="504.0" styleClass="error-pane" visible="false">
+         <children>
+            <GridPane prefHeight="41.0" prefWidth="333.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="132.0291290283203" minWidth="10.0" prefWidth="126.25064086914062" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="208.49872589111328" minWidth="10.0" prefWidth="202.24935913085938" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/navItems/error-icon.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <Label fx:id="errorLabel" prefHeight="30.0" prefWidth="196.0" text="Incorrect password or email" textFill="WHITE" GridPane.columnIndex="1">
+                     <font>
+                        <Font name="SansSerif Regular" size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </GridPane>
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

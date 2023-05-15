@@ -32,7 +32,6 @@
         </dependency>
 
 
-
         <dependency>
             <groupId>com.google.api-client</groupId>
             <artifactId>google-api-client</artifactId>
@@ -56,10 +55,6 @@
             <artifactId>controlsfx</artifactId>
             <version>11.1.2</version>
         </dependency>
-
-
-
-
 
 
         <!-- https://mavenlibs.com/maven/dependency/ch.qos.logback/logback-classic -->
@@ -96,7 +91,6 @@
             <artifactId>sendgrid-java</artifactId>
             <version>4.9.3</version>
         </dependency>
-
 
 
         <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
@@ -142,7 +136,6 @@
         </dependency>
 
 
-
         <!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
         <!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
         <dependency>
@@ -158,11 +151,6 @@
             <artifactId>javase</artifactId>
             <version>3.5.1</version>
         </dependency>
-
-
-
-
-
 
 
         <dependency>
@@ -239,7 +227,6 @@
         </dependency>
 
 
-
         <!-- https://mavenlibs.com/maven/dependency/org.junit.jupiter/junit-jupiter-engine -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -293,7 +280,6 @@
             <artifactId>fluentlenium-core</artifactId>
             <version>4.8.0</version>
         </dependency>
-
 
 
         <dependency>

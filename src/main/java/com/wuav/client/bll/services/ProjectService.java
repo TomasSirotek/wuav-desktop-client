@@ -68,6 +68,8 @@ public class ProjectService implements IProjectService {
         return projectRepository.getProjectById(projectId);
     }
 
+
+    // THIS HAS TO BE REFACTORED AND INCLUDE ROLL BACKS
     @Override
     public boolean deleteProject(Project project) {
         // Ensure all operations are atomic to maintain data integrity
@@ -187,8 +189,8 @@ public class ProjectService implements IProjectService {
         }
 
         // Create project and retrieve the id
-        int createdProjectResult = projectRepository.createProject(projectToCreate);
-        if (createdProjectResult <= 0) {
+        boolean createdProjectResult = projectRepository.createProject(projectToCreate);
+        if (!createdProjectResult ) {
             throw new Exception("Failed to create project");
         }
 

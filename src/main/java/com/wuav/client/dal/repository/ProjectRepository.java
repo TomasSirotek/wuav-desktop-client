@@ -72,8 +72,7 @@ public class ProjectRepository implements IProjectRepository {
     }
 
     @Override
-    public int createProject(CreateProjectDTO projectDTO) {
-        int affectedRowsResult = 0;
+    public boolean createProject(CreateProjectDTO projectDTO) {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
             IProjectMapper mapper = session.getMapper(IProjectMapper.class);
             var affectedRows = mapper.createProject(
@@ -84,11 +83,11 @@ public class ProjectRepository implements IProjectRepository {
             );
 
             session.commit();
-            affectedRowsResult = affectedRows > 0 ? 1 : 0;
+            return affectedRows > 0;
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);
+            return false;
         }
-        return affectedRowsResult;
     }
 
     @Override

@@ -2,8 +2,6 @@
     -fx-border-color: #c5c1c1 !important;
 }
 
-
-
 .mfx-progress-bar .track{
     -fx-background-color: red !important;
     -fx-text-fill: red !important;
@@ -25,10 +23,13 @@
     -fx-accent: red !important;
 }
 
-.progress-bar .bar {
-    -fx-background-color:
-            -fx-box-border,
-            red; /* this line is the background color of the bar */
-    -fx-background-insets: 0, 1, 2;
-    -fx-padding: 0.416667em; /* 5 */
+.mfx-text-field .text-field {
+    -fx-highlight-fill: rgba(238, 235, 235, 0.8) !important; /* Selected text highlight */
+    -fx-prompt-text-fill: rgba(255, 254, 254, 0.85) !important; /* Prompt text color */
+}
+
+.error-pane{
+    -fx-background-color: rgb(211, 47, 47) !important;
+    -fx-border-color: #ebccd1 !important;
+    -fx-text-fill: white;
 }
