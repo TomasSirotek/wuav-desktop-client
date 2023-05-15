@@ -13,13 +13,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DeviceRepositoryTest {
 
-    // Assuming these values exist in your test database
     private static final int EXISTING_PROJECTOR_ID = 10387399;
     private static final int EXISTING_SPEAKER_ID = 111111;
-
     private static final int EXISTING_DEVICE_ID = 1207741913;
     private static final int EXISTING_PROJECT_ID = 358550511;
-
 
     DeviceRepository deviceRepository = new DeviceRepository();
 

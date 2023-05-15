@@ -15,23 +15,21 @@ public class AddressRepository implements IAddressRepository {
     static Logger logger = LoggerFactory.getLogger(AddressRepository.class);
 
     @Override
-    public int createAddress(AddressDTO addressDTO) {
-        int affectedRowsResult = 0;
+    public boolean createAddress(AddressDTO addressDTO) {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
             IAddressMapper mapper = session.getMapper(IAddressMapper.class);
-            var affectedRows = mapper.createAddress(
+             int affectedRowsResult = mapper.createAddress(
                     addressDTO.id(),
                     addressDTO.street(),
                     addressDTO.city(),
                     addressDTO.zipCode()
             );
-
             session.commit();
-            affectedRowsResult = affectedRows > 0 ? 1 : 0;
+            return affectedRowsResult > 0;
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);
+            return false;
         }
-        return affectedRowsResult;
     }
 
 

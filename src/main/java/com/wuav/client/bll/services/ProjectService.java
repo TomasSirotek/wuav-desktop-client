@@ -175,8 +175,8 @@ public class ProjectService implements IProjectService {
     // THIS HAS TO BE REFACTORED AND INCLUDE ROLL BACKS
     private boolean tryCreateProject(int userId, CreateProjectDTO projectToCreate) throws Exception {
         // Create address and retrieve the id
-        int createdAddressResult = addressService.createAddress(projectToCreate.customer().address());
-        if (createdAddressResult <= 0) {
+        boolean createdAddressResult = addressService.createAddress(projectToCreate.customer().address());
+        if (!createdAddressResult) {
             throw new Exception("Failed to create address");
         }
 

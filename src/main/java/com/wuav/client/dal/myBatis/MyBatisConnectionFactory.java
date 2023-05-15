@@ -10,6 +10,7 @@ import java.io.IOException;
 
 public class MyBatisConnectionFactory {
     private static final String CONFIG_FILE_NAME = "mybatis-config.xml";
+
     private static SqlSessionFactory sqlSessionFactory;
 
     static {
@@ -27,4 +28,10 @@ public class MyBatisConnectionFactory {
     public static SqlSessionFactory getSqlSessionFactory() {
         return sqlSessionFactory;
     }
+
+    public static void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
+        MyBatisConnectionFactory.sqlSessionFactory = sqlSessionFactory;
+    }
+
+
 }
