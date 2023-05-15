@@ -5,8 +5,8 @@ import java.util.Map;
 
 public class Speaker extends Device {
 
-    public String volume;
-    public String power;
+    private String volume;
+    private String power;
 
     public Speaker(int id, String name,String deviceType) {
         super(id, name,deviceType);
@@ -31,7 +31,7 @@ public class Speaker extends Device {
 
     @Override
     public String toString() {
-        return name;
+        return getName();
     }
 }
 

@@ -66,7 +66,7 @@ public class DeviceRepositoryTest {
         Device deleteResult = deviceRepository.getDeviceById(EXISTING_DEVICE_ID, Device.class);
 
         System.out.println(deleteResult.toString());
-        assertEquals(EXISTING_DEVICE_ID,deleteResult.id);
+        assertEquals(EXISTING_DEVICE_ID,deleteResult.getId());
     }
 
     @Test

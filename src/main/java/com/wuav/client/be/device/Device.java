@@ -4,9 +4,9 @@ import java.util.Map;
 
 public abstract class Device {
 
-    public int id;
-    public String name;
-    public String deviceType;
+    private int id;
+    private String name;
+    private String deviceType;
 
     public Device(int id, String name, String deviceType) {
         this.id = id;

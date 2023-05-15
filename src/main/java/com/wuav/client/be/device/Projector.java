@@ -3,9 +3,9 @@ package com.wuav.client.be.device;
 
 public class Projector extends Device {
 
-    public String resolution;
-    public String connectionType;
-    public String devicePort;
+    private String resolution;
+    private String connectionType;
+    private String devicePort;
     public Projector(int id,String name,String deviceType) {
         super(id, name,deviceType);
     }
@@ -37,6 +37,6 @@ public class Projector extends Device {
 
     @Override
     public String toString() {
-        return name;
+        return getName();
     }
 }
