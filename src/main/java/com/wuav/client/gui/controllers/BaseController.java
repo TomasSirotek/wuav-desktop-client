@@ -9,6 +9,7 @@ import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.controllers.event.RefreshEvent;
+import com.wuav.client.gui.manager.StageManager;
 import com.wuav.client.gui.models.user.CurrentUser;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.animation.TranslateTransition;
@@ -16,17 +17,15 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -37,41 +36,25 @@ import java.util.*;
 public class BaseController extends RootController implements Initializable {
 
     @FXML
-    private MFXButton accButton;
+    private MFXButton accButton,usersButton,projectButton,expand;
     @FXML
-    private MFXButton usersButton;
-    @FXML
-    private Label menuItemLabel;
-    @FXML
-    private VBox userDetailsBox;
+    private VBox userDetailsBox,sideNavBox,expandBoxToggle;
     @FXML
     private ImageView userImage;
     @FXML
-    private Label userNameField;
+    private GridPane logoPane;
     @FXML
-    private Label userEmailField;
-    @FXML
-    private AnchorPane mainAnchorPane;
-    @FXML
-    private ImageView workIcon;
-    @FXML
-    private MFXButton projectButton;
-    @FXML
-    private MFXButton createNewProject;
-    @FXML
-    private VBox sideNavBox;
+    private Label userNameField,userEmailField,menuItemLabel;
     @FXML
     private ImageView menuIcon;
     @FXML
     private StackPane app_content;
-
-    @FXML
-    private MFXButton expand;
-
     @FXML
     private AnchorPane slider;
 
     private final IControllerFactory controllerFactory;
+
+    private final StageManager stageManager;
 
     private final EventBus eventBus;
 
@@ -80,8 +63,9 @@ public class BaseController extends RootController implements Initializable {
     private Image defaultImage = new Image("/no_data.png");
 
     @Inject
-    public BaseController(IControllerFactory controllerFactory, EventBus eventBus) {
+    public BaseController(IControllerFactory controllerFactory, StageManager stageManager, EventBus eventBus) {
         this.controllerFactory = controllerFactory;
+        this.stageManager = stageManager;
         this.eventBus = eventBus;
     }
 
@@ -118,10 +102,12 @@ public class BaseController extends RootController implements Initializable {
         menuItemLabel.setVisible(false);
 
         userDetailsBox.setVisible(false);
+        expandBoxToggle.setAlignment(Pos.CENTER_LEFT);
+        logoPane.setVisible(true);
         slide.setToX(0);
         slide.play();
 
-        Image image = new Image(getClass().getClassLoader().getResource("openExpand.png").toExternalForm());
+        Image image = new Image(getClass().getClassLoader().getResource("close.png").toExternalForm());
         app_content.setStyle("-fx-background-color: none;");
       //  sideNavBox.setPadding(new Insets(0, 20, 0, 30));
 
@@ -147,15 +133,14 @@ public class BaseController extends RootController implements Initializable {
         slide.setNode(slider);
         userDetailsBox.setVisible(true);
         menuItemLabel.setVisible(true);
-        //  slide.setToX(slider.getPrefWidth());
+        expandBoxToggle.setAlignment(Pos.CENTER_RIGHT);
+        logoPane.setVisible(false);
 
-        Image image = new Image(getClass().getClassLoader().getResource("closeExpand.png").toExternalForm());
+        Image image = new Image(getClass().getClassLoader().getResource("close.png").toExternalForm());
         menuIcon.setImage(image);
         slide.play();
-        // app_content.setStyle("-fx-background-color: black;-fx-opacity: 0.1;");
 
-
-        slider.setPrefWidth(210); // Replace with your original sidebar width
+        slider.setPrefWidth(250); // Replace with your original sidebar width
         userNameField.setText(CurrentUser.getInstance().getLoggedUser().getName()); // Replace with your original text
         userEmailField.setText(CurrentUser.getInstance().getLoggedUser().getEmail()); // Replace with your original text
         sideNavBox.getChildren().forEach(node -> {
@@ -163,12 +148,11 @@ public class BaseController extends RootController implements Initializable {
                 ((Label) node).setStyle("-fx-text-fill: black;");
             }
         });
-
-        slide.setOnFinished(ActionEvent -> {
-
-        });
     }
 
+    /**
+     * This method is used for handling expand control
+     */
     private void handleExpandControl() {
         expand.setOnAction(event -> {
             if (isSidebarExpanded) {
@@ -223,24 +207,6 @@ public class BaseController extends RootController implements Initializable {
         new Thread(loadDataTask).start();
     }
 
-    /**
-     * private method for showing new stages whenever its need
-     *
-     * @param parent root that will be set
-     * @param title  title for new stage
-     */
-    private void show(Parent parent, String title) {
-        Stage stage = new Stage();
-        Scene scene = new Scene(parent);
-
-        stage.initOwner(getStage());
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.setTitle(title);
-
-        stage.setResizable(false);
-        stage.setScene(scene);
-        stage.show();
-    }
 
 
     private RootController loadNodesView(ViewType viewType) throws IOException {
@@ -252,23 +218,13 @@ public class BaseController extends RootController implements Initializable {
         app_content.getChildren().add(parent);
     }
 
-
-    // THIS HAS TO BE FIXED MAYBE I NEED SOME SCENE CONTROLLER SINCE THIS IS MESSSSSS
     @FXML
     public void logoutButton(ActionEvent actionEvent) throws IOException {
         CurrentUser.getInstance().logout();
 
-      getStage().close();
-      // open again new stage with login view
-        RootController parent = null;
-        parent = loadNodesView(ViewType.LOGIN);
-        show(parent.getView(), "Login");
-
-
-        // this is bad
-
+        getStage().close();
+        RootController rootController = stageManager.loadNodesView(ViewType.LOGIN,controllerFactory);
+        stageManager.showStage("Login",rootController.getView());
     }
-    //endregion
-
 
 }

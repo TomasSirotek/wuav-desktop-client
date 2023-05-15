@@ -173,7 +173,7 @@
                                  <graphic>
                                     <ImageView fitHeight="21.0" fitWidth="24.0" styleClass="mfx-button">
                                        <image>
-                                          <Image url="@../images/navItems/close.png" />
+                                          <Image url="@../../../../close.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
