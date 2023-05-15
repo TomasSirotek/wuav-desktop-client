@@ -50,8 +50,8 @@
             timeout="20">
 
         UPDATE projector
-        SET name = #{name}, resolution = #{resolution}, connection_type = #{connectionType}, device_port = #{devicePort}
-        WHERE id = #{projectorId}
+        SET resolution = #{resolution}, connection_type = #{connectionType}, device_port = #{devicePort}
+        WHERE id = #{id}
 
     </update>
 

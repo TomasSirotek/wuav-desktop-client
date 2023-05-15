@@ -49,8 +49,8 @@
             timeout="20">
 
         UPDATE speaker
-        SET name = #{name}, power = #{power}, volume = #{volume}
-        WHERE id = #{speakerId}
+        SET power = #{power}, volume = #{volume}
+        WHERE id = #{id}
 
     </update>
 

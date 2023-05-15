@@ -8,6 +8,8 @@ public interface IProjectorMapper {
     List<Projector> getAllProjectors();
     Projector getProjectorById(@Param("projectorId") int projectorId);
     int createProjector(Projector projector);
-    boolean updateProjectorById(@Param("projectorId") int id,@Param("name") String name,@Param("resolution") String resolution,@Param("connectionType") String connectionType,@Param("devicePort") String devicePort);
+    //int updateProjectorById(@Param("projectorId") int id,@Param("resolution") String resolution,@Param("connectionType") String connectionType,@Param("devicePort") String devicePort);
+    int updateProjectorById(Projector projector);
+
     boolean deleteProjectorById(@Param("projectorId") int projectorId);
 }

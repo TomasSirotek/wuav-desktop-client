@@ -56,6 +56,23 @@
     </select>
 
 
+    <select id="getDeviceTypeById" resultMap="DeviceResultMap">
+        SELECT
+            d.id as deviceId,
+            d.name as deviceName,
+            d.device_type,
+            p.resolution,
+            p.connection_type,
+            p.device_port,
+            s.power,
+            s.volume
+        FROM device d
+                 LEFT JOIN projector p ON d.id = p.id
+                 LEFT JOIN speaker s ON d.id = s.id
+        WHERE d.device_type = #{deviceId}
+    </select>
+
+
     <insert
             id="createDevice"
             parameterType="map"
@@ -66,6 +83,7 @@
         INSERT INTO device (id, name,device_type) VALUES (#{id}, #{name},#{deviceType})
     </insert>
 
+
     <insert
             id="addDeviceToProject"
             parameterType="map"
@@ -75,6 +93,19 @@
 
         INSERT INTO project_device (project_id, device_id) VALUES (#{projectId}, #{deviceId})
     </insert>
+
+
+    <update
+            id="updateDevice"
+            parameterType="Projector"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        UPDATE device
+        SET name = #{name}
+        WHERE id = #{deviceId}
+    </update>
 
 
 </mapper>

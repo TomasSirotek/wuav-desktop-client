@@ -14,4 +14,10 @@ public interface IDeviceMapper {
     Device getDeviceById(@Param("deviceId") int deviceId);
 
     int createDevice(Device device);
+
+    int updateDeviceById(@Param("deviceId") int id, @Param("name") String name,@Param("deviceType") String deviceType);
+
+    int updateDevice(@Param("deviceId") int id,@Param("name") String name);
+
+    String getDeviceTypeById(@Param("deviceId") int id);
 }

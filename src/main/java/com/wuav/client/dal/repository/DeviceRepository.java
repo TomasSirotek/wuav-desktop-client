@@ -66,6 +66,7 @@ public class DeviceRepository implements IDeviceRepository {
         }
     }
 
+    // FINISHED AND WORKING TESTED
     @Override
     public int addDeviceToProject(int projectId, int deviceId) {
         int finalAffectedRows = 0;
@@ -81,29 +82,25 @@ public class DeviceRepository implements IDeviceRepository {
         return finalAffectedRows;
     }
 
+    // FINISHED AND WORKING TESTED
     @Override
     public boolean updateDevice(Device device) {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            if (device instanceof Projector) {
-                IProjectorMapper mapper = session.getMapper(IProjectorMapper.class);
-                mapper.updateProjectorById(
-                        device.getId(),
-                        device.getName(),
-                        ((Projector) device).getResolution(),
-                        ((Projector) device).getConnectionType(),
-                        ((Projector) device).getDevicePort()
-                );
-            } else if (device instanceof Speaker) {
-                ISpeakerMapper mapper = session.getMapper(ISpeakerMapper.class);
-                mapper.updateSpeakerById(
-                        device.getId(),
-                        device.getName(),
-                        ((Speaker) device).getPower(),
-                        ((Speaker) device).getVolume()
-                );
-            }
+            IDeviceMapper deviceMapper = session.getMapper(IDeviceMapper.class);
+
+            int affectedRows = 0;
+            // If the device type hasn't changed, just update the device
+            affectedRows += deviceMapper.updateDevice(device.getId(),device.getName());
+                if (device instanceof Projector) {
+                    IProjectorMapper mapper = session.getMapper(IProjectorMapper.class);
+                    affectedRows += mapper.updateProjectorById((Projector) device);
+                } else if (device instanceof Speaker) {
+                    ISpeakerMapper mapper = session.getMapper(ISpeakerMapper.class);
+                    affectedRows += mapper.updateSpeakerById((Speaker) device);
+                }
+
             session.commit();
-            return true;
+            return affectedRows > 1;
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);
             return false;

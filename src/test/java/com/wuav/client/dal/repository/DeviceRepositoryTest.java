@@ -5,6 +5,7 @@ import com.wuav.client.be.device.Projector;
 import com.wuav.client.be.device.Speaker;
 import com.wuav.client.bll.utilities.UniqueIdGenerator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.List;
 
@@ -13,16 +14,18 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DeviceRepositoryTest {
 
     // Assuming these values exist in your test database
-    private static final int EXISTING_PROJECTOR_ID = 3132;
-    private static final int EXISTING_SPEAKER_ID = 2324234;
+    private static final int EXISTING_PROJECTOR_ID = 445891903;
+    private static final int EXISTING_SPEAKER_ID = 1462022699;
 
     private static final int EXISTING_DEVICE_ID = 1207741913;
+    private static final int EXISTING_PROJECT_ID = 358550511;
 
+
+    DeviceRepository deviceRepository = new DeviceRepository();
 
     @Test
     public void testCreateAndFetchDeviceProjector() {
         // Arrange
-        DeviceRepository deviceRepository = new DeviceRepository();
         var uniqueIdGenerator = UniqueIdGenerator.generateUniqueId();
 
         Projector projector = new Projector(uniqueIdGenerator, "SWIFT PROJECTOR", Projector.class.getSimpleName().toUpperCase());
@@ -43,7 +46,6 @@ public class DeviceRepositoryTest {
     @Test
     public void testCreateAndFetchDeviceSpeaker() {
         // Arrange
-        DeviceRepository deviceRepository = new DeviceRepository();
         var uniqueIdGenerator = UniqueIdGenerator.generateUniqueId();
 
         Speaker speaker = new Speaker(uniqueIdGenerator, "FOO SPEAKER",Speaker.class.getSimpleName().toUpperCase());
@@ -63,8 +65,6 @@ public class DeviceRepositoryTest {
     @Test
     public void getDeviceById() {
         // Arrange
-        DeviceRepository deviceRepository = new DeviceRepository();
-
         // Act
         Device deleteResult = deviceRepository.getDeviceById(EXISTING_DEVICE_ID, Device.class);
 
@@ -73,11 +73,11 @@ public class DeviceRepositoryTest {
     }
 
     @Test
-    public void testUpdateDevice() {
+    public void testUpdateDeviceProjectorName() {
         // Arrange
-        DeviceRepository deviceRepository = new DeviceRepository();
+
         Device device = deviceRepository.getDeviceById(EXISTING_PROJECTOR_ID, Projector.class);
-        String newName = "Updated Projector";
+        String newName = "Updated Projector benq3";
 
         // Act
         device.setName(newName);
@@ -90,10 +90,56 @@ public class DeviceRepositoryTest {
     }
 
     @Test
-    public void testDeleteDevice() {
+    public void testUpdateDeviceSpeakerVolume() {
         // Arrange
-        DeviceRepository deviceRepository = new DeviceRepository();
 
+        Device device = deviceRepository.getDeviceById(EXISTING_SPEAKER_ID, Speaker.class);
+        String newVolume = "666";
+
+        // Act
+        ((Speaker) device).setVolume(newVolume);
+        boolean updateResult = deviceRepository.updateDevice(device);
+
+        // Assert
+        // Assert
+        assertTrue(updateResult, "Failed to update device");
+        Device updatedDevice = deviceRepository.getDeviceById(EXISTING_SPEAKER_ID, Speaker.class);
+        assertEquals(newVolume, ((Speaker) updatedDevice).getVolume(), "Speaker volume was not updated");
+    }
+
+    @Test
+    public void testUpdateDeviceProjectorResolution() {
+        // Arrange
+
+        Device device = deviceRepository.getDeviceById(EXISTING_PROJECTOR_ID, Projector.class);
+        String resolution = "ULTRA FULL HD(1890x1920)";
+
+        // Act
+        ((Projector) device).setResolution(resolution);
+        boolean updateResult = deviceRepository.updateDevice(device);
+
+        // Assert
+        // Assert
+        assertTrue(updateResult, "Failed to update device");
+        Device updatedDevice = deviceRepository.getDeviceById(EXISTING_PROJECTOR_ID, Projector.class);
+        assertEquals(resolution, ((Projector) updatedDevice).getResolution(), "Speaker volume was not updated");
+    }
+
+    @Test
+    void testAddDeviceToProject() {
+        // Act
+        int affectedRows = deviceRepository.addDeviceToProject(
+                EXISTING_PROJECT_ID,
+                EXISTING_DEVICE_ID
+        );
+
+        // Assert
+        Assertions.assertEquals(1, affectedRows, "Device was not added to the project");
+    }
+
+
+    @Test
+    public void testDeleteDevice() {
         // Act
         boolean deleteResult = deviceRepository.deleteDevice(EXISTING_SPEAKER_ID, Speaker.class);
 
@@ -105,9 +151,6 @@ public class DeviceRepositoryTest {
 
     @Test
     public void testGetAllDevices() {
-        // Arrange
-        DeviceRepository deviceRepository = new DeviceRepository();
-
         // Act
         List<Device> devices = deviceRepository.getAllDevices();
 

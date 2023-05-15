@@ -9,6 +9,8 @@ public interface ISpeakerMapper {
     List<Speaker> getAllSpeakers();
     Speaker getSpeakerById(@Param("speakerId") int speakerId);
     int createSpeaker(Speaker speaker);
-    boolean updateSpeakerById(@Param("speakerId") int id,@Param("name") String name ,@Param("power") String power,@Param("volume") String volume);
+    int updateSpeakerById(Speaker speaker);
     boolean deleteSpeakerById(@Param("speakerId") int speakerId);
+
+    int updateSpeaker(Speaker device);
 }
