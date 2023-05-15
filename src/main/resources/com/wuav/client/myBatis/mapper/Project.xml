@@ -83,8 +83,8 @@
                  LEFT JOIN image i ON pi.image_id = i.id
                  INNER JOIN project_device pd ON p.id = pd.project_id
                  INNER JOIN device d ON pd.device_id = d.id
-                 LEFT JOIN projector pr ON d.id = pr.device_id
-                 LEFT JOIN speaker sp ON d.id = sp.device_id
+                 LEFT JOIN projector pr ON d.id = pr.id
+                 LEFT JOIN speaker sp ON d.id = sp.id
         WHERE up.user_id = ${userId}
     </select>
 
@@ -122,10 +122,10 @@
                  INNER JOIN address a ON c.address_id = a.id
                  LEFT JOIN project_image pi ON p.id = pi.project_id
                  LEFT JOIN image i ON pi.image_id = i.id
-                 INNER JOIN project_device pd ON p.id = pd.project_id
+                 INNER JOIN project_device pd ON p.id = pd.project_id -- inner to ensure that device have to be in project and will be displayed
                  INNER JOIN device d ON pd.device_id = d.id
-                 LEFT JOIN projector pr ON d.id = pr.device_id
-                 LEFT JOIN speaker sp ON d.id = sp.device_id
+                 LEFT JOIN projector pr ON d.id = pr.id
+                 LEFT JOIN speaker sp ON d.id = sp.id
     </select>
 
     <select
@@ -166,8 +166,8 @@
                  LEFT JOIN image i ON pi.image_id = i.id
                  INNER JOIN project_device pd ON p.id = pd.project_id
                  INNER JOIN device d ON pd.device_id = d.id
-                 LEFT JOIN projector pr ON d.id = pr.device_id
-                 LEFT JOIN speaker sp ON d.id = sp.device_id
+                 LEFT JOIN projector pr ON d.id = pr.id
+                 LEFT JOIN speaker sp ON d.id = sp.id
         WHERE p.id = #{id}
     </select>
 

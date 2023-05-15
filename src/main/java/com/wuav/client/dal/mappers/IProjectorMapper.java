@@ -7,7 +7,7 @@ import java.util.List;
 public interface IProjectorMapper {
     List<Projector> getAllProjectors();
     Projector getProjectorById(@Param("projectorId") int projectorId);
-    boolean createProjector(Projector projector);
+    int createProjector(Projector projector);
     boolean updateProjectorById(@Param("projectorId") int id,@Param("name") String name,@Param("resolution") String resolution,@Param("connectionType") String connectionType,@Param("devicePort") String devicePort);
     boolean deleteProjectorById(@Param("projectorId") int projectorId);
 }

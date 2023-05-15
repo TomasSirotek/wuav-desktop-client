@@ -16,13 +16,16 @@ public class DeviceRepositoryTest {
     private static final int EXISTING_PROJECTOR_ID = 3132;
     private static final int EXISTING_SPEAKER_ID = 2324234;
 
+    private static final int EXISTING_DEVICE_ID = 1207741913;
+
+
     @Test
-    public void testCreateAndFetchDevice() {
+    public void testCreateAndFetchDeviceProjector() {
         // Arrange
         DeviceRepository deviceRepository = new DeviceRepository();
         var uniqueIdGenerator = UniqueIdGenerator.generateUniqueId();
 
-        Projector projector = new Projector(uniqueIdGenerator, "Projector2", "PROJECTOR");
+        Projector projector = new Projector(uniqueIdGenerator, "SWIFT PROJECTOR", Projector.class.getSimpleName().toUpperCase());
         projector.setResolution("1080p");
         projector.setConnectionType("HDMI");
         projector.setDevicePort("USB");
@@ -32,9 +35,41 @@ public class DeviceRepositoryTest {
 
         // Assert
         assertTrue(createResult, "Failed to create device");
-        Device fetchedDevice = deviceRepository.getDeviceById(uniqueIdGenerator, Projector.class);
+        Device fetchedDevice = deviceRepository.getDeviceById(uniqueIdGenerator, Device.class);
         assertNotNull(fetchedDevice, "Fetched device is null");
         assertEquals(projector.getId(), fetchedDevice.getId(), "Fetched device ID does not match original device ID");
+    }
+
+    @Test
+    public void testCreateAndFetchDeviceSpeaker() {
+        // Arrange
+        DeviceRepository deviceRepository = new DeviceRepository();
+        var uniqueIdGenerator = UniqueIdGenerator.generateUniqueId();
+
+        Speaker speaker = new Speaker(uniqueIdGenerator, "FOO SPEAKER",Speaker.class.getSimpleName().toUpperCase());
+        speaker.setPower("1000W");
+        speaker.setVolume("30");
+
+        // Act
+        boolean createResult = deviceRepository.createDevice(speaker);
+
+        // Assert
+        assertTrue(createResult, "Failed to create device");
+        Device fetchedDevice = deviceRepository.getDeviceById(uniqueIdGenerator, Device.class);
+        assertNotNull(fetchedDevice, "Fetched device is null");
+        assertEquals(speaker.getId(), fetchedDevice.getId(), "Fetched device ID does not match original device ID");
+    }
+
+    @Test
+    public void getDeviceById() {
+        // Arrange
+        DeviceRepository deviceRepository = new DeviceRepository();
+
+        // Act
+        Device deleteResult = deviceRepository.getDeviceById(EXISTING_DEVICE_ID, Device.class);
+
+        System.out.println(deleteResult.toString());
+        assertEquals(EXISTING_DEVICE_ID,deleteResult.id);
     }
 
     @Test

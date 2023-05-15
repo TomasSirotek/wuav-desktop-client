@@ -10,19 +10,73 @@
         <id property="id" column="deviceId" />
         <result property="name" column="deviceName" />
         <result property="deviceType" column="device_type" />
-        <!-- Include other properties specific to the Device class -->
-        <!-- For example, <result property="resolution" column="resolution" /> for Projector -->
-        <!-- and <result property="power" column="power" /> for Speaker -->
+        <discriminator javaType="String" column="device_type">
+            <case value="PROJECTOR" resultType="Projector">
+                <result property="resolution" column="resolution"/>
+                <result property="connectionType" column="connection_type"/>
+                <result property="devicePort" column="device_port"/>
+            </case>
+            <case value="SPEAKER" resultType="Speaker">
+                <result property="power" column="power"/>
+                <result property="volume" column="volume"/>
+            </case>
+        </discriminator>
     </resultMap>
 
-    <select id="getDevicesByProjectId" resultMap="DeviceResultMap">
+
+    <select id="getAllDevices" resultMap="DeviceResultMap">
         SELECT
             d.id as deviceId,
             d.name as deviceName,
-            d.device_type as device_type
-        FROM project_device pd
-                 INNER JOIN device d ON pd.device_id = d.id
-        WHERE pd.project_id = #{projectId}
+            d.device_type,
+            p.resolution,
+            p.connection_type,
+            p.device_port,
+            s.power,
+            s.volume
+        FROM device d
+                 LEFT JOIN projector p ON d.id = p.id
+                 LEFT JOIN speaker s ON d.id = s.id
     </select>
 
+    <select id="getDeviceById" resultMap="DeviceResultMap">
+        SELECT
+            d.id as deviceId,
+            d.name as deviceName,
+            d.device_type,
+            p.resolution,
+            p.connection_type,
+            p.device_port,
+            s.power,
+            s.volume
+        FROM device d
+                 LEFT JOIN projector p ON d.id = p.id
+                 LEFT JOIN speaker s ON d.id = s.id
+        WHERE d.id = #{deviceId}
+    </select>
+
+
+    <insert
+            id="createDevice"
+            parameterType="map"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        INSERT INTO device (id, name,device_type) VALUES (#{id}, #{name},#{deviceType})
+    </insert>
+
+    <insert
+            id="addDeviceToProject"
+            parameterType="map"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        INSERT INTO project_device (project_id, device_id) VALUES (#{projectId}, #{deviceId})
+    </insert>
+
+
 </mapper>
+
+

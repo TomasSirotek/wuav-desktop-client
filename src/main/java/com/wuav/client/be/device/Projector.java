@@ -34,6 +34,7 @@ public class Projector extends Device {
         this.devicePort = devicePort;
     }
 
+
     @Override
     public String toString() {
         return name;

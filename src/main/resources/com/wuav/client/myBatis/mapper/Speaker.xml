@@ -7,7 +7,6 @@
 
     <resultMap id="speakerResult" type="Speaker">
         <id property="id" column="id"/>
-        <result property="name" column="name"/>
         <result property="power" column="power"/>
         <result property="volume" column="volume"/>
     </resultMap>
@@ -37,8 +36,8 @@
             statementType="PREPARED"
             timeout="20">
 
-        INSERT INTO speaker (id, name, power, volume)
-        VALUES (#{id}, #{name}, #{power}, #{volume})
+        INSERT INTO speaker (id, power, volume)
+        VALUES (#{id}, #{power}, #{volume})
     </insert>
 
 
@@ -66,5 +65,4 @@
     </delete>
 
 </mapper>
-
 
