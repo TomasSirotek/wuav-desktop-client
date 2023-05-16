@@ -3,19 +3,26 @@ package com.wuav.client.gui.controllers;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import com.wuav.client.be.Project;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.controllers.event.RefreshEvent;
+import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.models.user.IUserModel;
 import com.wuav.client.gui.utils.AlertHelper;
+import com.wuav.client.gui.utils.AnimationUtil;
+import com.wuav.client.gui.utils.enums.CustomColor;
+import com.wuav.client.gui.utils.enums.UserRoleType;
+import com.wuav.client.gui.utils.event.CustomEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -26,6 +33,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
@@ -41,23 +49,19 @@ public class AllUsersController  extends RootController implements Initializable
     @FXML
     private AnchorPane userAnchorPane;
     @FXML
-    private TableColumn<AppUser,String> colName;
+    private Label errorLabel;
     @FXML
-    private TableColumn<AppUser,String> colEmail;
+    private Pane notificationPane;
+    private final EventBus eventBus;
     @FXML
-    private TableColumn<AppUser,String> colRole;
+    private TableColumn<AppUser,String> colName,colEmail,colRole,colDate;
+
     @FXML
-    private TableColumn<AppUser,String> colDate;
-    @FXML
-    private TableColumn<AppUser,Button> colEdit;
-    @FXML
-    private TableColumn<AppUser,Button> colDelete;
+    private TableColumn<AppUser,String> colEdit;
 
     private final IUserModel userModel;
 
     private final IControllerFactory controllerFactory;
-
-    private final EventBus eventBus;
 
     private boolean isSettings = false;
 
@@ -82,7 +86,7 @@ public class AllUsersController  extends RootController implements Initializable
         if (window instanceof Stage) {
             Pane layoutPane = (Pane) scene.lookup("#layoutPane");
             if (layoutPane != null) {
-                layoutPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
+                layoutPane.setStyle(CustomColor.DIMMED.getStyle());
                 layoutPane.setDisable(true);
                 layoutPane.setVisible(true);
 
@@ -112,7 +116,7 @@ public class AllUsersController  extends RootController implements Initializable
             if (layoutPane != null) {
                 layoutPane.setVisible(true);
                 layoutPane.setDisable(true);
-                layoutPane.setStyle("-fx-background-color: transparent;");
+                layoutPane.setStyle(CustomColor.TRANSPARENT.getStyle());
             }
         });
         // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
@@ -126,11 +130,22 @@ public class AllUsersController  extends RootController implements Initializable
         stage.show();
     }
 
+    /**
+     * handle global notification event
+     */
+    @Subscribe
+    public void handleNotificationEvent(CustomEvent event) {
+        if (event.getEventType() == EventType.SHOW_NOTIFICATION) {
+            errorLabel.setText(event.getMessage());
+            boolean isSuccess = (boolean) event.getData();
+            if(!isSuccess) AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
+            if(isSuccess) AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
+        }
+    }
+
     private RootController loadNodesView(ViewType viewType) throws IOException {
         return controllerFactory.loadFxmlFile(viewType);
     }
-
-
 
     private RootController tryToLoadView(ViewType viewType) {
         try {
@@ -140,8 +155,14 @@ public class AllUsersController  extends RootController implements Initializable
         }
     }
 
-
     private void fillTable() {
+        setupColumns();
+        setupMenuItem();
+        setTableWithUsers();
+
+    }
+
+    private void setupColumns() {
         // name
         colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         // email
@@ -157,41 +178,73 @@ public class AllUsersController  extends RootController implements Initializable
             return new SimpleStringProperty(date == null ? "No data" : formattedDate);
         });
 
-        colEdit.setCellValueFactory(col -> {
-            MFXButton editButton = new MFXButton("");
-            //  editButton.getStyleClass().add("success");
-            editButton.setPrefWidth(100);
-            editButton.setPrefHeight(20);
-            var imageIcon = new ImageView(new Image(getClass().getResourceAsStream("/edit.png")));
-            imageIcon.setFitHeight(15);
-            imageIcon.setFitWidth(15);
-            editButton.setGraphic(imageIcon);
-            editButton.setOnAction(e -> {
-                this.isSettings = true;
-                openCreateUserWindow("User settings",ViewType.USER_SETTINGS, col.getValue());
-            });
-            return new SimpleObjectProperty<>(editButton);
-        });
+    }
 
-        colDelete.setCellValueFactory(project -> {
-            MFXButton deleteButton = new MFXButton("");
-            //  playButton.getStyleClass().add("success");
-            deleteButton.setPrefWidth(100);
-            deleteButton.setPrefHeight(20);
-            var imageIcon = new ImageView(new Image(getClass().getResourceAsStream("/delete.png")));
-            imageIcon.setFitHeight(15);
-            imageIcon.setFitWidth(15);
-            deleteButton.setGraphic(imageIcon);
-            deleteButton.setOnAction(e -> {
-               deleteUsers(project.getValue());
+    private void setupMenuItem() {
 
-            });
-            return new SimpleObjectProperty<>(deleteButton);
-        });
+        ImageView editImage = new ImageView("/edit.png");
+        ImageView deleteImage = new ImageView("/delete.png");
 
-        setTableWithUsers();
+        editImage.setFitWidth(20);
+        editImage.setFitHeight(20);
+
+        deleteImage.setFitWidth(20);
+        deleteImage.setFitHeight(20);
+
+        Callback<TableColumn<AppUser, String>, TableCell<AppUser, String>> cellFactory
+                = //
+                new Callback<TableColumn<AppUser, String>, TableCell<AppUser, String>>() {
+                    @Override
+                    public TableCell call(final TableColumn<AppUser, String> param) {
+                        final TableCell<AppUser, String> cell = new TableCell<AppUser, String>() {
+
+                            final Button btn = new Button("•••");
+
+                            @Override
+                            public void updateItem(String item, boolean empty) {
+                                super.updateItem(item, empty);
+                                if (empty) {
+                                    setGraphic(null);
+                                    setText(null);
+                                } else {
+                                    MenuItem editItem = new Menu("Edit", editImage); // images with that icon
+                                    MenuItem deleteItem = new MenuItem("Delete", deleteImage);
+
+                                    // adding all items to context menu
+                                    ContextMenu menu = new ContextMenu(editItem, deleteItem);
+
+                                    menu.getStyleClass().add("menuTable");
+                                    deleteItem.setStyle("-fx-text-fill: black;");
+                                    editItem.setStyle("-fx-text-fill: black;");
 
 
+                                    editItem.setOnAction(event -> {
+                                        isSettings = true;
+                                        openCreateUserWindow("User settings",ViewType.USER_SETTINGS,getTableRow().getItem());
+                                        event.consume();
+                                    });
+                                    deleteItem.setOnAction(event -> {
+                                        deleteUsers(getTableRow().getItem());
+                                        event.consume();
+                                    });
+
+                                    ContextMenu finalMenu = menu;
+                                    btn.setOnAction(event -> {
+                                        finalMenu.show(btn, Side.BOTTOM, -95, 0);
+                                    });
+                                    btn.setStyle("-fx-background-color: transparent;-fx-border-color: transparent;-fx-cursor: HAND;");
+                                    setGraphic(btn);
+                                    setText(null);
+                                }
+                            }
+                        };
+                        return cell;
+                    }
+                };
+
+        colEdit.prefWidthProperty().set(40);
+        colEdit.setResizable(false);
+        colEdit.setCellFactory(cellFactory);
     }
 
     private void deleteUsers(AppUser value) {
@@ -199,11 +252,12 @@ public class AllUsersController  extends RootController implements Initializable
             if(response.isPresent() && response.get() == ButtonType.OK){
                 boolean userDeleted = userModel.deleteUser(value);
                 if(userDeleted) {
-
-                    AlertHelper.showDefaultAlert("User deleted", Alert.AlertType.INFORMATION);
+                    errorLabel.setText("User with id: " + value.getId() + " deleted successfully");
+                    AnimationUtil.animateInOut(notificationPane,2, CustomColor.INFO);
                     refreshTable();
                 }else {
-                    AlertHelper.showDefaultAlert("User not deleted", Alert.AlertType.ERROR);
+                    errorLabel.setText("User with id: " + value.getId() + " could not be delete");
+                    AnimationUtil.animateInOut(notificationPane,2, CustomColor.ERROR);
                 }
             }
     }
@@ -213,23 +267,20 @@ public class AllUsersController  extends RootController implements Initializable
         userTable.setItems(userModel.getAllUsers());
     }
 
-
     /**
      * Registering events
      */
     @Subscribe
     public void handleRefresh(RefreshEvent event) {
         if (event.eventType() == EventType.UPDATE_USER_TABLE) {
-
             refreshTable();
-
             Scene scene = userAnchorPane.getScene();
             if(scene != null){
                 Window window = scene.getWindow();
                 if (window instanceof Stage) {
                     Pane layoutPane = (Pane) scene.lookup("#layoutPane");
                     if (layoutPane != null) {
-                        layoutPane.setStyle("-fx-background-color: transparent");
+                        layoutPane.setStyle(CustomColor.TRANSPARENT.getStyle());
                         layoutPane.setDisable(false);
                         layoutPane.setVisible(false);
                     } else {

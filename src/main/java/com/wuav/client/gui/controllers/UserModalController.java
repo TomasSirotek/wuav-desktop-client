@@ -7,10 +7,12 @@ import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.event.RefreshEvent;
 import com.wuav.client.gui.models.user.IUserModel;
 import com.wuav.client.gui.utils.AlertHelper;
+import com.wuav.client.gui.utils.event.CustomEvent;
 import com.wuav.client.gui.utils.validations.FormField;
 import com.wuav.client.gui.utils.enums.UserRoleType;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -20,22 +22,21 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class UserModalController  extends RootController implements Initializable {
     @FXML
-    private MFXTextField userNameField;
-    @FXML
-    private MFXTextField userEmailField;
+    private MFXTextField userNameField,userEmailField;
     @FXML
     private ChoiceBox roleField;
-    @FXML
-    private MFXButton recoverPassword;
     @FXML
     private MFXButton createUserBtn;
 
     private final IUserModel userModel;
     private final EventBus eventBus;
 
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Inject
     public UserModalController(IUserModel userModel, EventBus eventBus) {
@@ -63,25 +64,27 @@ public class UserModalController  extends RootController implements Initializabl
     }
 
     private void createNewUser() {
-        if(validateInput()){
+        if (validateInput()) {
+            executorService.submit(() -> {
+                boolean result = userModel.createUser(
+                        userNameField.getText(),
+                        userEmailField.getText(),
+                        roleField.getSelectionModel().getSelectedItem().toString()
+                );
 
-          int result = userModel.createUser(
-                    userNameField.getText(),
-                    userEmailField.getText(),
-                    roleField.getSelectionModel().getSelectedItem().toString()
-            );
-          if(result == 1){
-              AlertHelper.showDefaultAlert("User created successfully", Alert.AlertType.INFORMATION);
-              eventBus.post(new RefreshEvent(EventType.UPDATE_USER_TABLE));
-              getStage().close();
-
-            }else{
-              AlertHelper.showDefaultAlert("User creation failed", Alert.AlertType.ERROR);
-          }
+                Platform.runLater(() -> {
+                    if (result) {
+                        eventBus.post(new RefreshEvent(EventType.UPDATE_USER_TABLE));
+                        eventBus.post(new CustomEvent(EventType.SHOW_NOTIFICATION, true, "User created successfully"));
+                        getStage().close();
+                        executorService.shutdown();
+                    } else {
+                        eventBus.post(new CustomEvent(EventType.SHOW_NOTIFICATION, false, "User could not have been created successfully"));
+                    }
+                });
+            });
         }
     }
-
-
 
     private boolean validateInput() {
         boolean isValid = true;
@@ -106,10 +109,4 @@ public class UserModalController  extends RootController implements Initializabl
         return isValid;
 
     }
-
-
-
-
-
-
 }

@@ -1,58 +1,49 @@
 package com.wuav.client.gui.controllers;
 
-import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.bll.services.interfaces.IAuthService;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.google.inject.Inject;
-import com.wuav.client.gui.utils.AlertHelper;
+import com.wuav.client.gui.manager.StageManager;
+import com.wuav.client.gui.utils.AnimationUtil;
+import com.wuav.client.gui.utils.enums.CustomColor;
 import io.github.palexdev.materialfx.controls.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-
-
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-
 
 import javax.naming.AuthenticationException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class LoginController extends RootController implements Initializable {
-
-
     @FXML
-    private Pane loadingPane;
+    private Pane errorPane, loadingPane;
     @FXML
     private MFXProgressSpinner progressLoader;
     @FXML
     private MFXPasswordField userPswField;
-
     @FXML
     private MFXTextField userEmailField;
-    @FXML
-    private MFXButton login;
 
-    @FXML
-    private StackPane baseContent;
     private final IControllerFactory controllerFactory;
 
     private final IAuthService authService;
 
+    private final StageManager stageManager;
+
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+
     @Inject
-    public LoginController(IControllerFactory controllerFactory, IAuthService authService) {
+    public LoginController(IControllerFactory controllerFactory, IAuthService authService, StageManager stageManager) {
         this.controllerFactory = controllerFactory;
         this.authService = authService;
-
+        this.stageManager = stageManager;
     }
 
 
@@ -60,75 +51,67 @@ public class LoginController extends RootController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 
-    private RootController loadNodesView(ViewType viewType) throws IOException {
-        return controllerFactory.loadFxmlFile(viewType);
-    }
 
-
+    /**
+     * Load the new view
+     * @throws IOException
+     */
     @FXML
     private void login() {
         // Show the progress bar while the application is loading
         progressLoader.setVisible(true);
         loadingPane.setVisible(true);
-        loadingPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
-        // Use a new thread to authenticate the user and check authorization
-        new Thread(() -> {
+        loadingPane.setStyle(CustomColor.DIMMED.getStyle());
+
+        executorService.submit(() -> {
             try {
                 // Authenticate the user and check authorization
-                AppUser authenticatedUser = authService.authenticate(userEmailField.getText(), userPswField.getText());
-                boolean isAuthorized = authService.isAuthorized(authenticatedUser);
+                authService.authenticate(userEmailField.getText(), userPswField.getText());
 
                 // Update the UI on the JavaFX application thread
                 Platform.runLater(() -> {
-                    // Hide the progress bar
-                    progressLoader.setVisible(false);
-                    loadingPane.setStyle("-fx-background-color: transparent");
+                    try {
+                        // Hide the progress bar
+                        progressLoader.setVisible(false);
+                        loadingPane.setStyle(CustomColor.TRANSPARENT.getStyle());
 
-                    // Show the logged view if the user is authorized
-                    if (isAuthorized) {
-                        var test = tryToLoadView();
-                        getStage().close();
-                        show(test.getView(), "Logged view ");
+                        getStage().close(); // Close the login stage
+                        loadNewView(); // Load the new view
+                        executorService.shutdown(); // Shutdown the executor service
+                    } catch (IOException e) {
+                        errorPane.setVisible(true);
                     }
                 });
             } catch (AuthenticationException e) {
-                // Handle authentication failure
+                // Update the UI on the JavaFX application thread
                 Platform.runLater(() -> {
-                    // Hide the progress bar
-                    progressLoader.setVisible(false);
-                    progressLoader.setVisible(false);
-                    loadingPane.setVisible(false);
-                    // Show an error message
-                    AlertHelper.showDefaultAlert("Authentication failed " + e.getMessage(), Alert.AlertType.ERROR);
+                   handleError();
                 });
             }
-        }).start();
+        });
     }
 
     /**
-     * private method for showing new stages whenever its need
-     *
-     * @param parent root that will be set
-     * @param title  title for new stage
+     * Load the new view
+     * @throws IOException
      */
-    private void show(Parent parent, String title) {
-        Stage stage = new Stage();
-        Scene scene = new Scene(parent);
-
-        stage.initOwner(getStage());
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.setTitle(title);
-        stage.setResizable(false);
-        stage.setScene(scene);
-        stage.show();
+    private void loadNewView() throws IOException {
+        String stageTitle = "WUAV-dashboard";
+        RootController rootController = stageManager.loadNodesView(
+                ViewType.MAIN,
+                controllerFactory
+        );
+        stageManager.showStage(stageTitle, rootController.getView());
     }
 
-
-    private RootController tryToLoadView() {
-        try {
-            return loadNodesView(ViewType.MAIN);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    /**
+     * Handle the error when the user is not authenticated
+     */
+    private void handleError() {
+        progressLoader.setVisible(false);
+        loadingPane.setVisible(false);
+        loadingPane.setStyle(CustomColor.TRANSPARENT.getStyle());
+        errorPane.setVisible(true);
+        AnimationUtil.animateInOut(errorPane,4, CustomColor.ERROR);
     }
 }

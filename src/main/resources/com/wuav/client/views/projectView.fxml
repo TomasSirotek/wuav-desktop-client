@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
@@ -35,8 +36,8 @@
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="620.1368713378906" minWidth="10.0" prefWidth="291.0" />
                   <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="318.9468078613281" minWidth="10.0" prefWidth="180.0" />
-                <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="318.9468078613281" minWidth="10.0" prefWidth="87.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="204.0" minWidth="10.0" prefWidth="190.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="318.9468078613281" minWidth="10.0" prefWidth="113.97650146484375" />
+                  <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="204.0" minWidth="10.0" prefWidth="163.02349853515625" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
@@ -47,20 +48,25 @@
                         <Font name="SansSerif Bold" size="32.0" />
                      </font>
                   </Label>
-                  <MFXButton fx:id="exportSelected" prefHeight="29.0" prefWidth="91.0" text="Export" GridPane.columnIndex="2">
-                     <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="17.0">
-                           <image>
-                              <Image url="@../images/navItems/export.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor></MFXButton>
-                  <HBox alignment="CENTER_RIGHT" prefWidth="128.0" GridPane.columnIndex="3">
+                  <HBox fx:id="exportToggleHbox" alignment="CENTER" GridPane.columnIndex="2">
                      <children>
-                        <MFXButton fx:id="createNewProject" prefHeight="29.0" prefWidth="154.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Create project" textFill="#141111">
+                        <MFXButton fx:id="exportSelected" prefHeight="29.0" prefWidth="91.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Export">
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="17.0">
+                                 <image>
+                                    <Image url="@../images/navItems/export.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </MFXButton>
+                     </children>
+                  </HBox>
+                  <HBox fx:id="actionToggleHbox" alignment="CENTER_RIGHT" prefWidth="128.0" GridPane.columnIndex="3">
+                     <children>
+                        <MFXButton fx:id="createNewProject" prefHeight="29.0" prefWidth="153.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Create project" textFill="#141111">
                            <graphic>
                               <HBox alignment="CENTER" prefHeight="24.0" prefWidth="31.0">
                                  <children>
@@ -84,7 +90,7 @@
                         </MFXButton>
                      </children>
                      <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="10.0" right="10.0" top="10.0" />
                      </padding>
                   </HBox>
                   <HBox fx:id="projectCreationStatus" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" visible="false" GridPane.columnIndex="1">
@@ -134,7 +140,7 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0">
                                  <children>
-                                    <TableView fx:id="projectTable" layoutX="1.0" layoutY="14.0" minHeight="395.0" prefHeight="471.0" AnchorPane.bottomAnchor="-6.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="14.0">
+                                    <TableView fx:id="projectTable" layoutX="1.0" layoutY="14.0" minHeight="395.0" prefHeight="461.0" prefWidth="872.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="-4.0" AnchorPane.topAnchor="14.0">
                                       <columns>
                                         <TableColumn fx:id="colSelectAll" prefWidth="55.11915969848633" sortable="false">
                                              <graphic>
@@ -145,11 +151,11 @@
                                              </graphic>
                                           </TableColumn>
                                         <TableColumn fx:id="colName" prefWidth="126.38082885742188" text="Name" />
-                                          <TableColumn fx:id="colDes" minWidth="40.0" prefWidth="200.0" text="Description" />
-                                          <TableColumn fx:id="colCustomer" prefWidth="200.0" text="Customer" />
-                                          <TableColumn fx:id="colType" prefWidth="105.72537231445312" text="Type" />
-                                          <TableColumn fx:id="colDate" minWidth="50.0" prefWidth="107.0" text="Date" />
-                                          <TableColumn fx:id="colEdit" minWidth="52.0" prefWidth="82.0" sortable="false" />
+                                          <TableColumn fx:id="colDes" minWidth="40.0" prefWidth="220.0148162841797" text="Description" />
+                                          <TableColumn fx:id="colCustomer" prefWidth="169.88507080078125" text="Customer" />
+                                          <TableColumn fx:id="colType" prefWidth="126.61492919921875" text="Type" />
+                                          <TableColumn fx:id="colDate" minWidth="50.0" prefWidth="117.9808349609375" text="Date" />
+                                          <TableColumn fx:id="colEdit" minWidth="52.0" prefWidth="70.0191650390625" sortable="false" />
                                       </columns>
                                     </TableView>
                                  </children>
@@ -171,8 +177,44 @@
             </AnchorPane>
          </children>
          <padding>
-            <Insets left="20.0" right="36.0" />
+            <Insets left="20.0" right="20.0" />
          </padding>
       </GridPane>
+      <Pane fx:id="notificationPane" layoutY="-5.0" prefHeight="41.0" prefWidth="909.0" styleClass="error-pane" visible="false">
+         <children>
+            <GridPane layoutY="1.0" prefHeight="42.0" prefWidth="1010.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="233.07225036621094" minWidth="10.0" prefWidth="233.07225036621094" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="298.0235290527344" minWidth="10.0" prefWidth="137.47412109375" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="639.52587890625" minWidth="10.0" prefWidth="639.52587890625" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <HBox alignment="CENTER" prefWidth="202.0" GridPane.columnIndex="1">
+                     <children>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/navItems/error-icon.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </HBox>
+                  <Label fx:id="errorLabel" prefHeight="40.0" prefWidth="196.0" text="Incorrect password or email" textFill="WHITE" GridPane.columnIndex="2">
+                     <font>
+                        <Font name="SansSerif Regular" size="15.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </Label>
+               </children>
+            </GridPane>
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

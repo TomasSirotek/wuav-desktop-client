@@ -68,6 +68,8 @@ public class ProjectService implements IProjectService {
         return projectRepository.getProjectById(projectId);
     }
 
+
+    // THIS HAS TO BE REFACTORED AND INCLUDE ROLL BACKS
     @Override
     public boolean deleteProject(Project project) {
         // Ensure all operations are atomic to maintain data integrity
@@ -175,8 +177,8 @@ public class ProjectService implements IProjectService {
     // THIS HAS TO BE REFACTORED AND INCLUDE ROLL BACKS
     private boolean tryCreateProject(int userId, CreateProjectDTO projectToCreate) throws Exception {
         // Create address and retrieve the id
-        int createdAddressResult = addressService.createAddress(projectToCreate.customer().address());
-        if (createdAddressResult <= 0) {
+        boolean createdAddressResult = addressService.createAddress(projectToCreate.customer().address());
+        if (!createdAddressResult) {
             throw new Exception("Failed to create address");
         }
 
@@ -187,8 +189,8 @@ public class ProjectService implements IProjectService {
         }
 
         // Create project and retrieve the id
-        int createdProjectResult = projectRepository.createProject(projectToCreate);
-        if (createdProjectResult <= 0) {
+        boolean createdProjectResult = projectRepository.createProject(projectToCreate);
+        if (!createdProjectResult ) {
             throw new Exception("Failed to create project");
         }
 

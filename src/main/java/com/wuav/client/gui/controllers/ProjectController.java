@@ -4,19 +4,20 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.wuav.client.be.*;
-import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
-import com.wuav.client.bll.utilities.email.IEmailSender;
-import com.wuav.client.bll.utilities.engines.IEmailEngine;
-import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
-import com.wuav.client.bll.utilities.pdf.PdfGenerator;
+import org.jsoup.Jsoup;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.controllers.event.RefreshEvent;
+import com.wuav.client.gui.manager.StageManager;
 import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
+import com.wuav.client.gui.utils.AnimationUtil;
+import com.wuav.client.gui.utils.enums.CustomColor;
+import com.wuav.client.gui.utils.enums.UserRoleType;
+import com.wuav.client.gui.utils.event.CustomEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import javafx.beans.property.SimpleStringProperty;
@@ -35,7 +36,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Callback;
@@ -44,28 +44,25 @@ import java.io.*;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Consumer;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.IntStream;
 
 public class ProjectController extends RootController implements Initializable {
 
-
-    private final IControllerFactory controllerFactory;
     @FXML
-    private HBox projectCreationStatus;
+    private HBox projectCreationStatus,exportToggleHbox,actionToggleHbox;
     @FXML
     private MFXProgressSpinner tableDataLoad;
     @FXML
     private CheckBox selectAllTableCheck;
-
     @FXML
-    private Label projectLabelMain;
-
+    private Pane notificationPane;
     @FXML
-    private MFXButton exportSelected;
+    private Label projectLabelMain,errorLabel;
+    @FXML
+    private MFXButton exportSelected,createNewProject;
     @FXML
     private AnchorPane projectAnchorPane;
-    @FXML
-    private MFXButton createNewProject;
     @FXML
     private TableColumn<Project,String> colEdit;
     @FXML
@@ -73,81 +70,99 @@ public class ProjectController extends RootController implements Initializable {
     @FXML
     private TableColumn<Project, CheckBox> colSelectAll;
     @FXML
-    private TableColumn<Project,String> colDate;
-    @FXML
-    private TableColumn<Project,String> colName;
-    @FXML
-    private TableColumn<Project,String> colDes;
-    @FXML
-    private TableColumn<Project,String> colCustomer;
-    @FXML
-    private TableColumn<Project,String> colType;
-
-    private final IProjectModel projectModel;
-
-    private final IEmailSender emailSender;
-
-    private final IEmailEngine emailEngine;
-
+    private TableColumn<Project,String> colDate,colName,colDes,colCustomer,colType;
     private List<CheckBox> checkBoxList = new ArrayList<>();
 
-    List<Project> selectedProjects = new ArrayList<>();
+    private List<Project> selectedProjects = new ArrayList<>();
 
     private final EventBus eventBus;
+    private final IProjectModel projectModel;
 
+    private final IControllerFactory controllerFactory;
+
+    private final StageManager stageManager;
 
     @Inject
-    public ProjectController(IControllerFactory controllerFactory, IProjectModel projectModel, IEmailSender emailSender, IEmailEngine emailEngine, EventBus eventBus) {
+    public ProjectController(IControllerFactory controllerFactory, IProjectModel projectModel, EventBus eventBus, StageManager stageManager) {
         this.controllerFactory = controllerFactory;
         this.projectModel = projectModel;
-        this.emailSender = emailSender;
-        this.emailEngine = emailEngine;
         this.eventBus = eventBus;
+        this.stageManager = stageManager;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         eventBus.register(this);
         fillTable();
+        setupActions();
+        swapButtonsInNonTechnicianRole();
+    }
+
+    /**
+     * This method is used to set up actions for table preview
+     */
+    private void setupActions() {
         createNewProject.setOnAction(e -> openActionWindows("Create new project",ViewType.ACTIONS,null));
         exportSelected.setOnAction(e -> exportSelected());
-
-        // FOR NOW
-        if(CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("ADMIN")){
-            createNewProject.setVisible(false);
-        }
-
         selectAllTableCheck.selectedProperty().addListener((observable, oldValue, newValue) -> {
             updateCheckBoxes(newValue);
         });
     }
 
+    /**
+     * This method is used swap the buttons when the user is not a technician in order
+     * to disallow the user to create projects
+     */
+    private void swapButtonsInNonTechnicianRole() {
+        if(!CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals(UserRoleType.TECHNICIAN.toString())){
+            AtomicReference<MFXButton> storedButton = new AtomicReference<>();
+
+            exportToggleHbox.getChildren().forEach(node -> {
+                if(node instanceof MFXButton){
+                    MFXButton button = (MFXButton) node;
+                    storedButton.set(button);
+                }
+            });
+
+            // clean children in the action hbox and replace with the stored button
+            actionToggleHbox.getChildren().clear();
+            actionToggleHbox.getChildren().add(storedButton.get());
+        }
+    }
+
+
+    /**
+     * This method is to set up and updated the checkboxes
+     */
     private void updateCheckBoxes(boolean selectAll) {
         selectedProjects.clear();
 
         List<Project> items = projectTable.getItems();
 
-        for (int i = 0; i < checkBoxList.size(); i++) {
-            CheckBox checkBox = checkBoxList.get(i);
-            checkBox.setSelected(selectAll);
+        IntStream.range(0, checkBoxList.size())
+                .filter(i -> i < items.size())
+                .forEach(i -> {
+                    CheckBox checkBox = checkBoxList.get(i);
+                    checkBox.setSelected(selectAll);
 
-            if (i < items.size()) {
-                Project project = items.get(i);
-                if (selectAll) {
-                    selectedProjects.add(project);
-                }
-            }
-        }
+                    Project project = items.get(i);
+                    if (selectAll) {
+                        selectedProjects.add(project);
+                    }
+                });
     }
 
+
+    /**
+     * This method is open projects for export
+     */
     private void exportSelected() {
         if(selectedProjects.isEmpty()){
-            AlertHelper.showDefaultAlert("No projects yet to be selected for export ",Alert.AlertType.WARNING);
+            errorLabel.setText("No projects yet to be selected for export");
+            AnimationUtil.animateInOut(notificationPane,2, CustomColor.INFO);
             return;
         }
-        selectedProjects.forEach(p -> System.out.println("now its selected -> " + p.getId()  + " " + p.getName()));
         openActionWindows("Export selected projects",ViewType.EXPORT,selectedProjects);
-
     }
 
     private void openActionWindows(String title,ViewType viewType,List<Project> projectList){
@@ -156,12 +171,15 @@ public class ProjectController extends RootController implements Initializable {
         if (window instanceof Stage) {
             Pane layoutPane = (Pane) scene.lookup("#layoutPane");
             if (layoutPane != null) {
-                layoutPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
+                layoutPane.setStyle(CustomColor.DIMMED.getStyle());
                 layoutPane.setDisable(true);
                 layoutPane.setVisible(true);
 
-                var test = tryToLoadView(viewType);
-                show(test.getView(), title,scene,projectList);
+                try {
+                    loadNewView(title,viewType,projectList,scene);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
 
             } else {
                 System.out.println("AnchorPane not found");
@@ -171,56 +189,69 @@ public class ProjectController extends RootController implements Initializable {
 
 
     /**
-     * private method for showing new stages whenever its need
-     *
-     * @param parent root that will be set
-     * @param title  title for new stage
+     * Load the new view
+     * @throws IOException
      */
-    private void show(Parent parent, String title, Scene previousScene,List<Project> projectList) {
-        Stage stage = new Stage();
-        Scene scene = new Scene(parent);
-
-        stage.initOwner(getStage());
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.setTitle(title);
-        stage.setOnCloseRequest(e -> {
-            Pane layoutPane = (Pane) previousScene.lookup("#layoutPane");
-            if (layoutPane != null) {
-                layoutPane.setVisible(true);
-                layoutPane.setDisable(true);
-                layoutPane.setStyle("-fx-background-color: transparent;");
-            }
-        });
-        // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
-        stage.setOnShowing(e -> {
-            Stage previousStage = (Stage) previousScene.getWindow();
-            stage.getProperties().put("previousStage", previousStage);
-
-
-        });
-
-        if(projectList != null){
-            stage.getProperties().put("projectsToExport",projectList); // pass optional model here
-        }
-
-        stage.setResizable(false);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    private RootController loadNodesView(ViewType viewType) throws IOException {
-        return controllerFactory.loadFxmlFile(viewType);
+    private void loadNewView(String title,ViewType viewType,List<Project> projectList,Scene scene) throws IOException {
+        RootController rootController = stageManager.loadNodesView(
+                viewType,
+                controllerFactory
+        );
+        stageManager.showStage(rootController.getView(), title,scene,projectList);
     }
 
 
 
-    private RootController tryToLoadView(ViewType viewType) {
-        try {
-            return loadNodesView(viewType);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    /**
+//     * private method for showing new stages whenever its need
+//     *
+//     * @param parent root that will be set
+//     * @param title  title for new stage
+//     */
+//    private void show(Parent parent, String title, Scene previousScene,List<Project> projectList) {
+//        Stage stage = new Stage();
+//        Scene scene = new Scene(parent);
+//
+//        stage.initOwner(getStage());
+//        stage.initModality(Modality.WINDOW_MODAL);
+//        stage.setTitle(title);
+//        stage.setOnCloseRequest(e -> {
+//            Pane layoutPane = (Pane) previousScene.lookup("#layoutPane");
+//            if (layoutPane != null) {
+//                layoutPane.setVisible(true);
+//                layoutPane.setDisable(true);
+//                layoutPane.setStyle("-fx-background-color: transparent;");
+//            }
+//        });
+//        // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
+//        stage.setOnShowing(e -> {
+//            Stage previousStage = (Stage) previousScene.getWindow();
+//            stage.getProperties().put("previousStage", previousStage);
+//        });
+//
+//        if(projectList != null){
+//            stage.getProperties().put("projectsToExport",projectList); // pass optional model here
+//        }
+//
+//        stage.setResizable(false);
+//        stage.setScene(scene);
+//        stage.show();
+//    }
+
+
+//    private RootController loadNodesView(ViewType viewType) throws IOException {
+//        return controllerFactory.loadFxmlFile(viewType);
+//    }
+//
+//
+//
+//    private RootController tryToLoadView(ViewType viewType) {
+//        try {
+//            return loadNodesView(viewType);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 
 
@@ -289,52 +320,15 @@ public class ProjectController extends RootController implements Initializable {
 
 
     private void fillTable() {
-        colSelectAll.setCellFactory(param -> new TableCell<Project, CheckBox>() {
-            private CheckBox checkBox;
+        setupTableCheckBoxes();
+        setupTableColumns();
+        setupTableOptions();
+        // set projects list to the table
+        setTableWithProjects();
 
-            @Override
-            protected void updateItem(CheckBox item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    if (checkBox == null) {
-                        checkBox = new CheckBox();
-                        checkBox.getStyleClass().add("checked-box");
-                        checkBox.setAlignment(Pos.CENTER);
-                        checkBox.selectedProperty().addListener((obs, oldSelected, newSelected) -> {
-                            Project project = getTableView().getItems().get(getIndex());
-                            if (newSelected) {
-                                selectedProjects.add(project);
-                            } else {
-                                selectedProjects.remove(project);
-                            }
-                        });
-                        checkBoxList.add(checkBox);
-                    }
-                    setGraphic(checkBox);
-                }
-            }
-        });
-        colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+    }
 
-        // description
-        colDes.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
-        // Customer
-        colCustomer.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getEmail()));
-        // Type
-        colType.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getType()));
-
-
-        // Date
-        colDate.setCellValueFactory(cellData -> {
-            Date date = cellData.getValue().getCreatedAt();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMMM dd yyyy");
-            String formattedDate = dateFormat.format(date);
-
-            return new SimpleStringProperty(date == null ? "No data" : formattedDate);
-        });
-
+    private void setupTableOptions() {
         ImageView editImage = new ImageView("/edit.png");
 
         ImageView emailImage = new ImageView("/emailIcon.png");
@@ -354,7 +348,7 @@ public class ProjectController extends RootController implements Initializable {
                     public TableCell call(final TableColumn<Project, String> param) {
                         final TableCell<Project, String> cell = new TableCell<Project, String>() {
 
-                            final Button btn = new Button("...");
+                            final Button btn = new Button("•••");
 
                             @Override
                             public void updateItem(String item, boolean empty) {
@@ -367,19 +361,19 @@ public class ProjectController extends RootController implements Initializable {
                                     MenuItem emailItem = new MenuItem("Send email", emailImage);
                                     MenuItem deleteItem = new MenuItem("Delete", deleteImage);
 
-
                                     // adding all items to context menu
                                     ContextMenu menu = null;
 
-                                    if(CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("ADMIN")){
+                                    if(CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals(UserRoleType.ADMIN.name())){
                                         menu = new ContextMenu(editItem, emailItem, deleteItem);
                                     }else {
                                         menu = new ContextMenu(editItem, emailItem);
                                     }
+                                    menu.getStyleClass().add("menuTable");
 
                                     editItem.setOnAction(event -> {
                                         // edit here
-                                        runInParallel(ViewType.PROJECT_ACTIONS,getTableRow().getItem());
+                                        // runInParallel(ViewType.PROJECT_ACTIONS,getTableRow().getItem());
                                         event.consume();
                                     });
                                     emailItem.setOnAction(event -> {
@@ -396,6 +390,7 @@ public class ProjectController extends RootController implements Initializable {
                                     btn.setOnAction(event -> {
                                         finalMenu.show(btn, Side.BOTTOM, -95, 0);
                                     });
+                                    btn.setStyle("-fx-background-color: transparent;-fx-border-color: transparent;-fx-cursor: HAND;");
                                     setGraphic(btn);
                                     setText(null);
                                 }
@@ -408,79 +403,147 @@ public class ProjectController extends RootController implements Initializable {
         colEdit.prefWidthProperty().set(40);
         colEdit.setResizable(false);
         colEdit.setCellFactory(cellFactory);
+    }
 
-        // set final projects list to the table
-        setTableWithProjects();
+    private void setupTableColumns() {
+        // Name
+        colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+        // Description needs to be cleared of the html tags form the db
+        colDes.setCellValueFactory(cellData -> {
+            String htmlDescription = cellData.getValue().getDescription();
+            String plainDescription = Jsoup.parse(htmlDescription).text();
+            return new SimpleStringProperty(plainDescription);
+        });
+
+        // Customer
+        colCustomer.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getEmail()));
+        // Type
+        colType.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getType()));
+        // Date
+        colDate.setCellValueFactory(cellData -> {
+            Date date = cellData.getValue().getCreatedAt();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMMM dd yyyy");
+            String formattedDate = dateFormat.format(date);
+
+            return new SimpleStringProperty(date == null ? "No data" : formattedDate);
+        });
 
     }
 
+    private void setupTableCheckBoxes() {
+        colSelectAll.setCellFactory(param -> new TableCell<Project, CheckBox>() {
+            private CheckBox checkBox;
 
-
-    private void openPdfBuilder(Project project) {
-        RootController controller = tryToLoadView(ViewType.PDF_BUILDER);
-        eventBus.post(new RefreshEvent(EventType.EXPORT_EMAIL));
-
-        Stage stage = new Stage();
-        Scene scene = new Scene(controller.getView());
-
-        stage.initOwner(getStage());
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.setTitle("Build you PDF");
-        stage.setOnCloseRequest(e -> {
-
-        });
-        // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
-        stage.setOnShowing(e -> {
-            stage.getProperties().put("projectToExport", project);
-        });
-        stage.setResizable(false);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-
-    private void runInParallel(ViewType type,Project project) {
-        final RootController[] parent = {null};
-        Task<Void> loadDataTask = new Task<>() {
             @Override
-            protected Void call() throws IOException {
-                parent[0] = loadNodesView(type);
-                return null;
-            }
-        };
-        loadDataTask.setOnSucceeded(event -> {
-            ProjectActionController controller = (ProjectActionController) parent[0];
-            controller.setCurrentProject(project);
-            System.out.println("Loaded controller: " + parent[0].getClass().getName());
+            protected void updateItem(CheckBox item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    if (checkBox == null) {
+                        checkBox = new CheckBox();
+                        checkBox.getStyleClass().add("checked-box");
+                        checkBox.setAlignment(Pos.CENTER);
+                        checkBox.selectedProperty().addListener((obs, oldSelected, newSelected) -> {
+                            Project project = getTableView().getItems().get(getIndex());
+                            if(newSelected)  selectedProjects.add(project);
+                            if(!newSelected)  selectedProjects.remove(project);
+                        });
+                        checkBox.setStyle("-fx-cursor: HAND;");
+                        checkBoxList.add(checkBox);
+                    }
+                    setGraphic(checkBox);
 
-            switchToView(parent[0].getView());
+                }
+            }
         });
-        new Thread(loadDataTask).start();
     }
 
-    private void switchToView(Parent parent) {
-        Scene scene = projectAnchorPane.getScene();
-        Window window = scene.getWindow();
-        if (window instanceof Stage) {
-            StackPane layoutPane = (StackPane) scene.lookup("#app_content");
-            layoutPane.getChildren().clear();
-            layoutPane.getChildren().add(parent);
+
+    /**
+     * open pdf builder method
+     */
+    private void openPdfBuilder(Project project) {
+        RootController rootController = null;
+        try {
+            rootController = stageManager.loadNodesView(
+                    ViewType.PDF_BUILDER,
+                    controllerFactory
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
+        stageManager.showStage("Build your PDF",rootController.getView());
+        RootController finalRootController = rootController;
+        rootController.getStage().setOnShowing(e -> {
+            finalRootController.getStage().getProperties().put("projectToExport", project);
+        });
+        eventBus.post(new RefreshEvent(EventType.EXPORT_EMAIL));
     }
 
+
+    /**
+     * handle global notification event
+     */
+    @Subscribe
+    public void handleNotificationEvent(CustomEvent event) {
+        if (event.getEventType() == EventType.SHOW_NOTIFICATION) {
+            errorLabel.setText(event.getMessage());
+            boolean isSuccess = (boolean) event.getData();
+            if(!isSuccess) AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
+            if(isSuccess) AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
+        }
+    }
+
+    /**
+     * Delete project
+     * @param project project to be deleted
+     */
     private void  deleteProject(Project project){
         var response = AlertHelper.showOptionalAlertWindow("Action warning !","Are you sure you want to delete this project ? ", Alert.AlertType.CONFIRMATION);
         if(response.isPresent() && response.get() == ButtonType.OK){
             boolean projectDeleted = projectModel.deleteProject(project);
-            if(projectDeleted) {
-                AlertHelper.showDefaultAlert("Project deleted", Alert.AlertType.INFORMATION);
-
-            }else {
-                AlertHelper.showDefaultAlert("Project not deleted", Alert.AlertType.ERROR);
-            }
+            if(!projectDeleted) AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
+            if(projectDeleted) AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
         }
     }
+
+
+
+    // FIX THIS LATER
+
+
+//    private void runInParallel(ViewType type,Project project) {
+//        final RootController[] parent = {null};
+//        Task<Void> loadDataTask = new Task<>() {
+//            @Override
+//            protected Void call() throws IOException {
+//                parent[0] = loadNodesView(type);
+//                return null;
+//            }
+//        };
+//        loadDataTask.setOnSucceeded(event -> {
+//            ProjectActionController controller = (ProjectActionController) parent[0];
+//            controller.setCurrentProject(project);
+//            System.out.println("Loaded controller: " + parent[0].getClass().getName());
+//
+//            switchToView(parent[0].getView());
+//        });
+//        new Thread(loadDataTask).start();
+//    }
+
+//    private void switchToView(Parent parent) {
+//        Scene scene = projectAnchorPane.getScene();
+//        Window window = scene.getWindow();
+//        if (window instanceof Stage) {
+//            StackPane layoutPane = (StackPane) scene.lookup("#app_content");
+//            layoutPane.getChildren().clear();
+//            layoutPane.getChildren().add(parent);
+//        }
+//
+//    }
+
 
 
 

@@ -7,7 +7,6 @@ import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
@@ -23,11 +22,12 @@ public class Main extends Application {
             IControllerFactory factory = StartUp.getInjector().getInstance(IControllerFactory.class);
             IRootController controller = factory.loadFxmlFile(ViewType.LOGIN);
 
-            Scene scene = new Scene(controller.getView());
+           Scene scene = new Scene(controller.getView());
             stage.setTitle("Wuav-login");
             stage.setResizable(false);
             stage.setScene(scene);
             stage.show();
+
         } catch (Exception e) {
             Throwable cause = e.getCause();
             if (cause != null) {

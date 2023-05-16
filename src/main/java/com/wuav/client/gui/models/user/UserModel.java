@@ -33,7 +33,7 @@ public class UserModel implements IUserModel{
     }
 
     @Override
-    public int createUser(String name,String email,String role) {
+    public boolean createUser(String name,String email,String role) {
         return userService.createUser(name,email,role);
     }
 
@@ -45,10 +45,6 @@ public class UserModel implements IUserModel{
                 .findFirst().orElse(null);
     }
 
-    @Override
-    public int createCustomerService(AppUser appUser) {
-        return userService.createCustomer(appUser);
-    }
 
     @Override
     public boolean updateUserById(AppUser appUser) {

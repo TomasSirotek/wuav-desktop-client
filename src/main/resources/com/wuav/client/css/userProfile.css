@@ -2,4 +2,12 @@
   -fx-background-color: linear-gradient(to top, #ea9c7f, #fecfef);
 }
 
+.mfx-text-field .text-field {
+  -fx-highlight-fill: rgba(238, 235, 235, 0.8) !important; /* Selected text highlight */
+  -fx-prompt-text-fill: rgba(255, 254, 254, 0.85) !important; /* Prompt text color */
+}
 
+
+.mfx-text-field, .mfx-password-field{
+  -fx-border-color: #c5c1c1 !important;
+}

@@ -31,6 +31,19 @@ public class UserRepository implements IUserRepository {
 
 
     @Override
+    public AppUser getUserByProjectId(int projectId) {
+        AppUser fetchedUser = new AppUser();
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            IUserMapper mapper = session.getMapper(IUserMapper.class);
+            fetchedUser = mapper.getUserByProjectId(projectId);
+        } catch (Exception ex) {
+            logger.error("An error occurred mapping tables", ex);
+        }
+        return fetchedUser;
+    }
+
+
+    @Override
     public AppUser getUserByEmail(String email) {
         AppUser fetchedUser = new AppUser();
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
@@ -54,21 +67,6 @@ public class UserRepository implements IUserRepository {
         return fetchedUser;
     }
 
-    @Override
-    public int createCustomer(AppUser appUser) {
-        int returnedId = 0;
-        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            IUserMapper mapper = session.getMapper(IUserMapper.class);
-            int affectedRows = mapper.createCustomer(
-                    appUser
-            );
-            session.commit();
-            returnedId = affectedRows > 0 ?appUser.getId() : 0;
-        } catch (Exception ex) {
-            logger.error("An error occurred mapping tables", ex);
-        }
-        return returnedId;
-    }
 
     @Override
     public int addUserToRole(int userId, int roleId) {
@@ -171,15 +169,4 @@ public class UserRepository implements IUserRepository {
         return false;
     }
 
-    @Override
-    public AppUser getUserByProjectId(int projectId) {
-        AppUser fetchedUser = new AppUser();
-        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-            IUserMapper mapper = session.getMapper(IUserMapper.class);
-            fetchedUser = mapper.getUserByProjectId(projectId);
-        } catch (Exception ex) {
-            logger.error("An error occurred mapping tables", ex);
-        }
-        return fetchedUser;
-    }
 }

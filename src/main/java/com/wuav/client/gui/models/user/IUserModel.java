@@ -14,12 +14,10 @@ public interface IUserModel {
     ObservableList<AppUser> getAllUsers();
 
 
-    int createUser(String name,String email,String role);
+    boolean createUser(String name,String email,String role);
 
 
     AppUser getUserByEmail(String customerEmail);
-
-    int createCustomerService(AppUser appUser);
 
     boolean updateUserById(AppUser appUser);
 

@@ -16,7 +16,7 @@ public interface IProjectRepository {
 
     Project updateProject(int projectId, String description);
 
-    int createProject(CreateProjectDTO projectDTO);
+    boolean createProject(CreateProjectDTO projectDTO);
 
     int addProjectToUser(int userId, int projectId);
 

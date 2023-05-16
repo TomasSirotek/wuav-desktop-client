@@ -18,9 +18,8 @@ public class AddressService implements IAddressService {
     }
 
     @Override
-    public int createAddress(AddressDTO addressDTO) {
-        int result = addressRepository.createAddress(addressDTO);
-        return result > 0 ? result : -1;
+    public boolean createAddress(AddressDTO addressDTO) {
+        return addressRepository.createAddress(addressDTO);
     }
 
     @Override

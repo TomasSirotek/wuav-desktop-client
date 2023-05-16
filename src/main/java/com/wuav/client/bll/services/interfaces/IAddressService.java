@@ -5,7 +5,7 @@ import com.wuav.client.gui.dto.AddressDTO;
 import com.wuav.client.gui.dto.PutAddressDTO;
 
 public interface IAddressService {
-    int createAddress(AddressDTO addressDTO);
+    boolean createAddress(AddressDTO addressDTO);
 
     Address getAddressById(int id);
 

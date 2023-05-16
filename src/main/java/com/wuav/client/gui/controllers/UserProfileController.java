@@ -6,20 +6,17 @@ import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.models.user.IUserModel;
 import com.wuav.client.gui.utils.AlertHelper;
+import com.wuav.client.gui.utils.validations.FormField;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextInputControl;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
-
-
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -27,12 +24,8 @@ import java.util.ResourceBundle;
 
 public class UserProfileController  extends RootController implements Initializable {
 
-
     @FXML
-    private MFXTextField userNameField;
-    @FXML
-
-    private MFXTextField userEmail;
+    private MFXTextField userNameField,userEmail;
     @FXML
 
     private MFXPasswordField userPsw;
@@ -41,14 +34,9 @@ public class UserProfileController  extends RootController implements Initializa
     private MFXButton updateAcc;
     @FXML
 
-    private Label userRole;
-    @FXML
-
-    private Label userCreated;
+    private Label userRole,emailHeader,userName,userCreated;
     @FXML
     private Circle avatar;
-    @FXML
-    private Label userName;
     private Image tempImage = new Image("diceBar1.png");
 
     private final IUserModel userModel;
@@ -65,14 +53,13 @@ public class UserProfileController  extends RootController implements Initializa
     }
 
     private void updateAccount() {
-
         // validate if name email or password are the same if there are disable the button
-
         if(validateInput()){
            AppUser updatedUser = new AppUser();
            updatedUser.setId(CurrentUser.getInstance().getLoggedUser().getId());
            updatedUser.setName(userNameField.getText());
            updatedUser.setEmail(userEmail.getText());
+           emailHeader.setText(userEmail.getText());
 
            boolean updateResult = userModel.updateUserById(updatedUser);
            if(updateResult){
@@ -81,20 +68,18 @@ public class UserProfileController  extends RootController implements Initializa
            }else {
                AlertHelper.showDefaultAlert("Profile could not be updated", Alert.AlertType.ERROR);
            }
-
         }
-
     }
 
     private boolean validateInput() {
         boolean isValid = true;
 
-        List<UserProfileController.FormField> fieldsToValidate = Arrays.asList(
-                new UserProfileController.FormField(userNameField, "User name is required!"),
-                new UserProfileController.FormField(userEmail, "Email is required" )
+        List<FormField> fieldsToValidate = Arrays.asList(
+                new FormField(userNameField, "User name is required!"),
+                new FormField(userEmail, "Email is required" )
         );
 
-        for (UserProfileController.FormField field : fieldsToValidate) {
+        for (FormField field : fieldsToValidate) {
             if (field.getText().isEmpty()) {
                 AlertHelper.showDefaultAlert(field.getErrorMessage(), Alert.AlertType.WARNING);
                 isValid = false;
@@ -104,58 +89,7 @@ public class UserProfileController  extends RootController implements Initializa
 
     }
 
-    @FunctionalInterface
-    private interface ValidationFunction {
-        boolean validate();
-    }
-
-    private static class FormField {
-        private final Node control;
-        private final String errorMessage;
-        private final UserProfileController.ValidationFunction validationFunction;
-        private final String errorValidationMessage;
-
-        public FormField(Node control, String errorMessage) {
-            this(control, errorMessage, null, null);
-        }
-
-        public FormField(Node control, String errorMessage, UserProfileController.ValidationFunction validationFunction, String errorValidationMessage) {
-            this.control = control;
-            this.errorMessage = errorMessage;
-            this.validationFunction = validationFunction;
-            this.errorValidationMessage = errorValidationMessage;
-        }
-
-        public String getText() {
-            if (control instanceof TextInputControl) {
-                return ((TextInputControl) control).getText();
-            } else {
-                throw new UnsupportedOperationException("Control type not supported: " + control.getClass().getName());
-            }
-        }
-
-        public String getErrorMessage() {
-            return errorMessage;
-        }
-
-        public UserProfileController.ValidationFunction getValidationFunction() {
-            return validationFunction;
-        }
-
-        public String getErrorValidationMessage() {
-            return errorValidationMessage;
-        }
-    }
-
-
-
-
-
-
-
-
     private void setUpProfilePage() {
-
         AppUser loggedUser = CurrentUser.getInstance().getLoggedUser();
 
         avatar.setFill(new ImagePattern(tempImage));
@@ -166,7 +100,6 @@ public class UserProfileController  extends RootController implements Initializa
         userPsw.setDisable(true);
         userRole.setText(loggedUser.getRoles().get(0).getName());
         userCreated.setText(loggedUser.getCreatedAt().toString());
-
-
+        emailHeader.setText(loggedUser.getEmail());
     }
 }

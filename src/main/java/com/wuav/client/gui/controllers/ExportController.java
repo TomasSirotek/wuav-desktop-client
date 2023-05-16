@@ -3,12 +3,11 @@ package com.wuav.client.gui.controllers;
 import com.google.inject.Inject;
 import com.wuav.client.be.Project;
 import com.wuav.client.bll.helpers.ViewType;
-import com.wuav.client.bll.utilities.AlertHelper;
 import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
+import com.wuav.client.gui.manager.StageManager;
 import com.wuav.client.gui.models.IProjectModel;
-import com.wuav.client.gui.models.user.CurrentUser;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import javafx.application.Platform;
@@ -17,22 +16,14 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -44,11 +35,6 @@ public class ExportController extends RootController implements Initializable {
 
     @FXML
     private MFXScrollPane exportPane;
-    @FXML
-    private ListView selectedProjectsForExport;
-
-    @FXML
-    private ChoiceBox formatSelect;
     @FXML
     private MFXButton exportActionBtn;
     @FXML
@@ -64,26 +50,29 @@ public class ExportController extends RootController implements Initializable {
 
     private final IControllerFactory controllerFactory;
 
+    private final StageManager stageManager;
+
     @Inject
-    public ExportController(IPdfGenerator pdfGenerator, IProjectModel projectModel, IControllerFactory controllerFactory) {
+    public ExportController(IPdfGenerator pdfGenerator, IProjectModel projectModel, IControllerFactory controllerFactory, StageManager stageManager) {
         this.pdfGenerator = pdfGenerator;
         this.projectModel = projectModel;
         this.controllerFactory = controllerFactory;
+        this.stageManager = stageManager;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         exportActionBtn.setOnAction(e -> exportDocument());
+        setupProjectsToExport();
+    }
 
+    private void setupProjectsToExport() {
         Platform.runLater(() -> {
             Stage stage = (Stage) exportAnchorPane.getScene().getWindow();
             projectsToExport = (List<Project>) stage.getProperties().get("projectsToExport");
             if (projectsToExport != null) {
                 ObservableList<Project> selectedProjects = FXCollections.observableArrayList(projectsToExport);
                 constructScrollPane(selectedProjects);
-
-             //   selectedProjectsForExport.setItems(selectedProjects); // set the items in the listview
-               // formatSelect.getItems().add("PDF");
             }
         });
     }
@@ -104,81 +93,63 @@ public class ExportController extends RootController implements Initializable {
             // Create a Label for export name
             Label exportNameLabel = new Label("Export Name: "); // Replace with your export name
 
-// Create a Label for project name
+            // Create a Label for project name
             Label projectNameLabel = new Label(project.getName());
             projectNameLabel.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial';");
-
 
             // Add the nodes to the grid pane
             gridPane.add(imageView, 0, i); // ImageView in the first column
             gridPane.add(exportNameLabel, 1, i); // Export Name Label in the second column
             gridPane.add(projectNameLabel, 2, i); // Project Name Label in the third column
-
-
         }
 
         // Set the content of the MFXScrollPane to the GridPane
         exportPane.setContent(gridPane);
     }
 
+
+    /**
+     * This method is called when the user clicks on the export button
+     */
     private void exportDocument() {
         openBuilderView();
-      //  exportAsPDF();
     }
 
     private void openBuilderView() {
-        RootController controller = tryToLoadView(ViewType.PDF_BUILDER);
-        Stage stage = new Stage();
-        Scene scene = new Scene(controller.getView());
+        String stageTitle = "PDF-Builder";
 
-        stage.initOwner(getStage());
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.setTitle("Build you PDF");
-        stage.setOnCloseRequest(e -> {
-
-        });
-        // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
-        stage.setOnShowing(e -> {
-            stage.getProperties().put("projectToExport", projectsToExport.get(0));
-        });
-        stage.setResizable(false);
-        stage.setScene(scene);
-        stage.show();
-
-    }
-
-    private void exportAsPDF() {
-        ByteArrayOutputStream stream = pdfGenerator.generatePdf(CurrentUser.getInstance().getLoggedUser(), projectsToExport.get(0), "project");
-
-        // Create a FileChooser instance
-        FileChooser fileChooser = new FileChooser();
-
-        // Set the title for the save dialog
-        fileChooser.setTitle("Save PDF");
-
-        // Set the initial file name
-        fileChooser.setInitialFileName("project.pdf");
-
-        // Set the file type filter to show only PDF files
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PDF files (*.pdf)", "*.pdf");
-        fileChooser.getExtensionFilters().add(extFilter);
-
-        // Show the save dialog and get the selected file
-        File file = fileChooser.showSaveDialog(exportAnchorPane.getScene().getWindow());
-
-        // If the user has selected a file
-        if (file != null) {
-            try {
-                // Write the ByteArrayOutputStream to the selected file
-                try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-                    stream.writeTo(fileOutputStream);
-                    AlertHelper.showDefaultAlert("Success !" , Alert.AlertType.CONFIRMATION);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        RootController rootController = null;
+        try {
+            rootController = stageManager.loadNodesView(
+                    ViewType.PDF_BUILDER,
+                    controllerFactory
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+        rootController.getStage().setOnShowing(e -> {
+            getStage().getProperties().put("projectToExport", projectsToExport.get(0));
+        });
+        stageManager.showStage(stageTitle, rootController.getView());
 
+
+//        RootController controller = tryToLoadView(ViewType.PDF_BUILDER);
+//        Stage stage = new Stage();
+//        Scene scene = new Scene(controller.getView());
+//
+//        stage.initOwner(getStage());
+//        stage.initModality(Modality.WINDOW_MODAL);
+//        stage.setTitle("Build you PDF");
+//        stage.setOnCloseRequest(e -> {
+//
+//        });
+//        // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
+//        stage.setOnShowing(e -> {
+//            stage.getProperties().put("projectToExport", projectsToExport.get(0));
+//        });
+//        stage.setResizable(false);
+//        stage.setScene(scene);
+//        stage.show();
 
     }
 

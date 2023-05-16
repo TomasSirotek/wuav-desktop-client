@@ -13,7 +13,6 @@ public interface IUserRepository {
 
     AppUser getUserByEmail(String email);
 
-    int createCustomer(AppUser appUser);
 
     int addUserToRole(int userId, int roleId);
 

@@ -6,9 +6,12 @@ public class CustomEvent {
     private EventType eventType;
     private Object data;
 
-    public CustomEvent(EventType eventType, Object data) {
+    private String message;
+
+    public CustomEvent(EventType eventType, Object data, String message) {
         this.eventType = eventType;
         this.data = data;
+        this.message = message;
     }
 
     public EventType getEventType() {
@@ -17,5 +20,9 @@ public class CustomEvent {
 
     public Object getData() {
         return data;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

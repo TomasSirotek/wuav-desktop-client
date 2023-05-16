@@ -3,11 +3,9 @@ package com.wuav.client.gui.controllers;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import com.wuav.client.be.CustomerType;
 import com.wuav.client.be.Project;
 import com.wuav.client.be.device.Device;
-import com.wuav.client.be.device.MockDevices;
-import com.wuav.client.be.device.Projector;
-import com.wuav.client.be.device.Speaker;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.bll.utilities.UniqueIdGenerator;
@@ -24,7 +22,6 @@ import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
 import com.wuav.client.gui.utils.CKEditorPane;
-import com.wuav.client.gui.utils.enums.DeviceType;
 import com.wuav.client.gui.utils.event.CustomEvent;
 import com.wuav.client.gui.utils.validations.FormField;
 import com.wuav.client.gui.utils.api.ImageOperationFacade;
@@ -33,24 +30,18 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 
@@ -58,13 +49,8 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-import javafx.util.StringConverter;
-import org.controlsfx.control.textfield.AutoCompletionBinding;
-import org.controlsfx.control.textfield.TextFields;
-
 public class ModalActionController extends RootController implements Initializable {
-    @FXML
-    private Label noDeviceLabel;
+
     @FXML
     private MFXScrollPane deviceForProjectList;
     @FXML
@@ -76,11 +62,13 @@ public class ModalActionController extends RootController implements Initializab
     @FXML
     private MFXProgressSpinner uploadProgress;
     @FXML
-    private Label uploadTextProgress,imageText;
+    private Label noDeviceLabel;
+    @FXML
+    private Label uploadTextProgress,imageText,choosenFileName;
     @FXML
     private ImageView fetchedImage,qrCodee;
     @FXML
-    private ChoiceBox clientTypeChooseField,deviceTypeChooseField,devicesForChooseBox;
+    private ChoiceBox deviceTypeChooseField,devicesForChooseBox;
     @FXML
     private MFXTextField clientCityField,projectNameField,clientPhoneField,clientNameField,clientEmailField,clientStreetField,clientZipField,deviceName;
     @FXML
@@ -93,6 +81,8 @@ public class ModalActionController extends RootController implements Initializab
     private HBox searchBoxField, selectedFileHBox,imageContent,imageActionHandleBox,detailsBoxLoad;
     @FXML
     private MFXButton continueBtn,selectFile,backBtn,deviceCrudToggle;
+    @FXML
+    private Button individualToggle,businessToggle;
     @FXML
     private TabPane tabPaneCreate;
     @FXML
@@ -114,7 +104,7 @@ public class ModalActionController extends RootController implements Initializab
     private List<Device> selectedDevices = new ArrayList<>();
     private List<ImageDTO> listOfUploadImages = new ArrayList<>();
     private StringProperty editorContent = new SimpleStringProperty();
-    private Image defaultImage = new Image("/no_data.png");
+    private Image defaultImage = new Image("/imageUpload.png");
     private Image fileImage = new Image("/image.png");
     private final IControllerFactory controllerFactory;
 
@@ -124,12 +114,17 @@ public class ModalActionController extends RootController implements Initializab
     private final int BARCODE_WIDTH = 200;
     private final int BARCODE_HEIGHT = 200;
 
+    private final int EDITOR_VIEW_HEIGHT = 300;
+
     private final DeviceModel deviceModel;
 
 
     private List<Device> devices = new ArrayList<>();
 
     private MFXTextField textField = new MFXTextField();
+
+    private boolean individualToggleSelected;
+    private boolean businessToggleSelected;
 
 
     @Inject
@@ -179,6 +174,7 @@ public class ModalActionController extends RootController implements Initializab
         // Create and configure Label
         Label selectedFileName = new Label("image.png");
         selectedFileName.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial';");
+
 
         // Add Label to the VBox
         uploadedImage.getChildren().add(selectedFileName);
@@ -237,7 +233,7 @@ public class ModalActionController extends RootController implements Initializab
 
             if(isEdit){
                 EventType eventType = EventType.SET_CURRENT_DEVICE;
-                CustomEvent event = new CustomEvent(eventType, device);
+                CustomEvent event = new CustomEvent(eventType, device, "");
                 eventBus.post(event);
             }
 
@@ -291,17 +287,17 @@ public class ModalActionController extends RootController implements Initializab
         deviceTypeName.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial'; -fx-min-width: 100px; -fx-max-width: 100px;");
 
         Label deviceTypeLabel = new Label(selectedDevice.getDeviceType().toLowerCase());
-        deviceTypeLabel.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial'; -fx-min-width: 80px; -fx-max-width: 80px;");
+        deviceTypeLabel.setStyle("-fx-font-weight: italic; -fx-font-family: 'Arial'; -fx-min-width: 80px; -fx-max-width: 80px;");
 
         Button editButton = new Button("Edit");
-        editButton.setStyle("-fx-min-width: 82px; -fx-max-width: 82px;");
+        editButton.setStyle("-fx-min-width: 82px; -fx-max-width: 82px;-fx-background-color: #eae9e9");
         editButton.setOnAction(event -> {
             openDeviceWindow(true,selectedDevice);
         });
 
         // Create a button to remove the device
         Button removeButton = new Button("Remove️");
-        removeButton.setStyle("-fx-min-width: 82px; -fx-max-width: 82px;");
+        removeButton.setStyle("-fx-min-width: 82px; -fx-max-width: 82px;-fx-background-color: black; -fx-text-fill: white");
         removeButton.setOnAction(event -> {
             removeDeviceFromScrollPane(selectedDevice);
         });
@@ -347,17 +343,50 @@ public class ModalActionController extends RootController implements Initializab
     private void setupEditor() {
         CKEditorPane editorPane = new CKEditorPane();
         // Set the editor to the editor box
+
         editorVbox.getChildren().add(editorPane);
+        editorVbox.setPrefHeight(EDITOR_VIEW_HEIGHT);
+        editorVbox.setMaxHeight(EDITOR_VIEW_HEIGHT);
+        editorVbox.setMinWidth(EDITOR_VIEW_HEIGHT);
+
+
         // Access the editor content
         editorPane.editorContentProperty().addListener((observable, oldValue, newValue) -> {
            editorContent.set(newValue);
         });
     }
 
+
     private void fillClientTypeChooseField() {
-        Arrays.stream(ClientType.values())
-                .map(Enum::toString)
-                .forEach(clientTypeChooseField.getItems()::add);
+        individualToggle.setStyle("-fx-background-color: black; -fx-text-fill: white;");
+        businessToggle.setStyle("-fx-background-color: #eae9e9; -fx-text-fill: black;");
+
+        individualToggle.setOnAction(event -> {
+            individualToggleSelected = !individualToggleSelected;
+            updateToggleButtonStyle(individualToggle, individualToggleSelected);
+            businessToggleSelected = false;
+            updateToggleButtonStyle(businessToggle, businessToggleSelected);
+            // Store the selected value or perform any other actions
+            System.out.println("Individual Toggle Selected: " + individualToggleSelected);
+        });
+
+        businessToggle.setOnAction(event -> {
+            businessToggleSelected = !businessToggleSelected;
+            updateToggleButtonStyle(businessToggle, businessToggleSelected);
+            individualToggleSelected = false;
+            updateToggleButtonStyle(individualToggle, individualToggleSelected);
+            // Store the selected value or perform any other actions
+            System.out.println("Business Toggle Selected: " + businessToggleSelected);
+        });
+    }
+
+
+    private void updateToggleButtonStyle(Button button, boolean selected) {
+        if (selected) {
+            button.setStyle("-fx-background-color: black; -fx-text-fill: white;");
+        } else {
+            button.setStyle("-fx-background-color: #eae9e9; -fx-text-fill: black;");
+        }
     }
 
 
@@ -506,7 +535,6 @@ public class ModalActionController extends RootController implements Initializab
         List<FormField> fieldsToValidate = Arrays.asList(
                 new FormField(clientNameField, "Client name is required"),
                 new FormField(clientEmailField, "Client email is required" ),
-                new FormField(clientTypeChooseField, "Client type is required"),
                 new FormField(clientPhoneField, "Client phone is required"),
                 new FormField(clientCityField, "Client city is required"),
                 new FormField(clientStreetField, "Client street is required"),
@@ -522,12 +550,6 @@ public class ModalActionController extends RootController implements Initializab
                 isValid = false;
             }
         }
-
-        if (clientTypeChooseField.getSelectionModel().isEmpty()) {
-            AlertHelper.showDefaultAlert("Client type is required", Alert.AlertType.WARNING);
-            isValid = false;
-        }
-
         return isValid;
 
     }
@@ -559,10 +581,27 @@ public class ModalActionController extends RootController implements Initializab
             selectedImageFile = selectedFile; // SET TO SELECTED IMAGE
 
             selectedImage.setImage(new javafx.scene.image.Image(selectedFile.toURI().toString()));
+            selectedImage.setSmooth(true);
+
+            choosenFileName.setText(truncate(selectedFile.getAbsolutePath(), 30));
             selectFile.setDisable(true);
             changeSelectedFileHBox();
         }
 
+    }
+
+    /**
+     * Truncate the string to the specified length and add "..." at the end
+     * @param str the string to truncate
+     * @param maxLength the maximum length of the string
+     * @return
+     */
+
+    private String truncate(String str, int maxLength) {
+        if (str.length() <= maxLength) {
+            return str;
+        }
+        return str.substring(0, maxLength) + "...";
     }
 
     private void changeSelectedFileHBox() {
@@ -579,7 +618,7 @@ public class ModalActionController extends RootController implements Initializab
         column1.setHgrow(Priority.ALWAYS); // Allow column to grow horizontally
 
         ColumnConstraints column2 = new ColumnConstraints();
-        column2.setPrefWidth(180);
+        column2.setPrefWidth(145);
         column2.setHgrow(Priority.ALWAYS); // Allow column to grow horizontally
 
         ColumnConstraints column3 = new ColumnConstraints();
@@ -601,9 +640,9 @@ public class ModalActionController extends RootController implements Initializab
         Label projectNameLabel = new Label(selectedImageFile.getName());
         projectNameLabel.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial';");
 
-        MFXButton removeFile = new MFXButton("X");
+        MFXButton removeFile = new MFXButton("Remove");
         removeFile.getStyleClass().add("mfx-raised");
-        removeFile.setStyle("-fx-background-color:  #E84910; -fx-text-fill: #ffffff;");
+        removeFile.setStyle("-fx-background-color:  black; -fx-text-fill: #ffffff;-fx-min-width: 82px; -fx-max-width: 82px;");
         removeFile.setOnAction(e -> removeImage());
 
 // Add the nodes to the grid pane
@@ -621,6 +660,8 @@ public class ModalActionController extends RootController implements Initializab
         selectedImage.setImage(defaultImage);
         // remove action button and set label back to no image uploaded
         addedFilePane.getChildren().clear();
+        choosenFileName.setText("No file selected");
+
         selectFile.setDisable(false);
         imageText.setVisible(true);
     }
@@ -645,13 +686,18 @@ public class ModalActionController extends RootController implements Initializab
                 clientZipField.getText().trim()
         );
 
+        // HERE IT HAS TO BE CHANGE DEPENDING ON WHICH CLIENT TOOGLE IS SELECTED
+         ClientType clientType = ClientType.PRIVATE;
+         if(businessToggleSelected) clientType = ClientType.BUSINESS;
+         if(individualToggleSelected) clientType = ClientType.PRIVATE;
+
         // Construct the Customer object
         CustomerDTO customerDTO = new CustomerDTO(
                 customerId,
                 clientNameField.getText().trim(),
                 clientEmailField.getText().trim(),
                 clientPhoneField.getText().trim(),
-                clientTypeChooseField.getSelectionModel().getSelectedItem().toString(),
+                clientType.toString(),
                 addressDTO
         );
 

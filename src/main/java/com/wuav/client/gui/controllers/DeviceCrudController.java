@@ -76,12 +76,7 @@ public class DeviceCrudController extends RootController implements Initializabl
 
     private final String API_URL = "https://free.churchless.tech/v1/chat/completions";
 
-
-    private static final double HIDE_DIVIDER_POSITION = 1.0;
-    private static final double SHOW_DIVIDER_POSITION = 0.4448;
-    private boolean isRightSideVisible = false;
     private boolean isEdit = false;
-    final double LOCKED_DIVIDER_POSITION = 0.4448;
 
     // FOR SPEAKER
     private TextField power,volume;
@@ -104,7 +99,6 @@ public class DeviceCrudController extends RootController implements Initializabl
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         eventBus.register(this);
-        handleExpandActions();
         setupInitialize();
         handleSend.setOnAction(event -> {
             handleAPIChatSend();
@@ -429,38 +423,6 @@ public class DeviceCrudController extends RootController implements Initializabl
     }
 
 
-        private void handleExpandActions() {
-           // Handle the button click event
-            mainSplitPane.setDividerPositions(SHOW_DIVIDER_POSITION);
-            toggleHide.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    if (isRightSideVisible) {
-                        // Hide the right side
-                        mainSplitPane.setDividerPositions(1.0);
-                        isRightSideVisible = false;
-                    } else {
-                        // Show the right side
-                        mainSplitPane.setDividerPositions(SHOW_DIVIDER_POSITION);
-                        isRightSideVisible = true;
-                    }
-                }
-            });
 
-            toggleChatButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    if (!isRightSideVisible) {
-                        // Show the right side
-                        mainSplitPane.setDividerPositions(SHOW_DIVIDER_POSITION);
-                        isRightSideVisible = true;
-                    } else {
-                        // Hide the right side
-                        mainSplitPane.setDividerPositions(1.0);
-                        isRightSideVisible = false;
-                    }
-                }
-            });
-        }
 }
 

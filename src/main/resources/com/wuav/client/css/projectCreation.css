@@ -10,15 +10,18 @@
 .tab{
     -fx-background-insets: 0 1 0 1,0,0;
 }
-.tab-pane .tab
-{
+.tab-pane .tab {
     -fx-background-color:  transparent;
     -fx-padding: 0 10 0 10;
+    -fx-min-width: 80px;
+    -fx-pref-width: 80px;
+    -fx-max-width: 80px;
 }
 
 .tab-pane .tab:selected
 {
-
+    -fx-border-width: 0;
+    -fx-focus-color: none !important;
     -fx-background-color: transparent;
 }
 
@@ -34,15 +37,182 @@
     -fx-text-fill: transparent;
 }
 
-.exportHBox {
-    -fx-border-color: transparent transparent rgba(203, 201, 201, 0.92) transparent;
-    -fx-border-width: 0 0 1 0;
-
-}
 
 .exportGridPane:hover {
     -fx-background-color: rgba(234, 234, 234, 0.8);
 }
 
 
+.mfx-text-field .text-field {
+    -fx-highlight-fill: rgba(238, 235, 235, 0.8) !important;
 
+}
+
+.mfx-checkbox .ripple-container .mfx-ripple-generator {
+    -mfx-animation-speed: 1.5;
+    -mfx-ripple-color: derive( #E84910, 110%) !important;
+    -mfx-ripple-radius: 30;
+}
+
+.mfx-text-field{
+    -fx-border-color: #eae9e9 !important;
+}
+
+.mfx-checkbox:selected .box,
+.mfx-checkbox:indeterminate .box {
+    -fx-background-color: black !important;
+    -fx-border-color: black !important;
+}
+
+.mfx-checkbox:selected .box .mark {
+    visibility: visible;
+}
+
+/* Remove spacing */
+.pagination > .pagination-control > .control-box {
+    -fx-spacing: 0;
+}
+
+/* You can control the actual button sizes here */
+.pagination > .pagination-control > .control-box > .number-button,
+.pagination > .pagination-control > .control-box > .bullet-button,
+.pagination > .pagination-control > .control-box > .left-arrow-button,
+.pagination > .pagination-control > .control-box > .right-arrow-button {
+    -fx-background-insets: 0, 1;
+    -fx-background-color: lightgray, #FAFAFA;
+    -fx-min-width: 30;
+    -fx-min-height: 30;
+}
+
+/* Colors on hover */
+.pagination > .pagination-control > .control-box > .number-button:hover,
+.pagination > .pagination-control > .control-box > .bullet-button:hover,
+.pagination > .pagination-control > .control-box > .left-arrow-button:hover,
+.pagination > .pagination-control > .control-box > .right-arrow-button:hover {
+    -fx-background-insets: 0;
+    -fx-background-color: lightgray;
+}
+
+/* Selected toggle color */
+.pagination > .pagination-control > .control-box > .number-button:selected,
+.pagination > .pagination-control > .control-box > .bullet-button:selected{
+    -fx-background-insets: 0;
+    -fx-background-color: rgba(182, 179, 179, 0.78);
+    -fx-text-fill: white;
+}
+
+
+.pagination {
+    -fx-page-information-visible: false;
+}
+
+.mfx-date-picker:focus-within .icon {
+    -mfx-color: black !important;
+}
+
+.mfx-date-picker:disabled .icon {
+    -mfx-color: #bcbcbc;
+}
+
+
+.headerBox{
+    -fx-border-color: transparent transparent rgba(203, 201, 201, 0.92) transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.exportHBox {
+    -fx-border-color: transparent transparent rgba(203, 201, 201, 0.92) transparent;
+    -fx-border-width: 0 0 1 0;
+
+}
+
+/********************
+Date Picker
+********************/
+.mfx-date-picker {
+    -fx-padding: 3 5 3 5;
+}
+
+.mfx-date-picker .mfx-icon-wrapper .mfx-ripple-generator {
+    -mfx-ripple-radius: 24;
+    -mfx-ripple-color: #F3F1F6;
+}
+
+.mfx-date-picker:focus-within .icon {
+    -mfx-color:  black !important;
+    -fx-background-color:  black !important;
+}
+
+.mfx-date-picker:disabled .icon {
+    -mfx-color: #bcbcbc;
+}
+
+/********************
+Popup
+********************/
+.mfx-date-picker .date-picker-popup .content {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: #ebebeb;
+    -fx-border-radius: 10;
+    -fx-padding: 15;
+    -fx-min-height: 300;
+}
+
+.mfx-date-picker .date-picker-popup .left-arrow:disabled,
+.mfx-date-picker .date-picker-popup .right-arrow:disabled {
+    -fx-opacity: 0.5;
+}
+
+
+.mfx-date-picker .date-picker-popup .left-arrow .mfx-ripple-generator,
+.mfx-date-picker .date-picker-popup .right-arrow .mfx-ripple-generator {
+    -mfx-ripple-color: black !important;
+}
+
+.mfx-date-picker .date-picker-popup .months-combo,
+.mfx-date-picker .date-picker-popup .years-combo {
+    -mfx-float-mode: disabled;
+    -mfx-scroll-on-open: true;
+    -fx-border-color: transparent;
+    -fx-min-width: 120;
+    -fx-min-height: 40;
+    -fx-font-family: "Open Sans SemiBold";
+}
+
+.mfx-date-picker .date-picker-popup .months-combo:focus-within,
+.mfx-date-picker .date-picker-popup .years-combo:focus-within {
+    -fx-background-color: #f8f7fa;
+    -fx-text-fill:  black !important;
+}
+
+.mfx-date-picker .date-picker-popup .months-combo .mfx-icon-wrapper .mfx-ripple-generator,
+.mfx-date-picker .date-picker-popup .years-combo .mfx-icon-wrapper .mfx-ripple-generator {
+    -mfx-ripple-color:  black !important;
+}
+
+.mfx-date-picker .date-picker-popup .months-combo .virtual-flow .mfx-combo-box-cell,
+.mfx-date-picker .date-picker-popup .years-combo .virtual-flow .mfx-combo-box-cell {
+    -fx-font-family: "Open Sans SemiBold";
+}
+
+.mfx-date-picker .date-picker-popup .months-combo .virtual-flow .mfx-combo-box-cell:hover,
+.mfx-date-picker .date-picker-popup .years-combo .virtual-flow .mfx-combo-box-cell:hover {
+    -fx-background-color: #f8f7fa;
+}
+
+.mfx-date-picker .date-picker-popup .months-combo .virtual-flow .mfx-combo-box-cell:selected,
+.mfx-date-picker .date-picker-popup .years-combo .virtual-flow .mfx-combo-box-cell:selected {
+    -fx-background-color: #f8f7fa;
+}
+
+.mfx-date-picker .date-picker-popup .months-combo .virtual-flow .mfx-combo-box-cell:selected .label,
+.mfx-date-picker .date-picker-popup .years-combo .virtual-flow .mfx-combo-box-cell:selected .label {
+    -fx-text-fill:  black !important;
+}
+
+.mfx-date-picker .date-picker-popup .week-day {
+    -fx-font-family: "Open Sans SemiBold";
+    -fx-text-fill: -mfx-text-he;
+    -fx-padding: 0 0 5 0;
+}
