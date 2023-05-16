@@ -1,5 +1,6 @@
 package com.wuav.client.gui.utils;
 
+import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleStringProperty;
@@ -7,7 +8,10 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -54,13 +58,16 @@ public class CKEditorPane extends VBox {
                 "   removeDialogTabs: 'image:advanced;link:advanced'," +
                 "   filebrowserUploadUrl: '/uploader/upload.php'," +
                 "   filebrowserBrowseUrl: '/browser/browse.php'," +
-                "   resize_enabled: false" +
+                "   resize_enabled: false," +
+                "   height: '88px'" +
                 "});" +
                 "</script>" +
                 "</body>" +
                 "</html>";
 
-        Button imageBtn = new Button("Add Image");
+        MFXButton imageBtn = new MFXButton("Add Image");
+        imageBtn.setStyle("-fx-background-color: #000000; -fx-text-fill: white;");
+
         imageBtn.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
@@ -79,8 +86,14 @@ public class CKEditorPane extends VBox {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
-        getChildren().add(webView);
-        getChildren().add(imageBtn);
+        VBox vBox = new VBox();
+        VBox.setMargin(imageBtn, new Insets(10, 0, 0, 0));
+        imageBtn.setPrefWidth(385);
+        imageBtn.setMinWidth(385);
+        vBox.setPadding(new Insets(10, 0, 0, 0)); // top-right-bottom-left
+        vBox.getChildren().addAll(webView, imageBtn);
+
+        getChildren().add(vBox);
     }
 
     public StringProperty editorContentProperty() {

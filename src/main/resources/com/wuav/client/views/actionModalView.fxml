@@ -89,7 +89,7 @@
                                                             <Insets top="5.0" />
                                                          </VBox.margin>
                                                       </MFXTextField>
-                                                      <VBox prefHeight="314.0" prefWidth="401.0">
+                                                      <VBox prefHeight="299.0" prefWidth="401.0">
                                                          <children>
                                                             <VBox prefHeight="76.0" prefWidth="389.0">
                                                                <children>
@@ -100,8 +100,14 @@
                                                                      <padding>
                                                                         <Insets left="2.0" />
                                                                      </padding>
+                                                                     <VBox.margin>
+                                                                        <Insets bottom="5.0" />
+                                                                     </VBox.margin>
                                                                   </Label>
-                                                                  <MFXDatePicker prefHeight="38.0" prefWidth="384.0" promptText="Select date" style="-fx-border-color: #c5c1c1;" />
+                                                                  <MFXDatePicker prefHeight="38.0" prefWidth="384.0" promptText="Select date" style="-fx-border-color: #c5c1c1;">
+                                                                     <VBox.margin>
+                                                                        <Insets bottom="3.0" />
+                                                                     </VBox.margin></MFXDatePicker>
                                                                </children>
                                                                <VBox.margin>
                                                                   <Insets bottom="10.0" />
@@ -118,7 +124,10 @@
                                                                   <Insets bottom="5.0" />
                                                                </VBox.margin>
                                                             </Label>
-                                                            <VBox fx:id="editorVbox" prefHeight="259.0" prefWidth="401.0" />
+                                                            <VBox fx:id="editorVbox" prefHeight="259.0" prefWidth="385.0">
+                                                               <VBox.margin>
+                                                                  <Insets right="20.0" />
+                                                               </VBox.margin></VBox>
 
 <!--                                                            <TextField fx:id="descriptionField" alignment="TOP_LEFT" prefHeight="176.0" prefWidth="374.0" promptText="Enter your installation description  " style="-fx-border-color: #c5c1c1;">-->
 <!--                                                               <VBox.margin>-->
@@ -705,7 +714,7 @@
                   </MFXButton>
                </children>
             </HBox>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" styleClass="headerBox">
                <children>
                   <GridPane prefHeight="64.0" prefWidth="416.0">
                     <columnConstraints>

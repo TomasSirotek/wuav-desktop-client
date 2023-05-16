@@ -110,6 +110,8 @@ public class ModalActionController extends RootController implements Initializab
     private final int BARCODE_WIDTH = 200;
     private final int BARCODE_HEIGHT = 200;
 
+    private final int EDITOR_VIEW_HEIGHT = 300;
+
     private final DeviceModel deviceModel;
 
 
@@ -333,7 +335,13 @@ public class ModalActionController extends RootController implements Initializab
     private void setupEditor() {
         CKEditorPane editorPane = new CKEditorPane();
         // Set the editor to the editor box
+
         editorVbox.getChildren().add(editorPane);
+        editorVbox.setPrefHeight(EDITOR_VIEW_HEIGHT);
+        editorVbox.setMaxHeight(EDITOR_VIEW_HEIGHT);
+        editorVbox.setMinWidth(EDITOR_VIEW_HEIGHT);
+
+
         // Access the editor content
         editorPane.editorContentProperty().addListener((observable, oldValue, newValue) -> {
            editorContent.set(newValue);

@@ -10,15 +10,18 @@
 .tab{
     -fx-background-insets: 0 1 0 1,0,0;
 }
-.tab-pane .tab
-{
+.tab-pane .tab {
     -fx-background-color:  transparent;
     -fx-padding: 0 10 0 10;
+    -fx-min-width: 80px;
+    -fx-pref-width: 80px;
+    -fx-max-width: 80px;
 }
 
 .tab-pane .tab:selected
 {
-
+    -fx-border-width: 0;
+    -fx-focus-color: none !important;
     -fx-background-color: transparent;
 }
 
@@ -34,11 +37,6 @@
     -fx-text-fill: transparent;
 }
 
-.exportHBox {
-    -fx-border-color: transparent transparent rgba(203, 201, 201, 0.92) transparent;
-    -fx-border-width: 0 0 1 0;
-
-}
 
 .exportGridPane:hover {
     -fx-background-color: rgba(234, 234, 234, 0.8);
@@ -107,4 +105,24 @@
 
 .pagination {
     -fx-page-information-visible: false;
+}
+
+.mfx-date-picker:focus-within .icon {
+    -mfx-color: black !important;
+}
+
+.mfx-date-picker:disabled .icon {
+    -mfx-color: #bcbcbc;
+}
+
+
+.headerBox{
+    -fx-border-color: transparent transparent rgba(203, 201, 201, 0.92) transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.exportHBox {
+    -fx-border-color: transparent transparent rgba(203, 201, 201, 0.92) transparent;
+    -fx-border-width: 0 0 1 0;
+
 }
