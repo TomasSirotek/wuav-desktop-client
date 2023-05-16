@@ -151,7 +151,7 @@
                         </HBox>
                         <VBox prefHeight="144.0" prefWidth="185.0">
                            <children>
-                              <MFXButton alignment="BASELINE_LEFT" prefHeight="43.0" prefWidth="221.0" styleClass="myButton" text="Overview" textFill="#141111">
+                              <MFXButton fx:id="dashboardButton" alignment="BASELINE_LEFT" onAction="#handleDashboardSwitch" prefHeight="43.0" prefWidth="221.0" styleClass="myButton" text="Dashboard" textFill="#141111">
                                  <graphic>
                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
                                        <children>

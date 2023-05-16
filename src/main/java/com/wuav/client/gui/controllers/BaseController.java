@@ -37,7 +37,7 @@ import java.util.*;
 public class BaseController extends RootController implements Initializable {
 
     @FXML
-    private MFXButton accButton,usersButton,projectButton,expand;
+    private MFXButton accButton,usersButton,projectButton,expand,dashboardButton;
     @FXML
     private VBox userDetailsBox,sideNavBox,expandBoxToggle;
     @FXML
@@ -92,7 +92,7 @@ public class BaseController extends RootController implements Initializable {
 
 
         handleExpandControl();
-        runInParallel(ViewType.PROJECTS); // change back later
+        runInParallel(ViewType.DASHBOARD);
     }
 
 
@@ -164,10 +164,18 @@ public class BaseController extends RootController implements Initializable {
         });
     }
 
-
+    @FXML
+    public void handleDashboardSwitch() {
+        dashboardButton.setStyle(CustomColor.HIGHLIGHTED.getStyle());
+        projectButton.setStyle(CustomColor.TRANSPARENT.getStyle());
+        usersButton.setStyle(CustomColor.TRANSPARENT.getStyle());
+        accButton.setStyle(CustomColor.TRANSPARENT.getStyle());
+        runInParallel(ViewType.DASHBOARD);
+    }
     @FXML
     private void handleAllUsersSwitch() {
         projectButton.setStyle(CustomColor.TRANSPARENT.getStyle());
+        dashboardButton.setStyle(CustomColor.TRANSPARENT.getStyle());
         accButton.setStyle(CustomColor.TRANSPARENT.getStyle());
         usersButton.setStyle(CustomColor.HIGHLIGHTED.getStyle());
         runInParallel(ViewType.ALL_USERS);
@@ -176,6 +184,7 @@ public class BaseController extends RootController implements Initializable {
     @FXML
     private void handleDashBoardPageSwitch() {
         projectButton.setStyle(CustomColor.HIGHLIGHTED.getStyle());
+        dashboardButton.setStyle(CustomColor.TRANSPARENT.getStyle());
         usersButton.setStyle(CustomColor.TRANSPARENT.getStyle());
         accButton.setStyle(CustomColor.TRANSPARENT.getStyle());
         eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
@@ -184,6 +193,7 @@ public class BaseController extends RootController implements Initializable {
 
     @FXML
     private void handleUserProfileSwitch() {
+        dashboardButton.setStyle(CustomColor.TRANSPARENT.getStyle());
         projectButton.setStyle(CustomColor.TRANSPARENT.getStyle());
         usersButton.setStyle(CustomColor.TRANSPARENT.getStyle());
         accButton.setStyle(CustomColor.HIGHLIGHTED.getStyle());
@@ -224,5 +234,6 @@ public class BaseController extends RootController implements Initializable {
         RootController rootController = stageManager.loadNodesView(ViewType.LOGIN,controllerFactory);
         stageManager.showStage("Login",rootController.getView());
     }
+
 
 }

@@ -37,6 +37,11 @@ module com.wuav.client {
     requires okhttp3;
     requires AnimateFX;
     requires org.jsoup;
+    requires eu.hansolo.fx.charts;
+    requires eu.hansolo.toolbox;
+    requires eu.hansolo.toolboxfx;
+    requires eu.hansolo.fx.countries;
+    requires ch.qos.logback.classic;
 
 
     exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common,org.apache.pdfbox,org.controlsfx.controls;

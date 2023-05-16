@@ -50,14 +50,7 @@
                   </Label>
                   <HBox fx:id="exportToggleHbox" alignment="CENTER" GridPane.columnIndex="2">
                      <children>
-                        <MFXButton fx:id="exportSelected" prefHeight="29.0" prefWidth="91.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Export">
-                           <graphic>
-                              <ImageView fitHeight="15.0" fitWidth="17.0">
-                                 <image>
-                                    <Image url="@../images/navItems/export.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
+                        <MFXButton fx:id="exportSelected" prefHeight="29.0" prefWidth="91.0" style="-fx-background-color: #eae9e9; -fx-text-fill: black;" text="Export">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
