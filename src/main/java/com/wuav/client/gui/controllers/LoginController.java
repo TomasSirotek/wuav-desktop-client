@@ -6,13 +6,13 @@ import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.google.inject.Inject;
 import com.wuav.client.gui.manager.StageManager;
+import com.wuav.client.gui.utils.AnimationUtil;
+import com.wuav.client.gui.utils.enums.CustomColor;
 import io.github.palexdev.materialfx.controls.*;
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
-import javafx.util.Duration;
 
 import javax.naming.AuthenticationException;
 import java.io.IOException;
@@ -20,7 +20,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import animatefx.animation.*;
 
 public class LoginController extends RootController implements Initializable {
     @FXML
@@ -62,7 +61,7 @@ public class LoginController extends RootController implements Initializable {
         // Show the progress bar while the application is loading
         progressLoader.setVisible(true);
         loadingPane.setVisible(true);
-        loadingPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.2);");
+        loadingPane.setStyle(CustomColor.DIMMED.getStyle());
 
         executorService.submit(() -> {
             try {
@@ -74,7 +73,7 @@ public class LoginController extends RootController implements Initializable {
                     try {
                         // Hide the progress bar
                         progressLoader.setVisible(false);
-                        loadingPane.setStyle("-fx-background-color: transparent");
+                        loadingPane.setStyle(CustomColor.TRANSPARENT.getStyle());
 
                         getStage().close(); // Close the login stage
                         loadNewView(); // Load the new view
@@ -111,18 +110,8 @@ public class LoginController extends RootController implements Initializable {
     private void handleError() {
         progressLoader.setVisible(false);
         loadingPane.setVisible(false);
-        loadingPane.setStyle("-fx-background-color: transparent");
+        loadingPane.setStyle(CustomColor.TRANSPARENT.getStyle());
         errorPane.setVisible(true);
-        FadeInDown fadeInDown = new FadeInDown(errorPane);
-        fadeInDown.setOnFinished(event -> {
-            PauseTransition pause = new PauseTransition(Duration.seconds(4));
-            pause.setOnFinished(event2 -> {
-                FadeOutUp fadeOutDown = new FadeOutUp(errorPane);
-                fadeOutDown.setOnFinished(event3 -> errorPane.setVisible(false));
-                fadeOutDown.play();
-            });
-            pause.play();
-        });
-        fadeInDown.play();
+        AnimationUtil.animateInOut(errorPane,4, CustomColor.ERROR);
     }
 }

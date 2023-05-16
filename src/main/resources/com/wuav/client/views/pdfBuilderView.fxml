@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
@@ -216,5 +217,20 @@
             <Insets top="10.0" />
          </padding>
       </GridPane>
+      <Pane fx:id="loadingPane" layoutX="-2.0" layoutY="-1.0" prefHeight="453.0" prefWidth="604.0" visible="false" />
+      <MFXProgressSpinner fx:id="progressLoader" layoutX="280.0" layoutY="172.0" visible="false">
+         <color2>
+            <Color red="0.8500000238418579" green="0.2629333436489105" blue="0.22100000083446503" opacity="0.0" />
+         </color2>
+         <color3>
+            <Color red="0.8999999761581421" green="0.2722499966621399" blue="0.06300000101327896" />
+         </color3>
+         <color4>
+            <Color red="0.061000000685453415" green="0.6100000143051147" blue="0.33550000190734863" opacity="0.0" />
+         </color4>
+         <color1>
+            <Color red="0.9098039269447327" green="0.2862745225429535" blue="0.062745101749897" />
+         </color1>
+      </MFXProgressSpinner>
    </children>
 </AnchorPane>

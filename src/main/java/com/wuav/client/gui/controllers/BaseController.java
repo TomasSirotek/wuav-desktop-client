@@ -2,6 +2,7 @@ package com.wuav.client.gui.controllers;
 
 
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 
 import com.wuav.client.bll.helpers.EventType;
@@ -11,6 +12,9 @@ import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.controllers.event.RefreshEvent;
 import com.wuav.client.gui.manager.StageManager;
 import com.wuav.client.gui.models.user.CurrentUser;
+import com.wuav.client.gui.utils.AnimationUtil;
+import com.wuav.client.gui.utils.enums.CustomColor;
+import com.wuav.client.gui.utils.event.CustomEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.animation.TranslateTransition;
 import javafx.concurrent.Task;
@@ -22,10 +26,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -60,7 +61,7 @@ public class BaseController extends RootController implements Initializable {
 
     private boolean isSidebarExpanded = false;
 
-    private Image defaultImage = new Image("/no_data.png");
+    private Image defaultImage = new Image("/no_data.png"); // has to be replaced
 
     @Inject
     public BaseController(IControllerFactory controllerFactory, StageManager stageManager, EventBus eventBus) {
@@ -71,8 +72,8 @@ public class BaseController extends RootController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        eventBus.register(this);
         expand.setStyle("-fx-text-fill: transparent;");
-
         projectButton.setStyle("-fx-background-color: rgba(234, 234, 234, 0.8);");
 
         if (!CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("TECHNICIAN")) {
@@ -109,8 +110,6 @@ public class BaseController extends RootController implements Initializable {
 
         Image image = new Image(getClass().getClassLoader().getResource("close.png").toExternalForm());
         app_content.setStyle("-fx-background-color: none;");
-      //  sideNavBox.setPadding(new Insets(0, 20, 0, 30));
-
         menuIcon.setImage(image);
 
         slider.setPrefWidth(80);
@@ -168,26 +167,26 @@ public class BaseController extends RootController implements Initializable {
 
     @FXML
     private void handleAllUsersSwitch() {
-        projectButton.setStyle("-fx-background-color: transparent");
-        accButton.setStyle("-fx-background-color:transparent");
-        usersButton.setStyle("-fx-background-color: rgba(234, 234, 234, 0.8);");
+        projectButton.setStyle(CustomColor.TRANSPARENT.getStyle());
+        accButton.setStyle(CustomColor.TRANSPARENT.getStyle());
+        usersButton.setStyle(CustomColor.HIGHLIGHTED.getStyle());
         runInParallel(ViewType.ALL_USERS);
     }
 
     @FXML
     private void handleDashBoardPageSwitch() {
-        projectButton.setStyle("-fx-background-color: rgba(234, 234, 234, 0.8);");
-        usersButton.setStyle("-fx-background-color:transparent");
-        accButton.setStyle("-fx-background-color:transparent");
+        projectButton.setStyle(CustomColor.HIGHLIGHTED.getStyle());
+        usersButton.setStyle(CustomColor.TRANSPARENT.getStyle());
+        accButton.setStyle(CustomColor.TRANSPARENT.getStyle());
         eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
         runInParallel(ViewType.PROJECTS);
     }
 
     @FXML
     private void handleUserProfileSwitch() {
-        projectButton.setStyle("-fx-background-color: transparent");
-        usersButton.setStyle("-fx-background-color:transparent");
-        accButton.setStyle("-fx-background-color: rgba(234, 234, 234, 0.8);");
+        projectButton.setStyle(CustomColor.TRANSPARENT.getStyle());
+        usersButton.setStyle(CustomColor.TRANSPARENT.getStyle());
+        accButton.setStyle(CustomColor.HIGHLIGHTED.getStyle());
         runInParallel(ViewType.USER_PROFILE);
     }
     //endregion
@@ -206,7 +205,6 @@ public class BaseController extends RootController implements Initializable {
         });
         new Thread(loadDataTask).start();
     }
-
 
 
     private RootController loadNodesView(ViewType viewType) throws IOException {

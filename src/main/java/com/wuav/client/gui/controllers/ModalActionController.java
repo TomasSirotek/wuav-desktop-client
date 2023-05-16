@@ -223,7 +223,7 @@ public class ModalActionController extends RootController implements Initializab
 
             if(isEdit){
                 EventType eventType = EventType.SET_CURRENT_DEVICE;
-                CustomEvent event = new CustomEvent(eventType, device);
+                CustomEvent event = new CustomEvent(eventType, device, "");
                 eventBus.post(event);
             }
 

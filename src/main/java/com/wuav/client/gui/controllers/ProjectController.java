@@ -17,6 +17,9 @@ import com.wuav.client.gui.controllers.event.RefreshEvent;
 import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
+import com.wuav.client.gui.utils.AnimationUtil;
+import com.wuav.client.gui.utils.enums.CustomColor;
+import com.wuav.client.gui.utils.event.CustomEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import javafx.beans.property.SimpleStringProperty;
@@ -56,9 +59,10 @@ public class ProjectController extends RootController implements Initializable {
     private MFXProgressSpinner tableDataLoad;
     @FXML
     private CheckBox selectAllTableCheck;
-
     @FXML
-    private Label projectLabelMain;
+    private Pane notificationPane;
+    @FXML
+    private Label projectLabelMain,errorLabel;
 
     @FXML
     private MFXButton exportSelected;
@@ -436,6 +440,18 @@ public class ProjectController extends RootController implements Initializable {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+    }
+
+
+
+    @Subscribe
+    public void handleNotificationEvent(CustomEvent event) {
+        if (event.getEventType() == EventType.SHOW_NOTIFICATION) {
+            errorLabel.setText(event.getMessage());
+            boolean isSuccess = (boolean) event.getData();
+            if(!isSuccess) AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
+            if(isSuccess) AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
+        }
     }
 
 
