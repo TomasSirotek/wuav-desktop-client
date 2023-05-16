@@ -37,6 +37,8 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -47,6 +49,8 @@ import javafx.stage.*;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class ModalActionController extends RootController implements Initializable {
@@ -108,9 +112,9 @@ public class ModalActionController extends RootController implements Initializab
     private Image fileImage = new Image("/image.png");
     private final IControllerFactory controllerFactory;
 
-    private ImageOperationFacade imageOperationFacade;
 
     private final int CURRENT_USER_ID = CurrentUser.getInstance().getLoggedUser().getId();
+    private ImageOperationFacade imageOperationFacade = new ImageOperationFacade(CURRENT_USER_ID);
     private final int BARCODE_WIDTH = 200;
     private final int BARCODE_HEIGHT = 200;
 
@@ -136,9 +140,7 @@ public class ModalActionController extends RootController implements Initializab
         this.deviceModel = deviceModel;
     }
 
-
     public void handleFetchImages() {
-        this.imageOperationFacade = new ImageOperationFacade(CURRENT_USER_ID);
         uploadProgress.setVisible(true);
         uploadTextProgress.setVisible(true);
         imageOperationFacade.startImageFetch(new ImageOperationFacade.ImageFetchCallback() {
@@ -153,33 +155,56 @@ public class ModalActionController extends RootController implements Initializab
                     uploadTextProgress.setVisible(false);
                     imagesPaneFinal.getChildren().clear();
                     imagesPaneFinal.getChildren().add(imagesPaneFinal2);
+                    listOfUploadImages.addAll(imageOperationFacade.getStoredFetchedImages());
+                    listOfUploadImages.forEach(System.out::println);
                 });
             }
         });
     }
 
     private void addImageToSelectedImageVBox(Image image) {
+        // Create the outer HBox
         HBox uploadedImage = new HBox();
         uploadedImage.setSpacing(10);
         uploadedImage.setStyle("-fx-margin-bottom: 20px;-fx-padding:10 0 10 25");
+        uploadedImage.setAlignment(Pos.CENTER_RIGHT);
+
+        // Create the inner HBox for image, label, and expand button
+        HBox innerHBox = new HBox();
+        innerHBox.setAlignment(Pos.CENTER);
+        innerHBox.setSpacing(10);
 
         // Create and configure ImageView
         ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(60);
-        imageView.setFitHeight(60);
-
-        // Add ImageView to the VBox
-        uploadedImage.getChildren().add(imageView);
+        imageView.setFitWidth(120);
+        imageView.setFitHeight(120);
 
         // Create and configure Label
         Label selectedFileName = new Label("image.png");
-        selectedFileName.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial';");
+        selectedFileName.setStyle("-fx-font-family: 'Arial'; -fx-font-size: 14px");
+        selectedFileName.setMaxWidth(Double.MAX_VALUE);
+        selectedFileName.setAlignment(Pos.CENTER_LEFT);
 
+        // Add left margin to the Label
+        HBox.setMargin(selectedFileName, new Insets(0, 10, 0, 0));
 
-        // Add Label to the VBox
-        uploadedImage.getChildren().add(selectedFileName);
+        // Create Expand Button
+        Button expandButton = new Button("Expand");
+        expandButton.setStyle("-fx-background-color: #eae9e9; -fx-text-fill: #000000; -fx-min-width: 82px; -fx-max-width: 82px;");
+        expandButton.setOnAction(event -> {
+            displayImage(image);
+        });
 
-        // Add VBox to the GridPane
+        // Add ImageView and Label to the inner HBox
+        innerHBox.getChildren().addAll(imageView, selectedFileName);
+
+        // Add right margin to the inner HBox
+        HBox.setMargin(innerHBox, new Insets(0, 100, 0, 0));
+
+        // Add the inner HBox and Expand Button to the outer HBox
+        uploadedImage.getChildren().addAll(innerHBox, expandButton);
+
+        // Add the outer HBox to the GridPane
         imagesPaneFinal2.add(uploadedImage, currentColumn, currentRow);
 
         // Update the row and column index for the next image
@@ -189,6 +214,37 @@ public class ModalActionController extends RootController implements Initializab
             currentRow++;
         }
     }
+
+
+    private void displayImage(Image image) {
+        previewImage(image);
+    }
+
+    private void previewImage(Image image ) {
+        // open new scene with image inside
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle("Preview");
+        stage.initStyle(StageStyle.DECORATED);
+        stage.setResizable(false);
+
+        ImageView imageView = new ImageView(image);
+        imageView.setPreserveRatio(true);
+        imageView.setFitHeight(600);
+        imageView.setFitHeight(500);
+
+        VBox layout = new VBox(10, imageView);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(10));
+
+        Scene scene = new Scene(layout);
+        stage.setScene(scene);
+
+
+        stage.showAndWait();
+
+    }
+
 
 
     @Override
@@ -201,8 +257,15 @@ public class ModalActionController extends RootController implements Initializab
         handleProgressSwitch();
         setupSearchField();
         closeStage();
-        
 
+//        // Delay setting the onCloseRequest event handler until the stage is available
+//        Platform.runLater(() -> {
+//            // Get the reference to the stage
+//            Stage stage = (Stage) tabPaneCreate.getScene().getWindow();
+//
+//            // Add an event handler to execute the closeMethod when the stage is closed
+//            stage.setOnCloseRequest(event -> imageOperationFacade.removeImagesFromServer());
+//        });
     }
 
 
@@ -236,8 +299,6 @@ public class ModalActionController extends RootController implements Initializab
                 CustomEvent event = new CustomEvent(eventType, device, "");
                 eventBus.post(event);
             }
-
-
 
             stage.setResizable(false);
             stage.setScene(scene);
@@ -457,9 +518,9 @@ public class ModalActionController extends RootController implements Initializab
 
     private void closeStage() {
         if(this.root != null){
-            imageOperationFacade.removeImagesFromServer();
             Stage stage = getStage();
             if (stage != null) {
+                imageOperationFacade.removeImagesFromServer();
                 imageOperationFacade.stopImageFetch();
                 // Trigger the close request
                 stage.getOnCloseRequest().handle(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));

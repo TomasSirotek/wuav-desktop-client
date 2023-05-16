@@ -44,6 +44,7 @@ import java.io.*;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
@@ -200,79 +201,29 @@ public class ProjectController extends RootController implements Initializable {
         stageManager.showStage(rootController.getView(), title,scene,projectList);
     }
 
-
-
-//    /**
-//     * private method for showing new stages whenever its need
-//     *
-//     * @param parent root that will be set
-//     * @param title  title for new stage
-//     */
-//    private void show(Parent parent, String title, Scene previousScene,List<Project> projectList) {
-//        Stage stage = new Stage();
-//        Scene scene = new Scene(parent);
-//
-//        stage.initOwner(getStage());
-//        stage.initModality(Modality.WINDOW_MODAL);
-//        stage.setTitle(title);
-//        stage.setOnCloseRequest(e -> {
-//            Pane layoutPane = (Pane) previousScene.lookup("#layoutPane");
-//            if (layoutPane != null) {
-//                layoutPane.setVisible(true);
-//                layoutPane.setDisable(true);
-//                layoutPane.setStyle("-fx-background-color: transparent;");
-//            }
-//        });
-//        // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
-//        stage.setOnShowing(e -> {
-//            Stage previousStage = (Stage) previousScene.getWindow();
-//            stage.getProperties().put("previousStage", previousStage);
-//        });
-//
-//        if(projectList != null){
-//            stage.getProperties().put("projectsToExport",projectList); // pass optional model here
-//        }
-//
-//        stage.setResizable(false);
-//        stage.setScene(scene);
-//        stage.show();
-//    }
-
-
-//    private RootController loadNodesView(ViewType viewType) throws IOException {
-//        return controllerFactory.loadFxmlFile(viewType);
-//    }
-//
-//
-//
-//    private RootController tryToLoadView(ViewType viewType) {
-//        try {
-//            return loadNodesView(viewType);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-
-
+    /**
+     * This method is used to fill the table with projects
+     */
     private void setTableWithProjects() {
         tableDataLoad.setVisible(true);
 
-        Task<List<Project>> loadProjectsTask = new Task<>() {
-            @Override
-            protected List<Project> call() {
-                if (CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("TECHNICIAN")) {
-                    return projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
-                } else {
-                    projectLabelMain.setText("Projects");
-                    return projectModel.getAllProjects();
-                }
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+        Callable<List<Project>> loadProjectsTask = () -> {
+            if (CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals(UserRoleType.TECHNICIAN.toString())) {
+                return projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
+            } else {
+                projectLabelMain.setText("Projects");
+                return projectModel.getAllProjects();
             }
         };
 
-        // Update the UI when the task is completed
-        loadProjectsTask.setOnSucceeded(event -> {
-            List<Project> updatedProjects = loadProjectsTask.getValue();
+        Future<List<Project>> future = executorService.submit(loadProjectsTask);
+
+        executorService.shutdown();
+
+        try {
+            List<Project> updatedProjects = future.get();
 
             // Update projects list in CurrentUser singleton
             CurrentUser.getInstance().getLoggedUser().setProjects(updatedProjects);
@@ -282,15 +233,11 @@ public class ProjectController extends RootController implements Initializable {
 
             tableDataLoad.setVisible(false);
             projectTable.setItems(projects);
-        });
+        } catch (InterruptedException | ExecutionException e) {
+            AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
+            errorLabel.setText(e.getMessage());
 
-        // Handle any errors during the task execution
-        loadProjectsTask.setOnFailed(event -> {
-            AlertHelper.showDefaultAlert(event.getSource().getException().toString(), Alert.AlertType.ERROR);
-        });
-
-        // Run the task in a new thread
-        new Thread(loadProjectsTask).start();
+        }
     }
 
 
@@ -373,7 +320,7 @@ public class ProjectController extends RootController implements Initializable {
 
                                     editItem.setOnAction(event -> {
                                         // edit here
-                                        // runInParallel(ViewType.PROJECT_ACTIONS,getTableRow().getItem());
+                                        runInParallel(ViewType.PROJECT_ACTIONS,getTableRow().getItem());
                                         event.consume();
                                     });
                                     emailItem.setOnAction(event -> {
@@ -510,39 +457,43 @@ public class ProjectController extends RootController implements Initializable {
     }
 
 
+    /**
+     * Load nodes view in parallel
+     * @param type view type
+     * @return root controller
+     * @throws IOException
+     */
+    private void runInParallel(ViewType type,Project project) {
+        final RootController[] parent = {null};
+        Task<Void> loadDataTask = new Task<>() {
+            @Override
+            protected Void call() throws IOException {
+                parent[0] = loadNodesView(type);
+                return null;
+            }
+        };
+        loadDataTask.setOnSucceeded(event -> {
+            ProjectActionController controller = (ProjectActionController) parent[0];
+            controller.setCurrentProject(project);
+            System.out.println("Loaded controller: " + parent[0].getClass().getName());
 
-    // FIX THIS LATER
+            switchToView(parent[0].getView());
+        });
+        new Thread(loadDataTask).start();
+    }
 
-
-//    private void runInParallel(ViewType type,Project project) {
-//        final RootController[] parent = {null};
-//        Task<Void> loadDataTask = new Task<>() {
-//            @Override
-//            protected Void call() throws IOException {
-//                parent[0] = loadNodesView(type);
-//                return null;
-//            }
-//        };
-//        loadDataTask.setOnSucceeded(event -> {
-//            ProjectActionController controller = (ProjectActionController) parent[0];
-//            controller.setCurrentProject(project);
-//            System.out.println("Loaded controller: " + parent[0].getClass().getName());
-//
-//            switchToView(parent[0].getView());
-//        });
-//        new Thread(loadDataTask).start();
-//    }
-
-//    private void switchToView(Parent parent) {
-//        Scene scene = projectAnchorPane.getScene();
-//        Window window = scene.getWindow();
-//        if (window instanceof Stage) {
-//            StackPane layoutPane = (StackPane) scene.lookup("#app_content");
-//            layoutPane.getChildren().clear();
-//            layoutPane.getChildren().add(parent);
-//        }
-//
-//    }
+    private void switchToView(Parent parent) {
+        Scene scene = projectAnchorPane.getScene();
+        Window window = scene.getWindow();
+        if (window instanceof Stage) {
+            StackPane layoutPane = (StackPane) scene.lookup("#app_content");
+            layoutPane.getChildren().clear();
+            layoutPane.getChildren().add(parent);
+        }
+    }
+    private RootController loadNodesView(ViewType viewType) throws IOException {
+       return controllerFactory.loadFxmlFile(viewType);
+   }
 
 
 

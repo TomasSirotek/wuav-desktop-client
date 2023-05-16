@@ -654,7 +654,7 @@
                               </AnchorPane>
                            </content>
                         </Tab>
-                        <Tab fx:id="tab5" disable="true" text="2">
+                        <Tab fx:id="tab5" text="2">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="341.0">
                                  <children>
@@ -663,8 +663,8 @@
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                       </columnConstraints>
                                       <rowConstraints>
-                                        <RowConstraints maxHeight="100.86912536621094" minHeight="10.0" prefHeight="71.765869140625" vgrow="SOMETIMES" />
-                                          <RowConstraints maxHeight="314.5" minHeight="10.0" prefHeight="313.734130859375" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="100.86912536621094" minHeight="10.0" prefHeight="30.500503540039062" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="366.99949645996094" minHeight="10.0" prefHeight="366.99949645996094" vgrow="SOMETIMES" />
                                         <RowConstraints maxHeight="111.17062377929688" minHeight="3.9481201171875" prefHeight="3.9481201171875" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
@@ -688,11 +688,20 @@
                                           </Pane>
                                           <HBox prefHeight="46.0" prefWidth="401.0">
                                              <children>
-                                                <Label prefHeight="17.0" prefWidth="163.0" text="Phone image upload ">
-                                                   <font>
-                                                      <Font name="SansSerif Bold" size="15.0" />
-                                                   </font>
-                                                </Label>
+                                                <HBox alignment="TOP_CENTER">
+                                                   <children>
+                                                      <Label prefHeight="17.0" prefWidth="163.0" text="Phone image upload ">
+                                                         <font>
+                                                            <Font name="SansSerif Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="TOP_RIGHT" prefHeight="83.0" prefWidth="238.0">
+                                                   <children>
+                                                      <MFXButton prefHeight="27.0" prefWidth="95.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Reupload" visible="false" />
+                                                   </children>
+                                                </HBox>
                                              </children>
                                              <padding>
                                                 <Insets left="30.0" />

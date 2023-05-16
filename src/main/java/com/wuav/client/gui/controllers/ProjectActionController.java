@@ -360,7 +360,7 @@ public class ProjectActionController  extends RootController implements Initiali
         // open new scene with image inside
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Authorize yourself");
+        stage.setTitle("Preview");
         stage.initStyle(StageStyle.DECORATED);
         stage.setResizable(false);
 

@@ -41,7 +41,7 @@ public class ProjectModel implements IProjectModel{
 
         if (projects == null) {
             projects = projectService.getProjectsByUserId(userId);
-           // cacheProjectsImages(projects);  // remove for speed lulw
+            cacheProjectsImages(projects);
             projectsCache.put(userId, projects);
         }
 
@@ -63,7 +63,7 @@ public class ProjectModel implements IProjectModel{
             projects.add(newProject);
             projectsCache.put(userId, projects);
         }
-      //  cacheProjectImages(newProject);
+        cacheProjectImages(newProject);
     }
 
     @Override
