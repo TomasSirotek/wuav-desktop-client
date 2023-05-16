@@ -6,10 +6,13 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
@@ -210,7 +213,7 @@
                               </HBox>
                               <HBox GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <children>
-                                    <Label fx:id="userCreated" prefHeight="20.0" prefWidth="135.0" text="23/03/2023">
+                                    <Label fx:id="userCreated" prefHeight="20.0" prefWidth="164.0" text="23/03/2023">
                                        <font>
                                           <Font name="SansSerif Regular" size="16.0" />
                                        </font>
@@ -231,5 +234,36 @@
             </GridPane>
          </children>
       </GridPane>
+      <Pane fx:id="errorPane" prefHeight="41.0" styleClass="error-pane" visible="false">
+         <children>
+            <GridPane prefHeight="41.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="279.26087951660156" minWidth="10.0" prefWidth="279.26087951660156" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="279.26087951660156" minWidth="10.0" prefWidth="102.64761352539062" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="492.0111083984375" minWidth="10.0" prefWidth="394.8523864746094" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="366.1320495605469" minWidth="0.0" prefWidth="170.91705322265625" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <HBox alignment="CENTER" GridPane.columnIndex="1">
+                     <children>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/navItems/error-icon.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <Label fx:id="errorLabel" prefHeight="30.0" prefWidth="363.0" text="Incorrect password or email" textFill="WHITE" GridPane.columnIndex="2">
+                     <font>
+                        <Font name="SansSerif Regular" size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </GridPane>
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

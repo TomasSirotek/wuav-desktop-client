@@ -6,26 +6,38 @@ import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.models.user.IUserModel;
 import com.wuav.client.gui.utils.AlertHelper;
+import com.wuav.client.gui.utils.AnimationUtil;
+import com.wuav.client.gui.utils.enums.CustomColor;
 import com.wuav.client.gui.utils.validations.FormField;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class UserProfileController  extends RootController implements Initializable {
 
     @FXML
+    private Pane errorPane;
+    @FXML
     private MFXTextField userNameField,userEmail;
+    @FXML
+    private Label errorLabel;
     @FXML
 
     private MFXPasswordField userPsw;
@@ -40,6 +52,7 @@ public class UserProfileController  extends RootController implements Initializa
     private Image tempImage = new Image("diceBar1.png");
 
     private final IUserModel userModel;
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Inject
     public UserProfileController(IUserModel userModel) {
@@ -53,24 +66,37 @@ public class UserProfileController  extends RootController implements Initializa
     }
 
     private void updateAccount() {
-        // validate if name email or password are the same if there are disable the button
-        if(validateInput()){
-           AppUser updatedUser = new AppUser();
-           updatedUser.setId(CurrentUser.getInstance().getLoggedUser().getId());
-           updatedUser.setName(userNameField.getText());
-           updatedUser.setEmail(userEmail.getText());
-           emailHeader.setText(userEmail.getText());
+        if (validateInput()) {
+            AppUser updatedUser = new AppUser();
+            updatedUser.setId(CurrentUser.getInstance().getLoggedUser().getId());
+            updatedUser.setName(userNameField.getText());
+            updatedUser.setEmail(userEmail.getText());
+            emailHeader.setText(userEmail.getText());
 
-           boolean updateResult = userModel.updateUserById(updatedUser);
-           if(updateResult){
-               AlertHelper.showDefaultAlert("Profile updated", Alert.AlertType.INFORMATION);
-               setUpProfilePage();
-           }else {
-               AlertHelper.showDefaultAlert("Profile could not be updated", Alert.AlertType.ERROR);
-           }
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            Future<Boolean> updateTask = executorService.submit(() -> userModel.updateUserById(updatedUser));
+
+            executorService.shutdown();
+
+            Platform.runLater(() -> {
+                try {
+                    boolean updateResult = updateTask.get();
+                    if (updateResult) {
+                        AnimationUtil.animateInOut(errorPane, 4, CustomColor.INFO);
+                        errorLabel.setText("Profile updated successfully");
+                        setUpProfilePage();
+                    } else {
+                        AnimationUtil.animateInOut(errorPane, 4, CustomColor.ERROR);
+                        errorLabel.setText("Profile could have not been updated successfully");
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                    AnimationUtil.animateInOut(errorPane, 4, CustomColor.ERROR);
+                    errorLabel.setText(e.getMessage());
+                }
+            });
         }
     }
-
     private boolean validateInput() {
         boolean isValid = true;
 
@@ -81,7 +107,8 @@ public class UserProfileController  extends RootController implements Initializa
 
         for (FormField field : fieldsToValidate) {
             if (field.getText().isEmpty()) {
-                AlertHelper.showDefaultAlert(field.getErrorMessage(), Alert.AlertType.WARNING);
+                AnimationUtil.animateInOut(errorPane,4, CustomColor.ERROR);
+                errorLabel.setText(field.getErrorMessage());
                 isValid = false;
             }
         }

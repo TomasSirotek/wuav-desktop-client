@@ -116,40 +116,23 @@ public class ExportController extends RootController implements Initializable {
     }
 
     private void openBuilderView() {
-        String stageTitle = "PDF-Builder";
+        RootController controller = tryToLoadView(ViewType.PDF_BUILDER);
+        Stage stage = new Stage();
+        Scene scene = new Scene(controller.getView());
 
-        RootController rootController = null;
-        try {
-            rootController = stageManager.loadNodesView(
-                    ViewType.PDF_BUILDER,
-                    controllerFactory
-            );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        rootController.getStage().setOnShowing(e -> {
-            getStage().getProperties().put("projectToExport", projectsToExport.get(0));
+        stage.initOwner(getStage());
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setTitle("Build your PDF");
+        stage.setOnCloseRequest(e -> {
+
         });
-        stageManager.showStage(stageTitle, rootController.getView());
-
-
-//        RootController controller = tryToLoadView(ViewType.PDF_BUILDER);
-//        Stage stage = new Stage();
-//        Scene scene = new Scene(controller.getView());
-//
-//        stage.initOwner(getStage());
-//        stage.initModality(Modality.WINDOW_MODAL);
-//        stage.setTitle("Build you PDF");
-//        stage.setOnCloseRequest(e -> {
-//
-//        });
-//        // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
-//        stage.setOnShowing(e -> {
-//            stage.getProperties().put("projectToExport", projectsToExport.get(0));
-//        });
-//        stage.setResizable(false);
-//        stage.setScene(scene);
-//        stage.show();
+        // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
+        stage.setOnShowing(e -> {
+            stage.getProperties().put("projectToExport", projectsToExport.get(0));
+        });
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
 
     }
 
