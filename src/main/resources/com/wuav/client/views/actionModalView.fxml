@@ -7,6 +7,7 @@
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
@@ -84,7 +85,7 @@
                                                             <Insets />
                                                          </VBox.margin>
                                                       </Label>
-                                                      <MFXTextField fx:id="projectNameField" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="37.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="37.0" prefWidth="385.0" promptText="Teaching room..." style="-fx-border-color: #c5c1c1;">
+                                                      <MFXTextField fx:id="projectNameField" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="37.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="37.0" prefWidth="385.0" promptText="Teaching room..." style="-fx-border-color: #eae9e9;">
                                                          <VBox.margin>
                                                             <Insets top="5.0" />
                                                          </VBox.margin>
@@ -104,7 +105,7 @@
                                                                         <Insets bottom="5.0" />
                                                                      </VBox.margin>
                                                                   </Label>
-                                                                  <MFXDatePicker prefHeight="38.0" prefWidth="384.0" promptText="May 5,2023" style="-fx-border-color: #c5c1c1;">
+                                                                  <MFXDatePicker prefHeight="38.0" prefWidth="384.0" promptText="May 5,2023" style="-fx-border-color: #eae9e9;">
                                                                      <VBox.margin>
                                                                         <Insets bottom="3.0" />
                                                                      </VBox.margin></MFXDatePicker>
@@ -165,7 +166,7 @@
                               </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab fx:id="tab2" text="2">
+                      <Tab fx:id="tab2" disable="true" text="2">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
@@ -207,7 +208,7 @@
                                                                      </rowConstraints>
                                                                      <children>
                                                                         <HBox alignment="CENTER" GridPane.columnIndex="2" />
-                                                                        <VBox alignment="CENTER_LEFT" prefWidth="197.0" style="-fx-background-color: #dedede;" GridPane.columnIndex="1">
+                                                                        <VBox alignment="CENTER_LEFT" prefWidth="197.0" style="-fx-background-color: #eae9e9;" GridPane.columnIndex="1">
                                                                            <children>
                                                                               <Label fx:id="choosenFileName" prefHeight="18.0" prefWidth="264.0" text="No file selected" textFill="#0000005c">
                                                                                  <font>
@@ -296,9 +297,49 @@
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="403.0">
                                  <children>
-                                    <VBox alignment="CENTER" layoutY="1.0" prefHeight="411.0" prefWidth="442.0">
+                                    <VBox alignment="CENTER" layoutY="1.0" prefHeight="438.0" prefWidth="442.0">
                                        <children>
-                                          <VBox prefHeight="332.0" prefWidth="382.0">
+                                          <HBox prefHeight="42.0" prefWidth="382.0">
+                                             <children>
+                                                <Label prefHeight="17.0" prefWidth="163.0" text="Client details">
+                                                   <font>
+                                                      <Font name="SansSerif Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets top="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox prefHeight="32.0" prefWidth="382.0">
+                                             <children>
+                                                <GridPane prefHeight="36.0" prefWidth="381.0" style="-fx-background-color: #eae9e9; -fx-border-radius: 5;">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <Button fx:id="individualToggle" mnemonicParsing="false" prefHeight="26.0" prefWidth="189.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Individual">
+                                                         <GridPane.margin>
+                                                            <Insets left="5.0" />
+                                                         </GridPane.margin>
+                                                      </Button>
+                                                      <Button fx:id="businessToggle" mnemonicParsing="false" prefHeight="26.0" prefWidth="185.0" style="-fx-background-color: #eae9e9;" text="Business" GridPane.columnIndex="1">
+                                                         <GridPane.margin>
+                                                            <Insets right="5.0" />
+                                                         </GridPane.margin>
+                                                      </Button>
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <VBox prefHeight="339.0" prefWidth="382.0">
                                              <children>
                                                 <VBox alignment="CENTER_LEFT">
                                                    <children>
@@ -341,22 +382,6 @@
                                                                   <Insets right="5.0" />
                                                                </padding>
                                                             </VBox>
-                                                            <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
-                                                               <children>
-                                                                  <Label prefHeight="17.0" prefWidth="197.0" text="Client type" textFill="#252f4091">
-                                                                     <font>
-                                                                        <Font name="SansSerif Regular" size="10.0" />
-                                                                     </font>
-                                                                     <padding>
-                                                                        <Insets left="2.0" />
-                                                                     </padding>
-                                                                  </Label>
-                                                                  <ChoiceBox fx:id="clientTypeChooseField" prefHeight="30.0" prefWidth="181.0" style="-fx-background-color: white; -fx-border-color: #c5c1c1;" />
-                                                               </children>
-                                                               <GridPane.margin>
-                                                                  <Insets left="5.0" />
-                                                               </GridPane.margin>
-                                                            </VBox>
                                                             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
                                                                <children>
                                                                   <Label prefHeight="17.0" prefWidth="197.0" text="Phone number " textFill="#252f4091">
@@ -373,7 +398,7 @@
                                                                   <Insets right="5.0" />
                                                                </padding>
                                                             </VBox>
-                                                            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                            <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                                                <children>
                                                                   <Label prefHeight="17.0" prefWidth="197.0" text="City" textFill="#252f4091">
                                                                      <font>
@@ -389,31 +414,7 @@
                                                                   <Insets left="5.0" />
                                                                </GridPane.margin>
                                                             </VBox>
-                                                         </children>
-                                                      </GridPane>
-                                                   </children>
-                                                </HBox>
-                                                <VBox alignment="CENTER" prefHeight="62.0" prefWidth="382.0">
-                                                   <children>
-                                                      <HBox>
-                                                         <children>
-                                                            <VBox>
-                                                               <children>
-                                                                  <Label prefHeight="17.0" prefWidth="197.0" text="Street" textFill="#252f4091">
-                                                                     <font>
-                                                                        <Font name="SansSerif Regular" size="10.0" />
-                                                                     </font>
-                                                                     <padding>
-                                                                        <Insets left="2.0" />
-                                                                     </padding>
-                                                                  </Label>
-                                                                  <MFXTextField fx:id="clientStreetField" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="31.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="313.0" promptText="Email" text="Nørregade" />
-                                                               </children>
-                                                               <padding>
-                                                                  <Insets right="5.0" />
-                                                               </padding>
-                                                            </VBox>
-                                                            <VBox>
+                                                            <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                <children>
                                                                   <Label prefHeight="17.0" prefWidth="197.0" text="Zip" textFill="#252f4091">
                                                                      <font>
@@ -430,25 +431,40 @@
                                                                </padding>
                                                             </VBox>
                                                          </children>
+                                                      </GridPane>
+                                                   </children>
+                                                </HBox>
+                                                <VBox alignment="CENTER" prefHeight="62.0" prefWidth="382.0">
+                                                   <children>
+                                                      <HBox prefHeight="68.0" prefWidth="382.0">
+                                                         <children>
+                                                            <VBox prefHeight="62.0" prefWidth="390.0">
+                                                               <children>
+                                                                  <Label prefHeight="17.0" prefWidth="197.0" text="Street" textFill="#252f4091">
+                                                                     <font>
+                                                                        <Font name="SansSerif Regular" size="10.0" />
+                                                                     </font>
+                                                                     <padding>
+                                                                        <Insets left="2.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <MFXTextField fx:id="clientStreetField" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="41.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="382.0" promptText="Email" text="Nørregade" />
+                                                               </children>
+                                                            </VBox>
+                                                         </children>
                                                       </HBox>
                                                    </children>
                                                 </VBox>
                                              </children>
+                                             <padding>
+                                                <Insets top="10.0" />
+                                             </padding>
                                           </VBox>
                                        </children>
                                        <padding>
-                                          <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                                          <Insets left="30.0" right="30.0" />
                                        </padding>
                                     </VBox>
-                                    <HBox layoutX="28.0" layoutY="10.0" prefHeight="40.0" prefWidth="420.0">
-                                       <children>
-                                          <Label prefHeight="17.0" prefWidth="163.0" text="Client details">
-                                             <font>
-                                                <Font name="SansSerif Bold" size="15.0" />
-                                             </font>
-                                          </Label>
-                                       </children>
-                                    </HBox>
                                  </children>
                               </AnchorPane>
                            </content>
@@ -471,7 +487,7 @@
                                                             <Insets bottom="10.0" />
                                                          </VBox.margin>
                                                          <children>
-                                                            <Label prefHeight="14.0" prefWidth="185.0" text="Select device" textFill="#252f4091">
+                                                            <Label prefHeight="14.0" prefWidth="185.0" text="Select device or create new device " textFill="#252f4091">
                                                                <font>
                                                                   <Font name="SansSerif Regular" size="11.0" />
                                                                </font>
@@ -487,22 +503,14 @@
                                                                   <Insets left="2.0" />
                                                                </padding>
                                                             </Label>
-                                                            <Label alignment="TOP_CENTER" prefHeight="14.0" prefWidth="185.0" text="Create new device" textFill="#252f4091">
-                                                               <font>
-                                                                  <Font name="SansSerif Regular" size="11.0" />
-                                                               </font>
-                                                               <padding>
-                                                                  <Insets left="2.0" />
-                                                               </padding>
-                                                            </Label>
                                                          </children>
                                                       </HBox>
                                                       <HBox>
                                                          <children>
-                                                            <ChoiceBox fx:id="devicesForChooseBox" prefHeight="28.0" prefWidth="192.0" style="-fx-background-color: white; -fx-border-color: #c5c1c1;" />
+                                                            <ChoiceBox fx:id="devicesForChooseBox" prefHeight="28.0" prefWidth="192.0" style="-fx-background-color: white; -fx-border-color: #eae9e9;" />
                                                             <HBox alignment="CENTER_RIGHT" prefHeight="28.0" prefWidth="191.0">
                                                                <children>
-                                                                  <MFXButton fx:id="deviceCrudToggle" buttonType="RAISED" prefHeight="27.0" prefWidth="182.0" style="-fx-background-color: gray; -fx-text-fill: white;" text="Create device">
+                                                                  <MFXButton fx:id="deviceCrudToggle" buttonType="RAISED" prefHeight="27.0" prefWidth="182.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Create device">
                                                                      <font>
                                                                         <Font name="SansSerif Bold" size="13.0" />
                                                                      </font>
@@ -534,7 +542,7 @@
                                                       </Label>
                                                    </content>
                                                    <padding>
-                                                      <Insets top="10.0" />
+                                                      <Insets top="30.0" />
                                                    </padding>
                                                 </MFXScrollPane>
                                              </children></VBox>
@@ -667,12 +675,12 @@
                                           </HBox>
                                           <Pane fx:id="imagesPaneFinal" GridPane.rowIndex="1">
                                              <children>
-                                                <ImageView fx:id="qrCodee" fitHeight="102.0" fitWidth="102.0" layoutX="175.0" layoutY="74.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fx:id="qrCodee" fitHeight="144.0" fitWidth="144.0" layoutX="153.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../../../../../../../../../../wuav-desktop-client/src/main/resources/edit.png" />
                                                    </image>
                                                 </ImageView>
-                                                <Label layoutX="150.0" layoutY="196.0" text="Scann QR code in your app" />
+                                                <Label layoutX="150.0" layoutY="196.0" text="Scan QR code in wuav app" />
                                              </children>
                                              <padding>
                                                 <Insets left="40.0" right="30.0" />
