@@ -49,8 +49,7 @@ import java.net.URL;
 import java.util.*;
 
 public class ModalActionController extends RootController implements Initializable {
-    @FXML
-    private Label noDeviceLabel;
+
     @FXML
     private MFXScrollPane deviceForProjectList;
     @FXML
@@ -62,7 +61,9 @@ public class ModalActionController extends RootController implements Initializab
     @FXML
     private MFXProgressSpinner uploadProgress;
     @FXML
-    private Label uploadTextProgress,imageText;
+    private Label noDeviceLabel;
+    @FXML
+    private Label uploadTextProgress,imageText,choosenFileName;
     @FXML
     private ImageView fetchedImage,qrCodee;
     @FXML
@@ -100,7 +101,7 @@ public class ModalActionController extends RootController implements Initializab
     private List<Device> selectedDevices = new ArrayList<>();
     private List<ImageDTO> listOfUploadImages = new ArrayList<>();
     private StringProperty editorContent = new SimpleStringProperty();
-    private Image defaultImage = new Image("/no_data.png");
+    private Image defaultImage = new Image("/imageUpload.png");
     private Image fileImage = new Image("/image.png");
     private final IControllerFactory controllerFactory;
 
@@ -167,6 +168,7 @@ public class ModalActionController extends RootController implements Initializab
         // Create and configure Label
         Label selectedFileName = new Label("image.png");
         selectedFileName.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial';");
+
 
         // Add Label to the VBox
         uploadedImage.getChildren().add(selectedFileName);
@@ -553,10 +555,20 @@ public class ModalActionController extends RootController implements Initializab
             selectedImageFile = selectedFile; // SET TO SELECTED IMAGE
 
             selectedImage.setImage(new javafx.scene.image.Image(selectedFile.toURI().toString()));
+            selectedImage.setSmooth(true);
+
+            choosenFileName.setText(truncate(selectedFile.getAbsolutePath(), 30));
             selectFile.setDisable(true);
             changeSelectedFileHBox();
         }
 
+    }
+
+    private String truncate(String str, int maxLength) {
+        if (str.length() <= maxLength) {
+            return str;
+        }
+        return str.substring(0, maxLength) + "...";
     }
 
     private void changeSelectedFileHBox() {
@@ -573,7 +585,7 @@ public class ModalActionController extends RootController implements Initializab
         column1.setHgrow(Priority.ALWAYS); // Allow column to grow horizontally
 
         ColumnConstraints column2 = new ColumnConstraints();
-        column2.setPrefWidth(180);
+        column2.setPrefWidth(145);
         column2.setHgrow(Priority.ALWAYS); // Allow column to grow horizontally
 
         ColumnConstraints column3 = new ColumnConstraints();
@@ -595,9 +607,9 @@ public class ModalActionController extends RootController implements Initializab
         Label projectNameLabel = new Label(selectedImageFile.getName());
         projectNameLabel.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial';");
 
-        MFXButton removeFile = new MFXButton("X");
+        MFXButton removeFile = new MFXButton("Remove");
         removeFile.getStyleClass().add("mfx-raised");
-        removeFile.setStyle("-fx-background-color:  #E84910; -fx-text-fill: #ffffff;");
+        removeFile.setStyle("-fx-background-color:  black; -fx-text-fill: #ffffff;-fx-min-width: 82px; -fx-max-width: 82px;");
         removeFile.setOnAction(e -> removeImage());
 
 // Add the nodes to the grid pane
@@ -615,6 +627,8 @@ public class ModalActionController extends RootController implements Initializab
         selectedImage.setImage(defaultImage);
         // remove action button and set label back to no image uploaded
         addedFilePane.getChildren().clear();
+        choosenFileName.setText("No file selected");
+       
         selectFile.setDisable(false);
         imageText.setVisible(true);
     }
