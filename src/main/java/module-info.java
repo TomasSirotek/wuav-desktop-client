@@ -36,6 +36,7 @@ module com.wuav.client {
     requires org.controlsfx.controls;
     requires okhttp3;
     requires AnimateFX;
+    requires org.jsoup;
 
 
     exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common,org.apache.pdfbox,org.controlsfx.controls;

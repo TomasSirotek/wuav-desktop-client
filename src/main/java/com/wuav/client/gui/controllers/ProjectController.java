@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.wuav.client.be.*;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
+import org.jsoup.Jsoup;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.controllers.event.RefreshEvent;
@@ -360,15 +361,15 @@ public class ProjectController extends RootController implements Initializable {
                                     MenuItem emailItem = new MenuItem("Send email", emailImage);
                                     MenuItem deleteItem = new MenuItem("Delete", deleteImage);
 
-
                                     // adding all items to context menu
                                     ContextMenu menu = null;
 
-                                    if(CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("ADMIN")){
+                                    if(CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals(UserRoleType.ADMIN.name())){
                                         menu = new ContextMenu(editItem, emailItem, deleteItem);
                                     }else {
                                         menu = new ContextMenu(editItem, emailItem);
                                     }
+                                    menu.getStyleClass().add("menuTable");
 
                                     editItem.setOnAction(event -> {
                                         // edit here
@@ -407,8 +408,13 @@ public class ProjectController extends RootController implements Initializable {
     private void setupTableColumns() {
         // Name
         colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-        // Description
-        colDes.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDescription()));
+        // Description needs to be cleared of the html tags form the db
+        colDes.setCellValueFactory(cellData -> {
+            String htmlDescription = cellData.getValue().getDescription();
+            String plainDescription = Jsoup.parse(htmlDescription).text();
+            return new SimpleStringProperty(plainDescription);
+        });
+
         // Customer
         colCustomer.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCustomer().getEmail()));
         // Type
@@ -443,21 +449,25 @@ public class ProjectController extends RootController implements Initializable {
                             if(newSelected)  selectedProjects.add(project);
                             if(!newSelected)  selectedProjects.remove(project);
                         });
+                        checkBox.setStyle("-fx-cursor: HAND;");
                         checkBoxList.add(checkBox);
                     }
                     setGraphic(checkBox);
-                    item.setStyle("-fx-cursor: HAND;");
+
                 }
             }
         });
     }
 
 
+    /**
+     * open pdf builder method
+     */
     private void openPdfBuilder(Project project) {
         RootController rootController = null;
         try {
             rootController = stageManager.loadNodesView(
-                    ViewType.MAIN,
+                    ViewType.PDF_BUILDER,
                     controllerFactory
             );
         } catch (IOException e) {
@@ -473,6 +483,9 @@ public class ProjectController extends RootController implements Initializable {
     }
 
 
+    /**
+     * handle global notification event
+     */
     @Subscribe
     public void handleNotificationEvent(CustomEvent event) {
         if (event.getEventType() == EventType.SHOW_NOTIFICATION) {

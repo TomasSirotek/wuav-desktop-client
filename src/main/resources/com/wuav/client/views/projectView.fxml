@@ -36,8 +36,8 @@
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="620.1368713378906" minWidth="10.0" prefWidth="291.0" />
                   <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="318.9468078613281" minWidth="10.0" prefWidth="180.0" />
-                <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="318.9468078613281" minWidth="10.0" prefWidth="87.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="204.0" minWidth="10.0" prefWidth="190.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="318.9468078613281" minWidth="10.0" prefWidth="113.97650146484375" />
+                  <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="204.0" minWidth="10.0" prefWidth="163.02349853515625" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
@@ -66,7 +66,7 @@
                   </HBox>
                   <HBox fx:id="actionToggleHbox" alignment="CENTER_RIGHT" prefWidth="128.0" GridPane.columnIndex="3">
                      <children>
-                        <MFXButton fx:id="createNewProject" prefHeight="29.0" prefWidth="175.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Create project" textFill="#141111">
+                        <MFXButton fx:id="createNewProject" prefHeight="29.0" prefWidth="153.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Create project" textFill="#141111">
                            <graphic>
                               <HBox alignment="CENTER" prefHeight="24.0" prefWidth="31.0">
                                  <children>
