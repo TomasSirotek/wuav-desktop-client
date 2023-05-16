@@ -24,7 +24,6 @@ import java.util.ResourceBundle;
 
 public class UserProfileController  extends RootController implements Initializable {
 
-
     @FXML
     private MFXTextField userNameField,userEmail;
     @FXML
