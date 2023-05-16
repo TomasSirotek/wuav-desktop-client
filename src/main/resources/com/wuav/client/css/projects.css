@@ -48,16 +48,19 @@
 
 .menuTable .context-menu .menu-item:hover {
   -fx-background-color:  rgba(231, 229, 229, 0.87);
-  -fx-text-fill: black;
+  -fx-text-fill: black !important;
   -fx-cursor: HAND;
 }
 
 .menuTable .context-menu {
-  -fx-text-fill: black;
+  -fx-text-fill: black !important;
+}
+.menuTable .context-menu{
+  -fx-text-fill: black !important;
 }
 
 .menuTable .context-menu .menu-item{
-  -fx-background-color:  white;
+  -fx-background-color: white;
   -fx-text-fill: black;
 }
 
