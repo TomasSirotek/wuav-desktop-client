@@ -216,7 +216,7 @@ public class AllUsersController  extends RootController implements Initializable
                                     menu.getStyleClass().add("menuTable");
                                     deleteItem.setStyle("-fx-text-fill: black;");
                                     editItem.setStyle("-fx-text-fill: black;");
-                                    
+
 
                                     editItem.setOnAction(event -> {
                                         isSettings = true;

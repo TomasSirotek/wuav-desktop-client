@@ -68,9 +68,7 @@ public class UserProfileController  extends RootController implements Initializa
            }else {
                AlertHelper.showDefaultAlert("Profile could not be updated", Alert.AlertType.ERROR);
            }
-
         }
-
     }
 
     private boolean validateInput() {

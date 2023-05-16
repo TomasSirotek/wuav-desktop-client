@@ -57,28 +57,7 @@ public class UserService implements IUserService {
 
     @Override
     public AppUser getUserById(int id) {
-        AppUser appUser = userRepository.getUserById(id);
-        System.out.println(appUser.toString());
-        return appUser;
-    }
-
-
-    // THIS MIGHT BE REDUNDANT
-
-    @Override
-    public int createCustomer(AppUser appUser) {
-        int result = 0;
-        // create user
-        var roleId = 300;
-
-        result = userRepository.createCustomer(appUser);
-
-        if(result > 0){
-            result = userRepository.addUserToRole(appUser.getId(),roleId);
-            // add user to role
-        }
-
-        return result;
+        return userRepository.getUserById(id);
     }
 
     @Override
@@ -101,8 +80,8 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public int createUser(String name, String email, String role) {
-
+    public boolean createUser(String name, String email, String role) {
+        boolean finalResult = false;
         AppUser existingUser = getUserByEmail(email);
 
         if(existingUser == null){
@@ -114,7 +93,6 @@ public class UserService implements IUserService {
             String newPasswordHash = cryptoEngine.Hash(newPassword);
 
             // construct new user DTO
-
             CreateUserDTO createUserDTO = new CreateUserDTO(
                     userId,
                     name,
@@ -129,13 +107,17 @@ public class UserService implements IUserService {
                 if(appRole != null){
                     int roleId = appRole.getId();
                     int userRoleResult = userRepository.addUserToRole(userId,roleId);
-                    if(userRoleResult > 0){
-                        return userResult;
-                    }
+                    finalResult = userResult > 0 && userRoleResult > 0;
+                    // logic is here still has to be fixe
                 }
             }
+            try {
+                finalResult = sendRecoveryEmail(email);
+            } catch (GeneralSecurityException | IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        return 0;
+        return finalResult;
     }
 
     @Override
@@ -175,7 +157,7 @@ public class UserService implements IUserService {
                  //Process the template and generate the email body
                  String emailBody = emailEngine.processTemplate(templateName, templateVariables);
 
-                 boolean emailSent = emailSender.sendEmail(appUser.getEmail(), EmailSubjectType.PROJECT_REPORT.toString().toLowerCase(), emailBody, false, null);
+                 boolean emailSent = emailSender.sendEmail(appUser.getEmail(), EmailSubjectType.NEW_PASSWORD.toString().toLowerCase(), emailBody, false, null);
                  if (emailSent) {
                      System.out.println("Email sent successfully");
                      isSent = true;
