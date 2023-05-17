@@ -33,8 +33,10 @@ import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableStringValue;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -263,15 +265,6 @@ public class ModalActionController extends RootController implements Initializab
         handleProgressSwitch();
         setupSearchField();
         closeStage();
-
-//        // Delay setting the onCloseRequest event handler until the stage is available
-//        Platform.runLater(() -> {
-//            // Get the reference to the stage
-//            Stage stage = (Stage) tabPaneCreate.getScene().getWindow();
-//
-//            // Add an event handler to execute the closeMethod when the stage is closed
-//            stage.setOnCloseRequest(event -> imageOperationFacade.removeImagesFromServer());
-//        });
     }
 
 
