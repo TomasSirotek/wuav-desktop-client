@@ -318,6 +318,9 @@ public class ProjectController extends RootController implements Initializable {
                                         menu = new ContextMenu(editItem, emailItem);
                                     }
                                     menu.getStyleClass().add("menuTable");
+                                    deleteItem.setStyle("-fx-text-fill: black;");
+                                    editItem.setStyle("-fx-text-fill: black;");
+                                    emailItem.setStyle("-fx-text-fill: black;");
 
                                     editItem.setOnAction(event -> {
                                         // edit here
@@ -465,6 +468,7 @@ public class ProjectController extends RootController implements Initializable {
         var response = AlertHelper.showOptionalAlertWindow("Action warning !","Are you sure you want to delete this project ? ", Alert.AlertType.CONFIRMATION);
         if(response.isPresent() && response.get() == ButtonType.OK){
             boolean projectDeleted = projectModel.deleteProject(project);
+            errorLabel.setText("Project with id: " + project.getId() + " has been deleted");
             if(!projectDeleted) AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
             if(projectDeleted) AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
         }

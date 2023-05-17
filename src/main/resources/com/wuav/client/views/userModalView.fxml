@@ -161,9 +161,9 @@
                            <graphic>
                               <HBox>
                                  <children>
-                                    <ImageView fitHeight="15.0" fitWidth="17.0">
+                                    <ImageView fitHeight="18.0" fitWidth="17.0">
                                        <image>
-                                          <Image url="@../images/navItems/export.png" />
+                                          <Image url="@../../../../addIcon.png" />
                                        </image>
                                     </ImageView>
                                  </children>

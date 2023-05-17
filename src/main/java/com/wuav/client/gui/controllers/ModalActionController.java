@@ -21,7 +21,9 @@ import com.wuav.client.gui.models.DeviceModel;
 import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
+import com.wuav.client.gui.utils.AnimationUtil;
 import com.wuav.client.gui.utils.CKEditorPane;
+import com.wuav.client.gui.utils.enums.CustomColor;
 import com.wuav.client.gui.utils.event.CustomEvent;
 import com.wuav.client.gui.utils.validations.FormField;
 import com.wuav.client.gui.utils.api.ImageOperationFacade;
@@ -55,6 +57,10 @@ import java.util.*;
 
 public class ModalActionController extends RootController implements Initializable {
 
+    @FXML
+    private Pane notificationPane;
+    @FXML
+    private Label errorLabel;
     @FXML
     private MFXScrollPane deviceForProjectList;
     @FXML
@@ -564,6 +570,10 @@ public class ModalActionController extends RootController implements Initializab
         }
     }
 
+    private void displayError(String message){
+        errorLabel.setText(message);
+        AnimationUtil.animateInOut(notificationPane,4, CustomColor.WARNING);
+    }
 
     @FunctionalInterface
     private interface ValidationFunction {
@@ -573,7 +583,7 @@ public class ModalActionController extends RootController implements Initializab
     private boolean validateFirstTab() {
         boolean isValid = true;
         if (projectNameField.getText().isEmpty()) {
-            AlertHelper.showDefaultAlert("Project name is required", Alert.AlertType.WARNING);
+            displayError("Project name is required");
             isValid = false;
         }
         return isValid;
@@ -584,7 +594,7 @@ public class ModalActionController extends RootController implements Initializab
         // Implement validation logic for the second tab here
         boolean isValid = true;
         if(editorContent.get().isEmpty()|| selectedImageFile == null){
-            AlertHelper.showDefaultAlert("Description and Image is required", Alert.AlertType.WARNING);
+            displayError("Please select an image");
             isValid = false;
         }
 
@@ -604,10 +614,10 @@ public class ModalActionController extends RootController implements Initializab
 
         for (FormField field : fieldsToValidate) {
             if (field.getText().isEmpty()) {
-                AlertHelper.showDefaultAlert(field.getErrorMessage(), Alert.AlertType.WARNING);
+                displayError(field.getErrorMessage());
                 isValid = false;
             } else if (field.getValidationFunction() != null && !field.getValidationFunction().validate(field.getText())) {
-                AlertHelper.showDefaultAlert(field.getErrorValidationMessage(), Alert.AlertType.WARNING);
+                displayError(field.getErrorMessage());
                 isValid = false;
             }
         }
@@ -617,7 +627,12 @@ public class ModalActionController extends RootController implements Initializab
 
     private boolean validateFourthTab() {
         // Implement validation logic for the fourth tab here
-        return true;
+        boolean isValid = true;
+        if(selectedDevices.isEmpty()){
+            displayError("Please select at least one device");
+            isValid = false;
+        }
+        return isValid;
     }
 
 

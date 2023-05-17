@@ -50,7 +50,7 @@
                   </Label>
                   <HBox fx:id="exportToggleHbox" alignment="CENTER" GridPane.columnIndex="2">
                      <children>
-                        <MFXButton fx:id="exportSelected" prefHeight="29.0" prefWidth="91.0" style="-fx-background-color: #eae9e9; -fx-text-fill: black;" text="Export">
+                        <MFXButton fx:id="exportSelected" buttonType="RAISED" prefHeight="29.0" prefWidth="91.0" style="-fx-background-color: #eae9e9; -fx-text-fill: black;" text="Export">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -59,13 +59,13 @@
                   </HBox>
                   <HBox fx:id="actionToggleHbox" alignment="CENTER_RIGHT" prefWidth="128.0" GridPane.columnIndex="3">
                      <children>
-                        <MFXButton fx:id="createNewProject" prefHeight="29.0" prefWidth="153.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Create project" textFill="#141111">
+                        <MFXButton fx:id="createNewProject" buttonType="RAISED" prefHeight="29.0" prefWidth="153.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Create project" textFill="#141111">
                            <graphic>
                               <HBox alignment="CENTER" prefHeight="24.0" prefWidth="31.0">
                                  <children>
                                     <ImageView cache="true" fitHeight="19.0" fitWidth="19.0">
                                        <image>
-                                          <Image url="@../images/navItems/plusSvg.png" />
+                                          <Image url="@../../../../addIcon.png" />
                                        </image>
                                     </ImageView>
                                  </children>
