@@ -1,17 +1,23 @@
 package com.wuav.client.gui.controllers;
 
+import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
+import com.wuav.client.be.device.Device;
+import com.wuav.client.bll.helpers.EventType;
+import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.cache.ImageCache;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.dto.PutAddressDTO;
 import com.wuav.client.gui.dto.PutCustomerDTO;
 import com.wuav.client.gui.models.IProjectModel;
-import com.wuav.client.gui.utils.AlertHelper;
+import com.wuav.client.gui.utils.AnimationUtil;
 import com.wuav.client.gui.utils.CKEditorPane;
+import com.wuav.client.gui.utils.enums.CustomColor;
+import com.wuav.client.gui.utils.event.CustomEvent;
 import com.wuav.client.gui.utils.validations.FormField;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
@@ -30,6 +36,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -37,6 +44,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +55,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ProjectActionController  extends RootController implements Initializable {
 
+    @FXML
+    private Pane notificationPane;
 
+    @FXML
+    private ImageView notificationImage;
+    @FXML
+    private Label errorLabel;
     @FXML
     private MFXButton updateClient;
     @FXML
@@ -121,19 +135,21 @@ public class ProjectActionController  extends RootController implements Initiali
     private StringProperty editorContent = new SimpleStringProperty();
 
     private Image defaultImage = new Image("/no_data.png");
+    private final EventBus eventBus;
 
     private File selectedImageFile;
 
 
     @Inject
-    public ProjectActionController(IControllerFactory controllerFactory, IProjectModel projectModel) {
+    public ProjectActionController(IControllerFactory controllerFactory, IProjectModel projectModel, EventBus eventBus) {
         this.controllerFactory = controllerFactory;
         this.projectModel = projectModel;
-
+        this.eventBus = eventBus;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        eventBus.register(this);
         selectedImage.setImage(defaultImage);
         selectFile.setOnAction(e -> selectFile());
         expandBtn.setOnAction(e -> previewImage(selectedImage.getImage()));
@@ -162,10 +178,9 @@ public class ProjectActionController  extends RootController implements Initiali
                   addressDTO
           );
 
-
           Customer updatedCustomer = projectModel.updateCustomer(customerDTO);
           if (updatedCustomer != null) {
-              AlertHelper.showDefaultAlert("Client updated successfully", Alert.AlertType.INFORMATION);
+              displayNotification(true,"Customer updated successfully");
               currentProject.setCustomer(updatedCustomer);
           }
       }
@@ -184,16 +199,16 @@ public class ProjectActionController  extends RootController implements Initiali
 
         for (FormField field : fieldsToValidate) {
             if (field.getText().isEmpty()) {
-                AlertHelper.showDefaultAlert(field.getErrorMessage(), Alert.AlertType.WARNING);
+                displayNotification(false,field.getErrorMessage());
                 isValid = false;
             } else if (field.getValidationFunction() != null && !field.getValidationFunction().validate(field.getText())) {
-                AlertHelper.showDefaultAlert(field.getErrorValidationMessage(), Alert.AlertType.WARNING);
+                displayNotification(false,field.getErrorMessage());
                 isValid = false;
             }
         }
 
         if (clientTypeChooseField.getSelectionModel().isEmpty()) {
-            AlertHelper.showDefaultAlert("Client type is required", Alert.AlertType.WARNING);
+            displayNotification(false,"Client type required");
             isValid = false;
         }
 
@@ -202,12 +217,10 @@ public class ProjectActionController  extends RootController implements Initiali
     }
 
     private boolean isValidEmail(String email) {
-        // Implement email validation logic here
         return true;
     }
 
     private boolean isValidPhone(String phone) {
-        // Implement phone number validation logic here
         return true;
     }
 
@@ -216,9 +229,9 @@ public class ProjectActionController  extends RootController implements Initiali
            String content = projectModel.updateNotes(currentProject.getId(), editorContent.get().trim());
            if(!content.isEmpty()){
                editorContent.set(content);
-               AlertHelper.showDefaultAlert("Notes updated successfully", Alert.AlertType.INFORMATION);
+               displayNotification(true,"Notes updated successfully");
               }else{
-               AlertHelper.showDefaultAlert("Notes update failed", Alert.AlertType.ERROR);
+               displayNotification(false,"Something went wrong, please try again later");
            }
         }
     }
@@ -253,16 +266,15 @@ public class ProjectActionController  extends RootController implements Initiali
 
         project.getDevices().forEach(device -> {
             Label deviceTypeName = new Label(device.getName());
-            deviceTypeName.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial'; -fx-min-width: 100px; -fx-max-width: 100px;");
+            deviceTypeName.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial'; -fx-min-width: 150px; -fx-max-width: 150px;");
 
             Label deviceTypeLabel = new Label(device.getDeviceType().toLowerCase());
             deviceTypeLabel.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial'; -fx-min-width: 80px; -fx-max-width: 80px;");
 
             Button editButton = new Button("Edit");
-            editButton.setStyle("-fx-min-width: 82px; -fx-max-width: 82px;");
+            editButton.setStyle("-fx-min-width: 82px; -fx-max-width: 82px;-fx-background-color: #eae9e9");
             editButton.setOnAction(event -> {
-                // openDeviceWindow(true,selectedDevice);
-                // maybe edit here
+                openDeviceWindow(device);
             });
 
             // Create an HBox for the device details
@@ -301,6 +313,17 @@ public class ProjectActionController  extends RootController implements Initiali
         });
     }
 
+    private void displayNotification(boolean isSuccess,String message){
+        errorLabel.setText(message);
+        if(isSuccess){
+            AnimationUtil.animateInOut(notificationPane,4, CustomColor.SUCCESS);
+          notificationImage.setImage(new Image("/dashboardDone.png"));
+        }else {
+            AnimationUtil.animateInOut(notificationPane,4, CustomColor.WARNING);
+        }
+    }
+
+
 
     private void selectFile() {
         FileChooser fileChooser = new FileChooser();
@@ -322,6 +345,28 @@ public class ProjectActionController  extends RootController implements Initiali
         }
     }
 
+    private void openDeviceWindow(Device device) {
+        try {
+            RootController rootController = controllerFactory.loadFxmlFile(ViewType.DEVICE_CRUD);
+            Stage stage = new Stage();
+            Scene scene = new Scene(rootController.getView());
+
+            stage.initOwner(getStage());
+            stage.setTitle("Create new device");
+
+            EventType eventType = EventType.SET_CURRENT_DEVICE;
+            CustomEvent event = new CustomEvent(eventType, device, "");
+            eventBus.post(event);
+
+            stage.setResizable(false);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     private void changeSelectedFileHBox() {
         newFileUploadBox.setVisible(true);
         fileName.setText(selectedImageFile.getName());
@@ -331,19 +376,16 @@ public class ProjectActionController  extends RootController implements Initiali
 
     private void uploadFile() {
         // here reupload image file
-        statusSpinner.setVisible(true);
         // find in current projects which is the main
         int mainImageId = currentProject.getProjectImages().stream().filter(CustomImage::isMainImage).findFirst().get().getId();
 
         Image isReuploaded = projectModel.reuploadImage(currentProject.getId(),mainImageId, selectedImageFile);
         if(isReuploaded != null) {
             mainImage = isReuploaded;
-            AlertHelper.showDefaultAlert("Image uploaded ", Alert.AlertType.INFORMATION);
-            statusSpinner.setVisible(false);
+            displayNotification(true,"Image reuploaded successfully");
             return;
         }
-        AlertHelper.showDefaultAlert("Image not uploaded", Alert.AlertType.ERROR);
-        statusSpinner.setVisible(false);
+        displayNotification(false,"Error while reuploading image");
         cancelUpload();
     }
 
