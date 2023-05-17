@@ -17,7 +17,7 @@ public class ProjectRepositoryTest {
 
 
     @Test
-    void testGetAllProjects() {
+    void testGetAllProjects() throws Exception {
         ProjectRepository projectRepository = new ProjectRepository();
         // Act
         List<Project> projects = projectRepository.getAllProjects();
@@ -27,7 +27,7 @@ public class ProjectRepositoryTest {
         Assertions.assertFalse(projects.isEmpty(), "Returned projects list is empty");
     }
     @Test
-    public void testGetAllProjectsByUserId() {
+    public void testGetAllProjectsByUserId() throws Exception {
         // Arrange
         ProjectRepository projectRepository = new ProjectRepository();
         // Act
@@ -39,7 +39,7 @@ public class ProjectRepositoryTest {
     }
 
     @Test
-    void testGetProjectById() {
+    void testGetProjectById() throws Exception {
         ProjectRepository projectRepository = new ProjectRepository();
 
         // Act

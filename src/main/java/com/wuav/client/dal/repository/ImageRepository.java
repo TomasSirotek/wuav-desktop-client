@@ -14,15 +14,14 @@ public class ImageRepository implements IImageRepository {
 
 
     @Override
-    public CustomImage getImageById(int id) {
-        CustomImage customImage = new CustomImage();
+    public CustomImage getImageById(int id) throws Exception {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
             IImageMapper mapper = session.getMapper(IImageMapper.class);
-            customImage = mapper.getImageByIdThatIsMain(id);
+            return mapper.getImageByIdThatIsMain(id);
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);
+            throw new Exception(ex);
         }
-        return customImage;
     }
 
     @Override

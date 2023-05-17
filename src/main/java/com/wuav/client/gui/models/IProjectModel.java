@@ -14,11 +14,11 @@ public interface IProjectModel {
 
  //   Project createProjectByName(int userId,String name);
 
-    List<Project> getProjectsByUserId(int userId);
+    List<Project> getProjectsByUserId(int userId) throws Exception;
 
     void updateProjectsCache(int userId, List<Project> updatedProjects);
 
-    boolean createProject(int userId, CreateProjectDTO projectToCreate);
+    boolean createProject(int userId, CreateProjectDTO projectToCreate) throws Exception;
 
     List<Project> getCachedProjectsByUserId(int userId);
 
@@ -26,7 +26,7 @@ public interface IProjectModel {
 
     List<Project> getAllProjects() throws Exception;
 
-    Project getProjectById(int projectId);
+    Project getProjectById(int projectId) throws Exception;
 
     boolean deleteProject(Project project);
 

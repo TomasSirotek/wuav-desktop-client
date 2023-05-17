@@ -36,9 +36,20 @@ public class ProjectModel implements IProjectModel{
         this.projectService = projectService;
         this.userModel = userModel;
     }
-
     @Override
-    public List<Project> getProjectsByUserId(int userId) {
+    public List<Project> getAllProjects() throws Exception {
+        List<Project> projects = projectsCache.get(ALL_PROJECTS_KEY);
+
+        if (projects == null) {
+            projects = projectService.getAllProjects();
+            //  cacheProjectsImages(projects);
+            projectsCache.put(ALL_PROJECTS_KEY, projects);
+        }
+
+        return projects;
+    }
+    @Override
+    public List<Project> getProjectsByUserId(int userId) throws Exception {
         List<Project> projects = projectsCache.get(userId);
 
         if (projects == null) {
@@ -50,8 +61,25 @@ public class ProjectModel implements IProjectModel{
     }
 
     @Override
+    public Project getProjectById(int projectId) throws Exception {return projectService.getProjectById(projectId);}
+
+    @Override
     public List<Project> getCachedProjectsByUserId(int userId) {
         return projectsCache.get(userId);
+    }
+
+    // IMPLEMENT DATA HERE TODO: 18/5/2023
+    @Override
+    public DashboardData getTechnicianDashboardData(int id) {
+        return projectService.getDashboardData(id);
+    }
+
+    @Override
+    public boolean createProject(int userId,CreateProjectDTO projectToCreate) throws Exception {return projectService.createProject(userId,projectToCreate);}
+
+    @Override
+    public Customer updateCustomer(PutCustomerDTO customerDTO) {
+        return projectService.updateCustomer(customerDTO);
     }
 
     @Override
@@ -73,45 +101,17 @@ public class ProjectModel implements IProjectModel{
     }
 
     @Override
-    public List<Project> getAllProjects() throws Exception {
-        List<Project> projects = projectsCache.get(ALL_PROJECTS_KEY);
-
-        if (projects == null) {
-            projects = projectService.getAllProjects();
-            //  cacheProjectsImages(projects);
-            projectsCache.put(ALL_PROJECTS_KEY, projects);
-        }
-
-
-        return projects;
-    }
-
-    @Override
-    public Project getProjectById(int projectId) {
-        return projectService.getProjectById(projectId);
-    }
-
-    @Override
     public boolean deleteProject(Project project) {
         AppUser user = userModel.getUserByProjectId(project.getId());
         boolean result = projectService.deleteProject(project);
-        if (result) {
-            // If the project is successfully deleted from the database, remove it from the cache
-            removeProject(user.getId(), project.getId());
-        }
-
+        if (result) removeProject(user.getId(), project.getId());
         return result;
-
     }
 
-    public void removeProject(int userId, int projectId) {
+    private void removeProject(int userId, int projectId) {
         List<Project> userProjects = projectsCache.get(userId);
-
-        if (userProjects != null) {
-            userProjects.removeIf(project -> project.getId() == projectId);
-        }
+        if (userProjects != null)  userProjects.removeIf(project -> project.getId() == projectId);
     }
-
 
     @Override
     public Image reuploadImage(int projectId, int id, File selectedImageFile) {
@@ -180,51 +180,32 @@ public class ProjectModel implements IProjectModel{
         return updatedNotes;
     }
 
-    @Override
-    public Customer updateCustomer(PutCustomerDTO customerDTO) {
-        return projectService.updateCustomer(customerDTO);
-    }
-
-    // IMPLEMENT DATA HERE
-    @Override
-    public DashboardData getTechnicianDashboardData(int id) {
-        return projectService.getDashboardData(id);
-    }
 
 
     private void cacheProjectsImages(List<Project> projects) {
         BlobContainerClient blobContainerClient = BlobStorageFactory.getBlobContainerClient();
 
-        // Create an ExecutorService with a fixed thread pool size
-        int threadPoolSize = 16;
-        ExecutorService executorService = Executors.newFixedThreadPool(threadPoolSize);
+        int numberOfThreads = 12; // for now just for I/O putting a bit more threads
+        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
 
-        // Create a list to store Future objects for each task
-        List<Future<Void>> futures = new ArrayList<>();
-
-        for (Project project : projects) {
-            for (CustomImage image : project.getProjectImages()) {
-                // Submit the loadImage task to the ExecutorService
-                Future<Void> future = executorService.submit(() -> {
-                    ImageCache.loadImage(blobContainerClient, image.getImageUrl(), image.getId());
-                    return null;
-                });
-                // Add the future to the list
-                futures.add(future);
-            }
+        try {
+            projects.stream()
+                    .flatMap(project -> project.getProjectImages().stream())
+                    .map(image -> executorService.submit(() -> {
+                        ImageCache.loadImage(blobContainerClient, image.getImageUrl(), image.getId());
+                        return null;
+                    }))
+                    .forEach(future -> {
+                        try {
+                            future.get();
+                        } catch (InterruptedException | ExecutionException e) {
+                            Thread.currentThread().interrupt();
+                            e.printStackTrace();
+                        }
+                    });
+        } finally {
+            executorService.shutdown();
         }
-
-        // Wait for all tasks to complete
-        for (Future<Void> future : futures) {
-            try {
-                future.get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // Shutdown the ExecutorService
-        executorService.shutdown();
     }
 
     private void cacheProjectImages(Project project) {
@@ -235,10 +216,7 @@ public class ProjectModel implements IProjectModel{
         }
     }
 
-    @Override
-    public boolean createProject(int userId,CreateProjectDTO projectToCreate) {
-       return projectService.createProject(userId,projectToCreate);
-    }
+
 
 
 }

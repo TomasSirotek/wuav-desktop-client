@@ -5,8 +5,10 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 
+import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
+import com.wuav.client.bll.strategies.interfaces.IUserRoleStrategy;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.controllers.event.RefreshEvent;
@@ -76,6 +78,8 @@ public class BaseController extends RootController implements Initializable {
         expand.setStyle("-fx-text-fill: transparent;");
         projectButton.setStyle("-fx-background-color: rgba(234, 234, 234, 0.8);");
 
+
+
         if (!CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("TECHNICIAN")) {
             projectButton.setText("Projects");
             userImage.setImage(defaultImage);
@@ -93,6 +97,7 @@ public class BaseController extends RootController implements Initializable {
 
         handleExpandControl();
         runInParallel(ViewType.DASHBOARD);
+
     }
 
 

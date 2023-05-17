@@ -22,6 +22,8 @@ import com.wuav.client.gui.entities.DashboardData;
 
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class ProjectService implements IProjectService {
 
@@ -45,121 +47,48 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
-    public List<Project> getProjectsByUserId(int userId) {
-        return projectRepository.getAllProjectsByUserId(userId);
-    }
-
-    @Override
     public List<Project> getAllProjects() throws Exception {
         return projectRepository.getAllProjects();
     }
 
-
     @Override
-    public boolean createProject(int userId, CreateProjectDTO projectToCreate) {
-        try {
-            return tryCreateProject(userId, projectToCreate);
-        } catch (Exception e) {
-            System.err.println("Error creating project: " + e.getMessage());
-            return false;
-        }
+    public List<Project> getProjectsByUserId(int userId) throws Exception {
+        return projectRepository.getAllProjectsByUserId(userId);
     }
-
     @Override
-    public Project getProjectById(int projectId) {
+    public Project getProjectById(int projectId) throws Exception {
         return projectRepository.getProjectById(projectId);
     }
-
-
-    // THIS HAS TO BE REFACTORED AND INCLUDE ROLL BACKS
     @Override
-    public boolean deleteProject(Project project) {
-        // Ensure all operations are atomic to maintain data integrity
-        try {
-
-            // 1. Delete all images from blob storage
-            for (CustomImage image : project.getProjectImages()) {
-                String imageUrl = image.getImageUrl();
-                boolean isDeleted = deleteIfExists(imageUrl);
-                if (!isDeleted) {
-                   throw new RuntimeException("Failed to delete image from blob storage: " + imageUrl);
-               }
-            }
-
-            // 2. Delete all images from database (including from the join table due to cascade delete)
-            for (CustomImage image : project.getProjectImages()) {
-                boolean imageDeleted = imageRepository.deleteImageById(image.getId());
-                if (!imageDeleted) {
-                    throw new RuntimeException("Failed to delete image from database: " + image.getId());
-                }
-            }
-
-            // 4. Delete project from database
-            boolean projectDeleted = projectRepository.deleteProjectById(project.getId());
-            if (!projectDeleted) {
-                throw new RuntimeException("Failed to delete project from database: " + project.getId());
-            }
+    public boolean createProject(int userId, CreateProjectDTO projectToCreate) throws Exception {
+        return tryCreateProject(userId, projectToCreate);
+    }
 
 
-            // 3. Delete customer from database (assuming a customer is linked to a project)
-            boolean customerDeleted = customerService.deleteCustomerById(project.getCustomer().getId());
-            if (!customerDeleted) {
-                throw new RuntimeException("Failed to delete customer from database for project: " + project.getId());
-            }
-
-
-            // 5. Delete address from database (assuming an address is linked to a project)
-            boolean addressDeleted = addressService.deleteAddressById(project.getCustomer().getAddress().getId());
-            if (!addressDeleted) {
-                throw new RuntimeException("Failed to delete address from database for project: " + project.getId());
-            }
-
-
-            // If all steps are successful, return true
-            return true;
-        } catch (Exception e) {
-            // Log error and return false
-            System.err.println(e.getMessage());
-            return false;
-        }
+    @Override
+    public Optional<CustomImage> reuploadImage(int projectId,int imageId, File selectedImageFile) throws Exception {
+            return Optional.ofNullable(imageRepository.getImageById(imageId))
+                    .filter(image -> deleteIfExists(image.getImageUrl()))
+                    .map(image -> uploadImage(projectId, selectedImageFile))
+                    .filter(Objects::nonNull)
+                    .filter(newImage -> imageRepository.updateImage(
+                            imageId,
+                            newImage.getImageType(),
+                            newImage.getImageUrl()))
+                    .flatMap(updated -> {
+                        try {
+                            return Optional.ofNullable(imageRepository.getImageById(imageId));
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
     }
 
     @Override
-    public CustomImage reuploadImage(int projectId,int imageId, File selectedImageFile) {
-        // 1. retrieve the main image
-        CustomImage mainImage = imageRepository.getImageById(imageId); // this retrieves the main image
-
-        // 2. delete blob from the container by image URL (main image)
-        boolean deletedBlob = deleteIfExists(mainImage.getImageUrl());
-
-        if(deletedBlob){
-            // 3. Upload the new image
-            CustomImage newCustomImage = uploadImage(projectId, selectedImageFile);
-
-            if(newCustomImage != null){
-                // 4. Update the image information in the image table
-                boolean updatedImage = imageRepository.updateImage(
-                        mainImage.getId(),
-                        newCustomImage.getImageType(),
-                        newCustomImage.getImageUrl()
-                );
-
-                if(updatedImage){
-                    return imageRepository.getImageById(mainImage.getId());
-                }
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public String updateNotes(int projectId, String content) {
-        // try to update the notes for the project and return
-        var result = projectRepository.updateNotes(projectId, content);
-        if(result){
-            return getProjectById(projectId).getDescription();
-        }
-        return "";
+    public String updateNotes(int projectId, String content) throws Exception {
+        boolean result = projectRepository.updateNotes(projectId, content);
+        if(!result) return "";
+        return getProjectById(projectId).getDescription();
     }
 
     @Override
@@ -178,7 +107,7 @@ public class ProjectService implements IProjectService {
     @Override
     public DashboardData getDashboardData(int userId) {
 
-        // here constrint the user dat
+        // here construct dashboard data
         return null;
     }
 
@@ -258,6 +187,54 @@ public class ProjectService implements IProjectService {
     }
 
 
+    // THIS HAS TO BE REFACTORED AND INCLUDE ROLL BACKS
+    @Override
+    public boolean deleteProject(Project project) {
+        // Ensure all operations are atomic to maintain data integrity
+        try {
+            // 1. Delete all images from blob storage
+            for (CustomImage image : project.getProjectImages()) {
+                String imageUrl = image.getImageUrl();
+                boolean isDeleted = deleteIfExists(imageUrl);
+                if (!isDeleted) {
+                    throw new RuntimeException("Failed to delete image from blob storage: " + imageUrl);
+                }
+            }
 
+            // 2. Delete all images from database (including from the join table due to cascade delete)
+            for (CustomImage image : project.getProjectImages()) {
+                boolean imageDeleted = imageRepository.deleteImageById(image.getId());
+                if (!imageDeleted) {
+                    throw new RuntimeException("Failed to delete image from database: " + image.getId());
+                }
+            }
+
+            // 4. Delete project from database
+            boolean projectDeleted = projectRepository.deleteProjectById(project.getId());
+            if (!projectDeleted) {
+                throw new RuntimeException("Failed to delete project from database: " + project.getId());
+            }
+
+
+            // 3. Delete customer from database (assuming a customer is linked to a project)
+            boolean customerDeleted = customerService.deleteCustomerById(project.getCustomer().getId());
+            if (!customerDeleted) {
+                throw new RuntimeException("Failed to delete customer from database for project: " + project.getId());
+            }
+
+
+            // 5. Delete address from database (assuming an address is linked to a project)
+            boolean addressDeleted = addressService.deleteAddressById(project.getCustomer().getAddress().getId());
+            if (!addressDeleted) {
+                throw new RuntimeException("Failed to delete address from database for project: " + project.getId());
+            }
+            // If all steps are successful, return true
+            return true;
+        } catch (Exception e) {
+            // Log error and return false
+            System.err.println(e.getMessage());
+            return false;
+        }
+    }
 
 }

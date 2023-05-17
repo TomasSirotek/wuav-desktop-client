@@ -97,7 +97,7 @@ public class ProjectController extends RootController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         eventBus.register(this);
-        fillTable();
+       fillTable();
         setupActions();
         swapButtonsInNonTechnicianRole();
     }
@@ -231,6 +231,7 @@ public class ProjectController extends RootController implements Initializable {
             tableDataLoad.setVisible(false);
             projectTable.setItems(projects);
         } catch (InterruptedException | ExecutionException e) {
+            Thread.currentThread().interrupt();
             Throwable cause = e.getCause();
             AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
             errorLabel.setText(cause != null ? cause.getMessage() : e.getMessage());

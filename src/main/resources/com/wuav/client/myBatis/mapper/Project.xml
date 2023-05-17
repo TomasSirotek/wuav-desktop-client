@@ -12,7 +12,7 @@
         <result property="createdAt" javaType="Date" column="created_at"/>
         <association property="customer" javaType="Customer">
             <id property="id" column="customer_id"/>
-            <result property="name" column="customer_name"/>
+            <result property="nam" column="customer_name"/>
             <result property="email" column="customer_email"/>
             <result property="phoneNumber" column="customer_phone"/>
             <result property="type" column="customer_type"/>
