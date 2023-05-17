@@ -2,9 +2,9 @@ package com.wuav.client.gui.models;
 
 import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
-import com.wuav.client.bll.exeption.ProjectException;
 import com.wuav.client.gui.dto.CreateProjectDTO;
 import com.wuav.client.gui.dto.PutCustomerDTO;
+import com.wuav.client.gui.entities.DashboardData;
 import javafx.scene.image.Image;
 
 import java.io.File;
@@ -35,4 +35,6 @@ public interface IProjectModel {
     String updateNotes(int id, String s);
 
     Customer updateCustomer(PutCustomerDTO customerDTO);
+
+    DashboardData getTechnicianDashboardData(int id);
 }

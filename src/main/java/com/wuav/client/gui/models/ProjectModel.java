@@ -12,6 +12,7 @@ import com.wuav.client.cache.ImageCache;
 import com.wuav.client.dal.blob.BlobStorageFactory;
 import com.wuav.client.gui.dto.CreateProjectDTO;
 import com.wuav.client.gui.dto.PutCustomerDTO;
+import com.wuav.client.gui.entities.DashboardData;
 import com.wuav.client.gui.models.user.IUserModel;
 import javafx.scene.image.Image;
 
@@ -181,8 +182,13 @@ public class ProjectModel implements IProjectModel{
 
     @Override
     public Customer updateCustomer(PutCustomerDTO customerDTO) {
-        // update customer
         return projectService.updateCustomer(customerDTO);
+    }
+
+    // IMPLEMENT DATA HERE
+    @Override
+    public DashboardData getTechnicianDashboardData(int id) {
+        return projectService.getDashboardData(id);
     }
 
 

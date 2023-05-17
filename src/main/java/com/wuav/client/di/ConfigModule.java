@@ -2,6 +2,10 @@ package com.wuav.client.di;
 
 import com.wuav.client.bll.services.*;
 import com.wuav.client.bll.services.interfaces.*;
+import com.wuav.client.bll.strategies.AdminStrategy;
+import com.wuav.client.bll.strategies.TechnicianStrategy;
+import com.wuav.client.bll.strategies.UserRoleStrategyFactory;
+import com.wuav.client.bll.strategies.interfaces.IUserRoleStrategy;
 import com.wuav.client.bll.utilities.email.EmailSender;
 import com.wuav.client.bll.utilities.email.IEmailSender;
 import com.wuav.client.bll.utilities.engines.CodeEngine;
@@ -69,17 +73,11 @@ public class ConfigModule extends AbstractModule {
         bind(IDeviceService.class).to(DeviceService.class);
         bind(DeviceModel.class).asEagerSingleton();
 
-        /*
-         * Bind even bus as in singleton scope
-         * As eager singleton to ensure instantiation asap Injector is created
-         */
-      //  bind(EventBus.class).asEagerSingleton();
-
+        bind(AdminStrategy.class);
+        bind(TechnicianStrategy.class);
         bind(CurrentUser.class).asEagerSingleton();
 
-        /*
-         * Injection of movie service
-         */
+        bind(UserRoleStrategyFactory.class).asEagerSingleton();
 
         /*
          * Binds api service
@@ -109,41 +107,9 @@ public class ConfigModule extends AbstractModule {
         * MODEL                                                                   *
         *                                                                         *
         **************************************************************************
-
-
-
-        /* *************************************************************************
-        *                                                                         *
-        * DAO                                                                     *
-        *                                                                         *
-        **************************************************************************
         /*
-         * Bind the MovieDAO interface to the implementation
-         */
-        /*
-         * Bind the CategoryDAO interface to the implementation
+         * Injection of
          */
 
-        /* *************************************************************************
-        *                                                                         *
-        * EVENT                                                                   *
-        *                                                                         *
-        **************************************************************************
-
-        /*
-         * Bind even bus as in singleton scope
-         * As eager singleton to ensure instantiation asap Injector is created
-         */
-      //  bind(EventBus.class).asEagerSingleton();
-
-        /* *************************************************************************
-        *                                                                         *
-        * HELPER                                                                   *
-        *                                                                         *
-        **************************************************************************
-
-        /*
-         * Injection of Filter helper
-         */
     }
 }

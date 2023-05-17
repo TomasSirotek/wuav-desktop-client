@@ -6,6 +6,7 @@ import com.wuav.client.be.Project;
 import com.wuav.client.bll.exeption.ProjectException;
 import com.wuav.client.gui.dto.CreateProjectDTO;
 import com.wuav.client.gui.dto.PutCustomerDTO;
+import com.wuav.client.gui.entities.DashboardData;
 
 import java.io.File;
 import java.util.List;
@@ -27,4 +28,6 @@ public interface IProjectService {
     String updateNotes(int id, String content);
 
     Customer updateCustomer(PutCustomerDTO customerDTO);
+
+    DashboardData getDashboardData(int userId);
 }

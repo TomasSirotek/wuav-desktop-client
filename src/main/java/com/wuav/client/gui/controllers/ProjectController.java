@@ -4,9 +4,10 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.wuav.client.be.*;
-import com.wuav.client.bll.exeption.ProjectException;
+import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
+import com.wuav.client.bll.strategies.interfaces.IUserRoleStrategy;
 import javafx.stage.Modality;
 import org.jsoup.Jsoup;
 import com.wuav.client.gui.controllers.abstractController.RootController;
@@ -155,7 +156,6 @@ public class ProjectController extends RootController implements Initializable {
                 });
     }
 
-
     /**
      * This method is open projects for export
      */
@@ -213,12 +213,9 @@ public class ProjectController extends RootController implements Initializable {
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
         Callable<List<Project>> loadProjectsTask = () -> {
-            if (CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals(UserRoleType.TECHNICIAN.toString())) {
-                return projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
-            } else {
-                projectLabelMain.setText("Projects");
-                return projectModel.getAllProjects();
-            }
+            AppUser user = CurrentUser.getInstance().getLoggedUser();
+            IUserRoleStrategy strategy = CurrentUser.getInstance().getUserRoleStrategy();
+            return strategy.getProjects(user);
         };
 
         Future<List<Project>> future = executorService.submit(loadProjectsTask);

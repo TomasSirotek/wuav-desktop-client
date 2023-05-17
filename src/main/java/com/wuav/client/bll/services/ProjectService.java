@@ -18,6 +18,7 @@ import com.wuav.client.dal.interfaces.IProjectRepository;
 import com.wuav.client.gui.dto.CreateProjectDTO;
 import com.wuav.client.gui.dto.ImageDTO;
 import com.wuav.client.gui.dto.PutCustomerDTO;
+import com.wuav.client.gui.entities.DashboardData;
 
 import java.io.File;
 import java.util.List;
@@ -171,6 +172,13 @@ public class ProjectService implements IProjectService {
                 return customerService.getCustomerById(customerDTO.id());
            }
        }
+        return null;
+    }
+
+    @Override
+    public DashboardData getDashboardData(int userId) {
+
+        // here constrint the user dat
         return null;
     }
 
