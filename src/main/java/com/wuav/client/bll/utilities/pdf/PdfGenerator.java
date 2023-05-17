@@ -41,52 +41,8 @@ import javax.imageio.ImageIO;
 public class PdfGenerator implements IPdfGenerator {
 
     private static final String RESOURCE_FOLDER = "src/main/resources/com/wuav/client/images/wuav-logo.png";
-
-    // private static final String TEST_PLAN = "src/main/resources/com/wuav/client/images/drawing.png";
-
     private static final String OUTPUT_FOLDER = "src/main/resources";
-
     private static final String FILE_EXTENSION = ".pdf";
-
-  //  private static final String DESCR_TEST = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Molestie at elementum eu facilisis sed odio. Et malesuada fames ac turpis egestas sed tempus. A cras semper auctor neque vitae tempus quam. Eu consequat ac felis donec et odio pellentesque diam volutpat. Adipiscing vitae proin sagittis nisl rhoncus mattis. Condimentum mattis pellentesque id nibh. Ultrices eros in cursus turpis. Egestas tellus rutrum tellus pellentesque eu tincidunt tortor. Enim nulla aliquet porttitor lacus luctus accumsan. Sed vulputate mi sit amet mauris. Molestie ac feugiat sed lectus vestibulum mattis.";
-
-
-//    public static void main(String[] args) {
-//        PdfGenerator pdfGenerator = new PdfGenerator();
-//
-//        Customer customer = new Customer(1, "Tomasko", "eail@yahoo.com", "60 50 50 60", "Private");
-//
-//
-//        AppUser appUser = new AppUser();
-//        appUser.setEmail("tech@hotmail.com"); // not added to pdf
-//        appUser.setName("Michael"); // not added to pdf
-//
-//        Project project = new Project();
-//        project.setName("tomas");
-//        project.setDescription(DESCR_TEST);
-//        project.setCreatedAt(new Date("2023/03/04"));
-//
-//
-//
-//        project.setCustomer(customer);
-//
-//
-//
-//
-//
-//        ByteArrayOutputStream outputStream = pdfGenerator.generatePdf(appUser, project, "test");
-//
-//        // Save the ByteArrayOutputStream to a file in the resources directory
-//        String outputPath = "src/main/resources/test.pdf";
-//        try (FileOutputStream fos = new FileOutputStream(outputPath)) {
-//            fos.write(outputStream.toByteArray());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-
-
 
     @Override
     public ByteArrayOutputStream generatePdf(AppUser appUser, Project project, String fileName) {
@@ -101,7 +57,6 @@ public class PdfGenerator implements IPdfGenerator {
             PDType1Font font = PDType1Font.HELVETICA;
             PDType1Font fontHeader = PDType1Font.HELVETICA_BOLD;
             contentStream.setFont(font, 12);
-
 
            /// MAIN RECTANGLES FOR THE PDF ///
 
@@ -187,35 +142,35 @@ public class PdfGenerator implements IPdfGenerator {
 
 
 
-//
-//            // Technician Info List
-//            String technicianInfo = "Technician Info";
-//            contentStream.beginText();
-//            contentStream.setFont(fontHeader, 14);
-//            contentStream.newLineAtOffset(techInfoRect.getLowerLeftX(), techInfoRect.getUpperRightY() + 20);
-//            contentStream.showText(technicianInfo);
-//            contentStream.newLineAtOffset(0, -20);
-//            contentStream.endText();
-//
-//            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMMM dd yyyy");
-//            String formattedDate = dateFormat.format(project.getCreatedAt());
-//
-//            List<String> technicianInfoList = List.of("Technician Name: " + appUser.getName(),
-//                    "Technician Email: " +  appUser.getEmail(),
-//                    "Installation Date : " + formattedDate
-//                   ) ;
-//
-//            contentStream.beginText();
-//            contentStream.newLineAtOffset(0, -5);
-//            contentStream.setFont(font, 12);
-//            contentStream.newLineAtOffset(techInfoRect.getLowerLeftX(), techInfoRect.getUpperRightY());
-//
-//
-//            for (String line : technicianInfoList) {
-//                contentStream.showText(line);
-//                contentStream.newLineAtOffset(0, -20);
-//            }
-//            contentStream.endText();
+
+            // Technician Info List
+            String technicianInfo = "Technician Info";
+            contentStream.beginText();
+            contentStream.setFont(fontHeader, 14);
+            contentStream.newLineAtOffset(techInfoRect.getLowerLeftX(), techInfoRect.getUpperRightY() + 20);
+            contentStream.showText(technicianInfo);
+            contentStream.newLineAtOffset(0, -20);
+            contentStream.endText();
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMMM dd yyyy");
+            String formattedDate = dateFormat.format(project.getCreatedAt());
+
+            List<String> technicianInfoList = List.of("Technician Name: " + appUser.getName(),
+                    "Technician Email: " +  appUser.getEmail(),
+                    "Installation Date : " + formattedDate
+                   ) ;
+
+            contentStream.beginText();
+            contentStream.newLineAtOffset(0, -5);
+            contentStream.setFont(font, 12);
+            contentStream.newLineAtOffset(techInfoRect.getLowerLeftX(), techInfoRect.getUpperRightY());
+
+
+            for (String line : technicianInfoList) {
+                contentStream.showText(line);
+                contentStream.newLineAtOffset(0, -20);
+            }
+            contentStream.endText();
 //
 //
 //            // Description Text

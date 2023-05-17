@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.wuav.client.be.*;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
+import javafx.stage.Modality;
 import org.jsoup.Jsoup;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
@@ -411,23 +412,36 @@ public class ProjectController extends RootController implements Initializable {
      * open pdf builder method
      */
     private void openPdfBuilder(Project project) {
-        RootController rootController = null;
+        RootController controller = tryToLoadView(ViewType.PDF_BUILDER);
+        eventBus.post(new RefreshEvent(EventType.EXPORT_EMAIL));
+
+        Stage stage = new Stage();
+        Scene scene = new Scene(controller.getView());
+
+        stage.initOwner(getStage());
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setTitle("Build you PDF");
+        stage.setOnCloseRequest(e -> {
+
+        });
+        // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
+        stage.setOnShowing(e -> {
+            stage.getProperties().put("projectToExport", project);
+        });
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+
+    private RootController tryToLoadView(ViewType viewType) {
         try {
-            rootController = stageManager.loadNodesView(
-                    ViewType.PDF_BUILDER,
-                    controllerFactory
-            );
+            return loadNodesView(viewType);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        stageManager.showStage("Build your PDF",rootController.getView());
-        RootController finalRootController = rootController;
-        rootController.getStage().setOnShowing(e -> {
-            finalRootController.getStage().getProperties().put("projectToExport", project);
-        });
-        eventBus.post(new RefreshEvent(EventType.EXPORT_EMAIL));
     }
+
 
 
     /**

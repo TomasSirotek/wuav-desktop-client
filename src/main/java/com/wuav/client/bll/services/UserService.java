@@ -185,14 +185,6 @@ public class UserService implements IUserService {
     public boolean sendEmailWithAttachement(AppUser appUser, Project project, ByteArrayOutputStream value) throws GeneralSecurityException, IOException {
         boolean isSent = false;
 
-
-        File generatedPdf = null;
-        try {
-            generatedPdf = generatePDFToFile(appUser,project,"installation-report" + project.getCustomer().getId());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
         // Define the template name and variables
         String templateName = "email-template";
         Map<String, Object> templateVariables = new HashMap<>();
@@ -205,18 +197,31 @@ public class UserService implements IUserService {
         // Process the template and generate the email body
         String emailBody = emailEngine.processTemplate(templateName, templateVariables);
 
+        // Convert the ByteArrayOutputStream to byte[]
+        byte[] pdfBytes = value.toByteArray();
 
-        boolean emailSent = emailSender.sendEmail(project.getCustomer().getEmail(), EmailSubjectType.PROJECT_REPORT.toString().toLowerCase(), emailBody, true, generatedPdf);
-        if (emailSent) {
-            System.out.println("Email sent successfully");
-            isSent = true;
-        } else {
-            System.out.println("Email sending failed");
-            isSent = false;
+        // Create a temporary File object
+        File tempFile = File.createTempFile("temp", ".pdf");
+        tempFile.deleteOnExit();
+
+        // Write the byte[] to the temporary file
+        try (FileOutputStream fileOutputStream = new FileOutputStream(tempFile)) {
+            fileOutputStream.write(pdfBytes);
         }
+
+        boolean emailSent = emailSender.sendEmail(project.getCustomer().getEmail(), EmailSubjectType.PROJECT_REPORT.toString().toLowerCase(), emailBody, true, tempFile);
+        if(emailSent) isSent = true;
+        if(!emailSent) isSent = false;
 
         return isSent;
     }
+
+    //        File generatedPdf = null;
+//        try {
+//            generatedPdf = generatePDFToFile(appUser,project,"installation-report" + project.getCustomer().getId());
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
 
     private static File generatePDFToFile(AppUser appUser, Project project, String fileName) throws IOException {
         IPdfGenerator pdfGenerator = new PdfGenerator();

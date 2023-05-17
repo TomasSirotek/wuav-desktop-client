@@ -52,7 +52,7 @@ import java.util.concurrent.Executors;
 
 public class PDFBuilderController extends RootController implements Initializable {
     @FXML
-    private MFXCheckbox deviceCheck,photosCheck,technicianCheck,descriptionCheck;
+    private MFXCheckbox photosCheck,technicianCheck,descriptionCheck;
     @FXML
     private MFXButton preview,export;
     @FXML
@@ -91,6 +91,7 @@ public class PDFBuilderController extends RootController implements Initializabl
     public void initialize(URL url, ResourceBundle resourceBundle) {
         eventBus.register(this);
         setupExportButtonGroup();
+        pagination.setPageCount(1); // set default page count to be 1
 
         Platform.runLater(() -> {
             handelExportThread();
@@ -115,7 +116,6 @@ public class PDFBuilderController extends RootController implements Initializabl
                     DefaultPdfGenerator pdfGenerator = new DefaultPdfGenerator.Builder(appUser, project, "default")
                             .includeDescription(false)
                             .includeTechnicians(false)
-                            .includeDevices(false)
                             .includeImages(false)
                             .build();
 
@@ -131,7 +131,7 @@ public class PDFBuilderController extends RootController implements Initializabl
                 Image defaultPdfImage = generateDefaultPdfTask.getValue();
                 pagination.setPageFactory((pageIndex) -> {
                     ImageView imageView = new ImageView(defaultPdfImage);
-                    imageView.setFitWidth(300);  // Set the desired width
+                    imageView.setFitWidth(300);
                     imageView.setFitHeight(300); // Set the desired height
                     imageView.setPreserveRatio(true); // This will maintain the image's aspect ratio
                     return imageView;
@@ -152,7 +152,6 @@ public class PDFBuilderController extends RootController implements Initializabl
         preview.setOnAction(event -> {
             boolean includeDescription = descriptionCheck.isSelected();
             boolean includeTechnicians = technicianCheck.isSelected();
-            boolean includeDevices = deviceCheck.isSelected();
             boolean includeImages = photosCheck.isSelected();
             AppUser appUser = CurrentUser.getInstance().getLoggedUser();
             loadingBox.setVisible(true);
@@ -160,7 +159,6 @@ public class PDFBuilderController extends RootController implements Initializabl
             DefaultPdfGenerator pdfGenerator = new DefaultPdfGenerator.Builder(appUser, project, "preview")
                     .includeDescription(includeDescription)
                     .includeTechnicians(includeTechnicians)
-                    .includeDevices(includeDevices)
                     .includeImages(includeImages)
                     .build();
 

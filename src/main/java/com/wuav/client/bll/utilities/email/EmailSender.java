@@ -49,14 +49,6 @@ public class EmailSender implements IEmailSender {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-    public static void main(String[] args) {
-        try {
-            EmailSender emailSender = new EmailSender();
-            emailSender.sendEmail("toma@gail.com", "Test", "Test body", false, null);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
 
     @Override
     public boolean sendEmail(String toEmail, String subject, String body, boolean attachPdf, File pdfFile) throws GeneralSecurityException, IOException {

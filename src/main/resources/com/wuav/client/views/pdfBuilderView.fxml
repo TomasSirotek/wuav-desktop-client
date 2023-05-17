@@ -88,7 +88,7 @@
                                           <Insets right="5.0" />
                                        </padding>
                                     </VBox>
-                                    <VBox alignment="CENTER_LEFT" GridPane.rowIndex="3">
+                                    <VBox prefHeight="146.0" prefWidth="250.0" GridPane.rowIndex="3">
                                        <children>
                                           <MFXCheckbox fx:id="descriptionCheck" text="Description">
                                              <VBox.margin>
@@ -106,14 +106,6 @@
                                                 <Font name="SansSerif Regular" size="13.0" />
                                              </font>
                                           </MFXCheckbox>
-                                          <MFXCheckbox fx:id="deviceCheck" text="Devices">
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" />
-                                             </VBox.margin>
-                                             <font>
-                                                <Font name="SansSerif Regular" size="13.0" />
-                                             </font>
-                                          </MFXCheckbox>
                                           <MFXCheckbox fx:id="photosCheck" text="Include photos">
                                              <VBox.margin>
                                                 <Insets bottom="5.0" />
@@ -123,6 +115,9 @@
                                              </font>
                                           </MFXCheckbox>
                                        </children>
+                                       <GridPane.margin>
+                                          <Insets top="20.0" />
+                                       </GridPane.margin>
                                     </VBox>
                                     <Label prefHeight="23.0" prefWidth="400.0" text="Project name: ">
                                        <font>
