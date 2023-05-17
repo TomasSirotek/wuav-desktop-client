@@ -4,6 +4,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.wuav.client.be.*;
+import com.wuav.client.bll.exeption.ProjectException;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
 import javafx.stage.Modality;
@@ -204,6 +205,7 @@ public class ProjectController extends RootController implements Initializable {
 
     /**
      * This method is used to fill the table with projects
+     * STILL HAVE TO FIX CATCHING THE EXCEPTION CORRECTLY
      */
     private void setTableWithProjects() {
         tableDataLoad.setVisible(true);
@@ -222,22 +224,19 @@ public class ProjectController extends RootController implements Initializable {
         Future<List<Project>> future = executorService.submit(loadProjectsTask);
 
         executorService.shutdown();
-
         try {
             List<Project> updatedProjects = future.get();
-
             // Update projects list in CurrentUser singleton
             CurrentUser.getInstance().getLoggedUser().setProjects(updatedProjects);
-
             // Set the updated projects list to the table
             ObservableList<Project> projects = FXCollections.observableList(updatedProjects);
 
             tableDataLoad.setVisible(false);
             projectTable.setItems(projects);
         } catch (InterruptedException | ExecutionException e) {
+            Throwable cause = e.getCause();
             AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
-            errorLabel.setText(e.getMessage());
-
+            errorLabel.setText(cause != null ? cause.getMessage() : e.getMessage());
         }
     }
 
@@ -468,9 +467,11 @@ public class ProjectController extends RootController implements Initializable {
         var response = AlertHelper.showOptionalAlertWindow("Action warning !","Are you sure you want to delete this project ? ", Alert.AlertType.CONFIRMATION);
         if(response.isPresent() && response.get() == ButtonType.OK){
             boolean projectDeleted = projectModel.deleteProject(project);
+
             errorLabel.setText("Project with id: " + project.getId() + " has been deleted");
             if(!projectDeleted) AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
-            if(projectDeleted) AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
+            AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
+            refreshTable();
         }
     }
 

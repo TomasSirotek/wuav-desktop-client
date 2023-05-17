@@ -2,6 +2,7 @@ package com.wuav.client.gui.models;
 
 import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
+import com.wuav.client.bll.exeption.ProjectException;
 import com.wuav.client.gui.dto.CreateProjectDTO;
 import com.wuav.client.gui.dto.PutCustomerDTO;
 import javafx.scene.image.Image;
@@ -23,7 +24,7 @@ public interface IProjectModel {
 
     void updateCacheForUser(int userId, Project newProject);
 
-    List<Project> getAllProjects();
+    List<Project> getAllProjects() throws Exception;
 
     Project getProjectById(int projectId);
 

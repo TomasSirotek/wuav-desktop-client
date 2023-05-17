@@ -6,6 +6,7 @@ import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
 import com.wuav.client.be.device.Device;
+import com.wuav.client.bll.exeption.ProjectException;
 import com.wuav.client.bll.services.interfaces.IAddressService;
 import com.wuav.client.bll.services.interfaces.ICustomerService;
 import com.wuav.client.bll.services.interfaces.IProjectService;
@@ -48,7 +49,7 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
-    public List<Project> getAllProjects() {
+    public List<Project> getAllProjects() throws Exception {
         return projectRepository.getAllProjects();
     }
 

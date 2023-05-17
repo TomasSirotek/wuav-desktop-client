@@ -6,6 +6,7 @@ import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
 import com.wuav.client.be.user.AppUser;
+import com.wuav.client.bll.exeption.ProjectException;
 import com.wuav.client.bll.services.interfaces.IProjectService;
 import com.wuav.client.cache.ImageCache;
 import com.wuav.client.dal.blob.BlobStorageFactory;
@@ -44,7 +45,6 @@ public class ProjectModel implements IProjectModel{
             cacheProjectsImages(projects);
             projectsCache.put(userId, projects);
         }
-
         return projects;
     }
 
@@ -72,14 +72,15 @@ public class ProjectModel implements IProjectModel{
     }
 
     @Override
-    public List<Project> getAllProjects() {
+    public List<Project> getAllProjects() throws Exception {
         List<Project> projects = projectsCache.get(ALL_PROJECTS_KEY);
 
         if (projects == null) {
             projects = projectService.getAllProjects();
-          //  cacheProjectsImages(projects);
+            //  cacheProjectsImages(projects);
             projectsCache.put(ALL_PROJECTS_KEY, projects);
         }
+
 
         return projects;
     }

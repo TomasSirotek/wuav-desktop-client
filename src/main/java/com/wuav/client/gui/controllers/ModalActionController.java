@@ -809,8 +809,10 @@ public class ModalActionController extends RootController implements Initializab
                 // Update the cache with the new project
                 projectModel.updateCacheForUser(currentUserId, newProject);
 
-                AlertHelper.showDefaultAlert("Project created successfully", Alert.AlertType.INFORMATION);
                 eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
+                EventType eventType = EventType.SHOW_NOTIFICATION;
+                CustomEvent notificationEvent = new CustomEvent(eventType, true, "Project created successfully");
+                eventBus.post(notificationEvent);
                 runInParallel(ViewType.PROJECTS);
             } else {
                 AlertHelper.showDefaultAlert("Error creating project", Alert.AlertType.ERROR);

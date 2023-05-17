@@ -30,7 +30,6 @@ public class LoginController extends RootController implements Initializable {
     private MFXPasswordField userPswField;
     @FXML
     private MFXTextField userEmailField;
-
     private final IControllerFactory controllerFactory;
 
     private final IAuthService authService;

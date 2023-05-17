@@ -173,13 +173,13 @@
             <Insets left="20.0" right="20.0" />
          </padding>
       </GridPane>
-      <Pane fx:id="notificationPane" layoutY="-5.0" prefHeight="41.0" prefWidth="909.0" styleClass="error-pane" visible="false">
+      <Pane fx:id="notificationPane" layoutY="-5.0" prefHeight="41.0" prefWidth="909.0" styleClass="error-pane">
          <children>
             <GridPane layoutY="1.0" prefHeight="42.0" prefWidth="1010.0">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="233.07225036621094" minWidth="10.0" prefWidth="233.07225036621094" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="298.0235290527344" minWidth="10.0" prefWidth="137.47412109375" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="639.52587890625" minWidth="10.0" prefWidth="639.52587890625" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="298.0235290527344" minWidth="10.0" prefWidth="92.5" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="685.0" minWidth="10.0" prefWidth="685.0" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -197,7 +197,7 @@
                         <Insets />
                      </GridPane.margin>
                   </HBox>
-                  <Label fx:id="errorLabel" prefHeight="40.0" prefWidth="196.0" text="Incorrect password or email" textFill="WHITE" GridPane.columnIndex="2">
+                  <Label fx:id="errorLabel" prefHeight="40.0" prefWidth="534.0" text="Incorrect password or email" textFill="WHITE" GridPane.columnIndex="2">
                      <font>
                         <Font name="SansSerif Regular" size="15.0" />
                      </font>

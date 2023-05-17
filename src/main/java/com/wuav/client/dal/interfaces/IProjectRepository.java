@@ -10,7 +10,7 @@ public interface IProjectRepository {
 
     List<Project> getAllProjectsByUserId(int userId);
 
-    List<Project> getAllProjects();
+    List<Project> getAllProjects() throws Exception;
 
     Project getProjectById(int projectId);
 
