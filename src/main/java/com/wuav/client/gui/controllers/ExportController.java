@@ -3,7 +3,6 @@ package com.wuav.client.gui.controllers;
 import com.google.inject.Inject;
 import com.wuav.client.be.Project;
 import com.wuav.client.bll.helpers.ViewType;
-import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.manager.StageManager;
@@ -42,7 +41,6 @@ public class ExportController extends RootController implements Initializable {
 
     private List<Project> projectsToExport = new ArrayList<Project>();
 
-    private final IPdfGenerator pdfGenerator;
 
     private IProjectModel projectModel;
 
@@ -53,8 +51,7 @@ public class ExportController extends RootController implements Initializable {
     private final StageManager stageManager;
 
     @Inject
-    public ExportController(IPdfGenerator pdfGenerator, IProjectModel projectModel, IControllerFactory controllerFactory, StageManager stageManager) {
-        this.pdfGenerator = pdfGenerator;
+    public ExportController(IProjectModel projectModel, IControllerFactory controllerFactory, StageManager stageManager) {
         this.projectModel = projectModel;
         this.controllerFactory = controllerFactory;
         this.stageManager = stageManager;

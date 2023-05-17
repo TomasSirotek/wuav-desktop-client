@@ -7,7 +7,6 @@ import com.wuav.client.be.Project;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.utilities.pdf.DefaultPdfGenerator;
-import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.event.RefreshEvent;
 import com.wuav.client.gui.models.user.CurrentUser;
@@ -72,8 +71,6 @@ public class PDFBuilderController extends RootController implements Initializabl
     private Project project;
     private final EventBus eventBus;
 
-    private final IPdfGenerator pdfGenerator;
-
     private final IUserModel userModel;
 
     private ObjectProperty<ByteArrayOutputStream> finalPDFBytesProperty = new SimpleObjectProperty<>();
@@ -81,9 +78,8 @@ public class PDFBuilderController extends RootController implements Initializabl
     private BooleanProperty isExport = new SimpleBooleanProperty(true);
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
     @Inject
-    public PDFBuilderController(EventBus eventBus, IPdfGenerator pdfGenerator, IUserModel userModel) {
+    public PDFBuilderController(EventBus eventBus, IUserModel userModel) {
         this.eventBus = eventBus;
-        this.pdfGenerator = pdfGenerator;
         this.userModel = userModel;
     }
 
@@ -210,6 +206,14 @@ public class PDFBuilderController extends RootController implements Initializabl
                                 .or(fileName.textProperty().isEmpty())
                 )
         );
+        // bind sending email if it is not export and finalPDFBytes is  null to be disabled
+        export.disableProperty().bind(
+                isExport.not().and(
+                        finalPDFBytesProperty.isNull()
+                                .or(fileName.textProperty().isEmpty())
+                )
+        );
+
 
         // Set the onAction of the actionButton to call either the export or email method, depending on the isExport property
         export.setOnAction(event -> {
@@ -306,7 +310,7 @@ public class PDFBuilderController extends RootController implements Initializabl
 
         executorService.submit(() -> {
             try {
-                boolean result = userModel.sendEmailWithAttachement(appUser, project, finalPDFBytesProperty.getValue());
+                boolean result = userModel.sendEmailWithAttachement(appUser, project, finalPDFBytesProperty.getValue(),fileName.getText());
 
                 Platform.runLater(() -> {
                     try {

@@ -10,8 +10,6 @@ import com.wuav.client.bll.utilities.engines.ICodesEngine;
 import com.wuav.client.bll.utilities.engines.IEmailEngine;
 import com.wuav.client.bll.utilities.engines.cryptoEngine.CryptoEngine;
 import com.wuav.client.bll.utilities.engines.cryptoEngine.ICryptoEngine;
-import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
-import com.wuav.client.bll.utilities.pdf.PdfGenerator;
 import com.wuav.client.cache.ImageCache;
 import com.wuav.client.dal.interfaces.*;
 import com.wuav.client.dal.repository.*;
@@ -63,7 +61,6 @@ public class ConfigModule extends AbstractModule {
         bind(IAddressService.class).to(AddressService.class);
         bind(ICustomerRepository.class).to(CustomerRepository.class);
         bind(ICustomerService.class).to(CustomerService.class);
-        bind(IPdfGenerator.class).to(PdfGenerator.class);
         bind(ICryptoEngine.class).to(CryptoEngine.class);
         bind(IRoleService.class).to(RoleService.class);
         bind(IRoleRepository.class).to(RoleRepository.class);

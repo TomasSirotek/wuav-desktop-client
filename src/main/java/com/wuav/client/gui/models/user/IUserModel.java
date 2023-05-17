@@ -1,7 +1,6 @@
 package com.wuav.client.gui.models.user;
 
 import com.wuav.client.be.Project;
-import com.wuav.client.be.user.AppRole;
 import com.wuav.client.be.user.AppUser;
 import javafx.collections.ObservableList;
 
@@ -30,5 +29,5 @@ public interface IUserModel {
     AppUser getUserByProjectId(int projectId);
 
 
-    boolean sendEmailWithAttachement(AppUser appUser, Project project, ByteArrayOutputStream value) throws GeneralSecurityException, IOException;
+    boolean sendEmailWithAttachement(AppUser appUser, Project project, ByteArrayOutputStream value, String text) throws GeneralSecurityException, IOException;
 }

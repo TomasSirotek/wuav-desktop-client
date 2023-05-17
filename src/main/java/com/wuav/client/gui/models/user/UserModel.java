@@ -2,7 +2,6 @@ package com.wuav.client.gui.models.user;
 
 
 import com.wuav.client.be.Project;
-import com.wuav.client.be.user.AppRole;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.services.interfaces.IUserService;
 import com.google.inject.Inject;
@@ -72,8 +71,8 @@ public class UserModel implements IUserModel{
     }
 
     @Override
-    public boolean sendEmailWithAttachement(AppUser appUser, Project project, ByteArrayOutputStream value) throws GeneralSecurityException, IOException {
-       return userService.sendEmailWithAttachement(appUser,project,value);
+    public boolean sendEmailWithAttachement(AppUser appUser, Project project, ByteArrayOutputStream value, String fileName) throws GeneralSecurityException, IOException {
+       return userService.sendEmailWithAttachement(appUser,project,value,fileName);
     }
 
 }

@@ -9,8 +9,6 @@ import com.wuav.client.bll.utilities.UniqueIdGenerator;
 import com.wuav.client.bll.utilities.email.IEmailSender;
 import com.wuav.client.bll.utilities.engines.IEmailEngine;
 import com.wuav.client.bll.utilities.engines.cryptoEngine.ICryptoEngine;
-import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
-import com.wuav.client.bll.utilities.pdf.PdfGenerator;
 import com.wuav.client.dal.interfaces.IUserRepository;
 import com.google.inject.Inject;
 import com.wuav.client.gui.dto.CreateUserDTO;
@@ -182,7 +180,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public boolean sendEmailWithAttachement(AppUser appUser, Project project, ByteArrayOutputStream value) throws GeneralSecurityException, IOException {
+    public boolean sendEmailWithAttachement(AppUser appUser, Project project, ByteArrayOutputStream value, String fileName) throws GeneralSecurityException, IOException {
         boolean isSent = false;
 
         // Define the template name and variables
@@ -201,7 +199,7 @@ public class UserService implements IUserService {
         byte[] pdfBytes = value.toByteArray();
 
         // Create a temporary File object
-        File tempFile = File.createTempFile("temp", ".pdf");
+        File tempFile = File.createTempFile(fileName, ".pdf");
         tempFile.deleteOnExit();
 
         // Write the byte[] to the temporary file
@@ -216,29 +214,9 @@ public class UserService implements IUserService {
         return isSent;
     }
 
-    //        File generatedPdf = null;
-//        try {
-//            generatedPdf = generatePDFToFile(appUser,project,"installation-report" + project.getCustomer().getId());
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
 
-    private static File generatePDFToFile(AppUser appUser, Project project, String fileName) throws IOException {
-        IPdfGenerator pdfGenerator = new PdfGenerator();
-        ByteArrayOutputStream stream = pdfGenerator.generatePdf(appUser,project,fileName);
 
-        // Convert stream to byte array
-        byte[] pdfBytes = stream.toByteArray();
 
-        // Create a temporary file and write the PDF bytes to it
-        File pdfFile = File.createTempFile(fileName, ".pdf");
-        OutputStream os = new FileOutputStream(pdfFile);
-        os.write(pdfBytes);
-        os.close();
-
-        return pdfFile;
-
-    }
 
     private String generateRandomNumberAsString(int length) {
         Random random = new Random();
