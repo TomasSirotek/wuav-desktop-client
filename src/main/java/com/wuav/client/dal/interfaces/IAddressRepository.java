@@ -13,6 +13,6 @@ public interface IAddressRepository {
 
     boolean updateAddress(PutAddressDTO addressDTO);
 
-    boolean deleteAddressById(int id);
+    boolean deleteAddressById(SqlSession session, int id);
 }
 

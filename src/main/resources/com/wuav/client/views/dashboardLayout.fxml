@@ -170,7 +170,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </MFXButton>
-                              <MFXButton fx:id="projectButton" alignment="BASELINE_LEFT" onAction="#handleDashBoardPageSwitch" prefHeight="44.0" prefWidth="223.0" styleClass="myButton" text="My projects" textFill="#141111">
+                              <MFXButton fx:id="projectButton" alignment="BASELINE_LEFT" onAction="#handleProjectPageSwitch" prefHeight="44.0" prefWidth="223.0" styleClass="myButton" text="My projects" textFill="#141111">
                                  <graphic>
                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
                                        <children>

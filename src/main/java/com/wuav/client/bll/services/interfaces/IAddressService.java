@@ -10,5 +10,4 @@ public interface IAddressService {
 
     boolean updateAddress(PutAddressDTO addressDTO);
 
-    boolean deleteAddressById(int id);
 }

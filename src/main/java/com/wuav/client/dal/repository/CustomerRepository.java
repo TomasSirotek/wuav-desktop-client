@@ -66,22 +66,17 @@ public class CustomerRepository implements ICustomerRepository {
     }
 
     @Override
-    public boolean deleteCustomerById(int id) {
-        int affectedRows = 0;
-
-        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+    public boolean deleteCustomerById(SqlSession session, int id) throws Exception {
+        try {
             ICustomerMapper mapper = session.getMapper(ICustomerMapper.class);
-            affectedRows = mapper.deleteCustomer(
+            int affectedRows = mapper.deleteCustomer(
                     id
             );
-            session.commit();
-
             return affectedRows > 0;
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);
+            throw new Exception(ex);
         }
-
-        return false;
     }
 
 

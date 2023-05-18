@@ -21,7 +21,7 @@ public interface IProjectService {
 
     Project getProjectById(int projectId) throws Exception;
 
-    boolean deleteProject(Project id);
+    boolean deleteProject(Project id) throws Exception;
 
     Optional<CustomImage> reuploadImage(int projectId, int id, File selectedImageFile) throws Exception;
 

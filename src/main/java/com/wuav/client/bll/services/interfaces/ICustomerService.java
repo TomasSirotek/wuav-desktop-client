@@ -11,5 +11,4 @@ public interface ICustomerService {
 
     boolean updateCustomer(PutCustomerDTO customerDTO);
 
-    boolean deleteCustomerById(int id);
 }

@@ -2,10 +2,8 @@ package com.wuav.client.gui.controllers;
 
 
 import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 
-import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.bll.strategies.interfaces.IUserRoleStrategy;
@@ -14,11 +12,11 @@ import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.controllers.event.RefreshEvent;
 import com.wuav.client.gui.manager.StageManager;
 import com.wuav.client.gui.models.user.CurrentUser;
-import com.wuav.client.gui.utils.AnimationUtil;
 import com.wuav.client.gui.utils.enums.CustomColor;
-import com.wuav.client.gui.utils.event.CustomEvent;
+import com.wuav.client.gui.utils.enums.IConType;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -63,7 +61,8 @@ public class BaseController extends RootController implements Initializable {
 
     private boolean isSidebarExpanded = false;
 
-    private Image defaultImage = new Image("/no_data.png"); // has to be replaced
+    private final int SLIDER_CLOSED = 80;
+    private final int SLIDER_OPEN = 250;
 
     @Inject
     public BaseController(IControllerFactory controllerFactory, StageManager stageManager, EventBus eventBus) {
@@ -75,29 +74,22 @@ public class BaseController extends RootController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         eventBus.register(this);
-        expand.setStyle("-fx-text-fill: transparent;");
-        projectButton.setStyle("-fx-background-color: rgba(234, 234, 234, 0.8);");
-
-
-
-        if (!CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("TECHNICIAN")) {
-            projectButton.setText("Projects");
-            userImage.setImage(defaultImage);
-            System.out.println(CurrentUser.getInstance().getLoggedUser().getRoles().get(0));
-
-            if (CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("ADMIN")) {
-                usersButton.setVisible(true);
-            } else {
-                usersButton.setVisible(false);
-            }
-        } else {
-            usersButton.setVisible(false);
-        }
-
-
+        setupButtons();
+        setupStrategy();
         handleExpandControl();
         runInParallel(ViewType.DASHBOARD);
+    }
 
+    private void setupButtons() {
+        expand.setStyle(CustomColor.TRANSPARENT.getStyle());
+        projectButton.setStyle(CustomColor.HIGHLIGHTED.getStyle());
+    }
+
+    private void setupStrategy() {
+        IUserRoleStrategy userRoleStrategy = CurrentUser.getInstance().getUserRoleStrategy();
+        projectButton.setText(userRoleStrategy.getProjectButtonText());
+        userImage.setImage(userRoleStrategy.getDefaultImage());
+        usersButton.setVisible(userRoleStrategy.isUsersButtonVisible());
     }
 
 
@@ -113,21 +105,17 @@ public class BaseController extends RootController implements Initializable {
         slide.setToX(0);
         slide.play();
 
-        Image image = new Image(getClass().getClassLoader().getResource("close.png").toExternalForm());
-        app_content.setStyle("-fx-background-color: none;");
+        Image image = new Image(getClass().getClassLoader().getResource(IConType.OPEN.getStyle()).toExternalForm());
+        app_content.setStyle(CustomColor.NONE.getStyle());
         menuIcon.setImage(image);
 
-        slider.setPrefWidth(80);
+        slider.setPrefWidth(SLIDER_CLOSED);
         userNameField.setText("");
         userEmailField.setText("");
         sideNavBox.getChildren().forEach(node -> {
             if (node instanceof Label) {
-                ((Label) node).setStyle("-fx-text-fill: transparent;");
+                ((Label) node).setStyle(CustomColor.TRANSPARENT_TEXT_FILL.getStyle());
             }
-        });
-
-        slide.setOnFinished(ActionEvent -> {
-
         });
     }
 
@@ -140,11 +128,11 @@ public class BaseController extends RootController implements Initializable {
         expandBoxToggle.setAlignment(Pos.CENTER_RIGHT);
         logoPane.setVisible(false);
 
-        Image image = new Image(getClass().getClassLoader().getResource("close.png").toExternalForm());
+        Image image = new Image(getClass().getClassLoader().getResource(IConType.CLOSE.getStyle()).toExternalForm());
         menuIcon.setImage(image);
         slide.play();
 
-        slider.setPrefWidth(250); // Replace with your original sidebar width
+        slider.setPrefWidth(SLIDER_OPEN); // Replace with your original sidebar width
         userNameField.setText(CurrentUser.getInstance().getLoggedUser().getName()); // Replace with your original text
         userEmailField.setText(CurrentUser.getInstance().getLoggedUser().getEmail()); // Replace with your original text
         sideNavBox.getChildren().forEach(node -> {
@@ -187,7 +175,7 @@ public class BaseController extends RootController implements Initializable {
     }
 
     @FXML
-    private void handleDashBoardPageSwitch() {
+    private void handleProjectPageSwitch() {
         projectButton.setStyle(CustomColor.HIGHLIGHTED.getStyle());
         dashboardButton.setStyle(CustomColor.TRANSPARENT.getStyle());
         usersButton.setStyle(CustomColor.TRANSPARENT.getStyle());
@@ -216,8 +204,11 @@ public class BaseController extends RootController implements Initializable {
             }
         };
         loadDataTask.setOnSucceeded(event -> {
-            switchToView(parent[0].getView());
+            Platform.runLater(() -> {
+                switchToView(parent[0].getView());
+            });
         });
+
         new Thread(loadDataTask).start();
     }
 
@@ -239,6 +230,4 @@ public class BaseController extends RootController implements Initializable {
         RootController rootController = stageManager.loadNodesView(ViewType.LOGIN,controllerFactory);
         stageManager.showStage("Login",rootController.getView());
     }
-
-
 }

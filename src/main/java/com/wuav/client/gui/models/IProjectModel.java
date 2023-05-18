@@ -22,13 +22,13 @@ public interface IProjectModel {
 
     List<Project> getCachedProjectsByUserId(int userId);
 
-    void updateCacheForUser(int userId, Project newProject);
+    void updateCacheForUser(int userId, Project newProject) throws Exception;
 
     List<Project> getAllProjects() throws Exception;
 
     Project getProjectById(int projectId) throws Exception;
 
-    boolean deleteProject(Project project);
+    boolean deleteProject(Project project) throws Exception;
 
     Image reuploadImage(int projectId, int id, File selectedImageFile) throws Exception;
 

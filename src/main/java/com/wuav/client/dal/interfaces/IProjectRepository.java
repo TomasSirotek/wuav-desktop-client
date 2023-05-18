@@ -24,7 +24,7 @@ public interface IProjectRepository {
 
     boolean updateNotes(int projectId, String content) throws Exception;
 
-    boolean deleteProjectById(int id) throws Exception;
+    boolean deleteProjectById(SqlSession session,int id) throws Exception;
 
     int addDeviceToProject(SqlSession session, int projectId, int deviceId) throws Exception;
 }

@@ -30,4 +30,5 @@ public class UserRoleStrategyFactory {
                 throw new IllegalArgumentException("Invalid role type: " + roleName);
         }
     }
+
 }

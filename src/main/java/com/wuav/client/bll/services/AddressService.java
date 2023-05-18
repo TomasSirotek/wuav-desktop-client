@@ -4,9 +4,7 @@ import com.google.inject.Inject;
 import com.wuav.client.be.Address;
 import com.wuav.client.bll.services.interfaces.IAddressService;
 import com.wuav.client.dal.interfaces.IAddressRepository;
-import com.wuav.client.gui.dto.AddressDTO;
 import com.wuav.client.gui.dto.PutAddressDTO;
-import org.apache.ibatis.session.SqlSession;
 
 public class AddressService implements IAddressService {
 
@@ -25,10 +23,5 @@ public class AddressService implements IAddressService {
     @Override
     public boolean updateAddress(PutAddressDTO addressDTO) {
         return addressRepository.updateAddress(addressDTO);
-    }
-
-    @Override
-    public boolean deleteAddressById(int id) {
-        return addressRepository.deleteAddressById(id);
     }
 }

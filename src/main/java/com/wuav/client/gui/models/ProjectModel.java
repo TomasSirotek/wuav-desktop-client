@@ -80,7 +80,7 @@ public class ProjectModel implements IProjectModel{
     }
 
     @Override
-    public void updateCacheForUser(int userId, Project newProject) {
+    public void updateCacheForUser(int userId, Project newProject) throws Exception {
         List<Project> projects = projectsCache.get(userId);
         if (projects != null) {
             projects.add(newProject);
@@ -98,7 +98,7 @@ public class ProjectModel implements IProjectModel{
     }
 
     @Override
-    public boolean deleteProject(Project project) {
+    public boolean deleteProject(Project project) throws Exception {
         AppUser user = userModel.getUserByProjectId(project.getId());
         boolean result = projectService.deleteProject(project);
         if (result) removeProject(user.getId(), project.getId());
@@ -203,7 +203,7 @@ public class ProjectModel implements IProjectModel{
         }
     }
 
-    private void cacheProjectImages(Project project) {
+    private void cacheProjectImages(Project project) throws Exception {
         BlobContainerClient blobContainerClient = BlobStorageFactory.getBlobContainerClient();
 
         for (CustomImage image : project.getProjectImages()) {

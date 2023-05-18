@@ -809,7 +809,11 @@ public class ModalActionController extends RootController implements Initializab
                         Project newProject = tryToGetProjectById(projectId);
 
                         // Update the cache with the new project
-                        projectModel.updateCacheForUser(currentUserId, newProject);
+                        try {
+                            projectModel.updateCacheForUser(currentUserId, newProject);
+                        } catch (Exception e) {
+                            displayError(e.getMessage());
+                        }
 
                         eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
                         EventType eventType = EventType.SHOW_NOTIFICATION;

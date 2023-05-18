@@ -11,10 +11,7 @@ import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class ProjectRepository implements IProjectRepository {
     private static Logger logger = LoggerFactory.getLogger(ProjectRepository.class);
@@ -118,13 +115,10 @@ public class ProjectRepository implements IProjectRepository {
     }
 
     @Override
-    public boolean deleteProjectById(int id) throws Exception {
-        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+    public boolean deleteProjectById(SqlSession session,int id) throws Exception {
+        try {
             IProjectMapper mapper = session.getMapper(IProjectMapper.class);
-            var affectedRows = mapper.deleteProjectById(
-                  id
-            );
-            session.commit();
+            var affectedRows = mapper.deleteProjectById(id);
             return affectedRows > 0;
         } catch (PersistenceException ex) {
             logger.error("An error occurred mapping tables", ex);

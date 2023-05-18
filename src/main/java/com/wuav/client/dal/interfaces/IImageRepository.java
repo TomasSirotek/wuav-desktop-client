@@ -14,5 +14,5 @@ public interface IImageRepository {
 
     boolean updateImage(int id, String imageType, String imageUrl);
 
-    boolean deleteImageById(int id);
+    boolean deleteImageById(SqlSession session,int id) throws Exception;
 }

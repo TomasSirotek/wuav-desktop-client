@@ -12,5 +12,5 @@ public interface ICustomerRepository {
 
     boolean updateCustomer(PutCustomerDTO customerDTO);
 
-    boolean deleteCustomerById(int id);
+    boolean deleteCustomerById(SqlSession session, int id) throws Exception;
 }

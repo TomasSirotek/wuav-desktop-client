@@ -13,13 +13,12 @@ public class ImageRepository implements IImageRepository {
 
     static Logger logger = LoggerFactory.getLogger(ImageRepository.class);
 
-
     @Override
     public CustomImage getImageById(int id) throws Exception {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
             IImageMapper mapper = session.getMapper(IImageMapper.class);
             return mapper.getImageByIdThatIsMain(id);
-        } catch (Exception ex) {
+        } catch (PersistenceException ex) {
             logger.error("An error occurred mapping tables", ex);
             throw new Exception(ex);
         }
@@ -70,22 +69,16 @@ public class ImageRepository implements IImageRepository {
     }
 
     @Override
-    public boolean deleteImageById(int id) {
-        int affectedRows = 0;
-
-        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+    public boolean deleteImageById(SqlSession session,int id) throws Exception {
+        try {
             IImageMapper mapper = session.getMapper(IImageMapper.class);
-            affectedRows = mapper.deleteImage(
-                    id
-            );
-            session.commit();
+            int affectedRows = mapper.deleteImage(id);
 
             return affectedRows > 0;
-        } catch (Exception ex) {
+        } catch (PersistenceException ex) {
             logger.error("An error occurred mapping tables", ex);
+            throw new Exception(ex);
         }
-
-        return false;
     }
 
 

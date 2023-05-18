@@ -214,10 +214,6 @@ public class UserService implements IUserService {
         return isSent;
     }
 
-
-
-
-
     private String generateRandomNumberAsString(int length) {
         Random random = new Random();
         StringBuilder sb = new StringBuilder();

@@ -6,8 +6,6 @@ import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
 import com.wuav.client.be.device.Device;
-import com.wuav.client.bll.services.interfaces.IAddressService;
-import com.wuav.client.bll.services.interfaces.ICustomerService;
 import com.wuav.client.bll.services.interfaces.IProjectService;
 import com.wuav.client.dal.blob.BlobStorageFactory;
 import com.wuav.client.dal.blob.BlobStorageHelper;
@@ -68,10 +66,16 @@ public class ProjectService implements IProjectService {
     @Override
     public Optional<CustomImage> reuploadImage(int projectId,int imageId, File selectedImageFile) throws Exception {
             return Optional.ofNullable(imageRepository.getImageById(imageId))
-                    .filter(image -> deleteIfExists(image.getImageUrl()))
+                    .filter(image -> {
+                        try {
+                            return deleteIfExists(image.getImageUrl());
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
                     .map(image -> {
                         try {
-                            return uploadImage(projectId, selectedImageFile);
+                            return uploadImage(selectedImageFile);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -99,7 +103,6 @@ public class ProjectService implements IProjectService {
 
     @Override
     public Customer updateCustomer(PutCustomerDTO customerDTO) {
-        // get the customer from the database
        boolean result = addressRepository.updateAddress(customerDTO.addressDTO());
        if(result){
            boolean projectCustomer = customerRepository.updateCustomer(customerDTO);
@@ -116,52 +119,6 @@ public class ProjectService implements IProjectService {
         // here construct dashboard data
         return null;
     }
-
-
-//    // THIS HAS TO BE REFACTORED AND INCLUDE ROLL BACKS
-//    private boolean tryCreateProject(int userId, CreateProjectDTO projectToCreate) throws Exception {
-//
-//
-//        // Create address and retrieve the id
-//        boolean createdAddressResult = addressService.createAddress(session, projectToCreate.customer().address());
-//        if (!createdAddressResult) {
-//            throw new Exception("Failed to create address");
-//        }
-//
-//        // Create customer and retrieve the id
-//        int createdCustomerResult = customerService.createCustomer(session, projectToCreate.customer());
-//        if (createdCustomerResult <= 0) {
-//            throw new Exception("Failed to create customer");
-//        }
-//
-//        // Create project and retrieve the id
-//        boolean createdProjectResult = projectRepository.createProject(projectToCreate);
-//        if (!createdProjectResult ) {
-//            throw new Exception("Failed to create project");
-//        }
-//
-//        // Add project to user
-//        int isProjectAddedToUser = projectRepository.addProjectToUser(userId, projectToCreate.id());
-//        if (isProjectAddedToUser <= 0) {
-//            throw new Exception("Failed to add project to user");
-//        }
-//
-//        // add devices to project
-//        for(Device device : projectToCreate.selectedDevices()){
-//            int isDeviceAddedToProject = deviceRepository.addDeviceToProject(projectToCreate.id(), device.getId());
-//            if (isDeviceAddedToProject <= 0) {
-//                throw new Exception("Failed to add device to project");
-//            }
-//        }
-//
-//        // Create image in Azure Blob Storage and database, then add it to the project
-//        // ...
-//        uploadAndCreateImage(projectToCreate);
-//
-//        return true;
-//
-//    }
-
     private boolean tryCreateProject(int userId, CreateProjectDTO projectToCreate) throws Exception {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
             try {
@@ -197,7 +154,6 @@ public class ProjectService implements IProjectService {
                 // If no exceptions were thrown, all operations were successful. We can commit the transaction.
                 session.commit();
                 return true;
-
             } catch (Exception e) {
                 // An exception was thrown during one of the operations. We roll back the transaction.
                 session.rollback();
@@ -209,7 +165,7 @@ public class ProjectService implements IProjectService {
     private void uploadAndCreateImage(SqlSession session,CreateProjectDTO projectToCreate) throws Exception {
         for (ImageDTO imageDTO : projectToCreate.images()) {
             // Upload image to Azure Blob Storage
-            CustomImage customImage = uploadImage(projectToCreate.id(), imageDTO.getFile());
+            CustomImage customImage = uploadImage(imageDTO.getFile());
 
             // Save image information in the image table
             boolean createdImageResult = imageRepository.createImage(
@@ -226,68 +182,57 @@ public class ProjectService implements IProjectService {
         }
     }
 
-    private CustomImage uploadImage(int projectId, File file) throws IOException {
+    private CustomImage uploadImage(File file) throws IOException {
         BlobContainerClient blobContainerClient = BlobStorageFactory.getBlobContainerClient();
         BlobStorageHelper blobStorageHelper = new BlobStorageHelper(blobContainerClient);
 
-        return blobStorageHelper.uploadImageToBlobStorage(projectId,file);
+        return blobStorageHelper.uploadImageToBlobStorage(file);
     }
 
-    private boolean deleteIfExists(String imageUrl) {
+    private boolean deleteIfExists(String imageUrl) throws Exception {
         BlobContainerClient blobContainerClient = BlobStorageFactory.getBlobContainerClient();
         BlobStorageHelper blobStorageHelper = new BlobStorageHelper(blobContainerClient);
 
         return blobStorageHelper.deleteImageIfExist(imageUrl);
     }
 
-
-    // THIS HAS TO BE REFACTORED AND INCLUDE ROLL BACKS
     @Override
-    public boolean deleteProject(Project project) {
-        // Ensure all operations are atomic to maintain data integrity
+    public boolean deleteProject(Project project) throws Exception {
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
         try {
             // 1. Delete all images from blob storage
             for (CustomImage image : project.getProjectImages()) {
                 String imageUrl = image.getImageUrl();
                 boolean isDeleted = deleteIfExists(imageUrl);
-                if (!isDeleted) {
-                    throw new RuntimeException("Failed to delete image from blob storage: " + imageUrl);
-                }
+                if (!isDeleted) throw new RuntimeException("Failed to delete image from blob storage: " + imageUrl);
             }
 
             // 2. Delete all images from database (including from the join table due to cascade delete)
             for (CustomImage image : project.getProjectImages()) {
-                boolean imageDeleted = imageRepository.deleteImageById(image.getId());
-                if (!imageDeleted) {
-                    throw new RuntimeException("Failed to delete image from database: " + image.getId());
-                }
+                boolean imageDeleted = imageRepository.deleteImageById(session,image.getId());
+                if (!imageDeleted) throw new RuntimeException("Failed to delete image from database: " + image.getId());
             }
 
             // 4. Delete project from database
-            boolean projectDeleted = projectRepository.deleteProjectById(project.getId());
-            if (!projectDeleted) {
-                throw new RuntimeException("Failed to delete project from database: " + project.getId());
-            }
-
+            boolean projectDeleted = projectRepository.deleteProjectById(session,project.getId());
+            if (!projectDeleted) throw new RuntimeException("Failed to delete project from database: " + project.getId());
 
             // 3. Delete customer from database (assuming a customer is linked to a project)
-            boolean customerDeleted = customerRepository.deleteCustomerById(project.getCustomer().getId());
-            if (!customerDeleted) {
-                throw new RuntimeException("Failed to delete customer from database for project: " + project.getId());
-            }
+            boolean customerDeleted = customerRepository.deleteCustomerById(session,project.getCustomer().getId());
+            if (!customerDeleted) throw new RuntimeException("Failed to delete customer from database for project: " + project.getId());
 
 
             // 5. Delete address from database (assuming an address is linked to a project)
-            boolean addressDeleted = addressRepository.deleteAddressById(project.getCustomer().getAddress().getId());
-            if (!addressDeleted) {
-                throw new RuntimeException("Failed to delete address from database for project: " + project.getId());
-            }
+            boolean addressDeleted = addressRepository.deleteAddressById(session,project.getCustomer().getAddress().getId());
+            if (!addressDeleted) throw new RuntimeException("Failed to delete address from database for project: " + project.getId());
             // If all steps are successful, return true
+            session.commit();
             return true;
         } catch (Exception e) {
-            // Log error and return false
-            System.err.println(e.getMessage());
-            return false;
+            // If any step fails, roll back the transaction
+            session.rollback();
+            throw e;
+        }
         }
     }
 

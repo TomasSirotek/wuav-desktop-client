@@ -64,22 +64,17 @@ public class AddressRepository implements IAddressRepository {
     }
 
     @Override
-    public boolean deleteAddressById(int id) {
-        int affectedRows = 0;
-
-        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+    public boolean deleteAddressById(SqlSession session, int id) {
+        try  {
             IAddressMapper mapper = session.getMapper(IAddressMapper.class);
-            affectedRows = mapper.deleteAddress(
+            int affectedRows = mapper.deleteAddress(
                     id
             );
-            session.commit();
-
             return affectedRows > 0;
         } catch (Exception ex) {
             logger.error("An error occurred mapping tables", ex);
+            throw ex;
         }
-
-        return false;
     }
 
 }
