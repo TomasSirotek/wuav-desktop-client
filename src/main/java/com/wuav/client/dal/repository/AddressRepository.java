@@ -6,6 +6,7 @@ import com.wuav.client.dal.mappers.IAddressMapper;
 import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
 import com.wuav.client.gui.dto.AddressDTO;
 import com.wuav.client.gui.dto.PutAddressDTO;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +16,8 @@ public class AddressRepository implements IAddressRepository {
     static Logger logger = LoggerFactory.getLogger(AddressRepository.class);
 
     @Override
-    public boolean createAddress(AddressDTO addressDTO) {
-        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+    public boolean createAddress(SqlSession session,AddressDTO addressDTO) throws Exception {
+        try {
             IAddressMapper mapper = session.getMapper(IAddressMapper.class);
              int affectedRowsResult = mapper.createAddress(
                     addressDTO.id(),
@@ -24,11 +25,10 @@ public class AddressRepository implements IAddressRepository {
                     addressDTO.city(),
                     addressDTO.zipCode()
             );
-            session.commit();
             return affectedRowsResult > 0;
-        } catch (Exception ex) {
+        } catch (PersistenceException ex) {
             logger.error("An error occurred mapping tables", ex);
-            return false;
+           throw new Exception(ex);
         }
     }
 

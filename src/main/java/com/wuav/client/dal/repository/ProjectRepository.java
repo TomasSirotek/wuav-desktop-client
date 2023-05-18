@@ -50,8 +50,6 @@ public class ProjectRepository implements IProjectRepository {
             throw new Exception(ex);
         }
     }
-
-
     @Override
     public Project updateProject(int projectId, String description) throws Exception {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
@@ -66,8 +64,8 @@ public class ProjectRepository implements IProjectRepository {
     }
 
     @Override
-    public boolean createProject(CreateProjectDTO projectDTO) throws Exception {
-        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+    public boolean createProject(SqlSession session, CreateProjectDTO projectDTO) throws Exception {
+        try {
             IProjectMapper mapper = session.getMapper(IProjectMapper.class);
             var affectedRows = mapper.createProject(
                     projectDTO.id(),
@@ -75,7 +73,6 @@ public class ProjectRepository implements IProjectRepository {
                     projectDTO.description(),
                     projectDTO.customer().id()
             );
-            session.commit();
             return affectedRows > 0;
         } catch (PersistenceException ex) {
             logger.error("An error occurred mapping tables", ex);
@@ -84,10 +81,9 @@ public class ProjectRepository implements IProjectRepository {
     }
 
     @Override
-    public int addProjectToUser(int userId, int projectId) throws Exception {
-        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+    public int addProjectToUser(SqlSession session,int userId, int projectId) throws Exception {
+        try {
             IProjectMapper mapper = session.getMapper(IProjectMapper.class);
-            session.commit();
             return mapper.addUserToProject(userId, projectId);
         } catch (PersistenceException ex) {
             logger.error("An error occurred mapping tables", ex);
@@ -96,10 +92,9 @@ public class ProjectRepository implements IProjectRepository {
     }
 
     @Override
-    public int addDeviceToProject(int projectId, int deviceId) throws Exception {
-        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+    public int addDeviceToProject(SqlSession session,int projectId, int deviceId) throws Exception {
+        try {
             IProjectMapper mapper = session.getMapper(IProjectMapper.class);
-            session.commit();
             return mapper.addDeviceToProject(projectId, deviceId);
         } catch (PersistenceException ex) {
             logger.error("An error occurred mapping tables", ex);

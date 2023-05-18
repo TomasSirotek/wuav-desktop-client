@@ -11,15 +11,16 @@ import com.wuav.client.bll.services.interfaces.ICustomerService;
 import com.wuav.client.bll.services.interfaces.IProjectService;
 import com.wuav.client.dal.blob.BlobStorageFactory;
 import com.wuav.client.dal.blob.BlobStorageHelper;
-import com.wuav.client.dal.interfaces.IDeviceRepository;
-import com.wuav.client.dal.interfaces.IImageRepository;
-import com.wuav.client.dal.interfaces.IProjectRepository;
+import com.wuav.client.dal.interfaces.*;
+import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
 import com.wuav.client.gui.dto.CreateProjectDTO;
 import com.wuav.client.gui.dto.ImageDTO;
 import com.wuav.client.gui.dto.PutCustomerDTO;
 import com.wuav.client.gui.entities.DashboardData;
+import org.apache.ibatis.session.SqlSession;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,9 +28,9 @@ import java.util.Optional;
 public class ProjectService implements IProjectService {
 
     private final IProjectRepository projectRepository;
-    private final IAddressService addressService;
+    private final IAddressRepository addressRepository;
 
-    private final ICustomerService customerService;
+    private final ICustomerRepository customerRepository;
 
     private final IImageRepository imageRepository;
 
@@ -37,11 +38,11 @@ public class ProjectService implements IProjectService {
 
 
     @Inject
-    public ProjectService(IProjectRepository projectRepository, IAddressService addressService, IImageRepository imageRepository, ICustomerService customerService, IDeviceRepository deviceRepository) {
+    public ProjectService(IProjectRepository projectRepository, IAddressRepository addressRepository, IImageRepository imageRepository, ICustomerRepository customerRepository, IDeviceRepository deviceRepository) {
         this.projectRepository = projectRepository;
-        this.addressService = addressService;
+        this.addressRepository = addressRepository;
         this.imageRepository = imageRepository;
-        this.customerService = customerService;
+        this.customerRepository = customerRepository;
         this.deviceRepository = deviceRepository;
     }
 
@@ -68,7 +69,13 @@ public class ProjectService implements IProjectService {
     public Optional<CustomImage> reuploadImage(int projectId,int imageId, File selectedImageFile) throws Exception {
             return Optional.ofNullable(imageRepository.getImageById(imageId))
                     .filter(image -> deleteIfExists(image.getImageUrl()))
-                    .map(image -> uploadImage(projectId, selectedImageFile))
+                    .map(image -> {
+                        try {
+                            return uploadImage(projectId, selectedImageFile);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
                     .filter(Objects::nonNull)
                     .filter(newImage -> imageRepository.updateImage(
                             imageId,
@@ -93,11 +100,11 @@ public class ProjectService implements IProjectService {
     @Override
     public Customer updateCustomer(PutCustomerDTO customerDTO) {
         // get the customer from the database
-       boolean result = addressService.updateAddress(customerDTO.addressDTO());
+       boolean result = addressRepository.updateAddress(customerDTO.addressDTO());
        if(result){
-           boolean projectCustomer = customerService.updateCustomer(customerDTO);
+           boolean projectCustomer = customerRepository.updateCustomer(customerDTO);
            if(projectCustomer){
-                return customerService.getCustomerById(customerDTO.id());
+                return customerRepository.getCustomerById(customerDTO.id());
            }
        }
         return null;
@@ -111,67 +118,115 @@ public class ProjectService implements IProjectService {
     }
 
 
-    // THIS HAS TO BE REFACTORED AND INCLUDE ROLL BACKS
+//    // THIS HAS TO BE REFACTORED AND INCLUDE ROLL BACKS
+//    private boolean tryCreateProject(int userId, CreateProjectDTO projectToCreate) throws Exception {
+//
+//
+//        // Create address and retrieve the id
+//        boolean createdAddressResult = addressService.createAddress(session, projectToCreate.customer().address());
+//        if (!createdAddressResult) {
+//            throw new Exception("Failed to create address");
+//        }
+//
+//        // Create customer and retrieve the id
+//        int createdCustomerResult = customerService.createCustomer(session, projectToCreate.customer());
+//        if (createdCustomerResult <= 0) {
+//            throw new Exception("Failed to create customer");
+//        }
+//
+//        // Create project and retrieve the id
+//        boolean createdProjectResult = projectRepository.createProject(projectToCreate);
+//        if (!createdProjectResult ) {
+//            throw new Exception("Failed to create project");
+//        }
+//
+//        // Add project to user
+//        int isProjectAddedToUser = projectRepository.addProjectToUser(userId, projectToCreate.id());
+//        if (isProjectAddedToUser <= 0) {
+//            throw new Exception("Failed to add project to user");
+//        }
+//
+//        // add devices to project
+//        for(Device device : projectToCreate.selectedDevices()){
+//            int isDeviceAddedToProject = deviceRepository.addDeviceToProject(projectToCreate.id(), device.getId());
+//            if (isDeviceAddedToProject <= 0) {
+//                throw new Exception("Failed to add device to project");
+//            }
+//        }
+//
+//        // Create image in Azure Blob Storage and database, then add it to the project
+//        // ...
+//        uploadAndCreateImage(projectToCreate);
+//
+//        return true;
+//
+//    }
+
     private boolean tryCreateProject(int userId, CreateProjectDTO projectToCreate) throws Exception {
-        // Create address and retrieve the id
-        boolean createdAddressResult = addressService.createAddress(projectToCreate.customer().address());
-        if (!createdAddressResult) {
-            throw new Exception("Failed to create address");
-        }
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            try {
+                // Create address and retrieve the id
+                boolean createdAddressResult = addressRepository.createAddress(session, projectToCreate.customer().address());
+                if (!createdAddressResult) throw new Exception("Failed to create address");
 
-        // Create customer and retrieve the id
-        int createdCustomerResult = customerService.createCustomer(projectToCreate.customer());
-        if (createdCustomerResult <= 0) {
-            throw new Exception("Failed to create customer");
-        }
 
-        // Create project and retrieve the id
-        boolean createdProjectResult = projectRepository.createProject(projectToCreate);
-        if (!createdProjectResult ) {
-            throw new Exception("Failed to create project");
-        }
+                // Create customer and retrieve the id
+                int createdCustomerResult = customerRepository.createCustomer(session, projectToCreate.customer());
+                if (createdCustomerResult <= 0) throw new Exception("Failed to create customer");
 
-        // Add project to user
-        int isProjectAddedToUser = projectRepository.addProjectToUser(userId, projectToCreate.id());
-        if (isProjectAddedToUser <= 0) {
-            throw new Exception("Failed to add project to user");
-        }
 
-        // add devices to project
-        for(Device device : projectToCreate.selectedDevices()){
-            int isDeviceAddedToProject = deviceRepository.addDeviceToProject(projectToCreate.id(), device.getId());
-            if (isDeviceAddedToProject <= 0) {
-                throw new Exception("Failed to add device to project");
+                // Create project and retrieve the id
+                boolean createdProjectResult = projectRepository.createProject(session, projectToCreate);
+                if (!createdProjectResult) throw new Exception("Failed to create project");
+
+
+                // Add project to user
+                int isProjectAddedToUser = projectRepository.addProjectToUser(session, userId, projectToCreate.id());
+                if (isProjectAddedToUser <= 0) throw new Exception("Failed to add project to user");
+
+
+                // add devices to project
+                for(Device device : projectToCreate.selectedDevices()){
+                    int isDeviceAddedToProject = deviceRepository.addDeviceToProject(session, projectToCreate.id(), device.getId());
+                    if (isDeviceAddedToProject <= 0) throw new Exception("Failed to add device to project");
+                }
+
+                // Create image in Azure Blob Storage and database, then add it to the project
+                uploadAndCreateImage(session,projectToCreate);
+
+                // If no exceptions were thrown, all operations were successful. We can commit the transaction.
+                session.commit();
+                return true;
+
+            } catch (Exception e) {
+                // An exception was thrown during one of the operations. We roll back the transaction.
+                session.rollback();
+                throw e;
             }
         }
+    }
 
-        // Create image in Azure Blob Storage and database, then add it to the project
-        // ...
+    private void uploadAndCreateImage(SqlSession session,CreateProjectDTO projectToCreate) throws Exception {
         for (ImageDTO imageDTO : projectToCreate.images()) {
             // Upload image to Azure Blob Storage
             CustomImage customImage = uploadImage(projectToCreate.id(), imageDTO.getFile());
 
             // Save image information in the image table
-            CustomImage createdImageResult = imageRepository.createImage(
+            boolean createdImageResult = imageRepository.createImage(
+                    session,
                     customImage.getId(),
                     customImage.getImageType(),
                     customImage.getImageUrl()
             );
-            if (createdImageResult == null) {
-                throw new Exception("Failed to save image to the image table");
-            }
+            if (!createdImageResult) throw new Exception("Failed to save image to the image table");
 
             // Add image to the project_image table
-            boolean isImageAddedToProject = imageRepository.addImageToProject(projectToCreate.id(), createdImageResult.getId(),imageDTO.isMain());
-            if (!isImageAddedToProject) {
-                throw new Exception("Failed to add image to the project_image table");
-            }
+            boolean isImageAddedToProject = imageRepository.addImageToProject(session,projectToCreate.id(), customImage.getId(), imageDTO.isMain());
+            if (!isImageAddedToProject) throw new Exception("Failed to add image to the project_image table");
         }
-
-        return true;
     }
 
-    private CustomImage uploadImage(int projectId, File file) {
+    private CustomImage uploadImage(int projectId, File file) throws IOException {
         BlobContainerClient blobContainerClient = BlobStorageFactory.getBlobContainerClient();
         BlobStorageHelper blobStorageHelper = new BlobStorageHelper(blobContainerClient);
 
@@ -216,14 +271,14 @@ public class ProjectService implements IProjectService {
 
 
             // 3. Delete customer from database (assuming a customer is linked to a project)
-            boolean customerDeleted = customerService.deleteCustomerById(project.getCustomer().getId());
+            boolean customerDeleted = customerRepository.deleteCustomerById(project.getCustomer().getId());
             if (!customerDeleted) {
                 throw new RuntimeException("Failed to delete customer from database for project: " + project.getId());
             }
 
 
             // 5. Delete address from database (assuming an address is linked to a project)
-            boolean addressDeleted = addressService.deleteAddressById(project.getCustomer().getAddress().getId());
+            boolean addressDeleted = addressRepository.deleteAddressById(project.getCustomer().getAddress().getId());
             if (!addressDeleted) {
                 throw new RuntimeException("Failed to delete address from database for project: " + project.getId());
             }

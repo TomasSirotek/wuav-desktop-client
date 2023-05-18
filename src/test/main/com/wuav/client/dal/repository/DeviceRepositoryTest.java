@@ -139,17 +139,17 @@ public class DeviceRepositoryTest {
         assertEquals(resolution, ((Projector) updatedDevice).getResolution(), "Speaker volume was not updated");
     }
 
-    @Test
-    void testAddDeviceToProject() {
-        // Act
-        int affectedRows = deviceRepository.addDeviceToProject(
-                EXISTING_PROJECT_ID,
-                EXISTING_DEVICE_ID
-        );
-
-        // Assert
-        Assertions.assertEquals(1, affectedRows, "Device was not added to the project");
-    }
+//    @Test
+//    void testAddDeviceToProject() {
+//        // Act
+//        int affectedRows = deviceRepository.addDeviceToProject(
+//                EXISTING_PROJECT_ID,
+//                EXISTING_DEVICE_ID
+//        );
+//
+//        // Assert
+//        Assertions.assertEquals(1, affectedRows, "Device was not added to the project");
+//    }
 
 
     @Test

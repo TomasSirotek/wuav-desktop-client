@@ -6,6 +6,7 @@ import com.wuav.client.dal.mappers.ICustomerMapper;
 import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
 import com.wuav.client.gui.dto.CustomerDTO;
 import com.wuav.client.gui.dto.PutCustomerDTO;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +28,8 @@ public class CustomerRepository implements ICustomerRepository {
     }
 
     @Override
-    public int createCustomer(CustomerDTO customerDTO) {
-        int affectedRowsResult = 0;
-        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+    public int createCustomer(SqlSession session,CustomerDTO customerDTO) throws Exception {
+        try {
             ICustomerMapper mapper = session.getMapper(ICustomerMapper.class);
             var affectedRows = mapper.createCustomer(
                     customerDTO.id(),
@@ -39,13 +39,11 @@ public class CustomerRepository implements ICustomerRepository {
                     customerDTO.address().id(),
                     customerDTO.customerType()
             );
-
-            session.commit();
-            affectedRowsResult = affectedRows > 0 ? 1 : 0;
-        } catch (Exception ex) {
+            return affectedRows;
+        } catch (PersistenceException ex) {
             logger.error("An error occurred mapping tables", ex);
+            throw new Exception(ex);
         }
-        return affectedRowsResult;
     }
 
     @Override

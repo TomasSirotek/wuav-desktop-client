@@ -6,6 +6,7 @@ import com.wuav.client.bll.services.interfaces.ICustomerService;
 import com.wuav.client.dal.interfaces.ICustomerRepository;
 import com.wuav.client.gui.dto.CustomerDTO;
 import com.wuav.client.gui.dto.PutCustomerDTO;
+import org.apache.ibatis.session.SqlSession;
 
 public class CustomerService implements ICustomerService {
 
@@ -19,12 +20,6 @@ public class CustomerService implements ICustomerService {
     @Override
     public Customer getCustomerById(int id) {
         return customerRepository.getCustomerById(id);
-    }
-
-    @Override
-    public int createCustomer(CustomerDTO customerDTO) {
-        int result = customerRepository.createCustomer(customerDTO);
-        return result > 0 ? result : -1;
     }
 
     @Override

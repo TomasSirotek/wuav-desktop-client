@@ -9,6 +9,7 @@ import com.wuav.client.dal.mappers.IProjectMapper;
 import com.wuav.client.dal.mappers.IProjectorMapper;
 import com.wuav.client.dal.mappers.ISpeakerMapper;
 import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,20 +67,17 @@ public class DeviceRepository implements IDeviceRepository {
         }
     }
 
-    // FINISHED AND WORKING TESTED
     @Override
-    public int addDeviceToProject(int projectId, int deviceId) {
-        int finalAffectedRows = 0;
-        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+    public int addDeviceToProject(SqlSession session,int projectId, int deviceId) throws Exception {
+        try {
             IDeviceMapper mapper = session.getMapper(IDeviceMapper.class);
             int affectedRows = mapper.addDeviceToProject(projectId, deviceId);
 
-            session.commit();
-            finalAffectedRows = affectedRows > 0 ? 1 : 0;
-        } catch (Exception ex) {
+            return affectedRows;
+        } catch (PersistenceException ex) {
             logger.error("An error occurred mapping tables", ex);
+            throw new Exception(ex);
         }
-        return finalAffectedRows;
     }
 
     // FINISHED AND WORKING TESTED

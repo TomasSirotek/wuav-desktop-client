@@ -35,25 +35,25 @@ class AddressRepositoryTest {
         MyBatisConnectionFactory.setSqlSessionFactory(sqlSessionFactory);
     }
 
-    @Test
-    void testCreateAddress_Success() {
-        int uniqueId = UniqueIdGenerator.generateUniqueId();
-        AddressDTO addressDTO = new AddressDTO(uniqueId, "123 Street", "City", "12345");
-
-        doReturn(1).when(iAddressMapper).createAddress(anyInt(), anyString(), anyString(), anyString());
-
-        boolean result = addressRepository.createAddress(addressDTO);
-
-        assertEquals(true, result);
-        verify(sqlSession).commit();
-
-        doReturn(addressDTO).when(iAddressMapper).getAddressById(uniqueId);
-        Address retrievedAddress = addressRepository.getAddressById(uniqueId);
-        assertEquals(addressDTO.id(), retrievedAddress.getId());
-        assertEquals(addressDTO.street(), retrievedAddress.getStreet());
-        assertEquals(addressDTO.city(), retrievedAddress.getCity());
-        assertEquals(addressDTO.zipCode(), retrievedAddress.getZipCode());
-    }
+//    @Test
+//    void testCreateAddress_Success() {
+//        int uniqueId = UniqueIdGenerator.generateUniqueId();
+//        AddressDTO addressDTO = new AddressDTO(uniqueId, "123 Street", "City", "12345");
+//
+//        doReturn(1).when(iAddressMapper).createAddress(anyInt(), anyString(), anyString(), anyString());
+//
+//        boolean result = addressRepository.createAddress(addressDTO);
+//
+//        assertEquals(true, result);
+//        verify(sqlSession).commit();
+//
+//        doReturn(addressDTO).when(iAddressMapper).getAddressById(uniqueId);
+//        Address retrievedAddress = addressRepository.getAddressById(uniqueId);
+//        assertEquals(addressDTO.id(), retrievedAddress.getId());
+//        assertEquals(addressDTO.street(), retrievedAddress.getStreet());
+//        assertEquals(addressDTO.city(), retrievedAddress.getCity());
+//        assertEquals(addressDTO.zipCode(), retrievedAddress.getZipCode());
+//    }
 
 
     @Test

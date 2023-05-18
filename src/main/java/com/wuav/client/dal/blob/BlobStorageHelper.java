@@ -25,7 +25,7 @@ public class BlobStorageHelper {
         this.containerClient = containerClient;
     }
 
-    public CustomImage uploadImageToBlobStorage(int projectId, File imageFile) {
+    public CustomImage uploadImageToBlobStorage(int projectId, File imageFile) throws IOException {
 
         String extension = getFileExtension(imageFile.getName());
         String uniqueName = UUID.randomUUID().toString() + "." + extension;
@@ -33,8 +33,6 @@ public class BlobStorageHelper {
 
         try (InputStream inputStream = new FileInputStream(imageFile)) {
             blobClient.upload(inputStream, imageFile.length(), true);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         var imageId = UniqueIdGenerator.generateUniqueId();
 
