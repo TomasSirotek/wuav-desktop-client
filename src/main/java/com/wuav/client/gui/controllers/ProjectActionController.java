@@ -27,6 +27,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -133,8 +134,6 @@ public class ProjectActionController  extends RootController implements Initiali
     private Image mainImage;
 
     private StringProperty editorContent = new SimpleStringProperty();
-
-    private Image defaultImage = new Image("/no_data.png");
     private final EventBus eventBus;
 
     private File selectedImageFile;
@@ -150,7 +149,6 @@ public class ProjectActionController  extends RootController implements Initiali
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         eventBus.register(this);
-        selectedImage.setImage(defaultImage);
         selectFile.setOnAction(e -> selectFile());
         expandBtn.setOnAction(e -> previewImage(selectedImage.getImage()));
         updateBtnNotes.setOnAction(e -> updateNotes());
@@ -384,29 +382,27 @@ public class ProjectActionController  extends RootController implements Initiali
     }
 
     private void uploadFile() {
-        // here reupload image file
-        // find in current projects which is the main
         int mainImageId = currentProject.getProjectImages().stream().filter(CustomImage::isMainImage).findFirst().get().getId();
 
-        Image isReuploaded = tryReuploadImage(mainImageId);
-        if(isReuploaded != null) {
-            mainImage = isReuploaded;
-            displayNotification(true,"Image reuploaded successfully");
-            return;
-        }
-        displayNotification(false,"Error while reuploading image");
-        cancelUpload();
-    }
+        Task<Image> task = new Task<Image>() {
+            @Override
+            public Image call() throws Exception {
+                return projectModel.reuploadImage(currentProject.getId(), mainImageId, selectedImageFile);
+            }
+        };
 
-    private Image tryReuploadImage(int mainImageId) {
-        try {
-            projectModel.reuploadImage(currentProject.getId(),mainImageId, selectedImageFile);
-        } catch (Exception e) {
-            displayNotification(false,"Image reuploaded successfully");
-        }
-        return null;
-    }
+        task.setOnSucceeded(event -> {
+            mainImage = task.getValue();
+            displayNotification(true,"Image re-upload successfully");
+            cancelUpload();
+        });
 
+        task.setOnFailed(event -> {
+            displayNotification(false, "Image re-upload failed !");
+        });
+
+        new Thread(task).start();
+    }
     private void cancelUpload() {
         newFileUploadBox.setVisible(false);
         fileName.setText("");

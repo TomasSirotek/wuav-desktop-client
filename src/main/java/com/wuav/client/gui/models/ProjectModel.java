@@ -17,6 +17,7 @@ import javafx.scene.image.Image;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -110,6 +111,7 @@ public class ProjectModel implements IProjectModel{
         if (userProjects != null)  userProjects.removeIf(project -> project.getId() == projectId);
     }
 
+
     @Override
     public Image reuploadImage(int projectId, int id, File selectedImageFile) throws Exception {
         Optional<CustomImage> updatedImage = projectService.reuploadImage(projectId,id, selectedImageFile);
@@ -149,6 +151,7 @@ public class ProjectModel implements IProjectModel{
 
         return image;
     }
+
 
     @Override
     public String updateNotes(int projectId, String content) throws Exception {

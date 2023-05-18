@@ -32,6 +32,7 @@ public interface IProjectModel {
 
     Image reuploadImage(int projectId, int id, File selectedImageFile) throws Exception;
 
+
     String updateNotes(int id, String s) throws Exception;
 
     Customer updateCustomer(PutCustomerDTO customerDTO);
