@@ -17,6 +17,7 @@ import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.utils.AnimationUtil;
 import com.wuav.client.gui.utils.CKEditorPane;
 import com.wuav.client.gui.utils.enums.CustomColor;
+import com.wuav.client.gui.utils.enums.IConType;
 import com.wuav.client.gui.utils.event.CustomEvent;
 import com.wuav.client.gui.utils.validations.FormField;
 import io.github.palexdev.materialfx.controls.MFXButton;
@@ -62,81 +63,41 @@ public class ProjectActionController  extends RootController implements Initiali
     @FXML
     private ImageView notificationImage;
     @FXML
-    private Label errorLabel;
+    private Label errorLabel,fileName,projectNameField;
     @FXML
-    private MFXButton updateClient;
-    @FXML
-    private MFXProgressSpinner statusSpinner;
-    @FXML
-    private MFXButton uploadBtn;
-    @FXML
-    private MFXButton cancelBtn;
-    @FXML
-    private Label fileName;
+    private MFXButton uploadBtn,cancelBtn,expand1,expand2,expandBtn,updateClient,updateBtnNotes,selectFile;
     @FXML
     private HBox newFileUploadBox;
     @FXML
     private VBox editorBox;
     @FXML
-    private MFXButton expand1;
-
+    private ImageView firstUploadedImage,secondUploadedImage,selectedImage;
     @FXML
-    private MFXButton expand2;
-
-    @FXML
-    private MFXButton expandBtn;
-    @FXML
-    private MFXButton updateBtnNotes;
-    @FXML
-    private ImageView firstUploadedImage;
-    @FXML
-    private ImageView secondUploadedImage;
-    @FXML
-    private MFXTextField clientNameField;
-    @FXML
-    private MFXTextField clientEmailField;
+    private MFXTextField clientNameField,clientEmailField,clientPhoneField,clientCityField;
     @FXML
     private MFXScrollPane deviceForProjectList;
     @FXML
     private ChoiceBox clientTypeChooseField;
     @FXML
-    private MFXTextField clientPhoneField;
-    @FXML
-    private MFXTextField clientCityField;
-    @FXML
     private TextField clientAddress;
     @FXML
     private TabPane tabPane;
-
-    @FXML
-    private Label projectNameField;
     @FXML
     private Tab clientTab;
-    @FXML
-    private HBox imageActionHandleBox;
-    @FXML
-    private ImageView selectedImage;
-    @FXML
-    private MFXButton selectFile;
-
-    @FXML
-    private HBox selectedFileHBox;
-
-    private MFXButton removeImage;
 
     private final IControllerFactory controllerFactory;
-
 
     private final IProjectModel projectModel;
 
     private Project currentProject;
 
     private Image mainImage;
-
-    private StringProperty editorContent = new SimpleStringProperty();
     private final EventBus eventBus;
 
     private File selectedImageFile;
+
+    private StringProperty editorContent = new SimpleStringProperty();
+    private List<HBox> deviceDetailsList = new ArrayList<>();
 
 
     @Inject
@@ -242,8 +203,6 @@ public class ProjectActionController  extends RootController implements Initiali
             return "";
         }
     }
-
-    private List<HBox> deviceDetailsList = new ArrayList<>();
     // if router here set all the info
     public void setCurrentProject(Project project) {
         currentProject = project;
@@ -324,7 +283,7 @@ public class ProjectActionController  extends RootController implements Initiali
         errorLabel.setText(message);
         if(isSuccess){
             AnimationUtil.animateInOut(notificationPane,4, CustomColor.SUCCESS);
-          notificationImage.setImage(new Image("/dashboardDone.png"));
+          notificationImage.setImage(new Image(IConType.SUCCESS.getStyle()));
         }else {
             AnimationUtil.animateInOut(notificationPane,4, CustomColor.WARNING);
         }
@@ -431,11 +390,6 @@ public class ProjectActionController  extends RootController implements Initiali
 
         Scene scene = new Scene(layout);
         stage.setScene(scene);
-
-
         stage.showAndWait();
-
     }
-
-
 }
