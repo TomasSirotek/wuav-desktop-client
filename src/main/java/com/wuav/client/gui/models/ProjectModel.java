@@ -16,11 +16,15 @@ import com.wuav.client.gui.models.user.IUserModel;
 import javafx.scene.image.Image;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
+
 public class ProjectModel implements IProjectModel{
     private IProjectService projectService;
 
@@ -40,7 +44,7 @@ public class ProjectModel implements IProjectModel{
 
         if (projects == null) {
             projects = projectService.getAllProjects();
-            cacheProjectsImages(projects);
+            // cacheProjectsImages(projects);
             projectsCache.put(ALL_PROJECTS_KEY, projects);
         }
 
@@ -52,7 +56,7 @@ public class ProjectModel implements IProjectModel{
 
         if (projects == null) {
             projects = projectService.getProjectsByUserId(userId);
-            cacheProjectsImages(projects);
+         //   cacheProjectsImages(projects);
             projectsCache.put(userId, projects);
         }
         return projects;
@@ -66,14 +70,76 @@ public class ProjectModel implements IProjectModel{
         return projectsCache.get(userId);
     }
 
-    // IMPLEMENT DATA HERE TODO: 18/5/2023
+
     @Override
     public DashboardData getTechnicianDashboardData(int id) {
-        return projectService.getDashboardData(id);
+        List<Project> technicianProjects = projectsCache.getOrDefault(id, new ArrayList<>());
+
+        int totalProjects = technicianProjects.size();
+
+        int totalDeviceUser = technicianProjects.stream()
+                .mapToInt(project -> project.getDevices().size()).sum();
+
+        // amount of non-main images uploaded
+        int amountOfPlansUploaded = technicianProjects.stream()
+                .mapToInt(project -> (int) project.getProjectImages().stream().filter(customImage -> !customImage.isMainImage()).count())
+                .sum();
+
+        List<Customer> recentCustomers = technicianProjects.stream()
+                .filter(project -> project.getCreatedAt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isEqual(LocalDate.now()))
+                .map(Project::getCustomer)
+                .limit(4)
+                .collect(Collectors.toList());
+
+        return new DashboardData(
+                totalProjects,
+                totalDeviceUser,
+                recentCustomers,
+                amountOfPlansUploaded
+        );
+    }
+    @Override
+    public DashboardData getAdminDashboardData(int id) {
+        int totalProjects = projectsCache.values().stream()
+                .mapToInt(List::size)
+                .sum();
+        int totalDeviceUser = projectsCache.values().stream()
+                .flatMap(Collection::stream)
+                .mapToInt(project -> project.getDevices().size()).sum();
+
+        // amount of non-main images uploaded
+        int amountOfPlansUploaded = projectsCache.values().stream()
+                .flatMap(Collection::stream)
+                .mapToInt(project -> (int) project.getProjectImages().stream().filter(customImage -> !customImage.isMainImage()).count())
+                .sum();
+
+        List<Customer> recentCustomers = projectsCache.values().stream()
+                .flatMap(Collection::stream)
+                .filter(project -> project.getCreatedAt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isEqual(LocalDate.now()))
+                .map(Project::getCustomer)
+                .limit(4)
+                .collect(Collectors.toList());
+
+
+        return new DashboardData(
+                totalProjects,
+                totalDeviceUser,
+                recentCustomers,
+                amountOfPlansUploaded
+        );
     }
 
     @Override
-    public boolean createProject(int userId,CreateProjectDTO projectToCreate) throws Exception {return projectService.createProject(userId,projectToCreate);}
+    public boolean createProject(int userId,CreateProjectDTO projectToCreate) throws Exception {
+        boolean result =  projectService.createProject(userId,projectToCreate);
+        if (result) {
+            // If the project is successfully created, invalidate the cache entries
+            projectsCache.put(userId, projectService.getProjectsByUserId(userId)); // update cache for specific user
+            projectsCache.put(ALL_PROJECTS_KEY, projectService.getAllProjects()); // update cache for all projects
+            cacheProjectImages(projectService.getProjectById(projectToCreate.id()));
+        }
+        return result;
+    }
 
     @Override
     public Customer updateCustomer(PutCustomerDTO customerDTO) {
@@ -102,7 +168,11 @@ public class ProjectModel implements IProjectModel{
     public boolean deleteProject(Project project) throws Exception {
         AppUser user = userModel.getUserByProjectId(project.getId());
         boolean result = projectService.deleteProject(project);
-        if (result) removeProject(user.getId(), project.getId());
+        if (result) {
+            // If the project is successfully deleted, invalidate the cache entries
+            projectsCache.remove(user.getId()); // remove projects for specific user
+            projectsCache.remove(ALL_PROJECTS_KEY); // remove all projects
+        }
         return result;
     }
 

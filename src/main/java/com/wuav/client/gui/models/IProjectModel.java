@@ -38,4 +38,6 @@ public interface IProjectModel {
     Customer updateCustomer(PutCustomerDTO customerDTO);
 
     DashboardData getTechnicianDashboardData(int id);
+
+    DashboardData getAdminDashboardData(int id);
 }

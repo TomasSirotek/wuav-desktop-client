@@ -99,7 +99,7 @@ public class ProjectController extends RootController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         eventBus.register(this);
-       fillTable();
+        fillTable();
         setupActions();
         swapButtonsInNonTechnicianRole();
     }
@@ -108,32 +108,22 @@ public class ProjectController extends RootController implements Initializable {
      * This method is used to set up actions for table preview
      */
     private void setupActions() {
+        IUserRoleStrategy strategy = CurrentUser.getInstance().getUserRoleStrategy();
         createNewProject.setOnAction(e -> openActionWindows("Create new project",ViewType.ACTIONS,null));
         exportSelected.setOnAction(e -> exportSelected());
         selectAllTableCheck.selectedProperty().addListener((observable, oldValue, newValue) -> {
             updateCheckBoxes(newValue);
         });
+        projectLabelMain.setText(strategy.getProjectButtonText());
     }
 
     /**
-     * This method is used swap the buttons when the user is not a technician in order
+     * This method is used swap the buttons when the user is not a technician in order with beautiful strategy pattern
      * to disallow the user to create projects
      */
     private void swapButtonsInNonTechnicianRole() {
-        if(!CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals(UserRoleType.TECHNICIAN.toString())){
-            AtomicReference<MFXButton> storedButton = new AtomicReference<>();
-
-            exportToggleHbox.getChildren().forEach(node -> {
-                if(node instanceof MFXButton){
-                    MFXButton button = (MFXButton) node;
-                    storedButton.set(button);
-                }
-            });
-
-            // clean children in the action hbox and replace with the stored button
-            actionToggleHbox.getChildren().clear();
-            actionToggleHbox.getChildren().add(storedButton.get());
-        }
+        IUserRoleStrategy strategy = CurrentUser.getInstance().getUserRoleStrategy();
+        strategy.swapButtons(exportToggleHbox,actionToggleHbox);
     }
 
 
@@ -251,16 +241,14 @@ public class ProjectController extends RootController implements Initializable {
 
 
     private void refreshTable(){
-        List<Project> updatedProjects = null;
+        IUserRoleStrategy strategy = CurrentUser.getInstance().getUserRoleStrategy();
+        List<Project> updatedProjects  = null;
         try {
-            updatedProjects = projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
+            updatedProjects = strategy.getProjects(CurrentUser.getInstance().getLoggedUser());
         } catch (Exception e) {
             AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
             errorLabel.setText(e != null ? e.getMessage() : e.getMessage());
         }
-        // Update the cache in the ProjectModel
-        projectModel.updateProjectsCache(CurrentUser.getInstance().getLoggedUser().getId(), updatedProjects);
-
         // Refresh the table with the updated projects list
         ObservableList<Project> projects = FXCollections.observableList(updatedProjects);
         projectTable.setItems(projects);
@@ -275,8 +263,9 @@ public class ProjectController extends RootController implements Initializable {
             projectCreationStatus.setVisible(true);
             // Retrieve the updated projects list from your data source
             refreshTable();
+            errorLabel.setText("Projects created successfully");
+            AnimationUtil.animateInOut(notificationPane,4, CustomColor.SUCCESS);
             projectCreationStatus.setVisible(false);
-
         }
     }
 
@@ -477,8 +466,8 @@ public class ProjectController extends RootController implements Initializable {
      * Delete project
      * @param project project to be deleted
      */
-    private void  deleteProject(Project project){
-        var response = AlertHelper.showOptionalAlertWindow("Action warning !",
+    private void deleteProject(Project project){
+        var response = AlertHelper.showOptionalAlertWindow("Action warning!",
                 "Are you sure you want to delete this project ? ",
                 Alert.AlertType.CONFIRMATION);
 
@@ -489,6 +478,8 @@ public class ProjectController extends RootController implements Initializable {
 
                 errorLabel.setText("Project with id: " + project.getId() + " has been deleted");
                 AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
+
+                // Refresh the projects list from the database after deleting the project
                 refreshTable();
 
             } catch (Exception e) {

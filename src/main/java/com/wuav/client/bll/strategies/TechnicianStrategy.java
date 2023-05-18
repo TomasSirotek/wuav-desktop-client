@@ -7,6 +7,7 @@ import com.wuav.client.bll.strategies.interfaces.IUserRoleStrategy;
 import com.wuav.client.gui.entities.DashboardData;
 import com.wuav.client.gui.models.IProjectModel;
 import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
 
 import java.util.List;
 
@@ -28,8 +29,8 @@ public class TechnicianStrategy implements IUserRoleStrategy {
     }
 
     @Override
-    public DashboardData getDashboardData(AppUser user) throws Exception {
-        return  projectModel.getTechnicianDashboardData(user.getId());
+    public DashboardData getDashboardData(AppUser user){
+        return projectModel.getTechnicianDashboardData(user.getId());
     }
 
     @Override
@@ -45,5 +46,10 @@ public class TechnicianStrategy implements IUserRoleStrategy {
     @Override
     public Image getDefaultImage() {
         return defaultImage;
+    }
+
+    @Override
+    public void swapButtons(HBox exportToggleHbox, HBox actionToggleHbox) {
+        // Do nothing
     }
 }

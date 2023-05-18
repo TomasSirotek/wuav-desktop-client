@@ -805,16 +805,6 @@ public class ModalActionController extends RootController implements Initializab
                 // Update the UI on the JavaFX application thread
                 Platform.runLater(() -> {
                     if (result) {
-
-                        Project newProject = tryToGetProjectById(projectId);
-
-                        // Update the cache with the new project
-                        try {
-                            projectModel.updateCacheForUser(currentUserId, newProject);
-                        } catch (Exception e) {
-                            displayError(e.getMessage());
-                        }
-
                         eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
                         EventType eventType = EventType.SHOW_NOTIFICATION;
                         CustomEvent notificationEvent = new CustomEvent(eventType, true, "Project created successfully");

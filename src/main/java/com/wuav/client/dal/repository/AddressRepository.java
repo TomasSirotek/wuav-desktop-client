@@ -31,8 +31,6 @@ public class AddressRepository implements IAddressRepository {
            throw new Exception(ex);
         }
     }
-
-
     @Override
     public Address getAddressById(int id) {
        Address address = null;
