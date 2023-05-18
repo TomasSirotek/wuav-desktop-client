@@ -46,7 +46,7 @@ public class DashboardController extends RootController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupData();
-        Platform.runLater(this::setupChart);
+       // Platform.runLater(this::setupChart);
     }
 
     private void setupData() {

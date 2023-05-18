@@ -61,8 +61,8 @@ public class BaseController extends RootController implements Initializable {
 
     private boolean isSidebarExpanded = false;
 
-    private final int SLIDER_CLOSED = 80;
-    private final int SLIDER_OPEN = 250;
+    private final int SLIDER_CLOSED = 75;
+    private final int SLIDER_OPEN = 230;
 
     @Inject
     public BaseController(IControllerFactory controllerFactory, StageManager stageManager, EventBus eventBus) {
@@ -82,7 +82,7 @@ public class BaseController extends RootController implements Initializable {
 
     private void setupButtons() {
         expand.setStyle(CustomColor.TRANSPARENT.getStyle());
-        projectButton.setStyle(CustomColor.HIGHLIGHTED.getStyle());
+        dashboardButton.setStyle(CustomColor.HIGHLIGHTED.getStyle());
     }
 
     private void setupStrategy() {
@@ -101,13 +101,13 @@ public class BaseController extends RootController implements Initializable {
 
         userDetailsBox.setVisible(false);
         expandBoxToggle.setAlignment(Pos.CENTER_LEFT);
-        logoPane.setVisible(true);
+      //  logoPane.setVisible(true);
         slide.setToX(0);
         slide.play();
 
-        Image image = new Image(getClass().getClassLoader().getResource(IConType.OPEN.getStyle()).toExternalForm());
+     //   Image image = new Image(getClass().getClassLoader().getResource(IConType.OPEN.getStyle()).toExternalForm());
         app_content.setStyle(CustomColor.NONE.getStyle());
-        menuIcon.setImage(image);
+      //  menuIcon.setImage(image);
 
         slider.setPrefWidth(SLIDER_CLOSED);
         userNameField.setText("");
@@ -126,10 +126,10 @@ public class BaseController extends RootController implements Initializable {
         userDetailsBox.setVisible(true);
         menuItemLabel.setVisible(true);
         expandBoxToggle.setAlignment(Pos.CENTER_RIGHT);
-        logoPane.setVisible(false);
+       // logoPane.setVisible(false);
 
-        Image image = new Image(getClass().getClassLoader().getResource(IConType.CLOSE.getStyle()).toExternalForm());
-        menuIcon.setImage(image);
+      //  Image image = new Image(getClass().getClassLoader().getResource(IConType.CLOSE.getStyle()).toExternalForm());
+       // menuIcon.setImage(image);
         slide.play();
 
         slider.setPrefWidth(SLIDER_OPEN); // Replace with your original sidebar width
