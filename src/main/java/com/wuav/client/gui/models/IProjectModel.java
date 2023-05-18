@@ -30,9 +30,9 @@ public interface IProjectModel {
 
     boolean deleteProject(Project project);
 
-    Image reuploadImage(int projectId, int id, File selectedImageFile);
+    Image reuploadImage(int projectId, int id, File selectedImageFile) throws Exception;
 
-    String updateNotes(int id, String s);
+    String updateNotes(int id, String s) throws Exception;
 
     Customer updateCustomer(PutCustomerDTO customerDTO);
 

@@ -6,6 +6,7 @@ import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.models.user.IUserModel;
 import com.wuav.client.gui.utils.AlertHelper;
+import java.text.SimpleDateFormat;
 import com.wuav.client.gui.utils.AnimationUtil;
 import com.wuav.client.gui.utils.enums.CustomColor;
 import com.wuav.client.gui.utils.validations.FormField;
@@ -87,7 +88,7 @@ public class UserProfileController  extends RootController implements Initializa
                         setUpProfilePage();
                     } else {
                         AnimationUtil.animateInOut(errorPane, 4, CustomColor.ERROR);
-                        errorLabel.setText("Profile could have not been updated successfully");
+                        errorLabel.setText("Profile update failed !");
                     }
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
@@ -117,6 +118,8 @@ public class UserProfileController  extends RootController implements Initializa
     }
 
     private void setUpProfilePage() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMMM dd yyyy");
+
         AppUser loggedUser = CurrentUser.getInstance().getLoggedUser();
 
         avatar.setFill(new ImagePattern(tempImage));
@@ -126,7 +129,10 @@ public class UserProfileController  extends RootController implements Initializa
         userEmail.setText(loggedUser.getEmail());
         userPsw.setDisable(true);
         userRole.setText(loggedUser.getRoles().get(0).getName());
-        userCreated.setText(loggedUser.getCreatedAt().toString());
+
+        String formattedDate = dateFormat.format(loggedUser.getCreatedAt());
+        userCreated.setText(formattedDate);
+
         emailHeader.setText(loggedUser.getEmail());
     }
 }

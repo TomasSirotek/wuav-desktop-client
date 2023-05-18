@@ -226,13 +226,22 @@ public class ProjectActionController  extends RootController implements Initiali
 
     private void updateNotes() {
         if(!editorContent.get().isEmpty()){
-           String content = projectModel.updateNotes(currentProject.getId(), editorContent.get().trim());
+           String content = tryUpdatedNotes();
            if(!content.isEmpty()){
                editorContent.set(content);
                displayNotification(true,"Notes updated successfully");
               }else{
                displayNotification(false,"Something went wrong, please try again later");
            }
+        }
+    }
+
+    private String tryUpdatedNotes() {
+        try {
+            return projectModel.updateNotes(currentProject.getId(), editorContent.get().trim());
+        } catch (Exception e) {
+            displayNotification(false,"Something went wrong, please try again later");
+            return "";
         }
     }
 
@@ -379,7 +388,7 @@ public class ProjectActionController  extends RootController implements Initiali
         // find in current projects which is the main
         int mainImageId = currentProject.getProjectImages().stream().filter(CustomImage::isMainImage).findFirst().get().getId();
 
-        Image isReuploaded = projectModel.reuploadImage(currentProject.getId(),mainImageId, selectedImageFile);
+        Image isReuploaded = tryReuploadImage(mainImageId);
         if(isReuploaded != null) {
             mainImage = isReuploaded;
             displayNotification(true,"Image reuploaded successfully");
@@ -387,6 +396,15 @@ public class ProjectActionController  extends RootController implements Initiali
         }
         displayNotification(false,"Error while reuploading image");
         cancelUpload();
+    }
+
+    private Image tryReuploadImage(int mainImageId) {
+        try {
+            projectModel.reuploadImage(currentProject.getId(),mainImageId, selectedImageFile);
+        } catch (Exception e) {
+            displayNotification(false,"Image reuploaded successfully");
+        }
+        return null;
     }
 
     private void cancelUpload() {

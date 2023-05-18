@@ -19,7 +19,7 @@ public class TechnicianStrategy implements IUserRoleStrategy {
     }
 
     @Override
-    public List<Project> getProjects(AppUser user) {
+    public List<Project> getProjects(AppUser user) throws Exception {
         return projectModel.getProjectsByUserId(user.getId());
     }
 

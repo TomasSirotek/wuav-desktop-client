@@ -240,7 +240,13 @@ public class ProjectController extends RootController implements Initializable {
 
 
     private void refreshTable(){
-        List<Project> updatedProjects = projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
+        List<Project> updatedProjects = null;
+        try {
+            updatedProjects = projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
+        } catch (Exception e) {
+            AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
+            errorLabel.setText(e != null ? e.getMessage() : e.getMessage());
+        }
         // Update the cache in the ProjectModel
         projectModel.updateProjectsCache(CurrentUser.getInstance().getLoggedUser().getId(), updatedProjects);
 

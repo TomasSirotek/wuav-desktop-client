@@ -3,7 +3,6 @@ package com.wuav.client.bll.services.interfaces;
 import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
-import com.wuav.client.bll.exeption.ProjectException;
 import com.wuav.client.gui.dto.CreateProjectDTO;
 import com.wuav.client.gui.dto.PutCustomerDTO;
 import com.wuav.client.gui.entities.DashboardData;

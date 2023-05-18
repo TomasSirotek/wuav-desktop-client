@@ -13,9 +13,7 @@ public interface IProjectMapper {
 
     Project getProjectById(@Param("id")int id);
 
-    // inserting project to the table
     int createProject(@Param("id")int id,@Param("name")String name,@Param("description") String description,@Param("customerId") int customerId);
-
 
     int addUserToProject(@Param("userId") int userId,@Param("projectId") int projectId);
 

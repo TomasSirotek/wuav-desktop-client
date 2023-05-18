@@ -6,7 +6,6 @@ import com.wuav.client.be.CustomImage;
 import com.wuav.client.be.Customer;
 import com.wuav.client.be.Project;
 import com.wuav.client.be.user.AppUser;
-import com.wuav.client.bll.exeption.ProjectException;
 import com.wuav.client.bll.services.interfaces.IProjectService;
 import com.wuav.client.cache.ImageCache;
 import com.wuav.client.dal.blob.BlobStorageFactory;
@@ -21,8 +20,6 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 public class ProjectModel implements IProjectModel{
     private IProjectService projectService;
 
@@ -42,7 +39,7 @@ public class ProjectModel implements IProjectModel{
 
         if (projects == null) {
             projects = projectService.getAllProjects();
-            //  cacheProjectsImages(projects);
+            cacheProjectsImages(projects);
             projectsCache.put(ALL_PROJECTS_KEY, projects);
         }
 
@@ -114,21 +111,21 @@ public class ProjectModel implements IProjectModel{
     }
 
     @Override
-    public Image reuploadImage(int projectId, int id, File selectedImageFile) {
-        CustomImage updatedImage = projectService.reuploadImage(projectId,id, selectedImageFile);
-        updatedImage.setMainImage(true);
+    public Image reuploadImage(int projectId, int id, File selectedImageFile) throws Exception {
+        Optional<CustomImage> updatedImage = projectService.reuploadImage(projectId,id, selectedImageFile);
+        updatedImage.get().setMainImage(true);
         AppUser user = userModel.getUserByProjectId(projectId);
         Image image = null;
 
         if (updatedImage != null && user != null) {
-            var projects = getProjectsByUserId(user.getId());
+            var projects = projectService.getProjectsByUserId(user.getId());
 
             // Replace the image in the projects list
             for (Project project : projects) {
                 List<CustomImage> projectImages = project.getProjectImages();
                 for (int i = 0; i < projectImages.size(); i++) {
                     if (projectImages.get(i).getId() == id) {
-                        projectImages.set(i, updatedImage);
+                        projectImages.set(i, updatedImage.get());
                         break;
                     }
                 }
@@ -144,7 +141,7 @@ public class ProjectModel implements IProjectModel{
             projectsCache.put(user.getId(), projects);
 
             // Retrieve the uploaded image
-            image = ImageCache.getImage(updatedImage.getId());
+            image = ImageCache.getImage(updatedImage.get().getId());
 
 
             cacheProjectImages(getProjectById(projectId));
@@ -154,7 +151,7 @@ public class ProjectModel implements IProjectModel{
     }
 
     @Override
-    public String updateNotes(int projectId, String content) {
+    public String updateNotes(int projectId, String content) throws Exception {
         String updatedNotes = projectService.updateNotes(projectId,content);
 
         if(updatedNotes != null){
@@ -179,8 +176,6 @@ public class ProjectModel implements IProjectModel{
 
         return updatedNotes;
     }
-
-
 
     private void cacheProjectsImages(List<Project> projects) {
         BlobContainerClient blobContainerClient = BlobStorageFactory.getBlobContainerClient();
@@ -215,8 +210,4 @@ public class ProjectModel implements IProjectModel{
             ImageCache.loadImage(blobContainerClient, image.getImageUrl(), image.getId());
         }
     }
-
-
-
-
 }

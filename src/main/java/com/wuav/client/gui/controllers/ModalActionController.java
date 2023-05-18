@@ -51,11 +51,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 
+import javax.naming.AuthenticationException;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ModalActionController extends RootController implements Initializable {
 
@@ -740,6 +743,8 @@ public class ModalActionController extends RootController implements Initializab
     }
 
 
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+
     private void createNewProject() {
         voidTriggerProjectLoadingStatus(); // start loading in the project window
         // generating all the ids
@@ -792,34 +797,73 @@ public class ModalActionController extends RootController implements Initializab
 
         int currentUserId = CurrentUser.getInstance().getLoggedUser().getId();
 
-        Task<Boolean> loadDataTask = new Task<>() {
-            @Override
-            protected Boolean call() throws IOException {
-                return projectModel.createProject(currentUserId, projectToCreate);
-            }
-        };
 
-        loadDataTask.setOnSucceeded(event -> {
-            boolean result = loadDataTask.getValue();
+        executorService.submit(() -> {
+            try {
+                boolean result = projectModel.createProject(currentUserId, projectToCreate);
 
-            if (result) {
+                // Update the UI on the JavaFX application thread
+                Platform.runLater(() -> {
+                    if (result) {
 
-                Project newProject = projectModel.getProjectById(projectId);
+                        Project newProject = tryToGetProjectById(projectId);
 
-                // Update the cache with the new project
-                projectModel.updateCacheForUser(currentUserId, newProject);
+                        // Update the cache with the new project
+                        projectModel.updateCacheForUser(currentUserId, newProject);
 
-                eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
-                EventType eventType = EventType.SHOW_NOTIFICATION;
-                CustomEvent notificationEvent = new CustomEvent(eventType, true, "Project created successfully");
-                eventBus.post(notificationEvent);
-                runInParallel(ViewType.PROJECTS);
-            } else {
-                AlertHelper.showDefaultAlert("Error creating project", Alert.AlertType.ERROR);
+                        eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
+                        EventType eventType = EventType.SHOW_NOTIFICATION;
+                        CustomEvent notificationEvent = new CustomEvent(eventType, true, "Project created successfully");
+                        eventBus.post(notificationEvent);
+                        runInParallel(ViewType.PROJECTS);
+                    } else {
+                        displayError("Project creation failed");
+                    }
+                });
+            } catch (Exception e) {
+                // Handle exception here
+                displayError(e.getMessage());
+            } finally {
+                executorService.shutdown(); // Shutdown the executor service
             }
         });
+//        Task<Boolean> loadDataTask = new Task<>() {
+//            @Override
+//            protected Boolean call() throws IOException {
+//                return projectModel.createProject(currentUserId, projectToCreate);
+//            }
+//        };
+//
+//        loadDataTask.setOnSucceeded(event -> {
+//            boolean result = loadDataTask.getValue();
+//
+//            if (result) {
+//
+//                Project newProject = projectModel.getProjectById(projectId);
+//
+//                // Update the cache with the new project
+//                projectModel.updateCacheForUser(currentUserId, newProject);
+//
+//                eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
+//                EventType eventType = EventType.SHOW_NOTIFICATION;
+//                CustomEvent notificationEvent = new CustomEvent(eventType, true, "Project created successfully");
+//                eventBus.post(notificationEvent);
+//                runInParallel(ViewType.PROJECTS);
+//            } else {
+//                AlertHelper.showDefaultAlert("Error creating project", Alert.AlertType.ERROR);
+//            }
+//        });
+//
+//        new Thread(loadDataTask).start();
+    }
 
-        new Thread(loadDataTask).start();
+    private Project tryToGetProjectById(int projectId) {
+        try {
+           return  projectModel.getProjectById(projectId);
+        } catch (Exception e) {
+            displayError(e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
     private void runInParallel(ViewType type) {

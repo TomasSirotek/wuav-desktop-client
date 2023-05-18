@@ -17,13 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CodeEngine implements ICodesEngine {
-
-    public byte[] generateEAN13BarcodeImage(String barcodeText, int width, int height) throws Exception {
-        EAN13Writer barcodeWriter = new EAN13Writer();
-        BitMatrix bitMatrix = barcodeWriter.encode(barcodeText, BarcodeFormat.EAN_13, width, height);
-
-        return convertToBytes(MatrixToImageWriter.toBufferedImage(bitMatrix));
-    }
+    @Override
     public byte[] generateQRCodeImage(String barcodeText,int width, int height) throws Exception {
         QRCodeWriter barcodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix =
@@ -32,6 +26,7 @@ public class CodeEngine implements ICodesEngine {
         return convertToBytes(MatrixToImageWriter.toBufferedImage(bitMatrix));
     }
 
+    @Override
     public ImageView generateQRCodeImageView(int userId, String projectName, int width, int height) throws Exception {
         Map<String, Object> qrData = new HashMap<>();
 
@@ -40,9 +35,6 @@ public class CodeEngine implements ICodesEngine {
 
         Gson gson = new Gson();
         String jsonString = gson.toJson(qrData);
-
-
-        System.out.println(qrData);
 
         byte[] qrCodeImage = generateQRCodeImage(jsonString, width, height);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(qrCodeImage);
