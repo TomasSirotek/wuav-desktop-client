@@ -73,10 +73,14 @@
 
 ## Features and requirements
 
+## JavaFx Application
+
+<img width="1112" alt="Screenshot 2023-05-19 at 21 26 54" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/4802716b-4868-4477-8c8e-e24c63128ea4">
 
 ## Application design
 
 Application mock-up designed in Figma
+
 
 ## Database design
 

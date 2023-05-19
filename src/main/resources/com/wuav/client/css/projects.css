@@ -165,6 +165,10 @@
 }
 
 
+.firstCol{
+  -fx-padding: 0 0 0 20 ;
+}
+
 /*.table-row-cell:selected {*/
 /*  -fx-background-color: #005797;*/
 /*  -fx-background-insets: 0;*/

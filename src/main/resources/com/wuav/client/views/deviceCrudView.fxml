@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: #F2F2F2;" stylesheets="@../css/projectCreation.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.DeviceCrudController">
@@ -79,7 +80,14 @@
                                           <ChoiceBox fx:id="deviceTypeField" prefHeight="32.0" prefWidth="259.0" style="-fx-background-color: white; -fx-border-color: #eae9e9;" />
                                        </children>
                                     </VBox>
-                                    <VBox fx:id="deviceFieldVBox" prefHeight="246.0" prefWidth="247.0" />
+                                    <VBox fx:id="deviceFieldVBox" prefHeight="246.0" prefWidth="247.0">
+                                       <children>
+                                          <Line endX="155.1315460205078" startX="-100.0" stroke="#00000024">
+                                             <VBox.margin>
+                                                <Insets top="8.0" />
+                                             </VBox.margin>
+                                          </Line>
+                                       </children></VBox>
                                  </children>
                                  <padding>
                                     <Insets left="25.0" right="25.0" top="30.0" />

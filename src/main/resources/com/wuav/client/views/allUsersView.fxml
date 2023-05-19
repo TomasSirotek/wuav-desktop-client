@@ -148,11 +148,11 @@
                   </HBox>
                   <TableView fx:id="userTable" layoutY="65.0" minHeight="395.0" prefHeight="417.0" prefWidth="885.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="65.0">
                     <columns>
-                      <TableColumn fx:id="colName" minWidth="40.0" prefWidth="184.61158561706543" text="Name" />
+                      <TableColumn fx:id="colName" minWidth="40.0" prefWidth="184.61158561706543" styleClass="firstCol" text="Name" />
                         <TableColumn fx:id="colEmail" maxWidth="250.0" minWidth="249.99998474121094" prefWidth="249.99998474121094" text="Email" />
                         <TableColumn fx:id="colRole" maxWidth="240.00009155273438" minWidth="240.0" prefWidth="240.00009155273438" text="Role" />
-                        <TableColumn fx:id="colDate" minWidth="44.0" prefWidth="150.0" text="Created at" />
-                        <TableColumn fx:id="colEdit" minWidth="57.0" prefWidth="72.8956298828125" sortable="false" />
+                        <TableColumn fx:id="colDate" minWidth="46.0" prefWidth="150.0" text="Created at" />
+                        <TableColumn fx:id="colEdit" minWidth="60.0" prefWidth="74.0" sortable="false" />
                     </columns>
                      <padding>
                         <Insets top="20.0" />
