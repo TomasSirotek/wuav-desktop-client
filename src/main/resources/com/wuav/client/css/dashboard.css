@@ -2,3 +2,7 @@
     -fx-background-color: rgba(234, 234, 234, 0.8);
 
 }
+
+.mfx-progress-spinner:determinate .arc {
+    -fx-stroke:  #E84910 !important;
+}

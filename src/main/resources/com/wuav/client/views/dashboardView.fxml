@@ -50,7 +50,7 @@
                               <Font name="Open Sans Bold" size="24.0" />
                            </font>
                         </Label>
-                        <Label fx:id="projectLabelMain2" prefHeight="25.0" prefWidth="248.0" text="Primary overview information">
+                        <Label fx:id="projectLabelMain2" prefHeight="25.0" prefWidth="248.0" style="-fx-text-fill: a29f9f;" text="Primary overview information">
                            <font>
                               <Font name="Open Sans Regular" size="14.0" />
                            </font>
@@ -210,8 +210,8 @@
                                 </columnConstraints>
                                 <rowConstraints>
                                   <RowConstraints maxHeight="138.83242797851562" minHeight="10.0" prefHeight="70.44415283203125" vgrow="SOMETIMES" />
-                                    <RowConstraints maxHeight="258.7275085449219" minHeight="10.0" prefHeight="161.945068359375" vgrow="SOMETIMES" />
-                                    <RowConstraints maxHeight="241.62509155273438" minHeight="10.0" prefHeight="65.054931640625" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="258.7275085449219" minHeight="10.0" prefHeight="125.66531372070312" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="241.62509155273438" minHeight="10.0" prefHeight="94.33468627929688" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
                                     <GridPane GridPane.columnIndex="1">
@@ -294,9 +294,9 @@
                                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                   </columnConstraints>
                                                   <rowConstraints>
-                                                    <RowConstraints maxHeight="105.0333251953125" minHeight="10.0" prefHeight="69.03408813476562" vgrow="SOMETIMES" />
-                                                      <RowConstraints maxHeight="103.34368896484375" minHeight="10.0" prefHeight="41.22369384765625" vgrow="SOMETIMES" />
-                                                    <RowConstraints maxHeight="111.06661987304688" minHeight="10.0" prefHeight="89.77630615234375" vgrow="SOMETIMES" />
+                                                    <RowConstraints maxHeight="105.0333251953125" minHeight="10.0" prefHeight="39.61456298828125" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="103.34368896484375" minHeight="10.0" prefHeight="16.442718505859375" vgrow="SOMETIMES" />
+                                                    <RowConstraints maxHeight="111.06661987304688" minHeight="10.0" prefHeight="38.557281494140625" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
                                                       <HBox alignment="BOTTOM_CENTER">
@@ -343,9 +343,9 @@
                                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                    </columnConstraints>
                                                    <rowConstraints>
-                                                      <RowConstraints maxHeight="105.0333251953125" minHeight="10.0" prefHeight="69.03408813476562" vgrow="SOMETIMES" />
-                                                      <RowConstraints maxHeight="103.34368896484375" minHeight="10.0" prefHeight="41.22369384765625" vgrow="SOMETIMES" />
-                                                      <RowConstraints maxHeight="111.06661987304688" minHeight="10.0" prefHeight="89.77630615234375" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="105.0333251953125" minHeight="10.0" prefHeight="37.057281494140625" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="103.34368896484375" minHeight="2.78643798828125" prefHeight="20.942718505859375" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="111.06661987304688" minHeight="10.0" prefHeight="35.519073486328125" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
                                                       <HBox alignment="BOTTOM_CENTER">
@@ -399,9 +399,9 @@
                                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                    </columnConstraints>
                                                    <rowConstraints>
-                                                      <RowConstraints maxHeight="105.0333251953125" minHeight="10.0" prefHeight="69.03408813476562" vgrow="SOMETIMES" />
-                                                      <RowConstraints maxHeight="103.34368896484375" minHeight="10.0" prefHeight="41.22369384765625" vgrow="SOMETIMES" />
-                                                      <RowConstraints maxHeight="111.06661987304688" minHeight="10.0" prefHeight="89.77630615234375" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="105.0333251953125" minHeight="10.0" prefHeight="37.643890380859375" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="103.34368896484375" minHeight="10.0" prefHeight="23.856109619140625" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="111.06661987304688" minHeight="10.0" prefHeight="34.906463623046875" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
                                                       <HBox alignment="BOTTOM_CENTER">
@@ -450,20 +450,23 @@
                                           </HBox>
                                        </children>
                                        <GridPane.margin>
-                                          <Insets bottom="10.0" />
+                                          <Insets />
                                        </GridPane.margin>
                                     </GridPane>
-                                    <HBox alignment="TOP_CENTER" prefHeight="51.0" prefWidth="376.0" GridPane.rowIndex="2">
+                                    <HBox alignment="CENTER" prefHeight="51.0" prefWidth="376.0" GridPane.rowIndex="2">
                                        <children>
-                                          <Label fx:id="projectLabelMain2111" prefHeight="37.0" prefWidth="314.0" style="-fx-text-fill: #c5c1c1;" text="On time project creation rate: ">
+                                          <Label fx:id="projectLabelMain2111" prefHeight="37.0" prefWidth="309.0" style="-fx-text-fill: a29f9f;" text="On time project creation rate: ">
                                              <font>
-                                                <Font name="Open Sans Bold" size="16.0" />
+                                                <Font name="Open Sans Regular" size="16.0" />
                                              </font>
                                           </Label>
                                           <Label fx:id="projectLabelMain21111" prefHeight="40.0" prefWidth="178.0" text="94%">
                                              <font>
-                                                <Font name="Open Sans Bold" size="24.0" />
+                                                <Font name="Open Sans Bold" size="21.0" />
                                              </font>
+                                             <padding>
+                                                <Insets left="25.0" />
+                                             </padding>
                                           </Label>
                                        </children>
                                        <GridPane.margin>
@@ -478,14 +481,14 @@
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                       </columnConstraints>
                                       <rowConstraints>
-                                        <RowConstraints maxHeight="49.6043701171875" minHeight="10.0" prefHeight="21.859817504882812" vgrow="SOMETIMES" />
-                                        <RowConstraints maxHeight="76.88471984863281" minHeight="10.0" prefHeight="72.64018249511719" vgrow="SOMETIMES" />
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="49.6043701171875" minHeight="10.0" prefHeight="29.8074951171875" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="78.50204467773438" minHeight="10.0" prefHeight="64.1925048828125" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="20.221771240234375" minHeight="10.0" prefHeight="10.497955322265625" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
                                           <HBox alignment="CENTER_LEFT">
                                              <children>
-                                                <Label fx:id="projectLabelMain212" prefHeight="25.0" prefWidth="185.0" text="Wuav clients">
+                                                <Label fx:id="projectLabelMain212" alignment="TOP_LEFT" prefHeight="33.0" prefWidth="185.0" text="Wuav clients">
                                                    <font>
                                                       <Font name="Open Sans Regular" size="15.0" />
                                                    </font>
@@ -548,6 +551,63 @@
                                           <Insets bottom="20.0" left="20.0" top="10.0" />
                                        </padding>
                                     </GridPane>
+                                    <HBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                       <children>
+                                          <GridPane style="-fx-background-color: white; -fx-background-radius: 15;">
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                                                   <children>
+                                                      <MFXProgressSpinner prefHeight="43.0" prefWidth="47.0" progress="0.71" styleClass="mfx-progress-spinner">
+                                                         <color4>
+                                                            <Color red="0.9098039269447327" green="0.2862745225429535" blue="0.062745101749897" />
+                                                         </color4>
+                                                         <color3>
+                                                            <Color red="0.9098039269447327" green="0.2862745225429535" blue="0.062745101749897" />
+                                                         </color3>
+                                                         <color1>
+                                                            <Color red="0.9098039269447327" green="0.2862745225429535" blue="0.062745101749897" />
+                                                         </color1>
+                                                      </MFXProgressSpinner>
+                                                   </children>
+                                                </VBox>
+                                                <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                                                   <children>
+                                                      <Label fx:id="projectLabelMain21112" alignment="TOP_CENTER" prefHeight="28.0" prefWidth="94.0" style="-fx-text-fill: a29f9f;" text="Hours">
+                                                         <font>
+                                                            <Font name="Open Sans Regular" size="16.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label fx:id="projectLabelMain211111" alignment="TOP_CENTER" prefHeight="32.0" prefWidth="94.0" text="82">
+                                                         <font>
+                                                            <Font name="Open Sans Bold" size="21.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </padding>
+                                             <effect>
+                                                <DropShadow height="2.0" radius="0.5" width="2.0">
+                                                   <color>
+                                                      <Color opacity="0.23709368705749512" />
+                                                   </color>
+                                                </DropShadow>
+                                             </effect>
+                                          </GridPane>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="30.0" left="25.0" right="30.0" />
+                                       </padding>
+                                    </HBox>
                                  </children>
                               </GridPane>
                            </children>

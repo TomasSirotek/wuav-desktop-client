@@ -48,8 +48,6 @@ public class UserProfileController  extends RootController implements Initializa
     @FXML
 
     private Label userRole,emailHeader,userName,userCreated;
-    @FXML
-    private Circle avatar;
     private Image tempImage = new Image("diceBar1.png");
 
     private final IUserModel userModel;
@@ -121,8 +119,6 @@ public class UserProfileController  extends RootController implements Initializa
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMMM dd yyyy");
 
         AppUser loggedUser = CurrentUser.getInstance().getLoggedUser();
-
-        avatar.setFill(new ImagePattern(tempImage));
         userName.setText(loggedUser.getName());
 
         userNameField.setText(loggedUser.getName());

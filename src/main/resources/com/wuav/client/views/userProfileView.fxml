@@ -6,6 +6,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -15,7 +16,8 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="projectAnchorPane" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #F2F2F2;" stylesheets="@../css/userProfile.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.UserProfileController">
@@ -25,69 +27,85 @@
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints maxHeight="293.0" minHeight="10.0" prefHeight="103.2770767211914" vgrow="NEVER" />
-            <RowConstraints maxHeight="293.0" minHeight="6.8668212890625" prefHeight="57.37773132324219" vgrow="NEVER" />
-          <RowConstraints maxHeight="454.6864013671875" minHeight="10.0" prefHeight="439.6222686767578" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="293.0" minHeight="0.0" prefHeight="0.0" vgrow="NEVER" />
+            <RowConstraints maxHeight="130.17963409423828" minHeight="10.0" prefHeight="79.53753662109375" vgrow="ALWAYS" />
+            <RowConstraints maxHeight="305.1099090576172" minHeight="6.8668212890625" prefHeight="121.95259094238281" vgrow="NEVER" />
+          <RowConstraints maxHeight="454.6864013671875" minHeight="10.0" prefHeight="399.0474090576172" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <HBox prefHeight="100.0" prefWidth="200.0" styleClass="bg" />
-            <GridPane prefHeight="62.0" prefWidth="800.0" GridPane.rowIndex="1">
+            <GridPane prefHeight="119.0" prefWidth="948.0" style="-fx-background-color: white; -fx-background-radius: 10;" GridPane.rowIndex="2">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="262.0758972167969" minWidth="10.0" prefWidth="206.273193359375" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="383.2090606689453" minWidth="10.0" prefWidth="320.726806640625" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="262.0758972167969" minWidth="10.0" prefWidth="82.6726303100586" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="571.5720367431641" minWidth="10.0" prefWidth="553.3273696899414" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="272.60369873046875" minWidth="10.0" prefWidth="272.60369873046875" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Circle fx:id="avatar" fill="WHITE" radius="39.0" stroke="BLACK" strokeType="INSIDE" />
+                        <ImageView fitHeight="55.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../diceBar1.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </ImageView>
                      </children>
                   </HBox>
-                  <VBox GridPane.columnIndex="1">
+                  <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
                      <children>
-                        <Label fx:id="userName" prefHeight="68.0" prefWidth="312.0" text="MICHAEL JØRGENSEN">
+                        <Label fx:id="userName" prefHeight="33.0" prefWidth="312.0" text="MICHAEL JØRGENSEN">
                            <font>
-                              <Font name="SansSerif Regular" size="24.0" />
+                              <Font name="Open Sans Bold" size="18.0" />
                            </font>
                         </Label>
                         <Label fx:id="emailHeader" prefHeight="20.0" prefWidth="138.0" text="email@gmail.com">
                            <font>
-                              <Font name="SansSerif Regular" size="14.0" />
+                              <Font name="Open Sans Regular" size="14.0" />
                            </font>
                         </Label>
                      </children>
-                     <padding>
-                        <Insets top="10.0" />
-                     </padding>
                   </VBox>
                </children>
+               <GridPane.margin>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </GridPane.margin>
+               <effect>
+                  <DropShadow height="3.0" radius="1.0" width="3.0">
+                     <color>
+                        <Color opacity="0.23999999463558197" />
+                     </color>
+                  </DropShadow>
+               </effect>
             </GridPane>
-            <GridPane prefWidth="800.0" GridPane.rowIndex="2">
+            <GridPane prefWidth="800.0" GridPane.rowIndex="3">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="523.102783203125" minWidth="10.0" prefWidth="523.102783203125" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="392.1214294433594" minWidth="10.0" prefWidth="276.897216796875" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints maxHeight="263.5902099609375" minHeight="10.0" prefHeight="197.60711669921875" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="233.74200439453125" minHeight="10.0" prefHeight="173.39288330078125" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="263.5902099609375" minHeight="10.0" prefHeight="46.37419128417969" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="263.5902099609375" minHeight="10.0" prefHeight="254.10638427734375" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="233.74200439453125" minHeight="10.0" prefHeight="99.89361572265625" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <GridPane>
+                  <GridPane style="-fx-background-color: white; -fx-background-radius: 10;" GridPane.rowIndex="1">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="299.4232482910156" minWidth="10.0" prefWidth="229.80441284179688" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="274.18040466308594" minWidth="10.0" prefWidth="273.1955871582031" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="503.5" minWidth="10.0" prefWidth="503.5" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="274.18040466308594" minWidth="0.0" prefWidth="0.0" />
                     </columnConstraints>
                     <rowConstraints>
-                      <RowConstraints maxHeight="70.85760498046875" minHeight="10.0" prefHeight="57.72480773925781" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="90.44418334960938" minHeight="10.0" prefHeight="62.77519226074219" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="70.908935546875" minHeight="10.0" prefHeight="70.908935546875" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="51.060699462890625" minHeight="10.0" prefHeight="46.091064453125" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="70.85760498046875" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="104.73622131347656" minHeight="10.0" prefHeight="62.92724609375" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="104.73622131347656" minHeight="10.0" prefHeight="54.42724609375" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="70.908935546875" minHeight="10.0" prefHeight="54.472015380859375" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="79.52798461914062" minHeight="10.0" prefHeight="79.52798461914062" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+                        <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
                            <children>
                               <Label prefHeight="17.0" prefWidth="288.0" text="Name " textFill="#252f4091">
                                  <font>
@@ -97,13 +115,13 @@
                                     <Insets left="2.0" />
                                  </padding>
                               </Label>
-                              <MFXTextField fx:id="userNameField" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="31.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="313.0" promptText="Email" text="Michael Jørgensen" />
+                              <MFXTextField fx:id="userNameField" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="31.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="471.0" promptText="Email" text="Michael Jørgensen" />
                            </children>
                            <padding>
                               <Insets right="5.0" />
                            </padding>
                         </VBox>
-                        <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
                            <children>
                               <Label prefHeight="17.0" prefWidth="288.0" text="Email" textFill="#252f4091">
                                  <font>
@@ -113,13 +131,13 @@
                                     <Insets left="2.0" />
                                  </padding>
                               </Label>
-                              <MFXTextField fx:id="userEmail" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="31.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="313.0" promptText="Email" text="email@gmail.com" />
+                              <MFXTextField fx:id="userEmail" floatingTextGap="0.0" graphicTextGap="-20.0" maxHeight="31.0" measureUnitGap="-20.0" minHeight="31.0" prefHeight="31.0" prefWidth="472.0" promptText="Email" text="email@gmail.com" />
                            </children>
                            <padding>
                               <Insets right="5.0" />
                            </padding>
                         </VBox>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
+                        <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="3">
                            <children>
                               <Label prefHeight="17.0" prefWidth="288.0" text="Password" textFill="#252f4091">
                                  <font>
@@ -129,15 +147,15 @@
                                     <Insets left="2.0" />
                                  </padding>
                               </Label>
-                              <MFXPasswordField fx:id="userPsw" alignment="BOTTOM_LEFT" borderGap="0.0" floatingTextGap="-30.0" graphicTextGap="0.0" maxHeight="31.0" measureUnitGap="0.0" minHeight="27.0" prefHeight="31.0" prefWidth="280.0" promptText="Password" text="123456" />
+                              <MFXPasswordField fx:id="userPsw" alignment="BOTTOM_LEFT" borderGap="0.0" floatingTextGap="-30.0" graphicTextGap="0.0" maxHeight="31.0" measureUnitGap="0.0" minHeight="27.0" prefHeight="31.0" prefWidth="472.0" promptText="Password" text="123456" />
                            </children>
                            <padding>
                               <Insets right="5.0" />
                            </padding>
                         </VBox>
-                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="3">
+                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="4">
                            <children>
-                              <MFXButton fx:id="updateAcc" buttonType="RAISED" prefHeight="27.0" prefWidth="213.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Update">
+                              <MFXButton fx:id="updateAcc" buttonType="RAISED" prefHeight="27.0" prefWidth="471.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Update">
                                  <font>
                                     <Font name="SansSerif Bold" size="13.0" />
                                  </font>
@@ -147,71 +165,62 @@
                               </MFXButton>
                            </children>
                         </HBox>
-                        <HBox alignment="BOTTOM_LEFT">
-                           <children>
-                              <Label text="Profile">
-                                 <font>
-                                    <Font name="SansSerif Bold" size="17.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </HBox>
                      </children>
+                     <effect>
+                        <DropShadow height="3.0" radius="1.0" width="3.0">
+                           <color>
+                              <Color opacity="0.2428298145532608" />
+                           </color>
+                        </DropShadow>
+                     </effect>
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
                      <padding>
-                        <Insets left="40.0" />
+                        <Insets left="10.0" />
                      </padding>
                   </GridPane>
-                  <HBox alignment="CENTER" styleClass="details" GridPane.columnIndex="1">
+                  <HBox alignment="CENTER" prefHeight="0.0" prefWidth="383.0" style="-fx-background-color: white; -fx-background-radius: 10;" styleClass="details" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
-                        <GridPane prefHeight="184.0" prefWidth="235.0">
+                        <GridPane prefHeight="235.0" prefWidth="364.0">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="112.54998779296875" minWidth="10.0" prefWidth="74.40008544921875" />
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="168.77490234375" minWidth="10.0" prefWidth="160.59991455078125" />
                           </columnConstraints>
                           <rowConstraints>
-                            <RowConstraints maxHeight="71.726806640625" minHeight="10.0" prefHeight="57.60002136230469" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="103.62054443359375" minHeight="10.0" prefHeight="60.5374755859375" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="131.21078491210938" minHeight="8.12139892578125" prefHeight="47.4625244140625" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="103.93759155273438" minHeight="10.0" prefHeight="35.216064453125" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="103.62054443359375" minHeight="10.0" prefHeight="66.58395385742188" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="136.83026123046875" minHeight="8.12139892578125" prefHeight="40.59515380859375" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="155.11016845703125" minHeight="10.0" prefHeight="28.40484619140625" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
                               <HBox alignment="CENTER_LEFT">
                                  <children>
-                                    <Label text="Details">
+                                    <Label prefHeight="20.0" prefWidth="138.0" text="Role: ">
                                        <font>
-                                          <Font name="SansSerif Bold" size="17.0" />
+                                          <Font name="Open Sans Bold" size="16.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
+                                 <children>
+                                    <Label fx:id="userRole" prefHeight="20.0" prefWidth="133.0" text="Admin">
+                                       <font>
+                                          <Font name="Open Sans Regular" size="16.0" />
                                        </font>
                                     </Label>
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_LEFT" GridPane.rowIndex="1">
                                  <children>
-                                    <Label prefHeight="20.0" prefWidth="138.0" text="Role: ">
+                                    <Label prefHeight="20.0" prefWidth="136.0" text="Created: ">
                                        <font>
-                                          <Font name="SansSerif Regular" size="14.0" />
+                                          <Font name="Open Sans Bold" size="16.0" />
                                        </font>
                                     </Label>
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                 <children>
-                                    <Label fx:id="userRole" prefHeight="20.0" prefWidth="133.0" text="Admin">
-                                       <font>
-                                          <Font name="SansSerif Italic" size="16.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </HBox>
-                              <HBox alignment="TOP_CENTER" GridPane.rowIndex="2">
-                                 <children>
-                                    <Label prefHeight="20.0" prefWidth="136.0" text="Created: ">
-                                       <font>
-                                          <Font name="SansSerif Regular" size="14.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </HBox>
-                              <HBox GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <children>
                                     <Label fx:id="userCreated" prefHeight="20.0" prefWidth="164.0" text="23/03/2023">
                                        <font>
@@ -224,14 +233,70 @@
                         </GridPane>
                      </children>
                      <GridPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="100.0" left="10.0" />
                      </GridPane.margin>
                      <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets left="20.0" />
                      </padding>
+                     <effect>
+                        <DropShadow height="3.0" radius="1.0" width="3.0">
+                           <color>
+                              <Color opacity="0.23999999463558197" />
+                           </color>
+                        </DropShadow>
+                     </effect>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <Label text="Profile">
+                           <font>
+                              <Font name="Open Sans Bold" size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                  </HBox>
+                  <HBox GridPane.columnIndex="1">
+                     <children>
+                        <Label text="Details">
+                           <font>
+                              <Font name="SansSerif Bold" size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <GridPane.margin>
+                        <Insets left="10.0" />
+                     </GridPane.margin>
                   </HBox>
                </children>
             </GridPane>
+            <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white;" GridPane.rowIndex="1">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="106.0" prefWidth="946.0">
+                     <children>
+                        <VBox alignment="CENTER_LEFT" prefHeight="91.0" prefWidth="411.0">
+                           <children>
+                              <Label prefHeight="46.0" prefWidth="248.0" text="User profile">
+                                 <font>
+                                    <Font name="Open Sans Bold" size="32.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="projectLabelMain1" prefHeight="16.0" prefWidth="248.0" text="Manage and update you profile">
+                                 <font>
+                                    <Font name="Open Sans Regular" size="14.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets left="22.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
          </children>
       </GridPane>
       <Pane fx:id="errorPane" prefHeight="41.0" styleClass="error-pane" visible="false">
@@ -265,5 +330,6 @@
             </GridPane>
          </children>
       </Pane>
+      <Line endX="240.99993896484375" endY="-463.5" layoutX="675.0" layoutY="696.0" startX="-654.0" startY="-463.5" stroke="#c4c0c053" />
    </children>
 </AnchorPane>

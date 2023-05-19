@@ -6,10 +6,9 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -58,7 +57,7 @@
                         </Label>
                      </children>
                      <GridPane.margin>
-                        <Insets left="20.0" />
+                        <Insets left="22.0" />
                      </GridPane.margin>
                   </VBox>
                   <HBox fx:id="exportToggleHbox" alignment="CENTER" GridPane.columnIndex="2">
@@ -126,6 +125,30 @@
             </GridPane>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" GridPane.rowIndex="1">
                <children>
+                  <HBox alignment="CENTER" layoutX="17.0" prefHeight="67.0" prefWidth="883.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="67.0" prefWidth="86.0">
+                           <children>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/navItems/menuItems/search.png" />
+                                 </image>
+                                 <HBox.margin>
+                                    <Insets left="2.0" />
+                                 </HBox.margin>
+                              </ImageView>
+                           </children>
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </HBox>
+                        <TextField fx:id="queryField" prefHeight="30.0" prefWidth="854.0" promptText="Search...">
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </TextField>
+                     </children>
+                  </HBox>
                   <MFXProgressSpinner fx:id="tableDataLoad" layoutY="250.0" prefHeight="52.0" prefWidth="429.0" AnchorPane.bottomAnchor="270.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="208.0">
                      <color2>
                         <Color red="0.8500000238418579" green="0.2629333436489105" blue="0.22100000083446503" opacity="0.0" />
@@ -140,43 +163,36 @@
                         <Color red="0.9098039269447327" green="0.2862745225429535" blue="0.062745101749897" />
                      </color1>
                   </MFXProgressSpinner>
-                  <TabPane layoutX="-10.0" layoutY="-1.0" prefHeight="511.0" prefWidth="754.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
-                    <tabs>
-                      <Tab text="All projects">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0">
-                                 <children>
-                                    <TableView fx:id="projectTable" layoutX="28.0" layoutY="-1.0" minHeight="395.0" prefHeight="446.0" prefWidth="869.0" AnchorPane.bottomAnchor="34.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="-1.0">
-                                      <columns>
-                                        <TableColumn fx:id="colSelectAll" prefWidth="55.11915969848633" sortable="false">
-                                             <graphic>
-                                                <CheckBox fx:id="selectAllTableCheck" mnemonicParsing="false" prefWidth="29.0" styleClass="checkBox">
-                                                   <padding>
-                                                      <Insets right="30.0" />
-                                                   </padding></CheckBox>
-                                             </graphic>
-                                          </TableColumn>
-                                        <TableColumn fx:id="colName" prefWidth="126.38082885742188" text="Name" />
-                                          <TableColumn fx:id="colDes" minWidth="40.0" prefWidth="220.0148162841797" text="Description" />
-                                          <TableColumn fx:id="colCustomer" prefWidth="169.88507080078125" text="Customer" />
-                                          <TableColumn fx:id="colType" minWidth="16.0" prefWidth="135.0" text="Type" />
-                                          <TableColumn fx:id="colDate" minWidth="60.0" prefWidth="120.0" text="Date" />
-                                          <TableColumn fx:id="colEdit" minWidth="55.0" prefWidth="72.0" sortable="false" />
-                                      </columns>
-                                    </TableView>
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="10.0" />
-                                 </padding>
-                              </AnchorPane>
-                        </content>
-                      </Tab>
-                    </tabs>
-                     <cursor>
-                        <Cursor fx:constant="DEFAULT" />
-                     </cursor>
-                  </TabPane>
+              <AnchorPane layoutX="17.0" layoutY="64.0" minHeight="0.0" minWidth="0.0" prefHeight="424.0" prefWidth="883.0" style="-fx-background-color: white;">
+                     <children>
+                        <TableView fx:id="projectTable" layoutX="31.0" layoutY="-1.0" minHeight="395.0" prefHeight="415.0" prefWidth="878.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columns>
+                            <TableColumn fx:id="colSelectAll" prefWidth="55.11915969848633" sortable="false">
+                                 <graphic>
+                                    <CheckBox fx:id="selectAllTableCheck" mnemonicParsing="false" prefWidth="29.0" styleClass="checkBox">
+                                       <padding>
+                                          <Insets left="10.0" right="30.0" />
+                                       </padding>
+                                    </CheckBox>
+                                 </graphic>
+                              </TableColumn>
+                            <TableColumn fx:id="colName" prefWidth="126.38082885742188" text="Name" />
+                              <TableColumn fx:id="colDes" minWidth="40.0" prefWidth="220.0148162841797" text="Description" />
+                              <TableColumn fx:id="colCustomer" prefWidth="169.88507080078125" text="Customer" />
+                              <TableColumn fx:id="colType" prefWidth="102.297119140625" text="Type" />
+                              <TableColumn fx:id="colDate" minWidth="66.0" prefWidth="144.0" text="Date" />
+                              <TableColumn fx:id="colEdit" minWidth="60.0" prefWidth="90.0" sortable="false" />
+                          </columns>
+                        </TableView>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" />
+                     </padding>
+                  </AnchorPane>
                </children>
+               <GridPane.margin>
+                  <Insets top="10.0" />
+               </GridPane.margin>
                <padding>
                   <Insets right="10.0" />
                </padding>
@@ -185,7 +201,7 @@
       </GridPane>
       <Pane fx:id="notificationPane" layoutY="-5.0" prefHeight="41.0" prefWidth="909.0" styleClass="error-pane" visible="false">
          <children>
-            <GridPane layoutY="1.0" prefHeight="42.0" prefWidth="1010.0">
+            <GridPane layoutY="1.0" prefHeight="42.0" prefWidth="1039.0">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="233.07225036621094" minWidth="10.0" prefWidth="233.07225036621094" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="298.0235290527344" minWidth="10.0" prefWidth="92.5" />

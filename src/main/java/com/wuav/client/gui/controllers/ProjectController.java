@@ -10,6 +10,7 @@ import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.bll.strategies.interfaces.IUserRoleStrategy;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
+import javafx.geometry.Insets;
 import javafx.stage.Modality;
 import org.jsoup.Jsoup;
 import com.wuav.client.gui.controllers.abstractController.RootController;
@@ -381,6 +382,7 @@ public class ProjectController extends RootController implements Initializable {
             return new SimpleStringProperty(date == null ? "No data" : formattedDate);
         });
 
+
     }
 
     private void setupTableCheckBoxes() {
@@ -397,6 +399,7 @@ public class ProjectController extends RootController implements Initializable {
                         checkBox = new CheckBox();
                         checkBox.getStyleClass().add("checked-box");
                         checkBox.setAlignment(Pos.CENTER);
+                        checkBox.setPadding(new Insets(0, 0, 0, 9));
                         checkBox.selectedProperty().addListener((obs, oldSelected, newSelected) -> {
                             Project project = getTableView().getItems().get(getIndex());
                             if(newSelected)  selectedProjects.add(project);

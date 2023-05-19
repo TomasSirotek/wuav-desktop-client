@@ -13,7 +13,6 @@ import com.wuav.client.gui.controllers.event.RefreshEvent;
 import com.wuav.client.gui.manager.StageManager;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.enums.CustomColor;
-import com.wuav.client.gui.utils.enums.IConType;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -21,10 +20,9 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
@@ -45,7 +43,7 @@ public class BaseController extends RootController implements Initializable {
     @FXML
     private GridPane logoPane;
     @FXML
-    private Label userNameField,userEmailField,menuItemLabel;
+    private Label userNameField,userEmailField,menuItemLabel,wuavLogo;
     @FXML
     private ImageView menuIcon;
     @FXML
@@ -97,18 +95,14 @@ public class BaseController extends RootController implements Initializable {
         TranslateTransition slide = new TranslateTransition();
         slide.setDuration(Duration.seconds(0.4));
         slide.setNode(slider);
-        menuItemLabel.setVisible(false);
 
+        menuItemLabel.setVisible(false);
+        wuavLogo.setVisible(false);
         userDetailsBox.setVisible(false);
-        expandBoxToggle.setAlignment(Pos.CENTER_LEFT);
-      //  logoPane.setVisible(true);
+        expand.setPadding(new Insets(-10, -22, -10, 12));
         slide.setToX(0);
         slide.play();
-
-     //   Image image = new Image(getClass().getClassLoader().getResource(IConType.OPEN.getStyle()).toExternalForm());
         app_content.setStyle(CustomColor.NONE.getStyle());
-      //  menuIcon.setImage(image);
-
         slider.setPrefWidth(SLIDER_CLOSED);
         userNameField.setText("");
         userEmailField.setText("");
@@ -125,16 +119,13 @@ public class BaseController extends RootController implements Initializable {
         slide.setNode(slider);
         userDetailsBox.setVisible(true);
         menuItemLabel.setVisible(true);
-        expandBoxToggle.setAlignment(Pos.CENTER_RIGHT);
-       // logoPane.setVisible(false);
-
-      //  Image image = new Image(getClass().getClassLoader().getResource(IConType.CLOSE.getStyle()).toExternalForm());
-       // menuIcon.setImage(image);
+        wuavLogo.setVisible(true);
+        expand.setPadding(new Insets(-10, -22, -10, -10));
         slide.play();
 
-        slider.setPrefWidth(SLIDER_OPEN); // Replace with your original sidebar width
-        userNameField.setText(CurrentUser.getInstance().getLoggedUser().getName()); // Replace with your original text
-        userEmailField.setText(CurrentUser.getInstance().getLoggedUser().getEmail()); // Replace with your original text
+        slider.setPrefWidth(SLIDER_OPEN);
+        userNameField.setText(CurrentUser.getInstance().getLoggedUser().getName());
+        userEmailField.setText(CurrentUser.getInstance().getLoggedUser().getEmail());
         sideNavBox.getChildren().forEach(node -> {
             if (node instanceof Label) {
                 ((Label) node).setStyle("-fx-text-fill: black;");

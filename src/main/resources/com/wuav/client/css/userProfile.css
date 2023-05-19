@@ -10,4 +10,5 @@
 
 .mfx-text-field, .mfx-password-field{
   -fx-border-color: #c5c1c1 !important;
+  -fx-border-radius: none !important;
 }
