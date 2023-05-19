@@ -1,11 +1,16 @@
 package com.wuav.client.gui.controllers;
 
+import com.wuav.client.be.Project;
+import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.bll.services.interfaces.IAuthService;
+import com.wuav.client.bll.strategies.interfaces.IUserRoleStrategy;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.google.inject.Inject;
+import com.wuav.client.gui.entities.DashboardData;
 import com.wuav.client.gui.manager.StageManager;
+import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AnimationUtil;
 import com.wuav.client.gui.utils.enums.CustomColor;
 import io.github.palexdev.materialfx.controls.*;
@@ -17,6 +22,7 @@ import javafx.scene.layout.Pane;
 import javax.naming.AuthenticationException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,7 +36,6 @@ public class LoginController extends RootController implements Initializable {
     private MFXPasswordField userPswField;
     @FXML
     private MFXTextField userEmailField;
-
     private final IControllerFactory controllerFactory;
 
     private final IAuthService authService;
@@ -68,6 +73,15 @@ public class LoginController extends RootController implements Initializable {
                 // Authenticate the user and check authorization
                 authService.authenticate(userEmailField.getText(), userPswField.getText());
 
+                // Fetch all projects for the user
+                AppUser user = CurrentUser.getInstance().getLoggedUser();
+                IUserRoleStrategy strategy = CurrentUser.getInstance().getUserRoleStrategy();
+                try {
+                    strategy.getProjects(user);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
                 // Update the UI on the JavaFX application thread
                 Platform.runLater(() -> {
                     try {
@@ -85,7 +99,7 @@ public class LoginController extends RootController implements Initializable {
             } catch (AuthenticationException e) {
                 // Update the UI on the JavaFX application thread
                 Platform.runLater(() -> {
-                   handleError();
+                    handleError();
                 });
             }
         });

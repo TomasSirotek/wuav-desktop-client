@@ -25,7 +25,7 @@ public class BlobStorageHelper {
         this.containerClient = containerClient;
     }
 
-    public CustomImage uploadImageToBlobStorage(int projectId, File imageFile) {
+    public CustomImage uploadImageToBlobStorage(File imageFile) throws IOException {
 
         String extension = getFileExtension(imageFile.getName());
         String uniqueName = UUID.randomUUID().toString() + "." + extension;
@@ -33,8 +33,6 @@ public class BlobStorageHelper {
 
         try (InputStream inputStream = new FileInputStream(imageFile)) {
             blobClient.upload(inputStream, imageFile.length(), true);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         var imageId = UniqueIdGenerator.generateUniqueId();
 
@@ -43,13 +41,13 @@ public class BlobStorageHelper {
     }
 
 
-    public Image downloadImageFromBlobStorage(BlobContainerClient containerClient, String blobUrl) {
+    public Image downloadImageFromBlobStorage(BlobContainerClient containerClient, String blobUrl) throws Exception {
         URL url;
         try {
             url = new URL(blobUrl);
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            return null;
+           throw new Exception("Invalid image url",e);
         }
 
         String blobName = url.getPath().substring(url.getPath().lastIndexOf('/') + 1);
@@ -62,7 +60,7 @@ public class BlobStorageHelper {
         return new Image(new ByteArrayInputStream(imageBytes));
     }
 
-    public boolean deleteImageIfExist(String imageUrl){
+    public boolean deleteImageIfExist(String imageUrl) throws Exception{
         try {
             URL url = new URL(imageUrl);
             String blobName = url.getPath().substring(url.getPath().lastIndexOf('/') + 1);
@@ -70,7 +68,7 @@ public class BlobStorageHelper {
             return blobClient.deleteIfExists();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            return false;
+            throw new Exception("Invalid image url");
         }
     }
 
@@ -78,6 +76,4 @@ public class BlobStorageHelper {
         int lastDotIndex = fileName.lastIndexOf(".");
         return (lastDotIndex == -1) ? "" : fileName.substring(lastDotIndex + 1);
     }
-
-
 }

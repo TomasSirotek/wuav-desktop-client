@@ -3,7 +3,6 @@ package com.wuav.client.gui.controllers;
 import com.google.inject.Inject;
 import com.wuav.client.be.Project;
 import com.wuav.client.bll.helpers.ViewType;
-import com.wuav.client.bll.utilities.pdf.IPdfGenerator;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.manager.StageManager;
@@ -42,7 +41,6 @@ public class ExportController extends RootController implements Initializable {
 
     private List<Project> projectsToExport = new ArrayList<Project>();
 
-    private final IPdfGenerator pdfGenerator;
 
     private IProjectModel projectModel;
 
@@ -53,8 +51,7 @@ public class ExportController extends RootController implements Initializable {
     private final StageManager stageManager;
 
     @Inject
-    public ExportController(IPdfGenerator pdfGenerator, IProjectModel projectModel, IControllerFactory controllerFactory, StageManager stageManager) {
-        this.pdfGenerator = pdfGenerator;
+    public ExportController(IProjectModel projectModel, IControllerFactory controllerFactory, StageManager stageManager) {
         this.projectModel = projectModel;
         this.controllerFactory = controllerFactory;
         this.stageManager = stageManager;
@@ -116,40 +113,23 @@ public class ExportController extends RootController implements Initializable {
     }
 
     private void openBuilderView() {
-        String stageTitle = "PDF-Builder";
+        RootController controller = tryToLoadView(ViewType.PDF_BUILDER);
+        Stage stage = new Stage();
+        Scene scene = new Scene(controller.getView());
 
-        RootController rootController = null;
-        try {
-            rootController = stageManager.loadNodesView(
-                    ViewType.PDF_BUILDER,
-                    controllerFactory
-            );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        rootController.getStage().setOnShowing(e -> {
-            getStage().getProperties().put("projectToExport", projectsToExport.get(0));
+        stage.initOwner(getStage());
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setTitle("Build your PDF");
+        stage.setOnCloseRequest(e -> {
+
         });
-        stageManager.showStage(stageTitle, rootController.getView());
-
-
-//        RootController controller = tryToLoadView(ViewType.PDF_BUILDER);
-//        Stage stage = new Stage();
-//        Scene scene = new Scene(controller.getView());
-//
-//        stage.initOwner(getStage());
-//        stage.initModality(Modality.WINDOW_MODAL);
-//        stage.setTitle("Build you PDF");
-//        stage.setOnCloseRequest(e -> {
-//
-//        });
-//        // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
-//        stage.setOnShowing(e -> {
-//            stage.getProperties().put("projectToExport", projectsToExport.get(0));
-//        });
-//        stage.setResizable(false);
-//        stage.setScene(scene);
-//        stage.show();
+        // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
+        stage.setOnShowing(e -> {
+            stage.getProperties().put("projectToExport", projectsToExport.get(0));
+        });
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
 
     }
 

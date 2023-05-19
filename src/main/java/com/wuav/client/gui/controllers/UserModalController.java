@@ -11,6 +11,7 @@ import com.wuav.client.gui.utils.event.CustomEvent;
 import com.wuav.client.gui.utils.validations.FormField;
 import com.wuav.client.gui.utils.enums.UserRoleType;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -32,6 +33,8 @@ public class UserModalController  extends RootController implements Initializabl
     private ChoiceBox roleField;
     @FXML
     private MFXButton createUserBtn;
+    @FXML
+    private MFXProgressSpinner loadSpinner;
 
     private final IUserModel userModel;
     private final EventBus eventBus;
@@ -43,8 +46,6 @@ public class UserModalController  extends RootController implements Initializabl
         this.userModel = userModel;
         this.eventBus = eventBus;
     }
-
-    @FXML
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -64,6 +65,7 @@ public class UserModalController  extends RootController implements Initializabl
     }
 
     private void createNewUser() {
+        loadSpinner.setVisible(true);
         if (validateInput()) {
             executorService.submit(() -> {
                 boolean result = userModel.createUser(
@@ -74,6 +76,7 @@ public class UserModalController  extends RootController implements Initializabl
 
                 Platform.runLater(() -> {
                     if (result) {
+                        loadSpinner.setVisible(false);
                         eventBus.post(new RefreshEvent(EventType.UPDATE_USER_TABLE));
                         eventBus.post(new CustomEvent(EventType.SHOW_NOTIFICATION, true, "User created successfully"));
                         getStage().close();

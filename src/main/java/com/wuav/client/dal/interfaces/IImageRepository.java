@@ -1,17 +1,18 @@
 package com.wuav.client.dal.interfaces;
 
 import com.wuav.client.be.CustomImage;
+import org.apache.ibatis.session.SqlSession;
 
 public interface IImageRepository {
 
-    CustomImage createImage(int id, String imageType, String imageUrl);
+    boolean createImage(SqlSession session,int id, String imageType, String imageUrl) throws Exception;
 
 
-    boolean addImageToProject(int projectId, int id, boolean isMainImage);
+    boolean addImageToProject(SqlSession session,int projectId, int id, boolean isMainImage) throws Exception;
 
-    CustomImage getImageById(int id);
+    CustomImage getImageById(int id) throws Exception;
 
     boolean updateImage(int id, String imageType, String imageUrl);
 
-    boolean deleteImageById(int id);
+    boolean deleteImageById(SqlSession session,int id) throws Exception;
 }

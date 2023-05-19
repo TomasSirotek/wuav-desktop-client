@@ -21,7 +21,9 @@ import com.wuav.client.gui.models.DeviceModel;
 import com.wuav.client.gui.models.IProjectModel;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AlertHelper;
+import com.wuav.client.gui.utils.AnimationUtil;
 import com.wuav.client.gui.utils.CKEditorPane;
+import com.wuav.client.gui.utils.enums.CustomColor;
 import com.wuav.client.gui.utils.event.CustomEvent;
 import com.wuav.client.gui.utils.validations.FormField;
 import com.wuav.client.gui.utils.api.ImageOperationFacade;
@@ -31,12 +33,16 @@ import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableStringValue;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -45,12 +51,21 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 
+import javax.naming.AuthenticationException;
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ModalActionController extends RootController implements Initializable {
 
+    @FXML
+    private Pane notificationPane;
+    @FXML
+    private Label errorLabel;
     @FXML
     private MFXScrollPane deviceForProjectList;
     @FXML
@@ -108,9 +123,9 @@ public class ModalActionController extends RootController implements Initializab
     private Image fileImage = new Image("/image.png");
     private final IControllerFactory controllerFactory;
 
-    private ImageOperationFacade imageOperationFacade;
 
     private final int CURRENT_USER_ID = CurrentUser.getInstance().getLoggedUser().getId();
+    private ImageOperationFacade imageOperationFacade = new ImageOperationFacade(CURRENT_USER_ID);
     private final int BARCODE_WIDTH = 200;
     private final int BARCODE_HEIGHT = 200;
 
@@ -136,9 +151,7 @@ public class ModalActionController extends RootController implements Initializab
         this.deviceModel = deviceModel;
     }
 
-
     public void handleFetchImages() {
-        this.imageOperationFacade = new ImageOperationFacade(CURRENT_USER_ID);
         uploadProgress.setVisible(true);
         uploadTextProgress.setVisible(true);
         imageOperationFacade.startImageFetch(new ImageOperationFacade.ImageFetchCallback() {
@@ -153,33 +166,56 @@ public class ModalActionController extends RootController implements Initializab
                     uploadTextProgress.setVisible(false);
                     imagesPaneFinal.getChildren().clear();
                     imagesPaneFinal.getChildren().add(imagesPaneFinal2);
+                    listOfUploadImages.addAll(imageOperationFacade.getStoredFetchedImages());
+                    listOfUploadImages.forEach(System.out::println);
                 });
             }
         });
     }
 
     private void addImageToSelectedImageVBox(Image image) {
+        // Create the outer HBox
         HBox uploadedImage = new HBox();
         uploadedImage.setSpacing(10);
         uploadedImage.setStyle("-fx-margin-bottom: 20px;-fx-padding:10 0 10 25");
+        uploadedImage.setAlignment(Pos.CENTER_RIGHT);
+
+        // Create the inner HBox for image, label, and expand button
+        HBox innerHBox = new HBox();
+        innerHBox.setAlignment(Pos.CENTER);
+        innerHBox.setSpacing(10);
 
         // Create and configure ImageView
         ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(60);
-        imageView.setFitHeight(60);
-
-        // Add ImageView to the VBox
-        uploadedImage.getChildren().add(imageView);
+        imageView.setFitWidth(120);
+        imageView.setFitHeight(120);
 
         // Create and configure Label
         Label selectedFileName = new Label("image.png");
-        selectedFileName.setStyle("-fx-font-weight: bold; -fx-font-family: 'Arial';");
+        selectedFileName.setStyle("-fx-font-family: 'Arial'; -fx-font-size: 14px");
+        selectedFileName.setMaxWidth(Double.MAX_VALUE);
+        selectedFileName.setAlignment(Pos.CENTER_LEFT);
 
+        // Add left margin to the Label
+        HBox.setMargin(selectedFileName, new Insets(0, 10, 0, 0));
 
-        // Add Label to the VBox
-        uploadedImage.getChildren().add(selectedFileName);
+        // Create Expand Button
+        Button expandButton = new Button("Expand");
+        expandButton.setStyle("-fx-background-color: #eae9e9; -fx-text-fill: #000000; -fx-min-width: 82px; -fx-max-width: 82px;");
+        expandButton.setOnAction(event -> {
+            displayImage(image);
+        });
 
-        // Add VBox to the GridPane
+        // Add ImageView and Label to the inner HBox
+        innerHBox.getChildren().addAll(imageView, selectedFileName);
+
+        // Add right margin to the inner HBox
+        HBox.setMargin(innerHBox, new Insets(0, 100, 0, 0));
+
+        // Add the inner HBox and Expand Button to the outer HBox
+        uploadedImage.getChildren().addAll(innerHBox, expandButton);
+
+        // Add the outer HBox to the GridPane
         imagesPaneFinal2.add(uploadedImage, currentColumn, currentRow);
 
         // Update the row and column index for the next image
@@ -189,6 +225,37 @@ public class ModalActionController extends RootController implements Initializab
             currentRow++;
         }
     }
+
+
+    private void displayImage(Image image) {
+        previewImage(image);
+    }
+
+    private void previewImage(Image image ) {
+        // open new scene with image inside
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle("Preview");
+        stage.initStyle(StageStyle.DECORATED);
+        stage.setResizable(false);
+
+        ImageView imageView = new ImageView(image);
+        imageView.setPreserveRatio(true);
+        imageView.setFitHeight(600);
+        imageView.setFitHeight(500);
+
+        VBox layout = new VBox(10, imageView);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(10));
+
+        Scene scene = new Scene(layout);
+        stage.setScene(scene);
+
+
+        stage.showAndWait();
+
+    }
+
 
 
     @Override
@@ -201,8 +268,6 @@ public class ModalActionController extends RootController implements Initializab
         handleProgressSwitch();
         setupSearchField();
         closeStage();
-        
-
     }
 
 
@@ -236,8 +301,6 @@ public class ModalActionController extends RootController implements Initializab
                 CustomEvent event = new CustomEvent(eventType, device, "");
                 eventBus.post(event);
             }
-
-
 
             stage.setResizable(false);
             stage.setScene(scene);
@@ -457,9 +520,9 @@ public class ModalActionController extends RootController implements Initializab
 
     private void closeStage() {
         if(this.root != null){
-            imageOperationFacade.removeImagesFromServer();
             Stage stage = getStage();
             if (stage != null) {
+                imageOperationFacade.removeImagesFromServer();
                 imageOperationFacade.stopImageFetch();
                 // Trigger the close request
                 stage.getOnCloseRequest().handle(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
@@ -503,6 +566,10 @@ public class ModalActionController extends RootController implements Initializab
         }
     }
 
+    private void displayError(String message){
+        errorLabel.setText(message);
+        AnimationUtil.animateInOut(notificationPane,4, CustomColor.WARNING);
+    }
 
     @FunctionalInterface
     private interface ValidationFunction {
@@ -512,7 +579,7 @@ public class ModalActionController extends RootController implements Initializab
     private boolean validateFirstTab() {
         boolean isValid = true;
         if (projectNameField.getText().isEmpty()) {
-            AlertHelper.showDefaultAlert("Project name is required", Alert.AlertType.WARNING);
+            displayError("Project name is required");
             isValid = false;
         }
         return isValid;
@@ -523,7 +590,7 @@ public class ModalActionController extends RootController implements Initializab
         // Implement validation logic for the second tab here
         boolean isValid = true;
         if(editorContent.get().isEmpty()|| selectedImageFile == null){
-            AlertHelper.showDefaultAlert("Description and Image is required", Alert.AlertType.WARNING);
+            displayError("Please select an image");
             isValid = false;
         }
 
@@ -543,10 +610,10 @@ public class ModalActionController extends RootController implements Initializab
 
         for (FormField field : fieldsToValidate) {
             if (field.getText().isEmpty()) {
-                AlertHelper.showDefaultAlert(field.getErrorMessage(), Alert.AlertType.WARNING);
+                displayError(field.getErrorMessage());
                 isValid = false;
             } else if (field.getValidationFunction() != null && !field.getValidationFunction().validate(field.getText())) {
-                AlertHelper.showDefaultAlert(field.getErrorValidationMessage(), Alert.AlertType.WARNING);
+                displayError(field.getErrorMessage());
                 isValid = false;
             }
         }
@@ -556,7 +623,12 @@ public class ModalActionController extends RootController implements Initializab
 
     private boolean validateFourthTab() {
         // Implement validation logic for the fourth tab here
-        return true;
+        boolean isValid = true;
+        if(selectedDevices.isEmpty()){
+            displayError("Please select at least one device");
+            isValid = false;
+        }
+        return isValid;
     }
 
 
@@ -671,6 +743,8 @@ public class ModalActionController extends RootController implements Initializab
     }
 
 
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+
     private void createNewProject() {
         voidTriggerProjectLoadingStatus(); // start loading in the project window
         // generating all the ids
@@ -723,32 +797,67 @@ public class ModalActionController extends RootController implements Initializab
 
         int currentUserId = CurrentUser.getInstance().getLoggedUser().getId();
 
-        Task<Boolean> loadDataTask = new Task<>() {
-            @Override
-            protected Boolean call() throws IOException {
-                return projectModel.createProject(currentUserId, projectToCreate);
-            }
-        };
 
-        loadDataTask.setOnSucceeded(event -> {
-            boolean result = loadDataTask.getValue();
+        executorService.submit(() -> {
+            try {
+                boolean result = projectModel.createProject(currentUserId, projectToCreate);
 
-            if (result) {
-
-                Project newProject = projectModel.getProjectById(projectId);
-
-                // Update the cache with the new project
-                projectModel.updateCacheForUser(currentUserId, newProject);
-
-                AlertHelper.showDefaultAlert("Project created successfully", Alert.AlertType.INFORMATION);
-                eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
-                runInParallel(ViewType.PROJECTS);
-            } else {
-                AlertHelper.showDefaultAlert("Error creating project", Alert.AlertType.ERROR);
+                // Update the UI on the JavaFX application thread
+                Platform.runLater(() -> {
+                    if (result) {
+                        eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
+                        EventType eventType = EventType.SHOW_NOTIFICATION;
+                        CustomEvent notificationEvent = new CustomEvent(eventType, true, "Project created successfully");
+                        eventBus.post(notificationEvent);
+                        runInParallel(ViewType.PROJECTS);
+                    } else {
+                        displayError("Project creation failed");
+                    }
+                });
+            } catch (Exception e) {
+                // Handle exception here
+                displayError(e.getMessage());
+            } finally {
+                executorService.shutdown(); // Shutdown the executor service
             }
         });
+//        Task<Boolean> loadDataTask = new Task<>() {
+//            @Override
+//            protected Boolean call() throws IOException {
+//                return projectModel.createProject(currentUserId, projectToCreate);
+//            }
+//        };
+//
+//        loadDataTask.setOnSucceeded(event -> {
+//            boolean result = loadDataTask.getValue();
+//
+//            if (result) {
+//
+//                Project newProject = projectModel.getProjectById(projectId);
+//
+//                // Update the cache with the new project
+//                projectModel.updateCacheForUser(currentUserId, newProject);
+//
+//                eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
+//                EventType eventType = EventType.SHOW_NOTIFICATION;
+//                CustomEvent notificationEvent = new CustomEvent(eventType, true, "Project created successfully");
+//                eventBus.post(notificationEvent);
+//                runInParallel(ViewType.PROJECTS);
+//            } else {
+//                AlertHelper.showDefaultAlert("Error creating project", Alert.AlertType.ERROR);
+//            }
+//        });
+//
+//        new Thread(loadDataTask).start();
+    }
 
-        new Thread(loadDataTask).start();
+    private Project tryToGetProjectById(int projectId) {
+        try {
+           return  projectModel.getProjectById(projectId);
+        } catch (Exception e) {
+            displayError(e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
     private void runInParallel(ViewType type) {

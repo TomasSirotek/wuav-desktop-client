@@ -30,7 +30,7 @@ import static com.google.api.services.gmail.GmailScopes.GMAIL_SEND;
 public class EmailSender implements IEmailSender {
 
 
-    private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT,GsonFactory gsonFactory)
+    private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT, GsonFactory gsonFactory)
             throws IOException {
 
         String clientSecretFilePath = System.getenv("CONFIG_CLIENT_SECRET");
@@ -49,25 +49,15 @@ public class EmailSender implements IEmailSender {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-    public static void main(String[] args) {
-        try {
-            EmailSender emailSender = new EmailSender();
-            emailSender.sendEmail("toma@gail.com", "Test", "Test body", false, null);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
 
     @Override
     public boolean sendEmail(String toEmail, String subject, String body, boolean attachPdf, File pdfFile) throws GeneralSecurityException, IOException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 
         GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
-        Gmail service = new Gmail.Builder(HTTP_TRANSPORT, jsonFactory, getCredentials(HTTP_TRANSPORT,jsonFactory))
+        Gmail service = new Gmail.Builder(HTTP_TRANSPORT, jsonFactory, getCredentials(HTTP_TRANSPORT, jsonFactory))
                 .setApplicationName("Test mailer")
                 .build();
-
-
 
         try {
             // Build the email with the provided details.
@@ -129,7 +119,6 @@ public class EmailSender implements IEmailSender {
         message.setRaw(encodedEmail);
         return message;
     }
-
 
 
 }

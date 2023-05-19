@@ -5,15 +5,10 @@ import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.wuav.client.bll.utilities.UniqueIdGenerator;
 import com.wuav.client.gui.dto.ImageDTO;
-import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
 import java.io.*;
@@ -33,6 +28,8 @@ public class ImageOperationFacade implements IImageOperationService<ImageDTO> {
     private Timeline imageFetchTimeline;
 
     private final String BASE_URL = "http://localhost:5000/api/users/";
+
+    private List<ImageDTO> storedFetchedImages = List.of();
 
 
     @Inject
@@ -57,6 +54,7 @@ public class ImageOperationFacade implements IImageOperationService<ImageDTO> {
                                 Image image = new Image(imageDTO.getFile().toURI().toString());
                                 fetchedImages.add(image);
                             }
+                            storedFetchedImages = images;
                             callback.onImagesFetched(fetchedImages);
                             fetched.set(true);
                         }
@@ -69,6 +67,10 @@ public class ImageOperationFacade implements IImageOperationService<ImageDTO> {
         imageFetchTimeline.play();
     }
 
+    @Override
+    public List<ImageDTO> getStoredFetchedImages() {
+        return storedFetchedImages;
+    }
     @Override
     public void stopImageFetch() {
         if (imageFetchTimeline != null) {

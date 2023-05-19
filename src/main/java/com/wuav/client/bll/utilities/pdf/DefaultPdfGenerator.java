@@ -14,6 +14,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.jsoup.Jsoup;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -33,7 +34,6 @@ public class DefaultPdfGenerator {
     private String fileName;
     private boolean includeDescription;
     private boolean includeTechnicians;
-    private boolean includeDevices;
     private boolean includeImages;
 
     private static final String RESOURCE_FOLDER = "src/main/resources/com/wuav/client/images/wuav-logo.png";
@@ -45,17 +45,16 @@ public class DefaultPdfGenerator {
         this.fileName = builder.fileName;
         this.includeDescription = builder.includeDescription;
         this.includeTechnicians = builder.includeTechnicians;
-        this.includeDevices = builder.includeDevices;
         this.includeImages = builder.includeImages;
     }
 
     public ByteArrayOutputStream generatePdf() {
-        // Implement the PDF generation logic here
-        // ...
         var outputStream = new ByteArrayOutputStream();
         try (PDDocument document = new PDDocument()) {
+            int totalPages = 0;
             PDPage page = new PDPage(PDRectangle.A4);
             document.addPage(page);
+            totalPages +=1; // add page
 
             PDPageContentStream contentStream = new PDPageContentStream(document, page);
 
@@ -75,7 +74,6 @@ public class DefaultPdfGenerator {
 
             // Customer Info List area (right under the full-width image)
             PDRectangle infoRect = new PDRectangle(50, PDRectangle.A4.getHeight() - 800, PDRectangle.A4.getWidth() - 100, 400);
-
 
 
             /// END MAIN RECTANGLES FOR THE PDF ///
@@ -144,68 +142,71 @@ public class DefaultPdfGenerator {
             contentStream.endText();
 
 
-
-            if(includeTechnicians){
+            if (includeTechnicians) {
                 // technician info
                 PDRectangle techInfoRect = new PDRectangle(PDRectangle.A4.getWidth() / 2, PDRectangle.A4.getHeight() - 800, PDRectangle.A4.getWidth() / 2 - 50, 400);
 
                 // Technician Info List
-            String technicianInfo = "Technician Info";
-            contentStream.beginText();
-            contentStream.setFont(fontHeader, 14);
-            contentStream.newLineAtOffset(techInfoRect.getLowerLeftX(), techInfoRect.getUpperRightY() + 20);
-            contentStream.showText(technicianInfo);
-            contentStream.newLineAtOffset(0, -20);
-            contentStream.endText();
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMMM dd yyyy");
-            String formattedDate = dateFormat.format(project.getCreatedAt());
-
-            List<String> technicianInfoList = List.of("Technician Name: " + appUser.getName(),
-                    "Technician Email: " +  appUser.getEmail(),
-                    "Installation Date : " + formattedDate
-                   ) ;
-
-            contentStream.beginText();
-            contentStream.newLineAtOffset(0, -5);
-            contentStream.setFont(font, 12);
-            contentStream.newLineAtOffset(techInfoRect.getLowerLeftX(), techInfoRect.getUpperRightY());
-
-
-            for (String line : technicianInfoList) {
-                contentStream.showText(line);
+                String technicianInfo = "Technician Info";
+                contentStream.beginText();
+                contentStream.setFont(fontHeader, 14);
+                contentStream.newLineAtOffset(techInfoRect.getLowerLeftX(), techInfoRect.getUpperRightY() + 20);
+                contentStream.showText(technicianInfo);
                 contentStream.newLineAtOffset(0, -20);
-            }
-            contentStream.endText();
+                contentStream.endText();
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMMM dd yyyy");
+                String formattedDate = dateFormat.format(project.getCreatedAt());
+
+                List<String> technicianInfoList = List.of("Technician Name: " + appUser.getName(),
+                        "Technician Email: " + appUser.getEmail(),
+                        "Installation Date : " + formattedDate
+                );
+
+                contentStream.beginText();
+                contentStream.newLineAtOffset(0, -5);
+                contentStream.setFont(font, 12);
+                contentStream.newLineAtOffset(techInfoRect.getLowerLeftX(), techInfoRect.getUpperRightY());
+
+
+                for (String line : technicianInfoList) {
+                    contentStream.showText(line);
+                    contentStream.newLineAtOffset(0, -20);
+                }
+                contentStream.endText();
             }
 
 
-            if(includeDescription){
+            if (includeDescription) {
                 // Description Text area
                 PDRectangle descriptionRect = new PDRectangle(50, PDRectangle.A4.getHeight() - 800, PDRectangle.A4.getWidth(), 200);
                 // Description Text
-            contentStream.beginText();
-            contentStream.setFont(fontHeader, 14);
-          //  contentStream.setNonStrokingColor(blackColor);
-            contentStream.newLineAtOffset(descriptionRect.getLowerLeftX(), descriptionRect.getLowerLeftY() + 300);
-            contentStream.showText("Description");
-            contentStream.endText();
+                contentStream.beginText();
+                contentStream.setFont(fontHeader, 14);
+                //  contentStream.setNonStrokingColor(blackColor);
+                contentStream.newLineAtOffset(descriptionRect.getLowerLeftX(), descriptionRect.getLowerLeftY() + 300);
+                contentStream.showText("Description");
+                contentStream.endText();
 
-            // Lorem Ipsum Text
-           // String loremIpsum = DESCR_TEST;
+                // Lorem Ipsum Text
+                // String loremIpsum = DESCR_TEST;
 
-            contentStream.beginText();
-            contentStream.setFont(font, 12);
-         //   contentStream.setNonStrokingColor(blackColor);
-            contentStream.newLineAtOffset(descriptionRect.getLowerLeftX(), descriptionRect.getLowerLeftY() + 250);
+                contentStream.beginText();
+                contentStream.setFont(font, 12);
+                //   contentStream.setNonStrokingColor(blackColor);
+                contentStream.newLineAtOffset(descriptionRect.getLowerLeftX(), descriptionRect.getLowerLeftY() + 250);
 
-            // Break lorem ipsum text into lines and show them
-            List<String> loremLines = breakTextIntoLines(project.getDescription(), 500, font, 12);
-            for (String line : loremLines) {
-                contentStream.showText(line);
-                contentStream.newLineAtOffset(0, -20);
-            }
-            contentStream.endText();
+                // clear html tags from description
+                String htmlDescription = project.getDescription();
+                String plainDescription = Jsoup.parse(htmlDescription).text();
+
+                // Break lorem ipsum text into lines and show them
+                List<String> loremLines = breakTextIntoLines(plainDescription, 500, font, 12);
+                for (String line : loremLines) {
+                    contentStream.showText(line);
+                    contentStream.newLineAtOffset(0, -20);
+                }
+                contentStream.endText();
             }
 
 
@@ -213,14 +214,42 @@ public class DefaultPdfGenerator {
                 // Add a new page for the images
                 PDPage imagePage = new PDPage();
                 document.addPage(imagePage);
+                totalPages += 1; // Add image page
+
                 PDPageContentStream imageContentStream = new PDPageContentStream(document, imagePage);
 
                 // Draw the images
-                addImages(imageContentStream,document, project.getProjectImages());
+                addImages(imageContentStream, document, project.getProjectImages());
+
+                String imagePagePaginationText = "Page " + 2 + " of " + totalPages;
+
+                // Calculate the X coordinate for the right corner
+                float textWidth = PDType1Font.HELVETICA.getStringWidth(imagePagePaginationText) / 1000f * 10; // Convert to PDF units
+                float pageWidth = imagePage.getMediaBox().getWidth();
+                float xCoordinate = pageWidth - textWidth - 10; // 10 is the offset from the right edge
+
+                imageContentStream.beginText();
+                imageContentStream.setFont(PDType1Font.HELVETICA, 10); // Set the font and size
+                imageContentStream.newLineAtOffset(xCoordinate, 10); // Set the position
+                imageContentStream.showText(imagePagePaginationText); // Show the pagination text
+                imageContentStream.endText();
 
                 imageContentStream.close();
             }
 
+            // Perform your content drawing operations on the page
+            String paginationText = "Page " + 1 + " of " + totalPages;
+
+            // Calculate the X coordinate for the right corner
+            float textWidth = PDType1Font.HELVETICA.getStringWidth(paginationText) / 1000f * 10; // Convert to PDF units
+            float pageWidth = page.getMediaBox().getWidth();
+            float xCoordinate = pageWidth - textWidth - 10; // 10 is the offset from the right edge
+
+            contentStream.beginText();
+            contentStream.setFont(PDType1Font.HELVETICA, 10); // Set the font and size
+            contentStream.newLineAtOffset(xCoordinate, 10); // Set the position
+            contentStream.showText(paginationText); // Show the pagination text
+            contentStream.endText();
 
             contentStream.close(); // DONT REMOVE !
 
@@ -238,7 +267,7 @@ public class DefaultPdfGenerator {
         }
         return outputStream;
 
-        }
+    }
 
     private File retrieveInstallationPlanAsFile(List<CustomImage> projectImagesList) throws IOException {
         CustomImage mainImage = projectImagesList.stream()
@@ -340,7 +369,6 @@ public class DefaultPdfGenerator {
         private String fileName;
         private boolean includeDescription;
         private boolean includeTechnicians;
-        private boolean includeDevices;
         private boolean includeImages;
 
         public Builder(AppUser appUser, Project project, String fileName) {
@@ -356,11 +384,6 @@ public class DefaultPdfGenerator {
 
         public Builder includeTechnicians(boolean includeTechnicians) {
             this.includeTechnicians = includeTechnicians;
-            return this;
-        }
-
-        public Builder includeDevices(boolean includeDevices) {
-            this.includeDevices = includeDevices;
             return this;
         }
 

@@ -7,6 +7,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -15,10 +16,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="userAnchorPane" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #F2F2F2;" stylesheets="@../css/projects.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.AllUsersController">
+<AnchorPane fx:id="userAnchorPane" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #F2F2F2;" stylesheets="@../css/projects.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.UsersController">
    <children>
       <GridPane layoutX="61.0" layoutY="65.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -29,7 +31,7 @@
           <RowConstraints maxHeight="519.0473556518555" minHeight="10.0" prefHeight="509.3834991455078" vgrow="ALWAYS" />
         </rowConstraints>
          <children>
-            <GridPane>
+            <GridPane style="-fx-background-color: white;">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="620.1368713378906" minWidth="10.0" prefWidth="291.0" />
                   <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="318.9468078613281" minWidth="10.0" prefWidth="180.0" />
@@ -40,11 +42,27 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
-                  <Label prefHeight="46.0" prefWidth="248.0" text="Users">
-                     <font>
-                        <Font name="SansSerif Bold" size="32.0" />
-                     </font>
-                  </Label>
+                  <HBox alignment="CENTER_LEFT">
+                     <children>
+                        <VBox alignment="CENTER_LEFT" prefHeight="91.0" prefWidth="411.0">
+                           <children>
+                              <Label prefHeight="46.0" prefWidth="248.0" text="Users">
+                                 <font>
+                                    <Font name="Open Sans Bold" size="32.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="projectLabelMain1" prefHeight="16.0" prefWidth="248.0" text="Overview of users">
+                                 <font>
+                                    <Font name="Open Sans Regular" size="14.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                     <GridPane.margin>
+                        <Insets left="22.0" />
+                     </GridPane.margin>
+                  </HBox>
                   <HBox alignment="CENTER_RIGHT" prefWidth="128.0" GridPane.columnIndex="3">
                      <children>
                         <MFXButton fx:id="createNewUser" prefHeight="29.0" prefWidth="154.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Add user" textFill="#141111">
@@ -53,7 +71,7 @@
                                  <children>
                                     <ImageView cache="true" fitHeight="19.0" fitWidth="19.0">
                                        <image>
-                                          <Image url="@../images/navItems/plusSvg.png" />
+                                          <Image url="@../../../../addIcon.png" />
                                        </image>
                                     </ImageView>
                                  </children>
@@ -71,7 +89,7 @@
                         </MFXButton>
                      </children>
                      <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="10.0" left="10.0" right="20.0" top="10.0" />
                      </padding>
                   </HBox>
                   <HBox fx:id="projectCreationStatus" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" visible="false" GridPane.columnIndex="1">
@@ -98,27 +116,57 @@
                      </children>
                   </HBox>
                </children>
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
             </GridPane>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" GridPane.rowIndex="1">
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="493.0" prefWidth="871.0" GridPane.rowIndex="1">
                <children>
-                  <TableView fx:id="userTable" minHeight="395.0" prefHeight="502.0" prefWidth="772.0" AnchorPane.bottomAnchor="-6.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="-13.0" AnchorPane.topAnchor="14.0">
+                  <HBox alignment="CENTER" prefHeight="67.0" prefWidth="889.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="67.0" prefWidth="86.0">
+                           <children>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/navItems/menuItems/search.png" />
+                                 </image>
+                                 <HBox.margin>
+                                    <Insets left="2.0" />
+                                 </HBox.margin>
+                              </ImageView>
+                           </children>
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </HBox>
+                        <TextField fx:id="queryField" prefHeight="30.0" prefWidth="854.0" promptText="Search...">
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </TextField>
+                     </children>
+                  </HBox>
+                  <TableView fx:id="userTable" layoutY="65.0" minHeight="395.0" prefHeight="417.0" prefWidth="885.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="65.0">
                     <columns>
                       <TableColumn fx:id="colName" minWidth="40.0" prefWidth="184.61158561706543" text="Name" />
-                        <TableColumn fx:id="colEmail" maxWidth="250.0" minWidth="250.0" prefWidth="250.0" text="Email" />
-                        <TableColumn fx:id="colRole" maxWidth="240.0" minWidth="240.0" prefWidth="240.0" text="Role" />
-                        <TableColumn fx:id="colDate" minWidth="40.0" prefWidth="146.79312133789062" text="Created at" />
+                        <TableColumn fx:id="colEmail" maxWidth="250.0" minWidth="249.99998474121094" prefWidth="249.99998474121094" text="Email" />
+                        <TableColumn fx:id="colRole" maxWidth="240.00009155273438" minWidth="240.0" prefWidth="240.00009155273438" text="Role" />
+                        <TableColumn fx:id="colDate" minWidth="44.0" prefWidth="150.0" text="Created at" />
                         <TableColumn fx:id="colEdit" minWidth="57.0" prefWidth="72.8956298828125" sortable="false" />
                     </columns>
+                     <padding>
+                        <Insets top="20.0" />
+                     </padding>
                   </TableView>
                </children>
                <padding>
                   <Insets right="10.0" />
                </padding>
+               <GridPane.margin>
+                  <Insets left="20.0" right="20.0" top="10.0" />
+               </GridPane.margin>
             </AnchorPane>
          </children>
-         <padding>
-            <Insets left="20.0" right="20.0" />
-         </padding>
       </GridPane>
       <Pane fx:id="notificationPane" layoutX="2.0" prefWidth="909.0" styleClass="error-pane" visible="false">
          <children>

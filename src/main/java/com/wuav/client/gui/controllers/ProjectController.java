@@ -4,8 +4,14 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.wuav.client.be.*;
+import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
+import com.wuav.client.bll.strategies.interfaces.IUserRoleStrategy;
+import javafx.application.Platform;
+import javafx.concurrent.Service;
+import javafx.geometry.Insets;
+import javafx.stage.Modality;
 import org.jsoup.Jsoup;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
@@ -44,6 +50,7 @@ import java.io.*;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
@@ -102,32 +109,22 @@ public class ProjectController extends RootController implements Initializable {
      * This method is used to set up actions for table preview
      */
     private void setupActions() {
+        IUserRoleStrategy strategy = CurrentUser.getInstance().getUserRoleStrategy();
         createNewProject.setOnAction(e -> openActionWindows("Create new project",ViewType.ACTIONS,null));
         exportSelected.setOnAction(e -> exportSelected());
         selectAllTableCheck.selectedProperty().addListener((observable, oldValue, newValue) -> {
             updateCheckBoxes(newValue);
         });
+        projectLabelMain.setText(strategy.getProjectButtonText());
     }
 
     /**
-     * This method is used swap the buttons when the user is not a technician in order
+     * This method is used swap the buttons when the user is not a technician in order with beautiful strategy pattern
      * to disallow the user to create projects
      */
     private void swapButtonsInNonTechnicianRole() {
-        if(!CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals(UserRoleType.TECHNICIAN.toString())){
-            AtomicReference<MFXButton> storedButton = new AtomicReference<>();
-
-            exportToggleHbox.getChildren().forEach(node -> {
-                if(node instanceof MFXButton){
-                    MFXButton button = (MFXButton) node;
-                    storedButton.set(button);
-                }
-            });
-
-            // clean children in the action hbox and replace with the stored button
-            actionToggleHbox.getChildren().clear();
-            actionToggleHbox.getChildren().add(storedButton.get());
-        }
+        IUserRoleStrategy strategy = CurrentUser.getInstance().getUserRoleStrategy();
+        strategy.swapButtons(exportToggleHbox,actionToggleHbox);
     }
 
 
@@ -151,7 +148,6 @@ public class ProjectController extends RootController implements Initializable {
                     }
                 });
     }
-
 
     /**
      * This method is open projects for export
@@ -200,105 +196,60 @@ public class ProjectController extends RootController implements Initializable {
         stageManager.showStage(rootController.getView(), title,scene,projectList);
     }
 
-
-
-//    /**
-//     * private method for showing new stages whenever its need
-//     *
-//     * @param parent root that will be set
-//     * @param title  title for new stage
-//     */
-//    private void show(Parent parent, String title, Scene previousScene,List<Project> projectList) {
-//        Stage stage = new Stage();
-//        Scene scene = new Scene(parent);
-//
-//        stage.initOwner(getStage());
-//        stage.initModality(Modality.WINDOW_MODAL);
-//        stage.setTitle(title);
-//        stage.setOnCloseRequest(e -> {
-//            Pane layoutPane = (Pane) previousScene.lookup("#layoutPane");
-//            if (layoutPane != null) {
-//                layoutPane.setVisible(true);
-//                layoutPane.setDisable(true);
-//                layoutPane.setStyle("-fx-background-color: transparent;");
-//            }
-//        });
-//        // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
-//        stage.setOnShowing(e -> {
-//            Stage previousStage = (Stage) previousScene.getWindow();
-//            stage.getProperties().put("previousStage", previousStage);
-//        });
-//
-//        if(projectList != null){
-//            stage.getProperties().put("projectsToExport",projectList); // pass optional model here
-//        }
-//
-//        stage.setResizable(false);
-//        stage.setScene(scene);
-//        stage.show();
-//    }
-
-
-//    private RootController loadNodesView(ViewType viewType) throws IOException {
-//        return controllerFactory.loadFxmlFile(viewType);
-//    }
-//
-//
-//
-//    private RootController tryToLoadView(ViewType viewType) {
-//        try {
-//            return loadNodesView(viewType);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-
-
+    /**
+     * This method is used to fill the table with projects
+     */
     private void setTableWithProjects() {
         tableDataLoad.setVisible(true);
 
-        Task<List<Project>> loadProjectsTask = new Task<>() {
+        Service<List<Project>> service = new Service<>() {
             @Override
-            protected List<Project> call() {
-                if (CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals("TECHNICIAN")) {
-                    return projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
-                } else {
-                    projectLabelMain.setText("Projects");
-                    return projectModel.getAllProjects();
-                }
+            protected Task<List<Project>> createTask() {
+                return new Task<>() {
+                    @Override
+                    protected List<Project> call() throws Exception {
+                        AppUser user = CurrentUser.getInstance().getLoggedUser();
+                        IUserRoleStrategy strategy = CurrentUser.getInstance().getUserRoleStrategy();
+                        return strategy.getProjects(user);
+                    }
+                };
             }
         };
 
-        // Update the UI when the task is completed
-        loadProjectsTask.setOnSucceeded(event -> {
-            List<Project> updatedProjects = loadProjectsTask.getValue();
-
+        // This will be run in the UI thread after the task completes
+        service.setOnSucceeded(workerStateEvent -> {
+            List<Project> updatedProjects = service.getValue();
             // Update projects list in CurrentUser singleton
             CurrentUser.getInstance().getLoggedUser().setProjects(updatedProjects);
-
             // Set the updated projects list to the table
             ObservableList<Project> projects = FXCollections.observableList(updatedProjects);
 
-            tableDataLoad.setVisible(false);
-            projectTable.setItems(projects);
+            // Wrap the UI update calls with Platform.runLater
+            Platform.runLater(() -> {
+                tableDataLoad.setVisible(false);
+                projectTable.setItems(projects);
+            });
         });
 
-        // Handle any errors during the task execution
-        loadProjectsTask.setOnFailed(event -> {
-            AlertHelper.showDefaultAlert(event.getSource().getException().toString(), Alert.AlertType.ERROR);
+        service.setOnFailed(workerStateEvent -> {
+            Throwable cause = service.getException();
+            AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
+            errorLabel.setText(cause != null ? cause.getMessage() : "An error occurred.");
         });
 
-        // Run the task in a new thread
-        new Thread(loadProjectsTask).start();
+        service.start();
     }
 
 
     private void refreshTable(){
-        List<Project> updatedProjects = projectModel.getProjectsByUserId(CurrentUser.getInstance().getLoggedUser().getId());
-        // Update the cache in the ProjectModel
-        projectModel.updateProjectsCache(CurrentUser.getInstance().getLoggedUser().getId(), updatedProjects);
-
+        IUserRoleStrategy strategy = CurrentUser.getInstance().getUserRoleStrategy();
+        List<Project> updatedProjects  = null;
+        try {
+            updatedProjects = strategy.getProjects(CurrentUser.getInstance().getLoggedUser());
+        } catch (Exception e) {
+            AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
+            errorLabel.setText(e != null ? e.getMessage() : e.getMessage());
+        }
         // Refresh the table with the updated projects list
         ObservableList<Project> projects = FXCollections.observableList(updatedProjects);
         projectTable.setItems(projects);
@@ -313,8 +264,9 @@ public class ProjectController extends RootController implements Initializable {
             projectCreationStatus.setVisible(true);
             // Retrieve the updated projects list from your data source
             refreshTable();
+            errorLabel.setText("Projects created successfully");
+            AnimationUtil.animateInOut(notificationPane,4, CustomColor.SUCCESS);
             projectCreationStatus.setVisible(false);
-
         }
     }
 
@@ -325,7 +277,6 @@ public class ProjectController extends RootController implements Initializable {
         setupTableOptions();
         // set projects list to the table
         setTableWithProjects();
-
     }
 
     private void setupTableOptions() {
@@ -370,10 +321,13 @@ public class ProjectController extends RootController implements Initializable {
                                         menu = new ContextMenu(editItem, emailItem);
                                     }
                                     menu.getStyleClass().add("menuTable");
+                                    deleteItem.setStyle("-fx-text-fill: black;");
+                                    editItem.setStyle("-fx-text-fill: black;");
+                                    emailItem.setStyle("-fx-text-fill: black;");
 
                                     editItem.setOnAction(event -> {
                                         // edit here
-                                        // runInParallel(ViewType.PROJECT_ACTIONS,getTableRow().getItem());
+                                        runInParallel(ViewType.PROJECT_ACTIONS,getTableRow().getItem());
                                         event.consume();
                                     });
                                     emailItem.setOnAction(event -> {
@@ -428,6 +382,7 @@ public class ProjectController extends RootController implements Initializable {
             return new SimpleStringProperty(date == null ? "No data" : formattedDate);
         });
 
+
     }
 
     private void setupTableCheckBoxes() {
@@ -444,6 +399,7 @@ public class ProjectController extends RootController implements Initializable {
                         checkBox = new CheckBox();
                         checkBox.getStyleClass().add("checked-box");
                         checkBox.setAlignment(Pos.CENTER);
+                        checkBox.setPadding(new Insets(0, 0, 0, 9));
                         checkBox.selectedProperty().addListener((obs, oldSelected, newSelected) -> {
                             Project project = getTableView().getItems().get(getIndex());
                             if(newSelected)  selectedProjects.add(project);
@@ -464,23 +420,36 @@ public class ProjectController extends RootController implements Initializable {
      * open pdf builder method
      */
     private void openPdfBuilder(Project project) {
-        RootController rootController = null;
+        RootController controller = tryToLoadView(ViewType.PDF_BUILDER);
+        eventBus.post(new RefreshEvent(EventType.EXPORT_EMAIL));
+
+        Stage stage = new Stage();
+        Scene scene = new Scene(controller.getView());
+
+        stage.initOwner(getStage());
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setTitle("Build you PDF");
+        stage.setOnCloseRequest(e -> {
+
+        });
+        // set on showing event to know about the previous stage so that it can be accessed from modalAciton controlelr
+        stage.setOnShowing(e -> {
+            stage.getProperties().put("projectToExport", project);
+        });
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+
+    private RootController tryToLoadView(ViewType viewType) {
         try {
-            rootController = stageManager.loadNodesView(
-                    ViewType.PDF_BUILDER,
-                    controllerFactory
-            );
+            return loadNodesView(viewType);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        stageManager.showStage("Build your PDF",rootController.getView());
-        RootController finalRootController = rootController;
-        rootController.getStage().setOnShowing(e -> {
-            finalRootController.getStage().getProperties().put("projectToExport", project);
-        });
-        eventBus.post(new RefreshEvent(EventType.EXPORT_EMAIL));
     }
+
 
 
     /**
@@ -500,49 +469,68 @@ public class ProjectController extends RootController implements Initializable {
      * Delete project
      * @param project project to be deleted
      */
-    private void  deleteProject(Project project){
-        var response = AlertHelper.showOptionalAlertWindow("Action warning !","Are you sure you want to delete this project ? ", Alert.AlertType.CONFIRMATION);
+    private void deleteProject(Project project){
+        var response = AlertHelper.showOptionalAlertWindow("Action warning!",
+                "Are you sure you want to delete this project ? ",
+                Alert.AlertType.CONFIRMATION);
+
         if(response.isPresent() && response.get() == ButtonType.OK){
-            boolean projectDeleted = projectModel.deleteProject(project);
-            if(!projectDeleted) AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
-            if(projectDeleted) AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
+            try {
+                boolean projectDeleted = projectModel.deleteProject(project);
+                if(!projectDeleted) throw new Exception("Failed to delete project with id: " + project.getId());
+
+                errorLabel.setText("Project with id: " + project.getId() + " has been deleted");
+                AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
+
+                // Refresh the projects list from the database after deleting the project
+                refreshTable();
+
+            } catch (Exception e) {
+                errorLabel.setText("An error occurred while deleting the project: " + e.getMessage());
+                AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
+                e.printStackTrace();
+            }
         }
     }
 
 
+    /**
+     * Load nodes view in parallel
+     * @param type view type
+     * @return root controller
+     * @throws IOException
+     */
+    private void runInParallel(ViewType type,Project project) {
+        final RootController[] parent = {null};
+        Task<Void> loadDataTask = new Task<>() {
+            @Override
+            protected Void call() throws IOException {
+                parent[0] = loadNodesView(type);
+                return null;
+            }
+        };
+        loadDataTask.setOnSucceeded(event -> {
+            ProjectActionController controller = (ProjectActionController) parent[0];
+            controller.setCurrentProject(project);
+            System.out.println("Loaded controller: " + parent[0].getClass().getName());
 
-    // FIX THIS LATER
+            switchToView(parent[0].getView());
+        });
+        new Thread(loadDataTask).start();
+    }
 
-
-//    private void runInParallel(ViewType type,Project project) {
-//        final RootController[] parent = {null};
-//        Task<Void> loadDataTask = new Task<>() {
-//            @Override
-//            protected Void call() throws IOException {
-//                parent[0] = loadNodesView(type);
-//                return null;
-//            }
-//        };
-//        loadDataTask.setOnSucceeded(event -> {
-//            ProjectActionController controller = (ProjectActionController) parent[0];
-//            controller.setCurrentProject(project);
-//            System.out.println("Loaded controller: " + parent[0].getClass().getName());
-//
-//            switchToView(parent[0].getView());
-//        });
-//        new Thread(loadDataTask).start();
-//    }
-
-//    private void switchToView(Parent parent) {
-//        Scene scene = projectAnchorPane.getScene();
-//        Window window = scene.getWindow();
-//        if (window instanceof Stage) {
-//            StackPane layoutPane = (StackPane) scene.lookup("#app_content");
-//            layoutPane.getChildren().clear();
-//            layoutPane.getChildren().add(parent);
-//        }
-//
-//    }
+    private void switchToView(Parent parent) {
+        Scene scene = projectAnchorPane.getScene();
+        Window window = scene.getWindow();
+        if (window instanceof Stage) {
+            StackPane layoutPane = (StackPane) scene.lookup("#app_content");
+            layoutPane.getChildren().clear();
+            layoutPane.getChildren().add(parent);
+        }
+    }
+    private RootController loadNodesView(ViewType viewType) throws IOException {
+       return controllerFactory.loadFxmlFile(viewType);
+   }
 
 
 

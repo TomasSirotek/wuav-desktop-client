@@ -9,8 +9,6 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.effect.DropShadow?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -163,13 +161,6 @@
                                  </children>
                               </HBox>
                               <MFXButton fx:id="toggleHide" prefHeight="23.0" prefWidth="37.0" rippleAnimateBackground="false" rippleAnimationSpeed="0.0" rippleBackgroundOpacity="0.0" rippleColor="#d0cdcd" rippleRadius="0.5" rippleRadiusMultiplier="0.5" text=".">
-                                 <graphic>
-                                    <ImageView fitHeight="21.0" fitWidth="24.0" styleClass="mfx-button">
-                                       <image>
-                                          <Image url="@../../../../close.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
                                  <padding>
                                     <Insets bottom="-10.0" left="-10.0" right="-20.0" top="-10.0" />
                                  </padding>

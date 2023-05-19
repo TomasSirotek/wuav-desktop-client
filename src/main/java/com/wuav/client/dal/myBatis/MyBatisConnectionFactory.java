@@ -29,7 +29,7 @@ public class MyBatisConnectionFactory {
         return sqlSessionFactory;
     }
 
-    public static void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
+    public static void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory)  {
         MyBatisConnectionFactory.sqlSessionFactory = sqlSessionFactory;
     }
 

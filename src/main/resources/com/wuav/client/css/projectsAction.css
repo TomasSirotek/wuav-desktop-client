@@ -32,3 +32,66 @@
   -fx-alignment: CENTER;
   -fx-text-fill: black;
 }
+.tab-pane .tab-header-area .tab-header-background {
+  -fx-opacity: 0;
+}
+
+.tab-pane
+{
+  -fx-tab-min-width:90px;
+}
+
+.tab{
+  -fx-background-insets: 0 1 0 1,0,0;
+}
+.tab-pane .tab {
+  -fx-background-color:  transparent;
+  -fx-padding: 0 10 0 10;
+  -fx-min-width: 120px;
+  -fx-pref-width: 120px;
+  -fx-max-width: 120px;
+}
+
+.tab-pane .tab:selected
+{
+  -fx-border-width: 0;
+  -fx-focus-color: none !important;
+}
+
+.tab .tab-label {
+  -fx-alignment: CENTER;
+  -fx-text-fill: #828282;
+  -fx-font-size: 12px;
+  -fx-font-weight: bold;
+}
+
+.tab:selected .tab-label {
+  -fx-alignment: CENTER;
+  -fx-text-fill: black;
+}
+
+
+.exportGridPane:hover {
+  -fx-background-color: rgba(234, 234, 234, 0.8);
+}
+
+
+.mfx-text-field .text-field {
+  -fx-highlight-fill: rgba(238, 235, 235, 0.8) !important;
+
+}
+
+.mfx-text-field .text-field {
+  -fx-highlight-fill: rgba(238, 235, 235, 0.8) !important;
+
+}
+
+.mfx-checkbox .ripple-container .mfx-ripple-generator {
+  -mfx-animation-speed: 1.5;
+  -mfx-ripple-color: derive( #E84910, 110%) !important;
+  -mfx-ripple-radius: 30;
+}
+
+.mfx-text-field{
+  -fx-border-color: #eae9e9 !important;
+}

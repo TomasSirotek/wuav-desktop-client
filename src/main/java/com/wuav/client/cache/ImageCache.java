@@ -12,7 +12,7 @@ public class ImageCache {
     private static Map<Integer, Image> imageCache = new ConcurrentHashMap<>();
     private static BlobStorageHelper blobStorageHelper = new BlobStorageHelper(BlobStorageFactory.getBlobContainerClient());
 
-    public static Image loadImage(BlobContainerClient containerClient, String imageUrl, int imageId) {
+    public static Image loadImage(BlobContainerClient containerClient, String imageUrl, int imageId) throws Exception {
         Image image = imageCache.get(imageId);
 
         if (image == null) {

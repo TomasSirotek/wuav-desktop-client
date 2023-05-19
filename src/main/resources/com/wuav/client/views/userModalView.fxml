@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXProgressSpinner?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
@@ -14,6 +15,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="exportAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="450.0" style="-fx-background-color: #F2F2F2;" stylesheets="@../css/projectCreation.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.UserModalController">
@@ -161,9 +163,9 @@
                            <graphic>
                               <HBox>
                                  <children>
-                                    <ImageView fitHeight="15.0" fitWidth="17.0">
+                                    <ImageView fitHeight="18.0" fitWidth="17.0">
                                        <image>
-                                          <Image url="@../images/navItems/export.png" />
+                                          <Image url="@../../../../addIcon.png" />
                                        </image>
                                     </ImageView>
                                  </children>
@@ -182,5 +184,19 @@
             <Insets top="10.0" />
          </padding>
       </GridPane>
+      <MFXProgressSpinner fx:id="loadSpinner" layoutX="369.0" layoutY="389.0" prefHeight="27.0" prefWidth="46.0" visible="false">
+         <color2>
+            <Color red="0.8500000238418579" green="0.2629333436489105" blue="0.22100000083446503" opacity="0.0" />
+         </color2>
+         <color3>
+            <Color red="0.8999999761581421" green="0.2722499966621399" blue="0.06300000101327896" />
+         </color3>
+         <color4>
+            <Color red="0.061000000685453415" green="0.6100000143051147" blue="0.33550000190734863" opacity="0.0" />
+         </color4>
+         <color1>
+            <Color red="0.9098039269447327" green="0.2862745225429535" blue="0.062745101749897" />
+         </color1>
+      </MFXProgressSpinner>
    </children>
 </AnchorPane>

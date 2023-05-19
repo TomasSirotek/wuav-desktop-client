@@ -32,5 +32,5 @@ public interface IUserService {
 
     AppUser getUserByProjectId(int projectId);
 
-    boolean sendEmailWithAttachement(AppUser appUser,Project project, ByteArrayOutputStream value) throws GeneralSecurityException, IOException;
+    boolean sendEmailWithAttachement(AppUser appUser, Project project, ByteArrayOutputStream value, String fileName) throws GeneralSecurityException, IOException;
 }

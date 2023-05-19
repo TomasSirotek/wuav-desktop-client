@@ -6,10 +6,9 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -18,6 +17,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
@@ -32,7 +32,7 @@
           <RowConstraints maxHeight="519.0473556518555" minHeight="10.0" prefHeight="509.3834991455078" vgrow="ALWAYS" />
         </rowConstraints>
          <children>
-            <GridPane>
+            <GridPane style="-fx-background-color: white;">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="620.1368713378906" minWidth="10.0" prefWidth="291.0" />
                   <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="318.9468078613281" minWidth="10.0" prefWidth="180.0" />
@@ -43,21 +43,26 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
-                  <Label fx:id="projectLabelMain" prefHeight="46.0" prefWidth="248.0" text="My projects">
-                     <font>
-                        <Font name="SansSerif Bold" size="32.0" />
-                     </font>
-                  </Label>
+                  <VBox alignment="CENTER_LEFT">
+                     <children>
+                        <Label fx:id="projectLabelMain" prefHeight="24.0" prefWidth="248.0" text="My projects">
+                           <font>
+                              <Font name="Open Sans Bold" size="24.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="projectLabelMain1" prefHeight="16.0" prefWidth="248.0" text="Overview of projects">
+                           <font>
+                              <Font name="Open Sans Regular" size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <GridPane.margin>
+                        <Insets left="22.0" />
+                     </GridPane.margin>
+                  </VBox>
                   <HBox fx:id="exportToggleHbox" alignment="CENTER" GridPane.columnIndex="2">
                      <children>
-                        <MFXButton fx:id="exportSelected" prefHeight="29.0" prefWidth="91.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Export">
-                           <graphic>
-                              <ImageView fitHeight="15.0" fitWidth="17.0">
-                                 <image>
-                                    <Image url="@../images/navItems/export.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
+                        <MFXButton fx:id="exportSelected" prefHeight="29.0" prefWidth="91.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: #eae9e9;" text="Export">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -66,13 +71,13 @@
                   </HBox>
                   <HBox fx:id="actionToggleHbox" alignment="CENTER_RIGHT" prefWidth="128.0" GridPane.columnIndex="3">
                      <children>
-                        <MFXButton fx:id="createNewProject" prefHeight="29.0" prefWidth="153.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Create project" textFill="#141111">
+                        <MFXButton fx:id="createNewProject" prefHeight="29.0" prefWidth="153.0" style="-fx-background-color: #E84910; -fx-text-fill: white; -fx-border-color: #eae9e9;" text="Create project" textFill="#141111">
                            <graphic>
-                              <HBox alignment="CENTER" prefHeight="24.0" prefWidth="31.0">
+                              <HBox alignment="CENTER" prefHeight="24.0" prefWidth="17.0">
                                  <children>
                                     <ImageView cache="true" fitHeight="19.0" fitWidth="19.0">
                                        <image>
-                                          <Image url="@../images/navItems/plusSvg.png" />
+                                          <Image url="@../images/navItems/menuItems/add.png" />
                                        </image>
                                     </ImageView>
                                  </children>
@@ -90,7 +95,7 @@
                         </MFXButton>
                      </children>
                      <padding>
-                        <Insets bottom="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="10.0" right="20.0" top="10.0" />
                      </padding>
                   </HBox>
                   <HBox fx:id="projectCreationStatus" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" visible="false" GridPane.columnIndex="1">
@@ -120,7 +125,31 @@
             </GridPane>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" GridPane.rowIndex="1">
                <children>
-                  <MFXProgressSpinner fx:id="tableDataLoad" layoutY="196.0" prefHeight="214.0" prefWidth="368.0" AnchorPane.bottomAnchor="250.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="210.0" AnchorPane.topAnchor="200.0">
+                  <HBox alignment="CENTER" layoutX="17.0" prefHeight="67.0" prefWidth="883.0" style="-fx-background-color: white; -fx-background-radius: 10;">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="67.0" prefWidth="86.0">
+                           <children>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/navItems/menuItems/search.png" />
+                                 </image>
+                                 <HBox.margin>
+                                    <Insets left="2.0" />
+                                 </HBox.margin>
+                              </ImageView>
+                           </children>
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </HBox>
+                        <TextField fx:id="queryField" prefHeight="30.0" prefWidth="854.0" promptText="Search...">
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </TextField>
+                     </children>
+                  </HBox>
+                  <MFXProgressSpinner fx:id="tableDataLoad" layoutY="250.0" prefHeight="52.0" prefWidth="429.0" AnchorPane.bottomAnchor="270.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="208.0">
                      <color2>
                         <Color red="0.8500000238418579" green="0.2629333436489105" blue="0.22100000083446503" opacity="0.0" />
                      </color2>
@@ -134,59 +163,49 @@
                         <Color red="0.9098039269447327" green="0.2862745225429535" blue="0.062745101749897" />
                      </color1>
                   </MFXProgressSpinner>
-                  <TabPane layoutX="-10.0" layoutY="-1.0" prefHeight="511.0" prefWidth="754.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
-                    <tabs>
-                      <Tab text="All projects">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0">
-                                 <children>
-                                    <TableView fx:id="projectTable" layoutX="1.0" layoutY="14.0" minHeight="395.0" prefHeight="461.0" prefWidth="872.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="-4.0" AnchorPane.topAnchor="14.0">
-                                      <columns>
-                                        <TableColumn fx:id="colSelectAll" prefWidth="55.11915969848633" sortable="false">
-                                             <graphic>
-                                                <CheckBox fx:id="selectAllTableCheck" mnemonicParsing="false" styleClass="checkBox">
-                                                   <padding>
-                                                      <Insets right="30.0" />
-                                                   </padding></CheckBox>
-                                             </graphic>
-                                          </TableColumn>
-                                        <TableColumn fx:id="colName" prefWidth="126.38082885742188" text="Name" />
-                                          <TableColumn fx:id="colDes" minWidth="40.0" prefWidth="220.0148162841797" text="Description" />
-                                          <TableColumn fx:id="colCustomer" prefWidth="169.88507080078125" text="Customer" />
-                                          <TableColumn fx:id="colType" prefWidth="126.61492919921875" text="Type" />
-                                          <TableColumn fx:id="colDate" minWidth="50.0" prefWidth="117.9808349609375" text="Date" />
-                                          <TableColumn fx:id="colEdit" minWidth="52.0" prefWidth="70.0191650390625" sortable="false" />
-                                      </columns>
-                                    </TableView>
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="10.0" />
-                                 </padding>
-                              </AnchorPane>
-                        </content>
-                      </Tab>
-                    </tabs>
-                     <cursor>
-                        <Cursor fx:constant="DEFAULT" />
-                     </cursor>
-                  </TabPane>
+              <AnchorPane layoutX="17.0" layoutY="64.0" minHeight="0.0" minWidth="0.0" prefHeight="424.0" prefWidth="883.0" style="-fx-background-color: white;">
+                     <children>
+                        <TableView fx:id="projectTable" layoutX="31.0" layoutY="-1.0" minHeight="395.0" prefHeight="415.0" prefWidth="878.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columns>
+                            <TableColumn fx:id="colSelectAll" prefWidth="55.11915969848633" sortable="false">
+                                 <graphic>
+                                    <CheckBox fx:id="selectAllTableCheck" mnemonicParsing="false" prefWidth="29.0" styleClass="checkBox">
+                                       <padding>
+                                          <Insets left="10.0" right="30.0" />
+                                       </padding>
+                                    </CheckBox>
+                                 </graphic>
+                              </TableColumn>
+                            <TableColumn fx:id="colName" prefWidth="126.38082885742188" text="Name" />
+                              <TableColumn fx:id="colDes" minWidth="40.0" prefWidth="220.0148162841797" text="Description" />
+                              <TableColumn fx:id="colCustomer" prefWidth="169.88507080078125" text="Customer" />
+                              <TableColumn fx:id="colType" prefWidth="102.297119140625" text="Type" />
+                              <TableColumn fx:id="colDate" minWidth="66.0" prefWidth="144.0" text="Date" />
+                              <TableColumn fx:id="colEdit" minWidth="60.0" prefWidth="90.0" sortable="false" />
+                          </columns>
+                        </TableView>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" />
+                     </padding>
+                  </AnchorPane>
                </children>
+               <GridPane.margin>
+                  <Insets top="10.0" />
+               </GridPane.margin>
                <padding>
                   <Insets right="10.0" />
                </padding>
             </AnchorPane>
          </children>
-         <padding>
-            <Insets left="20.0" right="20.0" />
-         </padding>
       </GridPane>
       <Pane fx:id="notificationPane" layoutY="-5.0" prefHeight="41.0" prefWidth="909.0" styleClass="error-pane" visible="false">
          <children>
-            <GridPane layoutY="1.0" prefHeight="42.0" prefWidth="1010.0">
+            <GridPane layoutY="1.0" prefHeight="42.0" prefWidth="1039.0">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="233.07225036621094" minWidth="10.0" prefWidth="233.07225036621094" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="298.0235290527344" minWidth="10.0" prefWidth="137.47412109375" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="639.52587890625" minWidth="10.0" prefWidth="639.52587890625" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="298.0235290527344" minWidth="10.0" prefWidth="92.5" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="685.0" minWidth="10.0" prefWidth="685.0" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -204,7 +223,7 @@
                         <Insets />
                      </GridPane.margin>
                   </HBox>
-                  <Label fx:id="errorLabel" prefHeight="40.0" prefWidth="196.0" text="Incorrect password or email" textFill="WHITE" GridPane.columnIndex="2">
+                  <Label fx:id="errorLabel" prefHeight="40.0" prefWidth="534.0" text="Incorrect password or email" textFill="WHITE" GridPane.columnIndex="2">
                      <font>
                         <Font name="SansSerif Regular" size="15.0" />
                      </font>

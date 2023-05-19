@@ -4,6 +4,7 @@ import com.wuav.client.be.Address;
 import com.wuav.client.be.device.Device;
 import com.wuav.client.gui.dto.AddressDTO;
 import com.wuav.client.gui.dto.PutAddressDTO;
+import org.apache.ibatis.session.SqlSession;
 
 import java.util.List;
 
@@ -19,6 +20,6 @@ public interface IDeviceRepository {
 
     boolean deleteDevice(int deviceId, Class<? extends Device> type);
 
-    int addDeviceToProject(int projectId, int deviceId);
+    int addDeviceToProject(SqlSession session,int projectId, int deviceId) throws Exception;
 }
 

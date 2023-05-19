@@ -3,22 +3,18 @@ package com.wuav.client.gui.controllers;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
-import com.wuav.client.be.Project;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.wuav.client.gui.controllers.event.RefreshEvent;
-import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.models.user.IUserModel;
 import com.wuav.client.gui.utils.AlertHelper;
 import com.wuav.client.gui.utils.AnimationUtil;
 import com.wuav.client.gui.utils.enums.CustomColor;
-import com.wuav.client.gui.utils.enums.UserRoleType;
 import com.wuav.client.gui.utils.event.CustomEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,7 +22,6 @@ import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -41,7 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
 
-public class AllUsersController  extends RootController implements Initializable {
+public class UsersController extends RootController implements Initializable {
     @FXML
     private MFXButton createNewUser;
     @FXML
@@ -67,7 +62,7 @@ public class AllUsersController  extends RootController implements Initializable
 
 
     @Inject
-    public AllUsersController(IUserModel userModel, IControllerFactory controllerFactory, EventBus eventBus) {
+    public UsersController(IUserModel userModel, IControllerFactory controllerFactory, EventBus eventBus) {
         this.userModel = userModel;
         this.controllerFactory = controllerFactory;
         this.eventBus = eventBus;
@@ -253,11 +248,11 @@ public class AllUsersController  extends RootController implements Initializable
                 boolean userDeleted = userModel.deleteUser(value);
                 if(userDeleted) {
                     errorLabel.setText("User with id: " + value.getId() + " deleted successfully");
-                    AnimationUtil.animateInOut(notificationPane,2, CustomColor.INFO);
+                    AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
                     refreshTable();
                 }else {
                     errorLabel.setText("User with id: " + value.getId() + " could not be delete");
-                    AnimationUtil.animateInOut(notificationPane,2, CustomColor.ERROR);
+                    AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
                 }
             }
     }
