@@ -154,6 +154,9 @@
                         <TableColumn fx:id="colDate" minWidth="44.0" prefWidth="150.0" text="Created at" />
                         <TableColumn fx:id="colEdit" minWidth="57.0" prefWidth="72.8956298828125" sortable="false" />
                     </columns>
+                     <padding>
+                        <Insets top="20.0" />
+                     </padding>
                   </TableView>
                </children>
                <padding>

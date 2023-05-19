@@ -251,7 +251,7 @@
                                           </HBox>
                                           <HBox alignment="CENTER" prefWidth="397.0" GridPane.rowIndex="1">
                                              <children>
-                                                <ImageView fx:id="selectedImage" fitHeight="179.0" fitWidth="202.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fx:id="selectedImage" fitHeight="159.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../../../../imageUpload.png" />
                                                    </image>

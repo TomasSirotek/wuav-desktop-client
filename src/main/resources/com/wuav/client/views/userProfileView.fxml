@@ -22,7 +22,7 @@
 
 <AnchorPane fx:id="projectAnchorPane" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #F2F2F2;" stylesheets="@../css/userProfile.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wuav.client.gui.controllers.UserProfileController">
    <children>
-      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
@@ -71,7 +71,7 @@
                   </VBox>
                </children>
                <GridPane.margin>
-                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                  <Insets bottom="20.0" left="20.0" right="15.0" top="20.0" />
                </GridPane.margin>
                <effect>
                   <DropShadow height="3.0" radius="1.0" width="3.0">
@@ -88,8 +88,8 @@
               </columnConstraints>
               <rowConstraints>
                   <RowConstraints maxHeight="263.5902099609375" minHeight="10.0" prefHeight="46.37419128417969" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="263.5902099609375" minHeight="10.0" prefHeight="254.10638427734375" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="233.74200439453125" minHeight="10.0" prefHeight="99.89361572265625" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="326.4839782714844" minHeight="10.0" prefHeight="326.4839782714844" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="233.74200439453125" minHeight="10.0" prefHeight="28.016021728515625" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <GridPane style="-fx-background-color: white; -fx-background-radius: 10;" GridPane.rowIndex="1">
@@ -100,14 +100,14 @@
                     <rowConstraints>
                       <RowConstraints maxHeight="70.85760498046875" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="104.73622131347656" minHeight="10.0" prefHeight="62.92724609375" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="104.73622131347656" minHeight="10.0" prefHeight="54.42724609375" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="70.908935546875" minHeight="10.0" prefHeight="54.472015380859375" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="79.52798461914062" minHeight="10.0" prefHeight="79.52798461914062" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="104.73622131347656" minHeight="10.0" prefHeight="43.619873046875" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="100.880126953125" minHeight="10.0" prefHeight="64.32891845703125" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="116.67108154296875" minHeight="10.0" prefHeight="116.67108154296875" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
                         <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
                            <children>
-                              <Label prefHeight="17.0" prefWidth="288.0" text="Name " textFill="#252f4091">
+                              <Label prefHeight="17.0" prefWidth="288.0" text="User name" textFill="#252f4091">
                                  <font>
                                     <Font name="SansSerif Regular" size="10.0" />
                                  </font>
@@ -188,12 +188,11 @@
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="168.77490234375" minWidth="10.0" prefWidth="160.59991455078125" />
                           </columnConstraints>
                           <rowConstraints>
-                            <RowConstraints maxHeight="103.62054443359375" minHeight="10.0" prefHeight="66.58395385742188" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="136.83026123046875" minHeight="8.12139892578125" prefHeight="40.59515380859375" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="155.11016845703125" minHeight="10.0" prefHeight="28.40484619140625" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="103.62054443359375" minHeight="10.0" prefHeight="41.81439208984375" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="136.83026123046875" minHeight="8.12139892578125" prefHeight="47.68560791015625" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <HBox alignment="CENTER_LEFT">
+                              <HBox alignment="BOTTOM_LEFT">
                                  <children>
                                     <Label prefHeight="20.0" prefWidth="138.0" text="Role: ">
                                        <font>
@@ -202,7 +201,7 @@
                                     </Label>
                                  </children>
                               </HBox>
-                              <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
+                              <HBox alignment="BOTTOM_LEFT" GridPane.columnIndex="1">
                                  <children>
                                     <Label fx:id="userRole" prefHeight="20.0" prefWidth="133.0" text="Admin">
                                        <font>
@@ -233,7 +232,7 @@
                         </GridPane>
                      </children>
                      <GridPane.margin>
-                        <Insets bottom="100.0" left="10.0" />
+                        <Insets bottom="230.0" left="10.0" />
                      </GridPane.margin>
                      <padding>
                         <Insets left="20.0" />
@@ -248,7 +247,7 @@
                   </HBox>
                   <HBox>
                      <children>
-                        <Label text="Profile">
+                        <Label text="Basic informations">
                            <font>
                               <Font name="Open Sans Bold" size="18.0" />
                            </font>
@@ -278,9 +277,9 @@
                      <children>
                         <VBox alignment="CENTER_LEFT" prefHeight="91.0" prefWidth="411.0">
                            <children>
-                              <Label prefHeight="46.0" prefWidth="248.0" text="User profile">
+                              <Label prefHeight="34.0" prefWidth="248.0" text="User profile">
                                  <font>
-                                    <Font name="Open Sans Bold" size="32.0" />
+                                    <Font name="Open Sans Bold" size="24.0" />
                                  </font>
                               </Label>
                               <Label fx:id="projectLabelMain1" prefHeight="16.0" prefWidth="248.0" text="Manage and update you profile">
