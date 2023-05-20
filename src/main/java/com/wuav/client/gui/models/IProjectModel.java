@@ -40,4 +40,6 @@ public interface IProjectModel {
     DashboardData getTechnicianDashboardData(int id);
 
     DashboardData getAdminDashboardData(int id);
+
+    List<Project> searchProject(String query);
 }

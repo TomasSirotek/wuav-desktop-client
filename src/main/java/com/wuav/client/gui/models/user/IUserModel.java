@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.List;
 
 public interface IUserModel {
 
@@ -30,4 +31,6 @@ public interface IUserModel {
 
 
     boolean sendEmailWithAttachement(AppUser appUser, Project project, ByteArrayOutputStream value, String text) throws GeneralSecurityException, IOException;
+
+    List<AppUser> searchUsers(String query);
 }

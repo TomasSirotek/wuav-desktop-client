@@ -3,6 +3,7 @@ package com.wuav.client.gui.controllers;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import com.wuav.client.be.Project;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
@@ -16,6 +17,8 @@ import com.wuav.client.gui.utils.enums.CustomColor;
 import com.wuav.client.gui.utils.event.CustomEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
@@ -34,9 +37,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class UsersController extends RootController implements Initializable {
+    @FXML
+    private TextField queryField;
     @FXML
     private MFXButton createNewUser;
     @FXML
@@ -71,8 +77,21 @@ public class UsersController extends RootController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         fillTable();
+        setupSearchField();
         eventBus.register(this);
         createNewUser.setOnAction(e -> openCreateUserWindow("Create new user",ViewType.USER_MODAL, null));
+    }
+
+    private void setupSearchField() {
+        queryField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.isEmpty()) {
+                List<AppUser> searchResults = userModel.searchUsers(newValue);
+                ObservableList<AppUser> users = FXCollections.observableList(searchResults);
+                userTable.setItems(users);
+            } else {
+                fillTable();
+            }
+        });
     }
 
     private void openCreateUserWindow(String title, ViewType viewType, AppUser value) {

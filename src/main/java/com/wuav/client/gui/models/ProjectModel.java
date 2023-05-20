@@ -130,6 +130,16 @@ public class ProjectModel implements IProjectModel{
     }
 
     @Override
+    public List<Project> searchProject(String query) {
+        return projectsCache.values().stream()
+                .flatMap(Collection::stream)
+                .filter(project -> project.getName().toLowerCase().contains(query.toLowerCase())
+                        || project.getDescription().toLowerCase().contains(query.toLowerCase())
+                        || String.valueOf(project.getId()).equals(query))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public boolean createProject(int userId,CreateProjectDTO projectToCreate) throws Exception {
         boolean result =  projectService.createProject(userId,projectToCreate);
         if (result) {

@@ -57,6 +57,8 @@ import java.util.stream.IntStream;
 public class ProjectController extends RootController implements Initializable {
 
     @FXML
+    private TextField queryField;
+    @FXML
     private HBox projectCreationStatus,exportToggleHbox,actionToggleHbox;
     @FXML
     private MFXProgressSpinner tableDataLoad;
@@ -101,8 +103,21 @@ public class ProjectController extends RootController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         eventBus.register(this);
         fillTable();
+        setupSearchField();
         setupActions();
         swapButtonsInNonTechnicianRole();
+    }
+
+    private void setupSearchField() {
+        queryField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.isEmpty()) {
+                List<Project> searchResults = projectModel.searchProject(newValue);
+                ObservableList<Project> projects = FXCollections.observableList(searchResults);
+                projectTable.setItems(projects);
+            } else {
+                fillTable();
+            }
+        });
     }
 
     /**

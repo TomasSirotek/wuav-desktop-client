@@ -13,16 +13,16 @@ import javafx.scene.layout.HBox;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class AdminStrategy implements IUserRoleStrategy {
+public class ManagerStrategy implements IUserRoleStrategy {
 
     private final IProjectModel projectModel;
 
     private final String BUTTON_TEXT = "Projects";
 
-    private Image defaultImage = new Image(getClass().getClassLoader().getResource("admin.png").toExternalForm());
+    private Image defaultImage = new Image(getClass().getClassLoader().getResource("pmImage.png").toExternalForm());
 
     @Inject
-    public AdminStrategy(IProjectModel projectModel) {
+    public ManagerStrategy(IProjectModel projectModel) {
         this.projectModel = projectModel;
     }
 
@@ -38,7 +38,7 @@ public class AdminStrategy implements IUserRoleStrategy {
 
     @Override
     public boolean isUsersButtonVisible() {
-        return true;
+        return false;
     }
 
     @Override
