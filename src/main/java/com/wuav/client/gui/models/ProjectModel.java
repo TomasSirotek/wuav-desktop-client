@@ -213,12 +213,6 @@ public class ProjectModel implements IProjectModel{
         return result;
     }
 
-    private void removeProject(int userId, int projectId) {
-        List<Project> userProjects = projectsCache.get(userId);
-        if (userProjects != null)  userProjects.removeIf(project -> project.getId() == projectId);
-    }
-
-
     @Override
     public Image reuploadImage(int projectId, int id, File selectedImageFile) throws Exception {
         Optional<CustomImage> updatedImage = projectService.reuploadImage(projectId,id, selectedImageFile);

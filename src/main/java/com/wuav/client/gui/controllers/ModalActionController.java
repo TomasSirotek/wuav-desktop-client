@@ -140,6 +140,8 @@ public class ModalActionController extends RootController implements Initializab
 
     private boolean individualToggleSelected;
     private boolean businessToggleSelected;
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+
 
 
     @Inject
@@ -743,7 +745,6 @@ public class ModalActionController extends RootController implements Initializab
     }
 
 
-    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     private void createNewProject() {
         voidTriggerProjectLoadingStatus(); // start loading in the project window
