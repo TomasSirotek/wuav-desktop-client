@@ -110,13 +110,10 @@ public class ProjectController extends RootController implements Initializable {
 
     private void setupSearchField() {
         queryField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.isEmpty()) {
                 List<Project> searchResults = projectModel.searchProject(newValue);
                 ObservableList<Project> projects = FXCollections.observableList(searchResults);
                 projectTable.setItems(projects);
-            } else {
-                fillTable();
-            }
+
         });
     }
 
@@ -276,12 +273,10 @@ public class ProjectController extends RootController implements Initializable {
     @Subscribe
     public void handleCategoryEvent(RefreshEvent event) {
         if (event.eventType() == EventType.UPDATE_TABLE) {
-            projectCreationStatus.setVisible(true);
-            // Retrieve the updated projects list from your data source
-            refreshTable();
             errorLabel.setText("Projects created successfully");
             AnimationUtil.animateInOut(notificationPane,4, CustomColor.SUCCESS);
-            projectCreationStatus.setVisible(false);
+            refreshTable();
+
         }
     }
 
