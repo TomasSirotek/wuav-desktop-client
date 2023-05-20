@@ -15,7 +15,6 @@ import java.util.List;
 
 public class ProjectRepository implements IProjectRepository {
     private static Logger logger = LoggerFactory.getLogger(ProjectRepository.class);
-
     @Override
     public List<Project> getAllProjects() throws Exception {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {

@@ -29,7 +29,7 @@ public class UserRoleStrategyFactory {
                 return technicianStrategyProvider.get();
             case "MANAGER":
                 return managerStrategyProvider.get();
-            case "SALE":
+            case "SALES":
                 return salesStrategyProvider.get();
             default:
                 throw new IllegalArgumentException("Invalid role type: " + roleName);

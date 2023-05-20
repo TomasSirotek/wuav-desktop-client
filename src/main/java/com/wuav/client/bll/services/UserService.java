@@ -146,7 +146,7 @@ public class UserService implements IUserService {
             // update user password hash
              var isChanged = changeUserPasswordHash(appUser.getId(),newPasswordHash);
              if(isChanged){
-                    // send email
+                 // send email
 
                  String templateName = "email-template-confirm";
                  Map<String, Object> templateVariables = new HashMap<>();

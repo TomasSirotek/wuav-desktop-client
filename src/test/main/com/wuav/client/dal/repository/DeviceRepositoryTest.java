@@ -5,8 +5,6 @@ import com.wuav.client.be.device.Projector;
 import com.wuav.client.be.device.Speaker;
 import com.wuav.client.bll.utilities.UniqueIdGenerator;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions;
-
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

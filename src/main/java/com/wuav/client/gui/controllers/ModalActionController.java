@@ -151,7 +151,7 @@ public class ModalActionController extends RootController implements Initializab
         this.deviceModel = deviceModel;
     }
 
-    public void handleFetchImages() {
+    private void handleFetchImages() {
         uploadProgress.setVisible(true);
         uploadTextProgress.setVisible(true);
         imageOperationFacade.startImageFetch(new ImageOperationFacade.ImageFetchCallback() {
@@ -821,6 +821,8 @@ public class ModalActionController extends RootController implements Initializab
         });
     }
 
+    // DONT FORGET TO DELETE
+
 //    private void runInParallel(ViewType type) {
 //        final RootController[] parent = {null};
 //        Task<Void> loadDataTask = new Task<>() {
@@ -853,8 +855,6 @@ public class ModalActionController extends RootController implements Initializab
 //            appContent.getChildren().add(parent);
 //        }
 //    }
-
-
 
 
 }
