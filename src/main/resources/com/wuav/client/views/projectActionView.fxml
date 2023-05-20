@@ -599,7 +599,7 @@
                 </AnchorPane>
             </children>
         </GridPane>
-      <Pane fx:id="notificationPane" prefHeight="41.0" prefWidth="910.0" styleClass="error-pane" visible="false">
+      <Pane fx:id="notificationPane" prefHeight="41.0" prefWidth="926.0" styleClass="error-pane" visible="false">
          <children>
             <GridPane layoutY="1.0" prefHeight="42.0">
                <columnConstraints>
