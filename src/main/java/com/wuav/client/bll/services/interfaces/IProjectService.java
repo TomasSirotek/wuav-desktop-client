@@ -29,5 +29,5 @@ public interface IProjectService {
 
     Customer updateCustomer(PutCustomerDTO customerDTO);
 
-    DashboardData getDashboardData(int userId);
+    String updateProjectName(int projectId, String newName) throws Exception;
 }

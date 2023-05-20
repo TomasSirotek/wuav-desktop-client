@@ -42,4 +42,6 @@ public interface IProjectModel {
     DashboardData getAdminDashboardData(int id);
 
     List<Project> searchProject(String query);
+
+    String updateProjectName(int id, String newName) throws Exception;
 }

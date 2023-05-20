@@ -25,4 +25,6 @@ public interface IProjectMapper {
     int deleteProjectById(@Param("projectId") int projectId);
 
     int addDeviceToProject(@Param("projectId") int projectId, @Param("deviceId") int deviceId);
+
+    int updateProjectName(@Param("projectId") int projectId,@Param("name") String newName);
 }

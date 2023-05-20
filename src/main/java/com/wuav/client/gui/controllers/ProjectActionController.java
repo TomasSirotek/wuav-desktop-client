@@ -44,6 +44,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,6 +58,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ProjectActionController  extends RootController implements Initializable {
 
+    @FXML
+    private HBox editNameHbox;
+    @FXML
+    private MFXButton editNameToggle;
     @FXML
     private Pane notificationPane;
 
@@ -110,12 +115,68 @@ public class ProjectActionController  extends RootController implements Initiali
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         eventBus.register(this);
+        setupActionButtons();
+
+
+    }
+
+    private void setupActionButtons() {
         selectFile.setOnAction(e -> selectFile());
         expandBtn.setOnAction(e -> previewImage(selectedImage.getImage()));
         updateBtnNotes.setOnAction(e -> updateNotes());
         newFileUploadBox.setVisible(false);
         selectedImageFile = null;
         updateClient.setOnAction(e -> updateClient());
+
+        editNameToggle.setOnAction(e -> handleHboxSwitch());
+    }
+
+    private void handleHboxSwitch() {
+        editNameHbox.getChildren().clear();
+
+
+        TextField textField = new TextField();
+        textField.setText(projectNameField.getText());
+        textField.setPrefWidth(200);
+        textField.setPrefHeight(30);
+
+        MFXButton saveBtn = new MFXButton("✔️");
+        MFXButton cancelBtn = new MFXButton("✖️");
+
+        saveBtn.setStyle("-fx-cursor: HAND;");
+        cancelBtn.setStyle("-fx-cursor: HAND;");
+
+        saveBtn.setOnAction(e -> updateProjectName(textField.getText()));
+
+        cancelBtn.setOnAction(e -> {
+            clearEditName();
+        });
+
+        editNameHbox.setPadding(new Insets(0,0,0,10));
+        editNameHbox.getChildren().setAll(textField,saveBtn,cancelBtn);
+
+    }
+
+    private void updateProjectName(String newName) {
+        if(newName.equals(projectNameField.getText())) displayNotification(false,"Project name is the same! Cannot update project name!");
+        else {
+           String updateName = tryUpdateName(newName);
+            if (!updateName.isEmpty()) {
+                displayNotification(true, "Project name updated successfully!");
+                projectNameField.setText(newName);
+                currentProject.setName(newName);
+                clearEditName();
+            }
+        }
+
+    }
+
+    private void clearEditName(){
+        editNameHbox.getChildren().clear();
+        Label label = new Label(projectNameField.getText());
+        label.setPadding(new Insets(0,0,0,0));
+        label.setStyle("-fx-font-size: 28px;");
+        editNameHbox.getChildren().setAll(label);
     }
 
     private void updateClient() {
@@ -203,6 +264,15 @@ public class ProjectActionController  extends RootController implements Initiali
             return "";
         }
     }
+
+    private String tryUpdateName(String newName) {
+        try {
+            return projectModel.updateProjectName(currentProject.getId(), newName);
+        } catch (Exception e) {
+            displayNotification(false,"Something went wrong, please try again later");
+            return "";
+        }
+    }
     // if router here set all the info
     public void setCurrentProject(Project project) {
         currentProject = project;
@@ -282,10 +352,10 @@ public class ProjectActionController  extends RootController implements Initiali
     private void displayNotification(boolean isSuccess,String message){
         errorLabel.setText(message);
         if(isSuccess){
-            AnimationUtil.animateInOut(notificationPane,4, CustomColor.SUCCESS);
+            AnimationUtil.animateInOut(notificationPane,2, CustomColor.SUCCESS);
           notificationImage.setImage(new Image(IConType.SUCCESS.getStyle()));
         }else {
-            AnimationUtil.animateInOut(notificationPane,4, CustomColor.WARNING);
+            AnimationUtil.animateInOut(notificationPane,2, CustomColor.WARNING);
         }
     }
 

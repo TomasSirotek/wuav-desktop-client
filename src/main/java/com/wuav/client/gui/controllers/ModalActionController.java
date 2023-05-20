@@ -775,7 +775,6 @@ public class ModalActionController extends RootController implements Initializab
                 addressDTO
         );
 
-
         // construct new DTO and add to the list 1# main image
         ImageDTO imageToUpload = new ImageDTO();
         imageToUpload.setId(UniqueIdGenerator.generateUniqueId());
@@ -797,7 +796,6 @@ public class ModalActionController extends RootController implements Initializab
 
         int currentUserId = CurrentUser.getInstance().getLoggedUser().getId();
 
-
         executorService.submit(() -> {
             try {
                 boolean result = projectModel.createProject(currentUserId, projectToCreate);
@@ -807,9 +805,9 @@ public class ModalActionController extends RootController implements Initializab
                     if (result) {
                         eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
                         EventType eventType = EventType.SHOW_NOTIFICATION;
-                        CustomEvent notificationEvent = new CustomEvent(eventType, true, "Project created successfully");
-                        eventBus.post(notificationEvent);
-                        runInParallel(ViewType.PROJECTS);
+                         CustomEvent notificationEvent = new CustomEvent(eventType, true, "Project created successfully");
+                       eventBus.post(notificationEvent);
+                       // runInParallel(ViewType.PROJECTS);
                     } else {
                         displayError("Project creation failed");
                     }
@@ -821,77 +819,40 @@ public class ModalActionController extends RootController implements Initializab
                 executorService.shutdown(); // Shutdown the executor service
             }
         });
-//        Task<Boolean> loadDataTask = new Task<>() {
+    }
+
+//    private void runInParallel(ViewType type) {
+//        final RootController[] parent = {null};
+//        Task<Void> loadDataTask = new Task<>() {
 //            @Override
-//            protected Boolean call() throws IOException {
-//                return projectModel.createProject(currentUserId, projectToCreate);
+//            protected Void call() throws IOException {
+//                parent[0] = loadNodesView(type);
+//                return null;
 //            }
 //        };
-//
 //        loadDataTask.setOnSucceeded(event -> {
-//            boolean result = loadDataTask.getValue();
-//
-//            if (result) {
-//
-//                Project newProject = projectModel.getProjectById(projectId);
-//
-//                // Update the cache with the new project
-//                projectModel.updateCacheForUser(currentUserId, newProject);
-//
-//                eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
-//                EventType eventType = EventType.SHOW_NOTIFICATION;
-//                CustomEvent notificationEvent = new CustomEvent(eventType, true, "Project created successfully");
-//                eventBus.post(notificationEvent);
-//                runInParallel(ViewType.PROJECTS);
-//            } else {
-//                AlertHelper.showDefaultAlert("Error creating project", Alert.AlertType.ERROR);
-//            }
+//            switchToView(parent[0].getView());
 //        });
-//
 //        new Thread(loadDataTask).start();
-    }
-
-    private Project tryToGetProjectById(int projectId) {
-        try {
-           return  projectModel.getProjectById(projectId);
-        } catch (Exception e) {
-            displayError(e.getMessage());
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void runInParallel(ViewType type) {
-        final RootController[] parent = {null};
-        Task<Void> loadDataTask = new Task<>() {
-            @Override
-            protected Void call() throws IOException {
-                parent[0] = loadNodesView(type);
-                return null;
-            }
-        };
-        loadDataTask.setOnSucceeded(event -> {
-            switchToView(parent[0].getView());
-        });
-        new Thread(loadDataTask).start();
-    }
-
-    private RootController loadNodesView(ViewType viewType) throws IOException {
-        return controllerFactory.loadFxmlFile(viewType);
-    }
-
-    private void switchToView(Parent parent) {
-        Stage  test = (Stage) getStage().getProperties().get("previousStage");
-        Scene previousScene = test.getScene();
-        Pane layoutPane = (Pane) previousScene.lookup("#layoutPane");
-        StackPane appContent = (StackPane) previousScene.getRoot().lookup("#app_content");
-        if (appContent != null || layoutPane != null) {
-            getStage().close();
-            layoutPane.setDisable(true);
-            layoutPane.setStyle("-fx-background-color: transparent;");
-            appContent.getChildren().clear();
-            appContent.getChildren().add(parent);
-        }
-    }
+//    }
+//
+//    private RootController loadNodesView(ViewType viewType) throws IOException {
+//        return controllerFactory.loadFxmlFile(viewType);
+//    }
+//
+//    private void switchToView(Parent parent) {
+//        Stage  test = (Stage) getStage().getProperties().get("previousStage");
+//        Scene previousScene = test.getScene();
+//        Pane layoutPane = (Pane) previousScene.lookup("#layoutPane");
+//        StackPane appContent = (StackPane) previousScene.getRoot().lookup("#app_content");
+//        if (appContent != null || layoutPane != null) {
+//            getStage().close();
+//            layoutPane.setDisable(true);
+//            layoutPane.setStyle("-fx-background-color: transparent;");
+//            appContent.getChildren().clear();
+//            appContent.getChildren().add(parent);
+//        }
+//    }
 
 
 
