@@ -29,7 +29,6 @@ import static com.google.api.services.gmail.GmailScopes.GMAIL_SEND;
 
 public class EmailSender implements IEmailSender {
 
-
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT, GsonFactory gsonFactory)
             throws IOException {
 
@@ -77,7 +76,7 @@ public class EmailSender implements IEmailSender {
 
     }
 
-    private MimeMessage createEmailWithAttachment(String to, String from, String subject, String bodyText, boolean attachPdf, File pdfFile) throws MessagingException, IOException, MessagingException {
+    protected MimeMessage createEmailWithAttachment(String to, String from, String subject, String bodyText, boolean attachPdf, File pdfFile) throws MessagingException, IOException, MessagingException {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
 
@@ -110,7 +109,7 @@ public class EmailSender implements IEmailSender {
         return email;
     }
 
-    private Message createMessageWithEmail(MimeMessage emailContent) throws MessagingException, IOException {
+    protected Message createMessageWithEmail(MimeMessage emailContent) throws MessagingException, IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         emailContent.writeTo(buffer);
         byte[] bytes = buffer.toByteArray();
@@ -118,6 +117,15 @@ public class EmailSender implements IEmailSender {
         Message message = new Message();
         message.setRaw(encodedEmail);
         return message;
+    }
+
+    protected Gmail getGmailService() throws GeneralSecurityException, IOException {
+        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+
+        return new Gmail.Builder(HTTP_TRANSPORT, jsonFactory, getCredentials(HTTP_TRANSPORT, jsonFactory))
+                .setApplicationName("Test mailer")
+                .build();
     }
 
 

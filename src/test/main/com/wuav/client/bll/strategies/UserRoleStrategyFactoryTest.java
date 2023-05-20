@@ -123,7 +123,7 @@ class UserRoleStrategyFactoryTest {
         assertTrue(strategy instanceof ManagerStrategy);
         assertEquals(mockManagerStrategy, strategy);
     }
-    
+
     @Test
     void testGetStrategyWithInvalidRole() {
         // Arrange

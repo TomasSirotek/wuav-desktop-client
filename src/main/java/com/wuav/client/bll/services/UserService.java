@@ -62,7 +62,7 @@ public class UserService implements IUserService {
     public boolean updateUserById(AppUser appUser) {
         boolean isUpdated;
 
-         isUpdated = userRepository.updateUserById(appUser);
+        isUpdated = userRepository.updateUserById(appUser);
 
         if(isUpdated){
             AppUser updatedUser = getUserById(appUser.getId());

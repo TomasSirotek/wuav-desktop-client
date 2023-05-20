@@ -23,10 +23,7 @@ public class EmailEngine implements IEmailEngine{
 
     @Override
     public String processTemplate(String templateName, Map<String, Object> variables) {
-
-
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-      //  templateResolver.setPrefix("resources/templates/");
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode("HTML");
         templateResolver.setCharacterEncoding("UTF-8");
