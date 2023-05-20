@@ -114,13 +114,6 @@ public class ProjectService implements IProjectService {
     }
 
     @Override
-    public DashboardData getDashboardData(int userId) {
-
-        // here construct dashboard data
-        return null;
-    }
-
-    @Override
     public String updateProjectName(int projectId, String newName) throws Exception {
         boolean result = projectRepository.updateProjectName(projectId, newName);
         if(!result) return "";
