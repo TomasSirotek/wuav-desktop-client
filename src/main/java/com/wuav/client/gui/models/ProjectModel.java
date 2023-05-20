@@ -140,6 +140,33 @@ public class ProjectModel implements IProjectModel{
     }
 
     @Override
+    public String updateProjectName(int projectId, String newName) throws Exception {
+        String updatedName = projectService.updateProjectName(projectId,newName);
+
+        if(updatedName.isEmpty()){
+            // Retrieve the project owner
+            AppUser user = userModel.getUserByProjectId(projectId);
+
+            if (user != null) {
+                // Fetch the updated project from the database
+                Project updatedProject = projectService.getProjectById(projectId);
+
+                // Update the cache with the updated project
+                List<Project> projects = projectsCache.get(user.getId());
+                for (int i = 0; i < projects.size(); i++) {
+                    if (projects.get(i).getId() == projectId) {
+                        projects.set(i, updatedProject);
+                        break;
+                    }
+                }
+                projectsCache.put(user.getId(), projects);
+            }
+        }
+
+        return updatedName;
+    }
+
+    @Override
     public boolean createProject(int userId,CreateProjectDTO projectToCreate) throws Exception {
         boolean result =  projectService.createProject(userId,projectToCreate);
         if (result) {

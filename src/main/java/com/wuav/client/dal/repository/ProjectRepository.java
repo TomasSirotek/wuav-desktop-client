@@ -100,6 +100,21 @@ public class ProjectRepository implements IProjectRepository {
     }
 
     @Override
+    public boolean updateProjectName(int projectId, String newName) throws Exception {
+        try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
+            IProjectMapper mapper = session.getMapper(IProjectMapper.class);
+            var affectedRows = mapper.updateProjectName(
+                    projectId,
+                    newName
+            );
+            session.commit();
+            return affectedRows > 0;
+        } catch (PersistenceException ex) {
+            throw new Exception(ex);
+        }
+    }
+
+    @Override
     public boolean updateNotes(int projectId, String content) throws Exception {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
             IProjectMapper mapper = session.getMapper(IProjectMapper.class);

@@ -119,6 +119,14 @@ public class ProjectService implements IProjectService {
         // here construct dashboard data
         return null;
     }
+
+    @Override
+    public String updateProjectName(int projectId, String newName) throws Exception {
+        boolean result = projectRepository.updateProjectName(projectId, newName);
+        if(!result) return "";
+        return getProjectById(projectId).getDescription();
+    }
+
     private boolean tryCreateProject(int userId, CreateProjectDTO projectToCreate) throws Exception {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
             try {

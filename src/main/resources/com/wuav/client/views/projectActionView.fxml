@@ -34,8 +34,8 @@
             <children>
                 <GridPane prefWidth="727.0" style="-fx-background-color: white;">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="NEVER" maxWidth="620.1368713378906" minWidth="10.0" prefWidth="327.3519287109375" />
-                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="620.1368713378906" minWidth="0.0" prefWidth="333.6480712890625" />
+                        <ColumnConstraints hgrow="NEVER" maxWidth="620.1368713378906" minWidth="10.0" prefWidth="466.5" />
+                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="620.1368713378906" minWidth="0.0" prefWidth="133.0" />
                   <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="620.1368713378906" minWidth="10.0" prefWidth="333.6480712890625" />
                         <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="436.5" minWidth="0.0" prefWidth="3.25799560546875" />
                     </columnConstraints>
@@ -43,11 +43,11 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                  <HBox alignment="CENTER_LEFT">
+                  <HBox fx:id="editNameHbox" alignment="CENTER_LEFT">
                      <children>
                               <Label fx:id="projectNameField" prefHeight="46.0" prefWidth="360.0" text="Installation_0">
                                   <font>
-                                      <Font name="SansSerif Bold" size="32.0" />
+                                      <Font name="Open Sans Regular" size="28.0" />
                                   </font>
                            <padding>
                               <Insets left="15.0" />
@@ -61,11 +61,21 @@
                         <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" />
                   <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="2">
                      <children>
-                        <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../../editIcon.png" />
-                           </image>
-                        </ImageView>
+                        <MFXButton fx:id="editNameToggle" prefHeight="25.0" prefWidth="44.0" rippleAnimateBackground="false" rippleAnimationSpeed="0.0" rippleBackgroundOpacity="0.0" rippleColor="#d0cdcd" rippleRadius="0.5" rippleRadiusMultiplier="0.5" text=".">
+                           <graphic>
+                              <ImageView fitHeight="26.0" fitWidth="26.0" styleClass="mfx-button">
+                                 <image>
+                                    <Image url="@../../../../editIcon.png" />
+                                 </image>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </ImageView>
+                           </graphic>
+                           <padding>
+                              <Insets bottom="-10.0" left="12.0" right="-22.0" top="-10.0" />
+                           </padding>
+                        </MFXButton>
                      </children>
                      <GridPane.margin>
                         <Insets right="40.0" />
@@ -272,7 +282,7 @@
                                                                <children>
                                                                   <Label text="Basic information ">
                                                                      <font>
-                                                                        <Font name="SansSerif Bold" size="25.0" />
+                                                                        <Font name="Open Sans Bold" size="20.0" />
                                                                      </font>
                                                                   </Label>
                                                                </children>
@@ -428,7 +438,7 @@
                                                                <children>
                                                                   <Label text="Uploaded images">
                                                                      <font>
-                                                                        <Font name="SansSerif Bold" size="25.0" />
+                                                                        <Font name="Open Sans Bold" size="20.0" />
                                                                      </font>
                                                                   </Label>
                                                                </children>
@@ -553,7 +563,7 @@
                                                                <children>
                                                                   <Label text="Devices">
                                                                      <font>
-                                                                        <Font name="SansSerif Bold" size="25.0" />
+                                                                        <Font name="Open Sans Bold" size="20.0" />
                                                                      </font>
                                                                   </Label>
                                                                </children>

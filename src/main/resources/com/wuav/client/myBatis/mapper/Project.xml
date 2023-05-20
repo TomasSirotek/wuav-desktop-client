@@ -239,6 +239,20 @@
 
     </update>
 
+    <update
+            id="updateProjectName"
+            parameterType="Project"
+            flushCache="true"
+            statementType="PREPARED"
+            timeout="20">
+
+        UPDATE Project
+        SET
+            name = #{name}
+        WHERE id = #{projectId}
+
+    </update>
+
 
     <delete id="deleteProjectById"
             parameterType="Project"
