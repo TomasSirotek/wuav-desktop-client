@@ -73,12 +73,11 @@
 
 ## Wuav Desktop Management Application
 
-![deskto-mock](https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/7885f2a7-7b43-48c4-b672-38a9e1609c4e)
+![desktop-mock-2](https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/7b0f1a87-e543-497d-b12d-b5cd16c267cb)
 
 ## Application design
 
 Application mock-up designed in Figma
-
 
 ## Database design
 
