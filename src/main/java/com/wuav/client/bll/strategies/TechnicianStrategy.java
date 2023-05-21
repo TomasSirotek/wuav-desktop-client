@@ -16,6 +16,8 @@ public class TechnicianStrategy implements IUserRoleStrategy {
     private final IProjectModel projectModel;
     private final String BUTTON_TEXT = "My projects";
 
+    private final String BUTTON_TEXT_DASHBOARD = "Create project";
+
     private Image defaultImage = new Image(getClass().getClassLoader().getResource("diceBar1.png").toExternalForm());
 
     @Inject
@@ -51,5 +53,10 @@ public class TechnicianStrategy implements IUserRoleStrategy {
     @Override
     public void swapButtons(HBox exportToggleHbox, HBox actionToggleHbox) {
         // Do nothing
+    }
+
+    @Override
+    public String getDashboardButtonText() {
+        return BUTTON_TEXT_DASHBOARD;
     }
 }

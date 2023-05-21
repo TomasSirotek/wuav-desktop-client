@@ -71,23 +71,20 @@
 
 <!-- ABOUT THE PROJECT -->
 
-## Features and requirements
+# Wuav Management Application
 
-## JavaFx Application
+![final_mock](https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/6c338654-4584-4588-847a-99f92821495e)
 
-<img width="1112" alt="Screenshot 2023-05-19 at 21 26 54" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/4802716b-4868-4477-8c8e-e24c63128ea4">
-
-## Application design
+# Application design
 
 Application mock-up designed in Figma
 
-
-## Database design
+# Database design
 
 MSSQL Database diagram
 
 
-## UML diagram
+# UML diagram
 
 
 ## Application design patterns
