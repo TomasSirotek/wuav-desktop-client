@@ -192,7 +192,7 @@
                               <Pane prefHeight="157.0" prefWidth="164.0" />
                               <MFXButton alignment="BASELINE_LEFT" onAction="#logoutButton" prefHeight="41.0" prefWidth="223.0" styleClass="myButton" text="Logout" textFill="#141111">
                                  <graphic>
-                                    <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="30.0">
+                                    <HBox alignment="TOP_CENTER" prefHeight="30.0" prefWidth="30.0">
                                        <children>
                                           <ImageView fitHeight="21.0" fitWidth="21.0">
                                              <image>

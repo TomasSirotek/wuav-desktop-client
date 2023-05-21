@@ -17,24 +17,14 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-       //  try {
             StartUp.configure();
             IControllerFactory factory = StartUp.getInjector().getInstance(IControllerFactory.class);
             IRootController controller = factory.loadFxmlFile(ViewType.LOGIN);
 
-           Scene scene = new Scene(controller.getView());
+            Scene scene = new Scene(controller.getView());
             stage.setTitle("Wuav-login");
             stage.setResizable(false);
             stage.setScene(scene);
             stage.show();
-
-//        } catch (Exception e) {
-//            Throwable cause = e.getCause();
-//            if (cause != null) {
-//                cause.printStackTrace();
-//            } else {
-//                e.printStackTrace();
-//            }
-//        }
     }
 }

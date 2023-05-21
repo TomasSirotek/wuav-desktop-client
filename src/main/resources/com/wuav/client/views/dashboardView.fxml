@@ -94,17 +94,17 @@
                   </HBox>
                </children>
             </GridPane>
-            <VBox GridPane.rowIndex="1">
+            <VBox prefHeight="518.0" prefWidth="909.0" GridPane.rowIndex="1">
                <children>
-                  <GridPane prefHeight="341.0" prefWidth="909.0">
+                  <GridPane prefHeight="326.0" prefWidth="909.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="614.1131896972656" minWidth="10.0" prefWidth="271.4324951171875" />
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="630.4129028320312" minWidth="10.0" prefWidth="617.5675048828125" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints maxHeight="136.87322998046875" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="340.5" minHeight="10.0" prefHeight="52.222320556640625" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="340.5" minHeight="10.0" prefHeight="289.2776794433594" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="340.5" minHeight="10.0" prefHeight="49.81360626220703" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="340.5" minHeight="10.0" prefHeight="276.18639373779297" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
                         <HBox prefHeight="46.0" prefWidth="257.0" GridPane.columnIndex="1">
@@ -148,7 +148,7 @@
                                     </HBox>
                                     <HBox alignment="CENTER" prefHeight="54.0" prefWidth="272.0" GridPane.rowIndex="2">
                                        <children>
-                                          <MFXButton fx:id="createNewProject" prefHeight="38.0" prefWidth="202.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Create project" textFill="#141111">
+                                          <MFXButton fx:id="dashboardToggle" prefHeight="38.0" prefWidth="202.0" style="-fx-background-color: #E84910; -fx-text-fill: white;" text="Create project" textFill="#141111">
                                              <graphic>
                                                 <HBox alignment="CENTER" prefHeight="24.0" prefWidth="17.0">
                                                    <children>
@@ -629,9 +629,441 @@
                         <Insets left="20.0" />
                      </padding>
                   </GridPane>
+                  <GridPane prefHeight="165.0" prefWidth="909.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="392.8056335449219" minWidth="10.0" prefWidth="381.6683654785156" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="437.17005920410156" minWidth="10.0" prefWidth="261.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="270.85205078125" minWidth="10.0" prefWidth="261.3287353515625" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <HBox alignment="CENTER" prefWidth="405.0" style="-fx-background-color: white; -fx-background-radius: 20;">
+                           <effect>
+                              <DropShadow height="3.0" radius="1.0" width="3.0">
+                                 <color>
+                                    <Color opacity="0.4300000071525574" />
+                                 </color>
+                              </DropShadow>
+                           </effect>
+                           <GridPane.margin>
+                              <Insets left="20.0" top="10.0" />
+                           </GridPane.margin>
+                           <children>
+                              <GridPane prefHeight="155.0" prefWidth="369.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints maxHeight="45.505340576171875" minHeight="10.0" prefHeight="42.93084716796875" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="40.01171875" minHeight="5.494659423828125" prefHeight="14.292572021484375" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="76.88543701171875" minHeight="10.0" prefHeight="44.707427978515625" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="77.4239501953125" minHeight="10.0" prefHeight="35.19659423828125" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <GridPane>
+                                      <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="118.67013549804688" minWidth="4.936653137207031" prefWidth="6.972850799560547" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="118.67013549804688" minWidth="10.0" prefWidth="49.02714920043945" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="222.37714385986328" minWidth="10.0" prefWidth="188.3914031982422" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3">
+                                             <children>
+                                                <ImageView fitHeight="19.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../images/navItems/menuItems/menuItemHorizontal.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </children>
+                                             <GridPane.margin>
+                                                <Insets right="20.0" />
+                                             </GridPane.margin>
+                                          </HBox>
+                                          <Label fx:id="projectLabelMain2112" prefHeight="40.0" prefWidth="200.0" text="Semco maritime" GridPane.columnIndex="2">
+                                             <font>
+                                                <Font name="Open Sans Regular" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox alignment="CENTER" GridPane.columnIndex="1">
+                                             <children>
+                                                <ImageView fitHeight="41.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../images/navItems/menuItems/semcoLogo.jpeg" />
+                                                   </image>
+                                                </ImageView>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </GridPane>
+                                    <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" prefHeight="16.0" prefWidth="63.0" styleClass="label-1">
+                                             <HBox.margin>
+                                                <Insets left="15.0" />
+                                             </HBox.margin>
+                                             <children>
+                                                <Label fx:id="projectLabelMain21122" alignment="CENTER" prefHeight="40.0" prefWidth="200.0" text="Oct 3, 2023">
+                                                   <font>
+                                                      <Font name="Open Sans Regular" size="8.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
+                                    <VBox alignment="CENTER_LEFT" GridPane.rowIndex="2">
+                                       <children>
+                                          <Label fx:id="projectLabelMain21113" prefHeight="8.0" prefWidth="287.0" style="-fx-text-fill: a29f9f;" text="Project to conduct installation in">
+                                             <font>
+                                                <Font name="Open Sans Regular" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="projectLabelMain211131" prefHeight="14.0" prefWidth="287.0" style="-fx-text-fill: a29f9f;" text="meeting room on Monday">
+                                             <font>
+                                                <Font name="Open Sans Regular" size="12.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                       <GridPane.margin>
+                                          <Insets left="15.0" />
+                                       </GridPane.margin>
+                                    </VBox>
+                                    <GridPane GridPane.rowIndex="3">
+                                      <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.42552185058594" minWidth="10.0" prefWidth="17.472320556640625" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.42552185058594" minWidth="10.0" prefWidth="21.94464111328125" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0320587158203" minWidth="10.0" prefWidth="146.55535888671875" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="98.87240600585938" minWidth="10.0" prefWidth="98.87240600585938" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="83.425537109375" minWidth="10.0" prefWidth="73.12759399414062" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                                             <image>
+                                                <Image url="@../images/navItems/menuItems/ProfilePictureMaker%20(1).png" />
+                                             </image>
+                                          </ImageView>
+                                          <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                             <image>
+                                                <Image url="@../images/navItems/menuItems/ProfilePictureMaker.png" />
+                                             </image>
+                                          </ImageView>
+                                          <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="4">
+                                             <children>
+                                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../images/navItems/menuItems/attach.png" />
+                                                   </image>
+                                                </ImageView>
+                                                <Label fx:id="projectLabelMain211132" prefHeight="17.0" prefWidth="25.0" style="-fx-text-fill: a29f9f;" text="3">
+                                                   <font>
+                                                      <Font name="Open Sans Regular" size="12.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </GridPane>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </HBox>
+                        <HBox alignment="CENTER" prefWidth="405.0" style="-fx-background-color: white; -fx-background-radius: 20;" GridPane.columnIndex="1">
+                           <effect>
+                              <DropShadow height="3.0" radius="1.0" width="3.0">
+                                 <color>
+                                    <Color opacity="0.4300000071525574" />
+                                 </color>
+                              </DropShadow>
+                           </effect>
+                           <children>
+                              <GridPane prefHeight="155.0" prefWidth="261.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="61.34283447265625" minHeight="10.0" prefHeight="54.124755859375" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="46.97662353515625" minHeight="4.65716552734375" prefHeight="10.379852294921875" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="91.18704223632812" minHeight="10.0" prefHeight="46.120147705078125" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="91.18704223632812" minHeight="10.0" prefHeight="50.89190673828125" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <GridPane>
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="118.67013549804688" minWidth="1.170928955078125" prefWidth="1.170928955078125" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="118.67013549804688" minWidth="10.0" prefWidth="65.11697387695312" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="222.37714385986328" minWidth="10.0" prefWidth="115.88302612304688" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="82.96026611328125" minWidth="10.0" prefWidth="61.95355224609375" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3">
+                                             <children>
+                                                <ImageView fitHeight="19.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../images/navItems/menuItems/menuItemHorizontal.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </children>
+                                             <GridPane.margin>
+                                                <Insets right="20.0" />
+                                             </GridPane.margin>
+                                          </HBox>
+                                          <Label fx:id="projectLabelMain21121" prefHeight="40.0" prefWidth="200.0" text="Bjerrum Group" GridPane.columnIndex="2">
+                                             <font>
+                                                <Font name="Open Sans Regular" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox alignment="CENTER" prefHeight="52.0" prefWidth="41.0" GridPane.columnIndex="1">
+                                             <children>
+                                                <ImageView fitHeight="41.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../images/navItems/menuItems/Caselogo_Bjerrum-Nielsen.jpg" />
+                                                   </image>
+                                                </ImageView>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </GridPane>
+                                    <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" prefHeight="16.0" prefWidth="63.0" style="-fx-background-color: #CBE2FF;" styleClass="label-2">
+                                             <HBox.margin>
+                                                <Insets left="18.0" />
+                                             </HBox.margin>
+                                             <children>
+                                                <Label fx:id="projectLabelMain211221" alignment="CENTER" prefHeight="40.0" prefWidth="200.0" text="Oct 3, 2023">
+                                                   <font>
+                                                      <Font name="Open Sans Regular" size="8.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
+                                    <GridPane GridPane.rowIndex="3">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.42552185058594" minWidth="10.0" prefWidth="18.461029052734375" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.42552185058594" minWidth="0.0" prefWidth="24.538970947265625" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0320587158203" minWidth="10.0" prefWidth="43.09759521484375" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="98.87240600585938" minWidth="10.0" prefWidth="98.87240600585938" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="83.425537109375" minWidth="10.0" prefWidth="73.12759399414062" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                                             <image>
+                                                <Image url="@../images/navItems/menuItems/ProfilePictureMaker%20(1).png" />
+                                             </image>
+                                          </ImageView>
+                                          <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="4">
+                                             <children>
+                                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../images/navItems/menuItems/attach.png" />
+                                                   </image>
+                                                </ImageView>
+                                                <Label fx:id="projectLabelMain2111321" prefHeight="17.0" prefWidth="25.0" style="-fx-text-fill: a29f9f;" text="1">
+                                                   <font>
+                                                      <Font name="Open Sans Regular" size="12.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <GridPane.margin>
+                                                <Insets right="5.0" />
+                                             </GridPane.margin>
+                                          </HBox>
+                                       </children>
+                                    </GridPane>
+                                    <VBox alignment="CENTER_LEFT" GridPane.rowIndex="2">
+                                       <children>
+                                          <Label fx:id="projectLabelMain211131" prefHeight="2.0" prefWidth="228.0" style="-fx-text-fill: a29f9f;" text="Brand new teaching room">
+                                             <font>
+                                                <Font name="Open Sans Regular" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="projectLabelMain2111311" prefHeight="9.0" prefWidth="228.0" style="-fx-text-fill: a29f9f;" text="with our new technology">
+                                             <font>
+                                                <Font name="Open Sans Regular" size="12.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                       <GridPane.margin>
+                                          <Insets left="18.0" />
+                                       </GridPane.margin>
+                                    </VBox>
+                                 </children>
+                              </GridPane>
+                           </children>
+                           <GridPane.margin>
+                              <Insets left="10.0" right="10.0" top="10.0" />
+                           </GridPane.margin>
+                        </HBox>
+                        <HBox alignment="CENTER" prefWidth="405.0" style="-fx-background-color: white; -fx-background-radius: 20;" GridPane.columnIndex="2">
+                           <effect>
+                              <DropShadow height="3.0" radius="1.0" width="3.0">
+                                 <color>
+                                    <Color opacity="0.4300000071525574" />
+                                 </color>
+                              </DropShadow>
+                           </effect>
+                           <children>
+                              <GridPane prefHeight="155.0" prefWidth="261.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="56.23529052734375" minHeight="10.0" prefHeight="55.058807373046875" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="49.05877685546875" minHeight="9.885101318359375" prefHeight="9.885101318359375" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="71.41839599609375" minHeight="10.0" prefHeight="43.614898681640625" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="86.88238525390625" minHeight="10.0" prefHeight="50.8824462890625" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <GridPane>
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="118.67013549804688" minWidth="9.4237060546875" prefWidth="9.4237060546875" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="118.67013549804688" minWidth="10.0" prefWidth="48.80206298828125" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="222.37714385986328" minWidth="10.0" prefWidth="138.69793701171875" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="82.96026611328125" minWidth="10.0" prefWidth="47.23529052734375" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3">
+                                             <children>
+                                                <ImageView fitHeight="19.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../images/navItems/menuItems/menuItemHorizontal.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </children>
+                                             <GridPane.margin>
+                                                <Insets right="20.0" />
+                                             </GridPane.margin>
+                                          </HBox>
+                                          <Label fx:id="projectLabelMain211211" prefHeight="40.0" prefWidth="200.0" text="Blue water arena" GridPane.columnIndex="2">
+                                             <font>
+                                                <Font name="Open Sans Regular" size="16.0" />
+                                             </font>
+                                          </Label>
+                                          <HBox alignment="CENTER" GridPane.columnIndex="1">
+                                             <children>
+                                                <ImageView fitHeight="41.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../images/navItems/menuItems/blueWater.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </GridPane>
+                                    <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" prefHeight="16.0" prefWidth="63.0" style="-fx-background-color: #CBE2FF;" styleClass="label-3">
+                                             <HBox.margin>
+                                                <Insets left="18.0" />
+                                             </HBox.margin>
+                                             <children>
+                                                <Label fx:id="projectLabelMain2112211" alignment="CENTER" prefHeight="40.0" prefWidth="200.0" text="May 16, 2023">
+                                                   <font>
+                                                      <Font name="Open Sans Regular" size="8.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
+                                    <VBox alignment="CENTER_LEFT" GridPane.rowIndex="2">
+                                       <children>
+                                          <Label fx:id="projectLabelMain2111311" prefHeight="2.0" prefWidth="228.0" style="-fx-text-fill: a29f9f;" text="Arena with new set of speakers ">
+                                             <font>
+                                                <Font name="Open Sans Regular" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="projectLabelMain21113111" prefHeight="9.0" prefWidth="228.0" style="-fx-text-fill: a29f9f;" text="and new meeting room">
+                                             <font>
+                                                <Font name="Open Sans Regular" size="12.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                       <GridPane.margin>
+                                          <Insets left="18.0" />
+                                       </GridPane.margin>
+                                    </VBox>
+                                    <GridPane GridPane.rowIndex="3">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.42552185058594" minWidth="10.0" prefWidth="17.40423583984375" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.42552185058594" minWidth="0.0" prefWidth="16.59576416015625" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0320587158203" minWidth="10.0" prefWidth="15.39581298828125" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="121.10418701171875" minWidth="10.0" prefWidth="115.96875" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="83.425537109375" minWidth="10.0" prefWidth="79.03125" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                                             <image>
+                                                <Image url="@../images/navItems/menuItems/ProfilePictureMaker%20(1).png" />
+                                             </image>
+                                          </ImageView>
+                                          <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="4">
+                                             <children>
+                                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../images/navItems/menuItems/attach.png" />
+                                                   </image>
+                                                </ImageView>
+                                                <Label fx:id="projectLabelMain21113211" prefHeight="17.0" prefWidth="25.0" style="-fx-text-fill: a29f9f;" text="8">
+                                                   <font>
+                                                      <Font name="Open Sans Regular" size="12.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                             <GridPane.margin>
+                                                <Insets right="5.0" />
+                                             </GridPane.margin>
+                                          </HBox>
+                                          <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                             <image>
+                                                <Image url="@../images/navItems/menuItems/ProfilePictureMaker.png" />
+                                             </image>
+                                          </ImageView>
+                                          <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
+                                             <image>
+                                                <Image url="@../images/navItems/menuItems/ProfilePictureMaker.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </GridPane>
+                           </children>
+                           <GridPane.margin>
+                              <Insets right="22.0" top="10.0" />
+                           </GridPane.margin>
+                        </HBox>
+                     </children>
+                  </GridPane>
                </children>
                <GridPane.margin>
-                  <Insets top="10.0" />
+                  <Insets />
                </GridPane.margin>
             </VBox>
          </children>

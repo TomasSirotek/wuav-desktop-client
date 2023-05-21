@@ -19,6 +19,7 @@ public class SalesStrategy implements IUserRoleStrategy {
 
     private final String BUTTON_TEXT = "Projects";
 
+    private final String BUTTON_TEXT_DASHBOARD = "View projects";
     private Image defaultImage = new Image(getClass().getClassLoader().getResource("pmImage.png").toExternalForm());
 
     @Inject
@@ -65,5 +66,10 @@ public class SalesStrategy implements IUserRoleStrategy {
         // clean children in the action hbox and replace with the stored button
         actionToggleHbox.getChildren().clear();
         actionToggleHbox.getChildren().add(storedButton.get());
+    }
+
+    @Override
+    public String getDashboardButtonText() {
+        return BUTTON_TEXT_DASHBOARD;
     }
 }

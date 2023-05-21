@@ -6,3 +6,7 @@
 .mfx-progress-spinner:determinate .arc {
     -fx-stroke:  #E84910 !important;
 }
+
+.label-1 {
+    -fx-background-color: rgba(146, 92, 180, 0.4);
+}
