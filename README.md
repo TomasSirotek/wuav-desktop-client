@@ -71,20 +71,20 @@
 
 <!-- ABOUT THE PROJECT -->
 
-## Wuav Desktop Management Application
+# Wuav Management Application
 
-![desktop-mock-2](https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/7b0f1a87-e543-497d-b12d-b5cd16c267cb)
+![final_mock](https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/6c338654-4584-4588-847a-99f92821495e)
 
-## Application design
+# Application design
 
 Application mock-up designed in Figma
 
-## Database design
+# Database design
 
 MSSQL Database diagram
 
 
-## UML diagram
+# UML diagram
 
 
 ## Application design patterns
