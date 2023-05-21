@@ -13,11 +13,12 @@
 
 ---
 
+![final_mock](https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/6c338654-4584-4588-847a-99f92821495e)
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
   <a href="https://user-images.githubusercontent.com/72190589/207565741-1867a0a5-7bd6-46c8-a985-6e0ac64e4cac.png">
-   
+
   </a>
   <p align="center">
     WUAV Desktop Management Application
@@ -73,7 +74,6 @@
 
 # Wuav Management Application
 
-![final_mock](https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/6c338654-4584-4588-847a-99f92821495e)
 
 # Application design
 
