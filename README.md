@@ -71,11 +71,9 @@
 
 <!-- ABOUT THE PROJECT -->
 
-## Features and requirements
+## Wuav Desktop Management Application
 
-## JavaFx Application
-
-<img width="1112" alt="Screenshot 2023-05-19 at 21 26 54" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/4802716b-4868-4477-8c8e-e24c63128ea4">
+![deskto-mock](https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/7885f2a7-7b43-48c4-b672-38a9e1609c4e)
 
 ## Application design
 
