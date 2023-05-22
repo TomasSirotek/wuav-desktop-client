@@ -18,11 +18,7 @@ import javafx.scene.layout.GridPane;
 public class DashboardController extends RootController implements Initializable {
 
     @FXML
-    public Label plansCount;
-    @FXML
-    private Label deviceCount;
-    @FXML
-    private Label totalProjectCount;
+    public Label plansCount,projectLabelMain3,deviceCount,totalProjectCount;
     @FXML
     private GridPane pane;
 
@@ -40,6 +36,7 @@ public class DashboardController extends RootController implements Initializable
         totalProjectCount.setText(String.valueOf(data.totalProjects()));
         plansCount.setText(String.valueOf(data.amountOfPlansUploaded()));
         deviceCount.setText(String.valueOf(data.totalDeviceUser()));
+        projectLabelMain3.setText(userRoleStrategy.getDashboardMainText());
         swapButtonsInNonTechnicianRole();
     }
 

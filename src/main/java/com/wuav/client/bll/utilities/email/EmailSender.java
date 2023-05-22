@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 
@@ -30,13 +31,13 @@ import static com.google.api.services.gmail.GmailScopes.GMAIL_SEND;
 public class EmailSender implements IEmailSender {
 
 
-    private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT, GsonFactory gsonFactory)
+    private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT,GsonFactory gsonFactory)
             throws IOException {
 
-        String clientSecretFilePath = System.getenv("CONFIG_CLIENT_SECRET");
+        String clientSecretFilePath = System.getenv("GMAIL_PATH");
         GoogleClientSecrets clientSecrets =
                 GoogleClientSecrets.load(gsonFactory,
-                        new InputStreamReader(EmailSender.class.getResourceAsStream(clientSecretFilePath)));
+                        new InputStreamReader(Objects.requireNonNull(EmailSender.class.getResourceAsStream(clientSecretFilePath))));
 
         // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
@@ -49,13 +50,12 @@ public class EmailSender implements IEmailSender {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-
     @Override
     public boolean sendEmail(String toEmail, String subject, String body, boolean attachPdf, File pdfFile) throws GeneralSecurityException, IOException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 
         GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
-        Gmail service = new Gmail.Builder(HTTP_TRANSPORT, jsonFactory, getCredentials(HTTP_TRANSPORT, jsonFactory))
+        Gmail service = new Gmail.Builder(HTTP_TRANSPORT, jsonFactory, getCredentials(HTTP_TRANSPORT,jsonFactory))
                 .setApplicationName("Test mailer")
                 .build();
 
@@ -121,5 +121,5 @@ public class EmailSender implements IEmailSender {
     }
 
 
-}
 
+}
