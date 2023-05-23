@@ -182,9 +182,9 @@ Project creation stepper
 ## User interface SWIFT design
 
 <div style="display: flex;">
-  <img width="200" alt="Screenshot 1" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/e7d436d3-f373-4db9-8058-17e7adb4664b">
-  <img width="200" alt="Screenshot 2" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/4266d941-ed91-48ab-9336-4e2b8313387f">
-  <img width="200" alt="Screenshot 3" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/224331c7-6806-44dd-a50b-77966462efb3">
+  <img width="300" alt="Screenshot 1" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/e7d436d3-f373-4db9-8058-17e7adb4664b">
+  <img width="300" alt="Screenshot 2" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/4266d941-ed91-48ab-9336-4e2b8313387f">
+  <img width="300" alt="Screenshot 3" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/224331c7-6806-44dd-a50b-77966462efb3">
 </div>
 
 
