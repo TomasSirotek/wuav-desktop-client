@@ -33,7 +33,11 @@ public class UserService implements IUserService {
     private final IEmailSender emailSender;
 
     @Inject
-    public UserService(IUserRepository userRepository, IRoleService roleService, ICryptoEngine cryptoEngine, IEmailEngine emailEngine, IEmailSender emailSender) {
+    public UserService(IUserRepository userRepository,
+                       IRoleService roleService,
+                       ICryptoEngine cryptoEngine,
+                       IEmailEngine emailEngine,
+                       IEmailSender emailSender) {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.cryptoEngine = cryptoEngine;

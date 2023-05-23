@@ -62,45 +62,79 @@ https://github.com/TomassSimko/wuav-app
 * [Java](https://www.java.com/en/)
 * [Liberica 19](https://bell-sw.com/libericajdk/)
 * [JavaFX](https://openjfx.io/)
+
+## Core management
 * [Guava](https://github.com/google/guava)
-* [Guice](https://github.com/google/guice)
-* [SLF4J](https://www.slf4j.org/)
+* [Guice-DI](https://github.com/google/guice)
 * [MyBatis](https://mybatis.org/mybatis-3/)
-* [Feign](https://github.com/OpenFeign/feign)
 * [Logback-classic](https://logback.qos.ch/)
 * [SQLServer](https://www.microsoft.com/en-us/sql-server/)
+* [SLF4J](https://www.slf4j.org/)
+* [Jsoup](https://jsoup.org/)
 
+## Email management
+* [Google-api-client](https://github.com/googleapis/google-api-java-client)
+* [Google-oauth-client](https://github.com/googleapis/google-api-java-client)
+* [Google-oauth-services-gmail](https://github.com/googleapis/google-api-java-client)
+* [Sun-mail](https://javaee.github.io/javamail/)
+* [Thymeleaf](https://github.com/thymeleaf/thymeleaf)
+
+## PDF management
+* [ItextPDF](https://itextpdf.com/en)
+* [Apache-pdfbox](https://pdfbox.apache.org/)
+* [Apache-commons-io](https://commons.apache.org/proper/commons-io/)
+* [PDFBox-tools](https://pdfbox.apache.org/download.cgi#20x)
+
+# Image management
+* [Azure-storage-blob](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-java-v10)
+## QR code management
+* [ZXing](https://github.com/zxing/zxing/)
+## HTTP request management
+* [OkHttp](https://square.github.io/okhttp/)
+## Unit testing
+* [Mockito](https://www.slf4j.org/)
+* [JUnit](https://junit.org/junit5/)
+* [AssertJ](https://assertj.github.io/doc/)
+
+## Password management
+* [Spring-security](https://spring.io/projects/spring-security)
 ## Style
-
 * [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference)
-* [Bootstrap](https://github.com/dicolar/jbootx)
+* [MaterialFX](https://github.com/palexdev/MaterialFX)
+* [AnimateFx](https://github.com/Typhon0/AnimateFX)
 
 <!-- ABOUT THE PROJECT -->
 
 # Wuav Management Application
 
 
-# Application design
+# Simplified class diagram
 
-Application mock-up designed in Figma
+![Screenshot 2023-05-23 at 13 36 50](https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/3b9c8258-c1a9-4894-80f3-374cdc3db2b6)
 
-# Database design
+# Database diagram
 
 MSSQL Database diagram
 
-
-# UML diagram
+<img width="1044" alt="Screenshot 2023-05-23 at 13 34 21" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/f9591967-6285-47c1-89c5-be0cc09345f3">
 
 
 ## Application design patterns
 
 - [x] Singleton pattern
-- [x] Dependency injection pattern
-
+- [x] Factory pattern
+- [x] Strategy pattern
+- [x] Inversion of control pattern
+- [x] Model-view-controller pattern
+- [x] Service-Repository pattern
+- [x] Facade pattern
+- [x] Builder pattern
 
 ## Application interface
 
 #### Dashboard page
+
+
 
 
 ## Licence
