@@ -41,11 +41,11 @@ Please let me know if you need any further information or if there's anything sp
 
 <div style="display: flex; align-items: center;">
   <div style="display: inline-block; text-align: center;">
-    <img width="300" alt="Screenshot 2023-05-23 at 14 32 26" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/6234f48d-15b6-45f9-8d74-7d54ac701737">
+    <img width="500" alt="Screenshot 2023-05-23 at 14 32 26" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/6234f48d-15b6-45f9-8d74-7d54ac701737">
     <span>Desktop application</span>
   </div>
   <div style="display: inline-block; text-align: center;">
-    <img width="300" alt="Screenshot 2023-05-23 at 14 22 45" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/840e3a78-cce1-469f-9258-241f34826ae7">
+    <img width="500" alt="Screenshot 2023-05-23 at 14 22 45" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/840e3a78-cce1-469f-9258-241f34826ae7">
     <span>Swift application</span>
   </div>
 </div>
