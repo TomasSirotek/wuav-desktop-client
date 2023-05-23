@@ -13,12 +13,11 @@
 
 ---
 
-![final_mock](https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/6c338654-4584-4588-847a-99f92821495e)
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://user-images.githubusercontent.com/72190589/207565741-1867a0a5-7bd6-46c8-a985-6e0ac64e4cac.png">
-
+ <a href="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/0dfec5c5-db98-4bf6-b558-c5e2a6bb3a12">
+    <img src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/0dfec5c5-db98-4bf6-b558-c5e2a6bb3a12" alt="Logo" width="250">
   </a>
   <p align="center">
     WUAV Desktop Management Application
@@ -26,6 +25,8 @@
     <a href="https://github.com/TomassSimko/Private-Movie-Collection"><strong>Explore the docs »</strong></a>
     <br />
   </p>
+
+![final_mock](https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/6c338654-4584-4588-847a-99f92821495e)
 
 
 ## The Brief
@@ -148,10 +149,91 @@ https://github.com/TomassSimko/wuav-app
 * [MaterialFX](https://github.com/palexdev/MaterialFX)
 * [AnimateFx](https://github.com/Typhon0/AnimateFX)
 
+
+## Resources used for the project design 
+* [FlatIcon](https://www.flaticon.com/)
+* [Icons8](https://icons8.com/)
+* [Dribble](https://dribbble.com/)
+* [Pinterest](https://www.pinterest.com/)
+* [Behance](https://www.behance.net/)
+* [Apple](https://www.apple.com/)
+* [Figma](https://www.figma.com/)
+* [GmailAPI-video-that-helped-me](https://www.youtube.com/watch?v=xtZI23hxetw&ab_channel=SebastianDaschner)
 <!-- ABOUT THE PROJECT -->
 
-# Wuav Management Application
 
+## About The Project
+## Color pallet 
+This is the primary color pallet for the overall product design
+
+<img width="1112" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/cd36ce8c-b9d5-4cf4-9729-a0861dac0381">
+
+## User interface desktop design
+
+Login page
+<img width="1112" alt="Screenshot 2023-05-23 at 19 25 29" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/119d84ef-9df3-4782-b3bf-e64ed7f63900">
+
+Dashboard page
+<img width="1112" alt="Screenshot 2023-05-23 at 19 25 23" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/8f4bc390-18ac-45ba-b2a4-5f27092e4f0b">
+
+Project creation stepper
+<img width="1068" alt="Screenshot 2023-05-23 at 19 30 53" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/b08e8ead-1ed6-471e-a2b1-dfc21ea55077">
+
+## User interface SWIFT design
+
+<div style="display: flex;">
+  <img width="200" alt="Screenshot 1" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/e7d436d3-f373-4db9-8058-17e7adb4664b">
+  <img width="200" alt="Screenshot 2" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/4266d941-ed91-48ab-9336-4e2b8313387f">
+  <img width="200" alt="Screenshot 3" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/224331c7-6806-44dd-a50b-77966462efb3">
+</div>
+
+
+
+## Features and requirements
+
+## PDF generation
+One of the requirements was to be able to generate pdf files from the data that is stored in the database. I have used the ItextPDF library to generate the pdf files. 
+This is the quick result of generated pdf file.
+
+
+## Email templates 
+Application is able to send emails to the users. 
+
+I have used the Google API to send emails. I have used the Thymeleaf library to generate the email templates.
+Build a template for the email that is sent to the user. This is the result of the email template. They are different types of the emails
+
+Installation confirmation,password reset email and email with password when new user is created and password is generated for him.
+
+## QR code generation
+When creating new project in the process of creating new project the QR code is generated for the project.SWIFT application is required to scan the QR code and it will open the project in the application and user can go and take pictures from the phone and upload them to the desktop application.
+Generated imageView is presented to the user interface and read from the application as JSON holding the data about the project and user id.
+``` java
+@Override
+  public byte[] generateQRCodeImage(String barcodeText,int width, int height) throws Exception {
+    QRCodeWriter barcodeWriter = new QRCodeWriter();
+      BitMatrix bitMatrix =
+        barcodeWriter.encode(barcodeText, BarcodeFormat.QR_CODE, width, height);
+        return convertToBytes(MatrixToImageWriter.toBufferedImage(bitMatrix));
+ }
+
+@Override
+  public ImageView generateQRCodeImageView(int userId, String projectName, int width, int height) throws Exception {
+    Map<String, Object> qrData = new HashMap<>();
+
+    qrData.put("userId", userId);
+    qrData.put("projectName", projectName);
+
+    Gson gson = new Gson();
+    String jsonString = gson.toJson(qrData);
+
+    byte[] qrCodeImage = generateQRCodeImage(jsonString, width, height);
+    ByteArrayInputStream inputStream = new ByteArrayInputStream(qrCodeImage);
+    Image image = new Image(inputStream);
+    ImageView imageView = new ImageView(image);
+
+    return imageView;
+ }
+```
 
 # Simplified class diagram
 
