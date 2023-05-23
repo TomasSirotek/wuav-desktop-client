@@ -30,7 +30,7 @@
 
 ## The Brief
 
-The WUAV Mobile Technician Documentation System is a web-based application designed to assist the 7 mobile technicians of WUAV in documenting their work during customer service visits. The system aims to ensure that each installation is thoroughly documented, providing customers with essential documentation for their own reference and future use by technicians.
+The WUAV Mobile Technician Documentation System is a desktop application designed to assist the 7 mobile technicians of WUAV in documenting their work during customer service visits. The system aims to ensure that each installation is thoroughly documented, providing customers with essential documentation for their own reference and future use by technicians.
 
 This was my second semester with duration of 3 weeks in my computer science studies and should represent all thought materials from past two semesters. I wanted to challenge my self and take this project to another level therefore I have created the required desktop application in JavaFX and also created a mobile application in Swift. Both applications are connected to the same database and are using the same RestAPI. Both repositories can be found down below.
 
