@@ -66,7 +66,7 @@ public class UserService implements IUserService {
     public boolean updateUserById(AppUser appUser) {
         boolean isUpdated;
 
-         isUpdated = userRepository.updateUserById(appUser);
+        isUpdated = userRepository.updateUserById(appUser);
 
         if(isUpdated){
             AppUser updatedUser = getUserById(appUser.getId());
@@ -150,7 +150,7 @@ public class UserService implements IUserService {
             // update user password hash
              var isChanged = changeUserPasswordHash(appUser.getId(),newPasswordHash);
              if(isChanged){
-                    // send email
+                 // send email
 
                  String templateName = "email-template-confirm";
                  Map<String, Object> templateVariables = new HashMap<>();

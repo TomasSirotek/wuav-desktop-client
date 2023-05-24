@@ -54,6 +54,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class ProjectActionController  extends RootController implements Initializable {
@@ -237,12 +239,19 @@ public class ProjectActionController  extends RootController implements Initiali
     }
 
     private boolean isValidEmail(String email) {
-        return true;
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
     private boolean isValidPhone(String phone) {
-        return true;
+        String phoneRegex = "^\\+?(?:[1-9]\\d{1,2})?(?:\\(\\d{1,3}\\))?(?:\\d{1,6})?(?:[\\s.-]\\d{1,4}){1,3}$";
+        Pattern pattern = Pattern.compile(phoneRegex);
+        Matcher matcher = pattern.matcher(phone);
+        return matcher.matches();
     }
+
 
     private void updateNotes() {
         if(!editorContent.get().isEmpty()){
@@ -358,7 +367,6 @@ public class ProjectActionController  extends RootController implements Initiali
             AnimationUtil.animateInOut(notificationPane,2, CustomColor.WARNING);
         }
     }
-
 
 
     private void selectFile() {
