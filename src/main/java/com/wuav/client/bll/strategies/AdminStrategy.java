@@ -19,6 +19,9 @@ public class AdminStrategy implements IUserRoleStrategy {
 
     private final String BUTTON_TEXT = "Projects";
 
+    private final String BUTTON_TEXT_DASHBOARD = "View projects";
+    private final String LABEL_TEXT_DASHBOARD = "Projects overview";
+
     private Image defaultImage = new Image(getClass().getClassLoader().getResource("admin.png").toExternalForm());
 
     @Inject
@@ -61,9 +64,17 @@ public class AdminStrategy implements IUserRoleStrategy {
                 storedButton.set(button);
             }
         });
-
-        // clean children in the action hbox and replace with the stored button
         actionToggleHbox.getChildren().clear();
         actionToggleHbox.getChildren().add(storedButton.get());
+    }
+
+    @Override
+    public String getDashboardButtonText() {
+        return BUTTON_TEXT_DASHBOARD;
+    }
+
+    @Override
+    public String getDashboardMainText() {
+        return LABEL_TEXT_DASHBOARD;
     }
 }

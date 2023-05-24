@@ -19,4 +19,7 @@ public interface IUserRoleStrategy {
 
     void swapButtons(HBox exportToggleHbox, HBox actionToggleHbox);
 
+    String getDashboardButtonText();
+
+    String getDashboardMainText();
 }

@@ -7,40 +7,23 @@ import com.google.inject.Inject;
 
 import com.wuav.client.gui.entities.DashboardData;
 import com.wuav.client.gui.models.user.CurrentUser;
-import javafx.application.Platform;
-import javafx.embed.swing.SwingNode;
+import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
-
-
 import java.net.URL;
 import java.util.*;
-
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.data.statistics.HistogramDataset;
-
 import javafx.scene.layout.GridPane;
-import org.jfree.data.xy.IntervalXYDataset;
-import org.jfree.data.xy.XYBarDataset;
 
 public class DashboardController extends RootController implements Initializable {
 
     @FXML
-    public Label plansCount;
+    public Label plansCount,projectLabelMain3,deviceCount,totalProjectCount;
     @FXML
-    private Label deviceCount;
-    @FXML
-    private Label totalProjectCount;
+    private GridPane pane;
 
+    @FXML
+    private MFXButton dashboardToggle;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -53,15 +36,21 @@ public class DashboardController extends RootController implements Initializable
         totalProjectCount.setText(String.valueOf(data.totalProjects()));
         plansCount.setText(String.valueOf(data.amountOfPlansUploaded()));
         deviceCount.setText(String.valueOf(data.totalDeviceUser()));
-        data.recentCustomers().forEach(System.out::println);
+        projectLabelMain3.setText(userRoleStrategy.getDashboardMainText());
+        swapButtonsInNonTechnicianRole();
     }
 
+    /**
+     * This method is used swap the buttons when the user is not a technician in order with beautiful strategy pattern
+     * to disallow the user to create projects
+     */
+    private void swapButtonsInNonTechnicianRole() {
+        IUserRoleStrategy strategy = CurrentUser.getInstance().getUserRoleStrategy();
+        dashboardToggle.setText(strategy.getDashboardButtonText());
+    }
     @Inject
     public DashboardController() {
-
     }
-
-
 
 
 

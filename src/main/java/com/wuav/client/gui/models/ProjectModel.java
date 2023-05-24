@@ -44,7 +44,7 @@ public class ProjectModel implements IProjectModel{
 
         if (projects == null) {
             projects = projectService.getAllProjects();
-           // cacheProjectsImages(projects);
+            cacheProjectsImages(projects);
             projectsCache.put(ALL_PROJECTS_KEY, projects);
         }
 
@@ -56,7 +56,7 @@ public class ProjectModel implements IProjectModel{
 
         if (projects == null) {
             projects = projectService.getProjectsByUserId(userId);
-          //  cacheProjectsImages(projects);
+            cacheProjectsImages(projects);
             projectsCache.put(userId, projects);
         }
         return projects;

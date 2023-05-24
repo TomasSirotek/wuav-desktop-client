@@ -25,7 +25,6 @@ module com.wuav.client {
     requires thymeleaf;
     requires net.coobird.thumbnailator;
     requires spring.security.crypto;
-    requires sendgrid.java;
     requires google.api.client;
     requires com.google.api.client.extensions.jetty.auth;
     requires com.google.api.client.auth;
@@ -37,7 +36,6 @@ module com.wuav.client {
     requires okhttp3;
     requires AnimateFX;
     requires org.jsoup;
-    requires org.jfree.jfreechart;
     requires javafx.swing;
 
     exports com.wuav.client.gui.controllers to  com.google.guice, javafx.fxml, com.google.common,org.apache.pdfbox,org.controlsfx.controls;
