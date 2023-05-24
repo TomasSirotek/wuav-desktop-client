@@ -156,6 +156,7 @@ https://github.com/TomassSimko/wuav-app
 * [Behance](https://www.behance.net/)
 * [Apple](https://www.apple.com/)
 * [Figma](https://www.figma.com/)
+* [DiceBear](https://avatars.dicebear.com/)
 * [GmailAPI-video-that-helped-me](https://www.youtube.com/watch?v=xtZI23hxetw&ab_channel=SebastianDaschner)
 <!-- ABOUT THE PROJECT -->
 
@@ -260,6 +261,9 @@ MSSQL Database diagram
 ## Licence
 
 Distributed under the MIT License. See LICENSE for more information.
+I have created this project for learning purposes and exam project with passion and having lots of pain and fun !
+
+If by any change you will find any of the code useful for you please feel free to use it or distribute it.
 
 Team: Just me :) <br>
 2023 SDE & SCO cs project posted here on GitHub. <br>
@@ -271,7 +275,7 @@ TTT :black_nib:
 
 Tomas Simko - [@twitter](https://twitter.com/TomasSimko_) -simko.t@email.cz - [@linkedIn](https://www.linkedin.com/in/tomas-simko/)
 
-Project Link: 
+Project Link: https://github.com/TomassSimko/wuav-desktop-client
 
 
 <!-- MARKDOWN LINKS & IMAGES -->

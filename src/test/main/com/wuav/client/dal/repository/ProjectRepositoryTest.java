@@ -15,7 +15,6 @@ public class ProjectRepositoryTest {
     private static final int EXISTING_PROJECT_ID = 911577009;
 
 
-
     @Test
     void testGetAllProjects() throws Exception {
         ProjectRepository projectRepository = new ProjectRepository();
