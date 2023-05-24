@@ -123,7 +123,6 @@ public class ModalActionController extends RootController implements Initializab
     private Image fileImage = new Image("/image.png");
     private final IControllerFactory controllerFactory;
 
-
     private final int CURRENT_USER_ID = CurrentUser.getInstance().getLoggedUser().getId();
     private ImageOperationFacade imageOperationFacade = new ImageOperationFacade(CURRENT_USER_ID);
     private final int BARCODE_WIDTH = 200;
@@ -163,7 +162,6 @@ public class ModalActionController extends RootController implements Initializab
                     for (Image image : images) {
                         addImageToSelectedImageVBox(image);
                     }
-
                     uploadProgress.setVisible(false);
                     uploadTextProgress.setVisible(false);
                     imagesPaneFinal.getChildren().clear();
@@ -263,13 +261,17 @@ public class ModalActionController extends RootController implements Initializab
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         eventBus.register(this);
+        setupActions();
         setupEditor();
-        selectFile.setOnAction(e -> selectFile());
-        deviceCrudToggle.setOnAction(e -> openDeviceWindow(false,null));
         fillClientTypeChooseField();
         handleProgressSwitch();
         setupSearchField();
         closeStage();
+    }
+
+    private void setupActions() {
+        selectFile.setOnAction(e -> selectFile());
+        deviceCrudToggle.setOnAction(e -> openDeviceWindow(false,null));
     }
 
 
@@ -494,7 +496,6 @@ public class ModalActionController extends RootController implements Initializab
             }
         });
 
-
         backBtn.setOnAction(e -> {
             if (currentTab[0] > 0) {
                 tabs[currentTab[0]].setDisable(true);
@@ -622,6 +623,7 @@ public class ModalActionController extends RootController implements Initializab
         return isValid;
 
     }
+
 
     private boolean validateFourthTab() {
         // Implement validation logic for the fourth tab here
@@ -761,7 +763,7 @@ public class ModalActionController extends RootController implements Initializab
                 clientZipField.getText().trim()
         );
 
-        // HERE IT HAS TO BE CHANGE DEPENDING ON WHICH CLIENT TOOGLE IS SELECTED
+        // HERE IT HAS TO BE CHANGE DEPENDING ON WHICH CLIENT TOGGLE IS SELECTED
          ClientType clientType = ClientType.PRIVATE;
          if(businessToggleSelected) clientType = ClientType.BUSINESS;
          if(individualToggleSelected) clientType = ClientType.PRIVATE;
@@ -794,6 +796,7 @@ public class ModalActionController extends RootController implements Initializab
                 customerDTO,
                 selectedDevices
         );
+
 
         int currentUserId = CurrentUser.getInstance().getLoggedUser().getId();
 

@@ -17,7 +17,7 @@ public class ProjectRepositoryTest {
 
     private static final int EXISTING_USER_ID = 1;
 
-    private static final int EXISTING_PROJECT_ID = 1213581070;
+    private static final int EXISTING_PROJECT_ID = 911577009;
 
     @Test
     void testGetAllProjects() throws Exception {
