@@ -203,7 +203,6 @@ public class DeviceCrudController extends RootController implements Initializabl
         stage.close();
     }
 
-    // THIS PART WAS RUSHED HAS TO BE REFACTORED
     private void deviceCall(Device device) {
         Boolean isDeviceCreated;
         try {

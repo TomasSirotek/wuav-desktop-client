@@ -203,6 +203,12 @@ Build a template for the email that is sent to the user. This is the result of t
 
 Installation confirmation,password reset email and email with password when new user is created and password is generated for him.
 
+## Language model implementation
+I have added a extra feature to the device creation where Technicians can create devices and in case of the emergency they can go and ask relevant question to he API i have implement as a Wuav chat bot. 
+This is the result of the chat bot.
+
+##### PUT IT HERE 
+
 ## QR code generation
 When creating new project in the process of creating new project the QR code is generated for the project.SWIFT application is required to scan the QR code and it will open the project in the application and user can go and take pictures from the phone and upload them to the desktop application.
 Generated imageView is presented to the user interface and read from the application as JSON holding the data about the project and user id.

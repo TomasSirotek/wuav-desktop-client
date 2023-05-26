@@ -74,7 +74,6 @@ public class ProjectRepositoryTest {
         ProjectRepository projectRepository = new ProjectRepository();
         SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession();
 
-        // CONTINUE LATER
         // Add the project to the user
         projectRepository.addProjectToUser(session, EXISTING_USER_ID, EXISTING_PROJECT_ID);
 
