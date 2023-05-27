@@ -137,7 +137,7 @@ public class ImageOperationFacade implements IImageOperationService<ImageDTO> {
                     ImageDTO imageDTO = new ImageDTO();
                     imageDTO.setId(UniqueIdGenerator.generateUniqueId());
                     imageDTO.setFile(tempFile);
-                    imageDTO.setMain(false); // You can set this property based on your needs
+                    imageDTO.setMain(false);
 
                     imagesFromApp.add(imageDTO);
                     fileIndex++;

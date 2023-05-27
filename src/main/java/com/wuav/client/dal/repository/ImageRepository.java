@@ -49,7 +49,7 @@ public class ImageRepository implements IImageRepository {
     public boolean createImage(SqlSession session,int imageId, String imageType, String imageUrl) throws Exception {
         try {
             IImageMapper mapper = session.getMapper(IImageMapper.class);
-            return mapper.createImage(imageId, imageType, imageUrl) > 0; // needs more validation
+            return mapper.createImage(imageId, imageType, imageUrl) > 0;
         } catch (PersistenceException ex) {
             logger.error("An error occurred mapping tables", ex);
             throw new Exception(ex);

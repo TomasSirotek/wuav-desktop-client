@@ -628,7 +628,7 @@ public class ModalActionController extends RootController implements Initializab
 
     // END OF VALIDATIONS
 
-    // show transaction erro however that is just apple not liking javaFx and its not a real error
+    // show transaction error however that is just apple not liking javaFx and it's not a real error
     private void selectFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select File");
@@ -644,7 +644,7 @@ public class ModalActionController extends RootController implements Initializab
             selectedImage.setFitHeight(600);
             selectedImage.setFitHeight(500);
 
-            selectedImageFile = selectedFile; // SET TO SELECTED IMAGE
+            selectedImageFile = selectedFile; // sets to selected file to be used later
 
             selectedImage.setImage(new javafx.scene.image.Image(selectedFile.toURI().toString()));
             selectedImage.setSmooth(true);
@@ -653,7 +653,6 @@ public class ModalActionController extends RootController implements Initializab
             selectFile.setDisable(true);
             changeSelectedFileHBox();
         }
-
     }
 
     /**

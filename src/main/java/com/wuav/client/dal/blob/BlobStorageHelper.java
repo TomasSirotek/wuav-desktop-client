@@ -39,8 +39,6 @@ public class BlobStorageHelper {
         return new CustomImage(imageId,extension,blobClient.getBlobUrl());
 
     }
-
-
     public Image downloadImageFromBlobStorage(BlobContainerClient containerClient, String blobUrl) throws Exception {
         URL url;
         try {
@@ -59,7 +57,6 @@ public class BlobStorageHelper {
         byte[] imageBytes = outputStream.toByteArray();
         return new Image(new ByteArrayInputStream(imageBytes));
     }
-
     public boolean deleteImageIfExist(String imageUrl) throws Exception{
         try {
             URL url = new URL(imageUrl);

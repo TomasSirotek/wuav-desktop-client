@@ -53,7 +53,7 @@ public class ConfigModule extends AbstractModule {
          **************************************************************************
 
         /*
-         * Injection of movie service
+         * Injection of the services
          */
         bind(IUserService.class).to(UserService.class);
 
@@ -85,7 +85,6 @@ public class ConfigModule extends AbstractModule {
 
         bind(IUserModel.class).to(UserModel.class).in(Singleton.class);
         bind(StageManager.class).asEagerSingleton();
-
 
         bind(IUserRepository.class).to(UserRepository.class);
         bind(IProjectRepository.class).to(ProjectRepository.class);
