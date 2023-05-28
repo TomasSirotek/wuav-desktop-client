@@ -15,9 +15,9 @@ import static org.mockito.Mockito.*;
 
 public class ProjectRepositoryTest {
 
-    private static final int EXISTING_USER_ID = 1;
+    private static final int EXISTING_USER_ID = 4;
 
-    private static final int EXISTING_PROJECT_ID = 911577009;
+    private static final int EXISTING_PROJECT_ID = 134473347;
 
     @Test
     void testGetAllProjects() throws Exception {
@@ -76,7 +76,7 @@ public class ProjectRepositoryTest {
 
         // Add the project to the user
         projectRepository.addProjectToUser(session, EXISTING_USER_ID, EXISTING_PROJECT_ID);
-
+        session.commit();
         // Retrieve the user's projects again
         List<Project> userProjects = projectRepository.getAllProjectsByUserId(EXISTING_USER_ID);
 

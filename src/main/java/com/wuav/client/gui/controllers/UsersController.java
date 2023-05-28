@@ -153,7 +153,7 @@ public class UsersController extends RootController implements Initializable {
             errorLabel.setText(event.getMessage());
             boolean isSuccess = (boolean) event.getData();
             if(!isSuccess) AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
-            if(isSuccess) AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
+            else AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
         }
     }
 

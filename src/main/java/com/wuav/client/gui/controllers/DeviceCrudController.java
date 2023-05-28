@@ -194,7 +194,6 @@ public class DeviceCrudController extends RootController implements Initializabl
                 AlertHelper.showDefaultAlert("Please fill all the fields", Alert.AlertType.WARNING);
             }
         }
-
     }
 
     private void finishAndClose() {

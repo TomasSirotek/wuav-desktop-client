@@ -109,15 +109,16 @@ public class UserService implements IUserService {
                 if(appRole != null){
                     int roleId = appRole.getId();
                     int userRoleResult = userRepository.addUserToRole(userId,roleId);
-                    finalResult = userResult > 0 && userRoleResult > 0;
-                    // logic is here still has to be fixe
+                    if(userRoleResult > 0){
+                        try {
+                            finalResult = sendRecoveryEmail(email);
+                        } catch (GeneralSecurityException | IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
             }
-            try {
-                finalResult = sendRecoveryEmail(email);
-            } catch (GeneralSecurityException | IOException e) {
-                throw new RuntimeException(e);
-            }
+
         }
         return finalResult;
     }
