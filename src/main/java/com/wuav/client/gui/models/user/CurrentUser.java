@@ -6,7 +6,6 @@ import com.wuav.client.bll.services.interfaces.IUserService;
 import com.wuav.client.bll.strategies.interfaces.IUserRoleStrategy;
 
 public class CurrentUser {
-
     private AppUser currentUser = null;
     private IUserRoleStrategy userRoleStrategy = null;
     private static volatile CurrentUser instance;
@@ -41,3 +40,4 @@ public class CurrentUser {
         this.currentUser = null;
     }
 }
+

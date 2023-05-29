@@ -186,13 +186,16 @@ Project creation stepper
   <img width="250" alt="Screenshot 3" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/224331c7-6806-44dd-a50b-77966462efb3">
 </div>
 
-
-
-## Features and requirements
+# Features and requirements
 
 ## PDF generation
 One of the requirements was to be able to generate pdf files from the data that is stored in the database. I have used the ItextPDF library to generate the pdf files. 
 This is the quick result of generated pdf file.
+
+<div style="display: flex;">
+  <img width="400" alt="Screenshot 1" src="https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/36d26d2f-fe25-4739-a322-73942c77711e">
+  <img width="400" alt="Screenshot 2" src="https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/28fd1389-01e8-460b-9fe7-9cdecb496da2">
+</div>
 
 
 ## Email templates 
@@ -201,13 +204,25 @@ Application is able to send emails to the users.
 I have used the Google API to send emails. I have used the Thymeleaf library to generate the email templates.
 Build a template for the email that is sent to the user. This is the result of the email template. They are different types of the emails
 
-Installation confirmation,password reset email and email with password when new user is created and password is generated for him.
+Installation confirmation,password reset email and email with password when new user is created and password is generated.
+
+<div >
+  <img alt="Screenshot 1" src="https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/3026bf80-f018-4516-be64-c76a59e2abf6">
+  <img  alt="Screenshot 2" src="https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/c1b69fc6-c0da-4a33-9cee-81d729b99a3e">
+</div>
+
 
 ## Language model implementation
-I have added a extra feature to the device creation where Technicians can create devices and in case of the emergency they can go and ask relevant question to he API i have implement as a Wuav chat bot. 
-This is the result of the chat bot.
+I have added an extra feature to the device creation where Technicians can create devices and in case of the emergency they can go and ask relevant question to the API that I have called as a Wuav chatbot. 
+This is the result of the chatbot while creating the devices to the project.
 
-##### PUT IT HERE 
+I have used this free API to create the chatbot.
+
+https://free.churchless.tech/v1/chat/completions
+
+<div style="display: flex;">
+  <img  alt="Screenshot 1" src="https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/0e53daad-9235-4692-a450-794553f48d22">
+</div>
 
 ## QR code generation
 When creating new project in the process of creating new project the QR code is generated for the project.SWIFT application is required to scan the QR code and it will open the project in the application and user can go and take pictures from the phone and upload them to the desktop application.
@@ -262,7 +277,69 @@ MSSQL Database diagram
 - [x] Facade pattern
 - [x] Builder pattern
 
+## Initialization steps 
+These steps are for academy purpose only. You can still go and play with the code however it won't run without the database and the server or the credentials.
 
+### Java desktop
+
+1. Clone the repository 
+   ```sh
+   git clone https://github.com/TomassSimko/wuav-desktop-client
+    ```
+   or
+    ```sh
+   Open the provided zip file with the project
+   ```
+
+2. Open the project in your IDE
+3. Run Maven install
+4. Make sure you include .cfg and .json token files in the resources root folder (for academy!)
+5. Make sure that root folder includes tokens folder with credentials for OAuth (Gmail)
+6. VM options for the application
+   ```sh
+   --add-modules jdk.httpserver --add-exports=jdk.internal.httpserver/jdk.internal.http
+   ```
+   or
+   1. Navigate to run configurations
+   2. Edit configuration modify options add VM options
+   3. Add VM option
+    ```sh
+    --add-modules jdk.httpserver --add-exports=jdk.internal.httpserver/jdk.internal.http
+    ```
+7. Add ENV paths 
+    ```sh
+    CONFIG_BLOB = {$path to the config file}
+    GMAIL_PATH= {$path to the gmail config file}
+    ```
+8. Run the application
+
+### Minimal RestAPI C#
+
+1. Clone the repository 
+   ```sh
+   git clone https://github.com/TomassSimko/wuav-api
+    ```
+2. Make sure you have installed .NET SDK
+3. Open the project in your IDE
+4. Run the application
+    ```sh
+    dotnet watch run
+    ```
+
+### SWIFT application
+Normally I would use .plist file to store the API url however for the academy purpose I have decided to use the port number as a variable that can be changed in the code.
+
+1. Clone the repository 
+   ```sh
+   git clone https://github.com/TomassSimko/wuav-app
+    ```
+2. Open the project in XCode IDE
+3. Enter correct port number for the server in UploadView.swift file
+    ``` swift
+      @State private var portAPI: String = "http://{$port_number}:5000"
+   ```
+   Note: this {$port_number} has to be the same port number as the one you are running the simulator on (your IP address) otherwise it won't work with running API. 
+4. Run the application on your device (Require setting up the developer account etc...)
 
 ## Licence
 
