@@ -29,6 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * The class ExportController.
+ */
 public class ExportController extends RootController implements Initializable {
 
 
@@ -50,6 +53,13 @@ public class ExportController extends RootController implements Initializable {
 
     private final StageManager stageManager;
 
+    /**
+     * Instantiates a new Export controller.
+     *
+     * @param projectModel      the project model
+     * @param controllerFactory the controller factory
+     * @param stageManager      the stage manager
+     */
     @Inject
     public ExportController(IProjectModel projectModel, IControllerFactory controllerFactory, StageManager stageManager) {
         this.projectModel = projectModel;
@@ -57,6 +67,12 @@ public class ExportController extends RootController implements Initializable {
         this.stageManager = stageManager;
     }
 
+    /**
+     * Initialize.
+     *
+     * @param url            the url
+     * @param resourceBundle the resource bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         exportActionBtn.setOnAction(e -> exportDocument());
@@ -104,10 +120,6 @@ public class ExportController extends RootController implements Initializable {
         exportPane.setContent(gridPane);
     }
 
-
-    /**
-     * This method is called when the user clicks on the export button
-     */
     private void exportDocument() {
         openBuilderView();
     }
@@ -137,8 +149,6 @@ public class ExportController extends RootController implements Initializable {
         return controllerFactory.loadFxmlFile(viewType);
     }
 
-
-
     private RootController tryToLoadView(ViewType viewType) {
         try {
             return loadNodesView(viewType);
@@ -146,8 +156,6 @@ public class ExportController extends RootController implements Initializable {
             throw new RuntimeException(e);
         }
     }
-
-
 
 
 }

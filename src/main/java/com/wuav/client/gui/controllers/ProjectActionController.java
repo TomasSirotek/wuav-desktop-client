@@ -21,7 +21,6 @@ import com.wuav.client.gui.utils.enums.IConType;
 import com.wuav.client.gui.utils.event.CustomEvent;
 import com.wuav.client.gui.utils.validations.FormField;
 import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXProgressSpinner;
 import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.beans.property.SimpleStringProperty;
@@ -44,7 +43,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,8 +55,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-public class ProjectActionController  extends RootController implements Initializable {
+/**
+ * The class ProjectActionController.
+ */
+public class ProjectActionController extends RootController implements Initializable {
 
     @FXML
     private HBox editNameHbox;
@@ -70,17 +70,17 @@ public class ProjectActionController  extends RootController implements Initiali
     @FXML
     private ImageView notificationImage;
     @FXML
-    private Label errorLabel,fileName,projectNameField;
+    private Label errorLabel, fileName, projectNameField;
     @FXML
-    private MFXButton uploadBtn,cancelBtn,expand1,expand2,expandBtn,updateClient,updateBtnNotes,selectFile;
+    private MFXButton uploadBtn, cancelBtn, expand1, expand2, expandBtn, updateClient, updateBtnNotes, selectFile;
     @FXML
     private HBox newFileUploadBox;
     @FXML
     private VBox editorBox;
     @FXML
-    private ImageView firstUploadedImage,secondUploadedImage,selectedImage;
+    private ImageView firstUploadedImage, secondUploadedImage, selectedImage;
     @FXML
-    private MFXTextField clientNameField,clientEmailField,clientPhoneField,clientCityField;
+    private MFXTextField clientNameField, clientEmailField, clientPhoneField, clientCityField;
     @FXML
     private MFXScrollPane deviceForProjectList;
     @FXML
@@ -107,6 +107,13 @@ public class ProjectActionController  extends RootController implements Initiali
     private List<HBox> deviceDetailsList = new ArrayList<>();
 
 
+    /**
+     * Instantiates a new Project action controller.
+     *
+     * @param controllerFactory the controller factory
+     * @param projectModel      the project model
+     * @param eventBus          the event bus
+     */
     @Inject
     public ProjectActionController(IControllerFactory controllerFactory, IProjectModel projectModel, EventBus eventBus) {
         this.controllerFactory = controllerFactory;
@@ -114,6 +121,12 @@ public class ProjectActionController  extends RootController implements Initiali
         this.eventBus = eventBus;
     }
 
+    /**
+     * Initialize
+     *
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         eventBus.register(this);
@@ -154,15 +167,16 @@ public class ProjectActionController  extends RootController implements Initiali
             clearEditName();
         });
 
-        editNameHbox.setPadding(new Insets(0,0,0,10));
-        editNameHbox.getChildren().setAll(textField,saveBtn,cancelBtn);
+        editNameHbox.setPadding(new Insets(0, 0, 0, 10));
+        editNameHbox.getChildren().setAll(textField, saveBtn, cancelBtn);
 
     }
 
     private void updateProjectName(String newName) {
-        if(newName.equals(projectNameField.getText())) displayNotification(false,"Project name is the same! Cannot update project name!");
+        if (newName.equals(projectNameField.getText()))
+            displayNotification(false, "Project name is the same! Cannot update project name!");
         else {
-           String updateName = tryUpdateName(newName);
+            String updateName = tryUpdateName(newName);
             if (!updateName.isEmpty()) {
                 displayNotification(true, "Project name updated successfully!");
                 projectNameField.setText(newName);
@@ -173,39 +187,39 @@ public class ProjectActionController  extends RootController implements Initiali
 
     }
 
-    private void clearEditName(){
+    private void clearEditName() {
         editNameHbox.getChildren().clear();
         Label label = new Label(projectNameField.getText());
-        label.setPadding(new Insets(0,0,0,0));
+        label.setPadding(new Insets(0, 0, 0, 0));
         label.setStyle("-fx-font-size: 28px;");
         editNameHbox.getChildren().setAll(label);
     }
 
     private void updateClient() {
 
-      if(validateFields()) {
-          PutAddressDTO addressDTO = new PutAddressDTO(
-                  currentProject.getCustomer().getAddress().getId(),
-                  clientAddress.getText(),
-                  clientCityField.getText(),
-                  clientPhoneField.getText()
-          );
+        if (validateFields()) {
+            PutAddressDTO addressDTO = new PutAddressDTO(
+                    currentProject.getCustomer().getAddress().getId(),
+                    clientAddress.getText(),
+                    clientCityField.getText(),
+                    clientPhoneField.getText()
+            );
 
-          PutCustomerDTO customerDTO = new PutCustomerDTO(
-                  currentProject.getCustomer().getId(),
-                  clientNameField.getText(),
-                  clientEmailField.getText(),
-                  clientPhoneField.getText(),
-                  clientTypeChooseField.getSelectionModel().getSelectedItem().toString(),
-                  addressDTO
-          );
+            PutCustomerDTO customerDTO = new PutCustomerDTO(
+                    currentProject.getCustomer().getId(),
+                    clientNameField.getText(),
+                    clientEmailField.getText(),
+                    clientPhoneField.getText(),
+                    clientTypeChooseField.getSelectionModel().getSelectedItem().toString(),
+                    addressDTO
+            );
 
-          Customer updatedCustomer = projectModel.updateCustomer(customerDTO);
-          if (updatedCustomer != null) {
-              displayNotification(true,"Customer updated successfully");
-              currentProject.setCustomer(updatedCustomer);
-          }
-      }
+            Customer updatedCustomer = projectModel.updateCustomer(customerDTO);
+            if (updatedCustomer != null) {
+                displayNotification(true, "Customer updated successfully");
+                currentProject.setCustomer(updatedCustomer);
+            }
+        }
 
     }
 
@@ -217,20 +231,20 @@ public class ProjectActionController  extends RootController implements Initiali
                 new FormField(clientTypeChooseField, "Client type is required"),
                 new FormField(clientPhoneField, "Client phone is required", this::isValidPhone, "Invalid phone number format"),
                 new FormField(clientCityField, "Client city is required")
-                );
+        );
 
         for (FormField field : fieldsToValidate) {
             if (field.getText().isEmpty()) {
-                displayNotification(false,field.getErrorMessage());
+                displayNotification(false, field.getErrorMessage());
                 isValid = false;
             } else if (field.getValidationFunction() != null && !field.getValidationFunction().validate(field.getText())) {
-                displayNotification(false,field.getErrorMessage());
+                displayNotification(false, field.getErrorMessage());
                 isValid = false;
             }
         }
 
         if (clientTypeChooseField.getSelectionModel().isEmpty()) {
-            displayNotification(false,"Client type required");
+            displayNotification(false, "Client type required");
             isValid = false;
         }
 
@@ -254,14 +268,14 @@ public class ProjectActionController  extends RootController implements Initiali
 
 
     private void updateNotes() {
-        if(!editorContent.get().isEmpty()){
-           String content = tryUpdatedNotes();
-           if(!content.isEmpty()){
-               editorContent.set(content);
-               displayNotification(true,"Notes updated successfully");
-              }else{
-               displayNotification(false,"Something went wrong, please try again later");
-           }
+        if (!editorContent.get().isEmpty()) {
+            String content = tryUpdatedNotes();
+            if (!content.isEmpty()) {
+                editorContent.set(content);
+                displayNotification(true, "Notes updated successfully");
+            } else {
+                displayNotification(false, "Something went wrong, please try again later");
+            }
         }
     }
 
@@ -269,7 +283,7 @@ public class ProjectActionController  extends RootController implements Initiali
         try {
             return projectModel.updateNotes(currentProject.getId(), editorContent.get().trim());
         } catch (Exception e) {
-            displayNotification(false,"Something went wrong, please try again later");
+            displayNotification(false, "Something went wrong, please try again later");
             return "";
         }
     }
@@ -278,11 +292,16 @@ public class ProjectActionController  extends RootController implements Initiali
         try {
             return projectModel.updateProjectName(currentProject.getId(), newName);
         } catch (Exception e) {
-            displayNotification(false,"Something went wrong, please try again later");
+            displayNotification(false, "Something went wrong, please try again later");
             return "";
         }
     }
-    // if router here set all the info
+
+    /**
+     * Sets the current project.
+     *
+     * @param project the project
+     */
     public void setCurrentProject(Project project) {
         currentProject = project;
         projectNameField.setText(currentProject.getName());
@@ -323,14 +342,13 @@ public class ProjectActionController  extends RootController implements Initiali
             });
 
             // Create an HBox for the device details
-            HBox deviceDetails = new HBox(deviceTypeName, deviceTypeLabel,editButton);
+            HBox deviceDetails = new HBox(deviceTypeName, deviceTypeLabel, editButton);
             deviceDetails.setSpacing(10);
             deviceDetails.setStyle("-fx-min-height: 20px; -fx-alignment: CENTER_LEFT;");
 
             // Add the device details HBox to the list
             deviceDetailsList.add(deviceDetails);
         });
-
 
 
         VBox scrollPaneContent = new VBox();
@@ -358,13 +376,13 @@ public class ProjectActionController  extends RootController implements Initiali
         });
     }
 
-    private void displayNotification(boolean isSuccess,String message){
+    private void displayNotification(boolean isSuccess, String message) {
         errorLabel.setText(message);
-        if(isSuccess){
-            AnimationUtil.animateInOut(notificationPane,2, CustomColor.SUCCESS);
-          notificationImage.setImage(new Image(IConType.SUCCESS.getStyle()));
-        }else {
-            AnimationUtil.animateInOut(notificationPane,2, CustomColor.WARNING);
+        if (isSuccess) {
+            AnimationUtil.animateInOut(notificationPane, 2, CustomColor.SUCCESS);
+            notificationImage.setImage(new Image(IConType.SUCCESS.getStyle()));
+        } else {
+            AnimationUtil.animateInOut(notificationPane, 2, CustomColor.WARNING);
         }
     }
 
@@ -378,7 +396,7 @@ public class ProjectActionController  extends RootController implements Initiali
         );
         // show open file dialog<<
         File selectedFile = fileChooser.showOpenDialog(getStage());
-        if(selectedFile != null) {
+        if (selectedFile != null) {
             // set image fit to width and height
             selectedImage.setPreserveRatio(true);
             selectedImage.setFitHeight(600);
@@ -430,7 +448,7 @@ public class ProjectActionController  extends RootController implements Initiali
 
         task.setOnSucceeded(event -> {
             mainImage = task.getValue();
-            displayNotification(true,"Image re-upload successfully");
+            displayNotification(true, "Image re-upload successfully");
             cancelUpload();
         });
 
@@ -440,6 +458,7 @@ public class ProjectActionController  extends RootController implements Initiali
 
         new Thread(task).start();
     }
+
     private void cancelUpload() {
         newFileUploadBox.setVisible(false);
         fileName.setText("");
@@ -448,8 +467,7 @@ public class ProjectActionController  extends RootController implements Initiali
     }
 
 
-
-    private void previewImage(Image image ) {
+    private void previewImage(Image image) {
         // open new scene with image inside
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);

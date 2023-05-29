@@ -3,7 +3,6 @@ package com.wuav.client.gui.controllers;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
-import com.wuav.client.be.Project;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.EventType;
 import com.wuav.client.bll.helpers.ViewType;
@@ -40,6 +39,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * The class UsersController.
+ */
 public class UsersController extends RootController implements Initializable {
     @FXML
     private TextField queryField;
@@ -55,10 +57,10 @@ public class UsersController extends RootController implements Initializable {
     private Pane notificationPane;
     private final EventBus eventBus;
     @FXML
-    private TableColumn<AppUser,String> colName,colEmail,colRole,colDate;
+    private TableColumn<AppUser, String> colName, colEmail, colRole, colDate;
 
     @FXML
-    private TableColumn<AppUser,String> colEdit;
+    private TableColumn<AppUser, String> colEdit;
 
     private final IUserModel userModel;
 
@@ -66,7 +68,13 @@ public class UsersController extends RootController implements Initializable {
 
     private boolean isSettings = false;
 
-
+    /**
+     * Instantiates a new Users controller.
+     *
+     * @param userModel         the user model
+     * @param controllerFactory the controller factory
+     * @param eventBus          the event bus
+     */
     @Inject
     public UsersController(IUserModel userModel, IControllerFactory controllerFactory, EventBus eventBus) {
         this.userModel = userModel;
@@ -74,12 +82,18 @@ public class UsersController extends RootController implements Initializable {
         this.eventBus = eventBus;
     }
 
+    /**
+     * Initialize.
+     *
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         fillTable();
         setupSearchField();
         eventBus.register(this);
-        createNewUser.setOnAction(e -> openCreateUserWindow("Create new user",ViewType.USER_MODAL, null));
+        createNewUser.setOnAction(e -> openCreateUserWindow("Create new user", ViewType.USER_MODAL, null));
     }
 
     private void setupSearchField() {
@@ -106,11 +120,11 @@ public class UsersController extends RootController implements Initializable {
 
                 RootController controller = tryToLoadView(viewType);
 
-                if(this.isSettings && value != null){
+                if (this.isSettings && value != null) {
                     UserSettingsController userSettingsController = (UserSettingsController) controller;
                     userSettingsController.setUserSettings(value);
                 }
-                show(controller.getView(), title,scene);
+                show(controller.getView(), title, scene);
 
             } else {
                 System.out.println("AnchorPane not found");
@@ -152,8 +166,8 @@ public class UsersController extends RootController implements Initializable {
         if (event.getEventType() == EventType.SHOW_NOTIFICATION) {
             errorLabel.setText(event.getMessage());
             boolean isSuccess = (boolean) event.getData();
-            if(!isSuccess) AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
-            else AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
+            if (!isSuccess) AnimationUtil.animateInOut(notificationPane, 4, CustomColor.ERROR);
+            else AnimationUtil.animateInOut(notificationPane, 4, CustomColor.INFO);
         }
     }
 
@@ -234,7 +248,7 @@ public class UsersController extends RootController implements Initializable {
 
                                     editItem.setOnAction(event -> {
                                         isSettings = true;
-                                        openCreateUserWindow("User settings",ViewType.USER_SETTINGS,getTableRow().getItem());
+                                        openCreateUserWindow("User settings", ViewType.USER_SETTINGS, getTableRow().getItem());
                                         event.consume();
                                     });
                                     deleteItem.setOnAction(event -> {
@@ -262,18 +276,18 @@ public class UsersController extends RootController implements Initializable {
     }
 
     private void deleteUsers(AppUser value) {
-        var response = AlertHelper.showOptionalAlertWindow("Action warning !","Are you sure you want to delete this user ? ", Alert.AlertType.CONFIRMATION);
-            if(response.isPresent() && response.get() == ButtonType.OK){
-                boolean userDeleted = userModel.deleteUser(value);
-                if(userDeleted) {
-                    errorLabel.setText("User with id: " + value.getId() + " deleted successfully");
-                    AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
-                    refreshTable();
-                }else {
-                    errorLabel.setText("User with id: " + value.getId() + " could not be delete");
-                    AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
-                }
+        var response = AlertHelper.showOptionalAlertWindow("Action warning !", "Are you sure you want to delete this user ? ", Alert.AlertType.CONFIRMATION);
+        if (response.isPresent() && response.get() == ButtonType.OK) {
+            boolean userDeleted = userModel.deleteUser(value);
+            if (userDeleted) {
+                errorLabel.setText("User with id: " + value.getId() + " deleted successfully");
+                AnimationUtil.animateInOut(notificationPane, 4, CustomColor.INFO);
+                refreshTable();
+            } else {
+                errorLabel.setText("User with id: " + value.getId() + " could not be delete");
+                AnimationUtil.animateInOut(notificationPane, 4, CustomColor.ERROR);
             }
+        }
     }
 
     private void refreshTable() {
@@ -289,7 +303,7 @@ public class UsersController extends RootController implements Initializable {
         if (event.eventType() == EventType.UPDATE_USER_TABLE) {
             refreshTable();
             Scene scene = userAnchorPane.getScene();
-            if(scene != null){
+            if (scene != null) {
                 Window window = scene.getWindow();
                 if (window instanceof Stage) {
                     Pane layoutPane = (Pane) scene.lookup("#layoutPane");

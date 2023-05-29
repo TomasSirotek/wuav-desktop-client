@@ -23,11 +23,13 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 
 
+/**
+ * The class ChatController.
+ */
 public class ChatController extends RootController implements Initializable {
     @FXML
     private ListView chatListView;
@@ -39,6 +41,10 @@ public class ChatController extends RootController implements Initializable {
     private String loadingMessage;
 
     private final String API_URL = "https://free.churchless.tech/v1/chat/completions";
+
+    /**
+     * Instantiates a new Chat controller.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setListView();

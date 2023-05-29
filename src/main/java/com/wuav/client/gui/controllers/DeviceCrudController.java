@@ -19,10 +19,7 @@ import com.wuav.client.gui.utils.event.CustomEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -43,6 +40,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+/**
+ * The class DeviceCrudController.
+ */
 public class DeviceCrudController extends RootController implements Initializable {
 
     @FXML
@@ -72,14 +72,14 @@ public class DeviceCrudController extends RootController implements Initializabl
 
     private String loadingMessage;
 
-    private TextField resolutionField,connectionType,devicePort;
+    private TextField resolutionField, connectionType, devicePort;
 
     private final String API_URL = "https://free.churchless.tech/v1/chat/completions";
 
     private boolean isEdit = false;
 
     // FOR SPEAKER
-    private TextField power,volume;
+    private TextField power, volume;
 
     private final EventBus eventBus;
 
@@ -90,12 +90,24 @@ public class DeviceCrudController extends RootController implements Initializabl
 
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    /**
+     * Instantiates a new Device crud controller.
+     *
+     * @param eventBus    the event bus
+     * @param deviceModel the device model
+     */
     @Inject
     public DeviceCrudController(EventBus eventBus, DeviceModel deviceModel) {
         this.eventBus = eventBus;
         this.deviceModel = deviceModel;
     }
 
+    /**
+     * Initialize.
+     *
+     * @param url            the url
+     * @param resourceBundle the resource bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         eventBus.register(this);
@@ -106,29 +118,29 @@ public class DeviceCrudController extends RootController implements Initializabl
     }
 
     private void setupInitialize() {
-        if(!isEdit) {
+        if (!isEdit) {
             fillDeviceTypeChooseField();
             toggleCreateEdit.setOnAction(e -> {
-                    toggleCreateEdit.setText("Create");
-                    createDevice();
+                toggleCreateEdit.setText("Create");
+                createDevice();
             });
             deviceTypeField.setOnAction(e -> {
-                        String selectedDeviceType = (String) deviceTypeField.getValue();
+                String selectedDeviceType = (String) deviceTypeField.getValue();
 
-                        VBox deviceCRUDBox = new VBox();
-                        deviceCRUDBox.setSpacing(10);
-                        deviceCRUDBox.setPadding(new Insets(10));
+                VBox deviceCRUDBox = new VBox();
+                deviceCRUDBox.setSpacing(10);
+                deviceCRUDBox.setPadding(new Insets(10));
 
-                        if (selectedDeviceType.equals(DeviceType.PROJECTOR.name())) {
-                            setupProjectorFields();
-                            selectedDeviceForCreateEdit = new Projector(0,deviceName.getText(),Projector.class.getSimpleName().toUpperCase());
-                        } else if (selectedDeviceType.equals(DeviceType.SPEAKER.name())) {
-                            setupSpeakerFields();
-                            selectedDeviceForCreateEdit = new Speaker(0,deviceName.getText(), Speaker.class.getSimpleName().toUpperCase());
-                        }
-                        deviceFieldVBox.getChildren().add(deviceCRUDBox);
-                    });
-        }else {
+                if (selectedDeviceType.equals(DeviceType.PROJECTOR.name())) {
+                    setupProjectorFields();
+                    selectedDeviceForCreateEdit = new Projector(0, deviceName.getText(), Projector.class.getSimpleName().toUpperCase());
+                } else if (selectedDeviceType.equals(DeviceType.SPEAKER.name())) {
+                    setupSpeakerFields();
+                    selectedDeviceForCreateEdit = new Speaker(0, deviceName.getText(), Speaker.class.getSimpleName().toUpperCase());
+                }
+                deviceFieldVBox.getChildren().add(deviceCRUDBox);
+            });
+        } else {
             deleteToggle.setVisible(true);
             deleteToggle.setOnAction(e -> {
                 deleteDevice();
@@ -141,7 +153,7 @@ public class DeviceCrudController extends RootController implements Initializabl
         if (selectedDeviceForCreateEdit != null) {
             Boolean isDeviceDeleted;
             try {
-                isDeviceDeleted = asyncDeleteDevice(selectedDeviceForCreateEdit,selectedDeviceForCreateEdit.getClass()).get();
+                isDeviceDeleted = asyncDeleteDevice(selectedDeviceForCreateEdit, selectedDeviceForCreateEdit.getClass()).get();
 
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
@@ -155,10 +167,10 @@ public class DeviceCrudController extends RootController implements Initializabl
         }
     }
 
-    private Future<Boolean> asyncDeleteDevice(Device device,Class<? extends Device> type) {
+    private Future<Boolean> asyncDeleteDevice(Device device, Class<? extends Device> type) {
         return executorService.submit(() -> {
             try {
-                return deviceModel.deleteDevice(device.getId(),type);
+                return deviceModel.deleteDevice(device.getId(), type);
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
@@ -209,7 +221,7 @@ public class DeviceCrudController extends RootController implements Initializabl
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
-        if(isDeviceCreated){
+        if (isDeviceCreated) {
             AlertHelper.showDefaultAlert("Device created successfully", Alert.AlertType.INFORMATION);
         } else {
             AlertHelper.showDefaultAlert("Device creation failed", Alert.AlertType.ERROR);
@@ -223,7 +235,7 @@ public class DeviceCrudController extends RootController implements Initializabl
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
-        if(isDeviceCreated){
+        if (isDeviceCreated) {
             AlertHelper.showDefaultAlert("Device updated successfully", Alert.AlertType.INFORMATION);
         } else {
             AlertHelper.showDefaultAlert("Device updated failed", Alert.AlertType.ERROR);
@@ -254,6 +266,11 @@ public class DeviceCrudController extends RootController implements Initializabl
         });
     }
 
+    /**
+     * Handles subscribe events
+     *
+     * @param event event
+     */
     @Subscribe
     public void handleEdit(CustomEvent event) {
         if (event.getEventType() == EventType.SET_CURRENT_DEVICE) {
@@ -316,7 +333,7 @@ public class DeviceCrudController extends RootController implements Initializabl
         return fields.stream().noneMatch(field -> field.getText().isEmpty());
     }
 
-    private void fillDeviceTypeChooseField(){
+    private void fillDeviceTypeChooseField() {
         Arrays.stream(DeviceType.values())
                 .map(Enum::toString)
                 .forEach(deviceTypeField.getItems()::add);
@@ -324,7 +341,6 @@ public class DeviceCrudController extends RootController implements Initializabl
     }
 
 
-    // setting different field for the devices
     private void setupSpeakerFields() {
         power = new TextField();
         power.setPromptText("Power");
@@ -358,8 +374,6 @@ public class DeviceCrudController extends RootController implements Initializabl
         deviceFieldVBox.getChildren().clear();
         deviceFieldVBox.getChildren().addAll(resolutionField, connectionType, devicePort);
     }
-
-
 
 
     private void handleAPIChatSend() {
@@ -419,7 +433,6 @@ public class DeviceCrudController extends RootController implements Initializabl
             }
         }).start();
     }
-
 
 
 }

@@ -17,7 +17,6 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -32,18 +31,21 @@ import java.net.URL;
 import java.util.*;
 
 
+/**
+ * The class BaseController.
+ */
 public class BaseController extends RootController implements Initializable {
 
     @FXML
-    private MFXButton accButton,usersButton,projectButton,expand,dashboardButton;
+    private MFXButton accButton, usersButton, projectButton, expand, dashboardButton;
     @FXML
-    private VBox userDetailsBox,sideNavBox,expandBoxToggle;
+    private VBox userDetailsBox, sideNavBox, expandBoxToggle;
     @FXML
     private ImageView userImage;
     @FXML
     private GridPane logoPane;
     @FXML
-    private Label userNameField,userEmailField,menuItemLabel,wuavLogo;
+    private Label userNameField, userEmailField, menuItemLabel, wuavLogo;
     @FXML
     private ImageView menuIcon;
     @FXML
@@ -62,6 +64,13 @@ public class BaseController extends RootController implements Initializable {
     private final int SLIDER_CLOSED = 75;
     private final int SLIDER_OPEN = 230;
 
+    /**
+     * Instantiates a new Base controller.
+     *
+     * @param controllerFactory the controller factory
+     * @param stageManager      the stage manager
+     * @param eventBus          the event bus
+     */
     @Inject
     public BaseController(IControllerFactory controllerFactory, StageManager stageManager, EventBus eventBus) {
         this.controllerFactory = controllerFactory;
@@ -69,6 +78,12 @@ public class BaseController extends RootController implements Initializable {
         this.eventBus = eventBus;
     }
 
+    /**
+     * Initialize the controller
+     *
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         eventBus.register(this);
@@ -149,13 +164,15 @@ public class BaseController extends RootController implements Initializable {
     }
 
     @FXML
-    public void handleDashboardSwitch() {
+    private void handleDashboardSwitch() {
         dashboardButton.setStyle(CustomColor.HIGHLIGHTED.getStyle());
         projectButton.setStyle(CustomColor.TRANSPARENT.getStyle());
         usersButton.setStyle(CustomColor.TRANSPARENT.getStyle());
         accButton.setStyle(CustomColor.TRANSPARENT.getStyle());
         runInParallel(ViewType.DASHBOARD);
     }
+
+
     @FXML
     private void handleAllUsersSwitch() {
         projectButton.setStyle(CustomColor.TRANSPARENT.getStyle());
@@ -183,7 +200,6 @@ public class BaseController extends RootController implements Initializable {
         accButton.setStyle(CustomColor.HIGHLIGHTED.getStyle());
         runInParallel(ViewType.USER_PROFILE);
     }
-    //endregion
 
     private void runInParallel(ViewType type) {
         final RootController[] parent = {null};
@@ -214,11 +230,10 @@ public class BaseController extends RootController implements Initializable {
     }
 
     @FXML
-    public void logoutButton(ActionEvent actionEvent) throws IOException {
+    private void logoutButton() throws IOException {
         CurrentUser.getInstance().logout();
-
         getStage().close();
-        RootController rootController = stageManager.loadNodesView(ViewType.LOGIN,controllerFactory);
-        stageManager.showStage("Login",rootController.getView());
+        RootController rootController = stageManager.loadNodesView(ViewType.LOGIN, controllerFactory);
+        stageManager.showStage("Login", rootController.getView());
     }
 }

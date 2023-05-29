@@ -49,11 +49,15 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
+/**
+ * The class PDFBuilderController.
+ */
 public class PDFBuilderController extends RootController implements Initializable {
     @FXML
-    private MFXCheckbox photosCheck,technicianCheck,descriptionCheck;
+    private MFXCheckbox photosCheck, technicianCheck, descriptionCheck;
     @FXML
-    private MFXButton preview,export;
+    private MFXButton preview, export;
     @FXML
     private MFXTextField fileName;
     @FXML
@@ -77,12 +81,25 @@ public class PDFBuilderController extends RootController implements Initializabl
 
     private BooleanProperty isExport = new SimpleBooleanProperty(true);
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    /**
+     * Instantiates a new PDF builder controller.
+     *
+     * @param eventBus  the event bus
+     * @param userModel the user model
+     */
     @Inject
     public PDFBuilderController(EventBus eventBus, IUserModel userModel) {
         this.eventBus = eventBus;
         this.userModel = userModel;
     }
 
+    /**
+     * Initialize.
+     *
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         eventBus.register(this);
@@ -139,11 +156,6 @@ public class PDFBuilderController extends RootController implements Initializabl
         }
     }
 
-    /**
-     * Converts a PDF to an Image
-     * @return The converted Image object
-     * @throws IOException If the PDF cannot be read
-     */
     private void handelPreviewThread() {
         preview.setOnAction(event -> {
             boolean includeDescription = descriptionCheck.isSelected();
@@ -191,9 +203,6 @@ public class PDFBuilderController extends RootController implements Initializabl
         });
     }
 
-    /**
-     * Set up the export button group
-     */
     private void setupExportButtonGroup() {
         export.textProperty().bind(Bindings.when(isExport)
                 .then("Export")
@@ -227,9 +236,6 @@ public class PDFBuilderController extends RootController implements Initializabl
     }
 
 
-    /**
-     * Export the PDF to the user's computer
-     */
     private Image convertPdfToImage(ByteArrayOutputStream pdfStream) {
         try (InputStream in = new ByteArrayInputStream(pdfStream.toByteArray())) {
             PDDocument document = PDDocument.load(in);
@@ -243,9 +249,6 @@ public class PDFBuilderController extends RootController implements Initializabl
         }
     }
 
-    /**
-     * Convert the PDF to a list of images
-     */
     private List<Image> convertPdfToImages(ByteArrayOutputStream pdfStream) throws IOException {
         List<Image> images = new ArrayList<>();
         PDDocument document = PDDocument.load(pdfStream.toByteArray());
@@ -262,7 +265,7 @@ public class PDFBuilderController extends RootController implements Initializabl
     }
 
     /**
-     * Send the PDF as an email
+     * Subscribe to the RefreshEvent to handle the isExport property
      */
     @Subscribe
     public void handleIsEmail(RefreshEvent event) {
@@ -272,10 +275,6 @@ public class PDFBuilderController extends RootController implements Initializabl
         }
     }
 
-
-    /**
-     * Export the PDF
-     */
     private void exportPDF() {
         FileChooserUtil fileChooserUtil = new FileChooserUtil(
                 "Save PDF", "*.pdf",
@@ -299,9 +298,6 @@ public class PDFBuilderController extends RootController implements Initializabl
     }
 
 
-    /**
-     * Send the email
-     */
     private void sendEmail() {
         AppUser appUser = CurrentUser.getInstance().getLoggedUser();
         progressLoader.setVisible(true);
@@ -310,7 +306,7 @@ public class PDFBuilderController extends RootController implements Initializabl
 
         executorService.submit(() -> {
             try {
-                boolean result = userModel.sendEmailWithAttachement(appUser, project, finalPDFBytesProperty.getValue(),fileName.getText());
+                boolean result = userModel.sendEmailWithAttachement(appUser, project, finalPDFBytesProperty.getValue(), fileName.getText());
 
                 Platform.runLater(() -> {
                     try {
@@ -336,21 +332,13 @@ public class PDFBuilderController extends RootController implements Initializabl
         });
     }
 
-    /**
-     * Hide the loading pane
-     */
-    private void hideLoadingPane(){
+    private void hideLoadingPane() {
         progressLoader.setVisible(false);
         loadingPane.setVisible(false);
         loadingPane.setStyle(CustomColor.DIMMED.getStyle());
     }
 
-    /**
-     * Handle the event
-     * @param isSuccess true if the event is success
-     * @param message the message to show
-     */
-    private void handleEvent(boolean isSuccess,String message){
+    private void handleEvent(boolean isSuccess, String message) {
         EventType eventType = EventType.SHOW_NOTIFICATION;
         CustomEvent event = new CustomEvent(eventType, isSuccess, message);
         eventBus.post(event);

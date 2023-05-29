@@ -50,16 +50,17 @@ import java.io.*;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
+/**
+ * The class ProjectController.
+ */
 public class ProjectController extends RootController implements Initializable {
 
     @FXML
     private TextField queryField;
     @FXML
-    private HBox projectCreationStatus,exportToggleHbox,actionToggleHbox;
+    private HBox projectCreationStatus, exportToggleHbox, actionToggleHbox;
     @FXML
     private MFXProgressSpinner tableDataLoad;
     @FXML
@@ -67,19 +68,19 @@ public class ProjectController extends RootController implements Initializable {
     @FXML
     private Pane notificationPane;
     @FXML
-    private Label projectLabelMain,errorLabel;
+    private Label projectLabelMain, errorLabel;
     @FXML
-    private MFXButton exportSelected,createNewProject;
+    private MFXButton exportSelected, createNewProject;
     @FXML
     private AnchorPane projectAnchorPane;
     @FXML
-    private TableColumn<Project,String> colEdit;
+    private TableColumn<Project, String> colEdit;
     @FXML
     private TableView<Project> projectTable;
     @FXML
     private TableColumn<Project, CheckBox> colSelectAll;
     @FXML
-    private TableColumn<Project,String> colDate,colName,colDes,colCustomer,colType;
+    private TableColumn<Project, String> colDate, colName, colDes, colCustomer, colType;
     private List<CheckBox> checkBoxList = new ArrayList<>();
 
     private List<Project> selectedProjects = new ArrayList<>();
@@ -91,6 +92,14 @@ public class ProjectController extends RootController implements Initializable {
 
     private final StageManager stageManager;
 
+    /**
+     * Instantiates a new Project controller.
+     *
+     * @param controllerFactory the controller factory
+     * @param projectModel      the project model
+     * @param eventBus          the event bus
+     * @param stageManager      the stage manager
+     */
     @Inject
     public ProjectController(IControllerFactory controllerFactory, IProjectModel projectModel, EventBus eventBus, StageManager stageManager) {
         this.controllerFactory = controllerFactory;
@@ -99,6 +108,12 @@ public class ProjectController extends RootController implements Initializable {
         this.stageManager = stageManager;
     }
 
+    /**
+     * Initialize.
+     *
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         eventBus.register(this);
@@ -110,19 +125,16 @@ public class ProjectController extends RootController implements Initializable {
 
     private void setupSearchField() {
         queryField.textProperty().addListener((observable, oldValue, newValue) -> {
-                List<Project> searchResults = projectModel.searchProject(newValue);
-                ObservableList<Project> projects = FXCollections.observableList(searchResults);
-                projectTable.setItems(projects);
+            List<Project> searchResults = projectModel.searchProject(newValue);
+            ObservableList<Project> projects = FXCollections.observableList(searchResults);
+            projectTable.setItems(projects);
 
         });
     }
 
-    /**
-     * This method is used to set up actions for table preview
-     */
     private void setupActions() {
         IUserRoleStrategy strategy = CurrentUser.getInstance().getUserRoleStrategy();
-        createNewProject.setOnAction(e -> openActionWindows("Create new project",ViewType.ACTIONS,null));
+        createNewProject.setOnAction(e -> openActionWindows("Create new project", ViewType.ACTIONS, null));
         exportSelected.setOnAction(e -> exportSelected());
         selectAllTableCheck.selectedProperty().addListener((observable, oldValue, newValue) -> {
             updateCheckBoxes(newValue);
@@ -130,19 +142,11 @@ public class ProjectController extends RootController implements Initializable {
         projectLabelMain.setText(strategy.getProjectButtonText());
     }
 
-    /**
-     * This method is used swap the buttons when the user is not a technician in order with beautiful strategy pattern
-     * to disallow the user to create projects
-     */
     private void swapButtonsInNonTechnicianRole() {
         IUserRoleStrategy strategy = CurrentUser.getInstance().getUserRoleStrategy();
-        strategy.swapButtons(exportToggleHbox,actionToggleHbox);
+        strategy.swapButtons(exportToggleHbox, actionToggleHbox);
     }
 
-
-    /**
-     * This method is to set up and updated the checkboxes
-     */
     private void updateCheckBoxes(boolean selectAll) {
         selectedProjects.clear();
 
@@ -161,19 +165,16 @@ public class ProjectController extends RootController implements Initializable {
                 });
     }
 
-    /**
-     * This method is open projects for export
-     */
     private void exportSelected() {
-        if(selectedProjects.isEmpty()){
+        if (selectedProjects.isEmpty()) {
             errorLabel.setText("No projects yet to be selected for export");
-            AnimationUtil.animateInOut(notificationPane,2, CustomColor.INFO);
+            AnimationUtil.animateInOut(notificationPane, 2, CustomColor.INFO);
             return;
         }
-        openActionWindows("Export selected projects",ViewType.EXPORT,selectedProjects);
+        openActionWindows("Export selected projects", ViewType.EXPORT, selectedProjects);
     }
 
-    private void openActionWindows(String title,ViewType viewType,List<Project> projectList){
+    private void openActionWindows(String title, ViewType viewType, List<Project> projectList) {
         Scene scene = projectAnchorPane.getScene();
         Window window = scene.getWindow();
         if (window instanceof Stage) {
@@ -184,7 +185,7 @@ public class ProjectController extends RootController implements Initializable {
                 layoutPane.setVisible(true);
 
                 try {
-                    loadNewView(title,viewType,projectList,scene);
+                    loadNewView(title, viewType, projectList, scene);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -196,21 +197,14 @@ public class ProjectController extends RootController implements Initializable {
     }
 
 
-    /**
-     * Load the new view
-     * @throws IOException
-     */
-    private void loadNewView(String title,ViewType viewType,List<Project> projectList,Scene scene) throws IOException {
+    private void loadNewView(String title, ViewType viewType, List<Project> projectList, Scene scene) throws IOException {
         RootController rootController = stageManager.loadNodesView(
                 viewType,
                 controllerFactory
         );
-        stageManager.showStage(rootController.getView(), title,scene,projectList);
+        stageManager.showStage(rootController.getView(), title, scene, projectList);
     }
 
-    /**
-     * This method is used to fill the table with projects
-     */
     private void setTableWithProjects() {
         tableDataLoad.setVisible(true);
 
@@ -245,7 +239,7 @@ public class ProjectController extends RootController implements Initializable {
 
         service.setOnFailed(workerStateEvent -> {
             Throwable cause = service.getException();
-            AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
+            AnimationUtil.animateInOut(notificationPane, 4, CustomColor.ERROR);
             errorLabel.setText(cause != null ? cause.getMessage() : "An error occurred.");
         });
 
@@ -253,13 +247,13 @@ public class ProjectController extends RootController implements Initializable {
     }
 
 
-    private void refreshTable(){
+    private void refreshTable() {
         IUserRoleStrategy strategy = CurrentUser.getInstance().getUserRoleStrategy();
-        List<Project> updatedProjects  = null;
+        List<Project> updatedProjects = null;
         try {
             updatedProjects = strategy.getProjects(CurrentUser.getInstance().getLoggedUser());
         } catch (Exception e) {
-            AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
+            AnimationUtil.animateInOut(notificationPane, 4, CustomColor.ERROR);
             errorLabel.setText(e != null ? e.getMessage() : e.getMessage());
         }
         // Refresh the table with the updated projects list
@@ -274,12 +268,11 @@ public class ProjectController extends RootController implements Initializable {
     public void handleCategoryEvent(RefreshEvent event) {
         if (event.eventType() == EventType.UPDATE_TABLE) {
             errorLabel.setText("Projects created successfully");
-            AnimationUtil.animateInOut(notificationPane,4, CustomColor.SUCCESS);
+            AnimationUtil.animateInOut(notificationPane, 4, CustomColor.SUCCESS);
             refreshTable();
 
         }
     }
-
 
     private void fillTable() {
         setupTableCheckBoxes();
@@ -325,9 +318,9 @@ public class ProjectController extends RootController implements Initializable {
                                     // adding all items to context menu
                                     ContextMenu menu = null;
 
-                                    if(CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals(UserRoleType.ADMIN.name())){
+                                    if (CurrentUser.getInstance().getLoggedUser().getRoles().get(0).getName().equals(UserRoleType.ADMIN.name())) {
                                         menu = new ContextMenu(editItem, emailItem, deleteItem);
-                                    }else {
+                                    } else {
                                         menu = new ContextMenu(editItem, emailItem);
                                     }
                                     menu.getStyleClass().add("menuTable");
@@ -337,7 +330,7 @@ public class ProjectController extends RootController implements Initializable {
 
                                     editItem.setOnAction(event -> {
                                         // edit here
-                                        runInParallel(ViewType.PROJECT_ACTIONS,getTableRow().getItem());
+                                        runInParallel(ViewType.PROJECT_ACTIONS, getTableRow().getItem());
                                         event.consume();
                                     });
                                     emailItem.setOnAction(event -> {
@@ -412,8 +405,8 @@ public class ProjectController extends RootController implements Initializable {
                         checkBox.setPadding(new Insets(0, 0, 0, 9));
                         checkBox.selectedProperty().addListener((obs, oldSelected, newSelected) -> {
                             Project project = getTableView().getItems().get(getIndex());
-                            if(newSelected)  selectedProjects.add(project);
-                            if(!newSelected)  selectedProjects.remove(project);
+                            if (newSelected) selectedProjects.add(project);
+                            if (!newSelected) selectedProjects.remove(project);
                         });
                         checkBox.setStyle("-fx-cursor: HAND;");
                         checkBoxList.add(checkBox);
@@ -425,10 +418,6 @@ public class ProjectController extends RootController implements Initializable {
         });
     }
 
-
-    /**
-     * open pdf builder method
-     */
     private void openPdfBuilder(Project project) {
         RootController controller = tryToLoadView(ViewType.PDF_BUILDER);
         eventBus.post(new RefreshEvent(EventType.EXPORT_EMAIL));
@@ -461,7 +450,6 @@ public class ProjectController extends RootController implements Initializable {
     }
 
 
-
     /**
      * handle global notification event
      */
@@ -470,47 +458,36 @@ public class ProjectController extends RootController implements Initializable {
         if (event.getEventType() == EventType.SHOW_NOTIFICATION) {
             errorLabel.setText(event.getMessage());
             boolean isSuccess = (boolean) event.getData();
-            if(!isSuccess) AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
-            if(isSuccess) AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
+            if (!isSuccess) AnimationUtil.animateInOut(notificationPane, 4, CustomColor.ERROR);
+            if (isSuccess) AnimationUtil.animateInOut(notificationPane, 4, CustomColor.INFO);
         }
     }
 
-    /**
-     * Delete project
-     * @param project project to be deleted
-     */
-    private void deleteProject(Project project){
+    private void deleteProject(Project project) {
         var response = AlertHelper.showOptionalAlertWindow("Action warning!",
                 "Are you sure you want to delete this project ? ",
                 Alert.AlertType.CONFIRMATION);
 
-        if(response.isPresent() && response.get() == ButtonType.OK){
+        if (response.isPresent() && response.get() == ButtonType.OK) {
             try {
                 boolean projectDeleted = projectModel.deleteProject(project);
-                if(!projectDeleted) throw new Exception("Failed to delete project with id: " + project.getId());
+                if (!projectDeleted) throw new Exception("Failed to delete project with id: " + project.getId());
 
                 errorLabel.setText("Project with id: " + project.getId() + " has been deleted");
-                AnimationUtil.animateInOut(notificationPane,4, CustomColor.INFO);
+                AnimationUtil.animateInOut(notificationPane, 4, CustomColor.INFO);
 
                 // Refresh the projects list from the database after deleting the project
                 refreshTable();
 
             } catch (Exception e) {
                 errorLabel.setText("An error occurred while deleting the project: " + e.getMessage());
-                AnimationUtil.animateInOut(notificationPane,4, CustomColor.ERROR);
+                AnimationUtil.animateInOut(notificationPane, 4, CustomColor.ERROR);
                 e.printStackTrace();
             }
         }
     }
 
-
-    /**
-     * Load nodes view in parallel
-     * @param type view type
-     * @return root controller
-     * @throws IOException
-     */
-    private void runInParallel(ViewType type,Project project) {
+    private void runInParallel(ViewType type, Project project) {
         final RootController[] parent = {null};
         Task<Void> loadDataTask = new Task<>() {
             @Override
@@ -538,11 +515,10 @@ public class ProjectController extends RootController implements Initializable {
             layoutPane.getChildren().add(parent);
         }
     }
+
     private RootController loadNodesView(ViewType viewType) throws IOException {
-       return controllerFactory.loadFxmlFile(viewType);
-   }
-
-
+        return controllerFactory.loadFxmlFile(viewType);
+    }
 
 
 }

@@ -26,9 +26,12 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class UserModalController  extends RootController implements Initializable {
+/**
+ * The class UserModalController.
+ */
+public class UserModalController extends RootController implements Initializable {
     @FXML
-    private MFXTextField userNameField,userEmailField;
+    private MFXTextField userNameField, userEmailField;
     @FXML
     private ChoiceBox roleField;
     @FXML
@@ -41,17 +44,29 @@ public class UserModalController  extends RootController implements Initializabl
 
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+
+    /**
+     * Instantiates a new User modal controller.
+     *
+     * @param userModel the user model
+     * @param eventBus  the event bus
+     */
     @Inject
     public UserModalController(IUserModel userModel, EventBus eventBus) {
         this.userModel = userModel;
         this.eventBus = eventBus;
     }
 
+    /**
+     * Initialize.
+     *
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-            // fill form with user data
-            fillClientTypeChooseField();
-            createUserBtn.setOnAction(e-> createNewUser());
+        fillClientTypeChooseField();
+        createUserBtn.setOnAction(e -> createNewUser());
     }
 
     private void fillClientTypeChooseField() {
@@ -94,7 +109,7 @@ public class UserModalController  extends RootController implements Initializabl
 
         List<FormField> fieldsToValidate = Arrays.asList(
                 new FormField(userNameField, "User name is required!"),
-                new FormField(userEmailField, "Email is required" ),
+                new FormField(userEmailField, "Email is required"),
                 new FormField(roleField, "Role is required")
         );
 
@@ -105,7 +120,7 @@ public class UserModalController  extends RootController implements Initializabl
             }
         }
 
-        if (roleField.getSelectionModel().isEmpty() ) {
+        if (roleField.getSelectionModel().isEmpty()) {
             AlertHelper.showDefaultAlert("Role is required", Alert.AlertType.WARNING);
             isValid = false;
         }

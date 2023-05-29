@@ -5,8 +5,9 @@ import com.wuav.client.be.user.AppUser;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.models.user.IUserModel;
-import com.wuav.client.gui.utils.AlertHelper;
+
 import java.text.SimpleDateFormat;
+
 import com.wuav.client.gui.utils.AnimationUtil;
 import com.wuav.client.gui.utils.enums.CustomColor;
 import com.wuav.client.gui.utils.validations.FormField;
@@ -16,12 +17,10 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
+
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -31,12 +30,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class UserProfileController  extends RootController implements Initializable {
+/**
+ * The class UserModalController.
+ */
+public class UserProfileController extends RootController implements Initializable {
 
     @FXML
     private Pane errorPane;
     @FXML
-    private MFXTextField userNameField,userEmail;
+    private MFXTextField userNameField, userEmail;
     @FXML
     private Label errorLabel;
     @FXML
@@ -47,17 +49,28 @@ public class UserProfileController  extends RootController implements Initializa
     private MFXButton updateAcc;
     @FXML
 
-    private Label userRole,emailHeader,userName,userCreated;
+    private Label userRole, emailHeader, userName, userCreated;
     private Image tempImage = new Image("diceBar1.png");
 
     private final IUserModel userModel;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    /**
+     * Instantiates a new User modal controller.
+     *
+     * @param userModel the user model
+     */
     @Inject
     public UserProfileController(IUserModel userModel) {
         this.userModel = userModel;
     }
 
+    /**
+     * Initialize.
+     *
+     * @param url            the url
+     * @param resourceBundle the resource bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setUpProfilePage();
@@ -96,17 +109,18 @@ public class UserProfileController  extends RootController implements Initializa
             });
         }
     }
+
     private boolean validateInput() {
         boolean isValid = true;
 
         List<FormField> fieldsToValidate = Arrays.asList(
                 new FormField(userNameField, "User name is required!"),
-                new FormField(userEmail, "Email is required" )
+                new FormField(userEmail, "Email is required")
         );
 
         for (FormField field : fieldsToValidate) {
             if (field.getText().isEmpty()) {
-                AnimationUtil.animateInOut(errorPane,4, CustomColor.ERROR);
+                AnimationUtil.animateInOut(errorPane, 4, CustomColor.ERROR);
                 errorLabel.setText(field.getErrorMessage());
                 isValid = false;
             }

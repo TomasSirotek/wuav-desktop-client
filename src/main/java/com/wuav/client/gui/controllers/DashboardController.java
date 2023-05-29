@@ -15,6 +15,9 @@ import java.net.URL;
 import java.util.*;
 import javafx.scene.layout.GridPane;
 
+/**
+ * The class DashboardController.
+ */
 public class DashboardController extends RootController implements Initializable {
 
     @FXML
@@ -25,6 +28,12 @@ public class DashboardController extends RootController implements Initializable
     @FXML
     private MFXButton dashboardToggle;
 
+    /**
+     * Method for initializing the controller
+     *
+     * @param url            the url
+     * @param resourceBundle the resource bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupData();
@@ -48,10 +57,4 @@ public class DashboardController extends RootController implements Initializable
         IUserRoleStrategy strategy = CurrentUser.getInstance().getUserRoleStrategy();
         dashboardToggle.setText(strategy.getDashboardButtonText());
     }
-    @Inject
-    public DashboardController() {
-    }
-
-
-
 }

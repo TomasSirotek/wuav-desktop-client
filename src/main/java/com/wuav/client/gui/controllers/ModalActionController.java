@@ -50,6 +50,9 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * The class BaseController.
+ */
 public class ModalActionController extends RootController implements Initializable {
 
     @FXML
@@ -63,35 +66,35 @@ public class ModalActionController extends RootController implements Initializab
     @FXML
     private GridPane imagesPaneFinal2 = new GridPane();
     @FXML
-    private Pane imagesPaneFinal,addedFilePane;
+    private Pane imagesPaneFinal, addedFilePane;
     @FXML
     private MFXProgressSpinner uploadProgress;
     @FXML
     private Label noDeviceLabel;
     @FXML
-    private Label uploadTextProgress,imageText,choosenFileName;
+    private Label uploadTextProgress, imageText, choosenFileName;
     @FXML
-    private ImageView fetchedImage,qrCodee;
+    private ImageView fetchedImage, qrCodee;
     @FXML
-    private ChoiceBox deviceTypeChooseField,devicesForChooseBox;
+    private ChoiceBox deviceTypeChooseField, devicesForChooseBox;
     @FXML
-    private MFXTextField clientCityField,projectNameField,clientPhoneField,clientNameField,clientEmailField,clientStreetField,clientZipField,deviceName;
+    private MFXTextField clientCityField, projectNameField, clientPhoneField, clientNameField, clientEmailField, clientStreetField, clientZipField, deviceName;
     @FXML
     private TextField descriptionField;
     @FXML
-    private ImageView selectedImage,selectedImageView;
+    private ImageView selectedImage, selectedImageView;
     @FXML
-    private Tab tab1,tab2,tab3,tab4,tab5;
+    private Tab tab1, tab2, tab3, tab4, tab5;
     @FXML
-    private HBox searchBoxField, selectedFileHBox,imageContent,imageActionHandleBox,detailsBoxLoad;
+    private HBox searchBoxField, selectedFileHBox, imageContent, imageActionHandleBox, detailsBoxLoad;
     @FXML
-    private MFXButton continueBtn,selectFile,backBtn,deviceCrudToggle;
+    private MFXButton continueBtn, selectFile, backBtn, deviceCrudToggle;
     @FXML
-    private Button individualToggle,businessToggle;
+    private Button individualToggle, businessToggle;
     @FXML
     private TabPane tabPaneCreate;
     @FXML
-    private VBox editorVbox,deviceBox;
+    private VBox editorVbox, deviceBox;
     @FXML
     private AnchorPane modalPane;
     @FXML
@@ -124,6 +127,7 @@ public class ModalActionController extends RootController implements Initializab
 
 
     private List<Device> devices = new ArrayList<>();
+    private List<HBox> deviceDetailsList = new ArrayList<>();
 
     private MFXTextField textField = new MFXTextField();
 
@@ -132,7 +136,15 @@ public class ModalActionController extends RootController implements Initializab
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 
-
+    /**
+     * Instantiates a new Base controller.
+     *
+     * @param eventBus          the event bus
+     * @param controllerFactory the controller factory
+     * @param projectModel      the project model
+     * @param codesEngine       the codes engine
+     * @param deviceModel       the device model
+     */
     @Inject
     public ModalActionController(EventBus eventBus, IControllerFactory controllerFactory, IProjectModel projectModel, ICodesEngine codesEngine, DeviceModel deviceModel) {
         this.eventBus = eventBus;
@@ -221,7 +233,7 @@ public class ModalActionController extends RootController implements Initializab
         previewImage(image);
     }
 
-    private void previewImage(Image image ) {
+    private void previewImage(Image image) {
         // open new scene with image inside
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -247,7 +259,12 @@ public class ModalActionController extends RootController implements Initializab
     }
 
 
-
+    /**
+     * Initialize.
+     *
+     * @param url            the url
+     * @param resourceBundle the resource bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         eventBus.register(this);
@@ -261,10 +278,13 @@ public class ModalActionController extends RootController implements Initializab
 
     private void setupActions() {
         selectFile.setOnAction(e -> selectFile());
-        deviceCrudToggle.setOnAction(e -> openDeviceWindow(false,null));
+        deviceCrudToggle.setOnAction(e -> openDeviceWindow(false, null));
     }
 
 
+    /**
+     * Handle refresh subsribe event
+     */
     @Subscribe
     public void handleRefreshDeviceList(RefreshEvent event) {
         if (event.eventType() == EventType.REFRESH_DEVICE_LIST) {
@@ -290,7 +310,7 @@ public class ModalActionController extends RootController implements Initializab
                 devicesForChooseBox.setItems(FXCollections.observableArrayList(devices));
             });
 
-            if(isEdit){
+            if (isEdit) {
                 EventType eventType = EventType.SET_CURRENT_DEVICE;
                 CustomEvent event = new CustomEvent(eventType, device, "");
                 eventBus.post(event);
@@ -305,7 +325,7 @@ public class ModalActionController extends RootController implements Initializab
     }
 
 
-    public void setupSearchField() {
+    private void setupSearchField() {
         this.devices = deviceModel.getAllDevices();
         devicesForChooseBox.setItems(FXCollections.observableArrayList(devices));
 
@@ -321,7 +341,6 @@ public class ModalActionController extends RootController implements Initializab
         });
     }
 
-    private List<HBox> deviceDetailsList = new ArrayList<>();
 
     private void addDeviceToScrollPane(Device selectedDevice) {
         // if selected device is existing in the list, do not add it again
@@ -349,7 +368,7 @@ public class ModalActionController extends RootController implements Initializab
         Button editButton = new Button("Edit");
         editButton.setStyle("-fx-min-width: 82px; -fx-max-width: 82px;-fx-background-color: #eae9e9");
         editButton.setOnAction(event -> {
-            openDeviceWindow(true,selectedDevice);
+            openDeviceWindow(true, selectedDevice);
         });
 
         // Create a button to remove the device
@@ -360,7 +379,7 @@ public class ModalActionController extends RootController implements Initializab
         });
 
         // Create an HBox for the device details
-        HBox deviceDetails = new HBox(deviceTypeName, deviceTypeLabel,editButton, removeButton);
+        HBox deviceDetails = new HBox(deviceTypeName, deviceTypeLabel, editButton, removeButton);
         deviceDetails.setSpacing(10);
         deviceDetails.setStyle("-fx-min-height: 20px; -fx-alignment: CENTER_LEFT;");
 
@@ -409,7 +428,7 @@ public class ModalActionController extends RootController implements Initializab
 
         // Access the editor content
         editorPane.editorContentProperty().addListener((observable, oldValue, newValue) -> {
-           editorContent.set(newValue);
+            editorContent.set(newValue);
         });
     }
 
@@ -448,7 +467,7 @@ public class ModalActionController extends RootController implements Initializab
 
 
     private void handleProgressSwitch() {
-        Tab[] tabs = new Tab[]{tab1, tab2, tab3, tab4,tab5};
+        Tab[] tabs = new Tab[]{tab1, tab2, tab3, tab4, tab5};
         final int[] currentTab = {0};
 
         tabs[currentTab[0]].setDisable(false);
@@ -463,7 +482,7 @@ public class ModalActionController extends RootController implements Initializab
 
                     System.out.println(editorContent.get());
 
-                    if(currentTab[0] == 4) {
+                    if (currentTab[0] == 4) {
                         tryToGenerateQRForApp();
                         handleFetchImages();
                         continueBtn.setText("Finish");
@@ -512,7 +531,7 @@ public class ModalActionController extends RootController implements Initializab
     }
 
     private void closeStage() {
-        if(this.root != null){
+        if (this.root != null) {
             Stage stage = getStage();
             if (stage != null) {
                 imageOperationFacade.removeImagesFromServer();
@@ -545,7 +564,7 @@ public class ModalActionController extends RootController implements Initializab
     }
 
 
-    private void tryToGenerateQRForApp(){
+    private void tryToGenerateQRForApp() {
         try {
             ImageView generatedQRCodeImageView = codesEngine.generateQRCodeImageView(
                     CURRENT_USER_ID,
@@ -559,9 +578,9 @@ public class ModalActionController extends RootController implements Initializab
         }
     }
 
-    private void displayError(String message){
+    private void displayError(String message) {
         errorLabel.setText(message);
-        AnimationUtil.animateInOut(notificationPane,4, CustomColor.WARNING);
+        AnimationUtil.animateInOut(notificationPane, 4, CustomColor.WARNING);
     }
 
     @FunctionalInterface
@@ -582,7 +601,7 @@ public class ModalActionController extends RootController implements Initializab
     private boolean validateSecondTab() {
         // Implement validation logic for the second tab here
         boolean isValid = true;
-        if(editorContent.get().isEmpty()|| selectedImageFile == null){
+        if (editorContent.get().isEmpty() || selectedImageFile == null) {
             displayError("Please select an image");
             isValid = false;
         }
@@ -594,7 +613,7 @@ public class ModalActionController extends RootController implements Initializab
         boolean isValid = true;
         List<FormField> fieldsToValidate = Arrays.asList(
                 new FormField(clientNameField, "Client name is required"),
-                new FormField(clientEmailField, "Client email is required" ),
+                new FormField(clientEmailField, "Client email is required"),
                 new FormField(clientPhoneField, "Client phone is required"),
                 new FormField(clientCityField, "Client city is required"),
                 new FormField(clientStreetField, "Client street is required"),
@@ -618,7 +637,7 @@ public class ModalActionController extends RootController implements Initializab
     private boolean validateFourthTab() {
         // Implement validation logic for the fourth tab here
         boolean isValid = true;
-        if(selectedDevices.isEmpty()){
+        if (selectedDevices.isEmpty()) {
             displayError("Please select at least one device");
             isValid = false;
         }
@@ -638,7 +657,7 @@ public class ModalActionController extends RootController implements Initializab
         );
         // show open file dialog
         File selectedFile = fileChooser.showOpenDialog(getStage());
-        if(selectedFile != null) {
+        if (selectedFile != null) {
             // set image fit to width and height
             selectedImage.setPreserveRatio(true);
             selectedImage.setFitHeight(600);
@@ -654,13 +673,6 @@ public class ModalActionController extends RootController implements Initializab
             changeSelectedFileHBox();
         }
     }
-
-    /**
-     * Truncate the string to the specified length and add "..." at the end
-     * @param str the string to truncate
-     * @param maxLength the maximum length of the string
-     * @return
-     */
 
     private String truncate(String str, int maxLength) {
         if (str.length() <= maxLength) {
@@ -731,10 +743,9 @@ public class ModalActionController extends RootController implements Initializab
         imageText.setVisible(true);
     }
 
-    private void voidTriggerProjectLoadingStatus(){
+    private void voidTriggerProjectLoadingStatus() {
         eventBus.post(new RefreshEvent(EventType.START_LOADING_PROJECTS));
     }
-
 
 
     private void createNewProject() {
@@ -753,9 +764,9 @@ public class ModalActionController extends RootController implements Initializab
         );
 
         // HERE IT HAS TO BE CHANGE DEPENDING ON WHICH CLIENT TOGGLE IS SELECTED
-         ClientType clientType = ClientType.PRIVATE;
-         if(businessToggleSelected) clientType = ClientType.BUSINESS;
-         if(individualToggleSelected) clientType = ClientType.PRIVATE;
+        ClientType clientType = ClientType.PRIVATE;
+        if (businessToggleSelected) clientType = ClientType.BUSINESS;
+        if (individualToggleSelected) clientType = ClientType.PRIVATE;
 
         // Construct the Customer object
         CustomerDTO customerDTO = new CustomerDTO(
@@ -798,9 +809,9 @@ public class ModalActionController extends RootController implements Initializab
                     if (result) {
                         eventBus.post(new RefreshEvent(EventType.UPDATE_TABLE));
                         EventType eventType = EventType.SHOW_NOTIFICATION;
-                         CustomEvent notificationEvent = new CustomEvent(eventType, true, "Project created successfully");
-                       eventBus.post(notificationEvent);
-                       // runInParallel(ViewType.PROJECTS);
+                        CustomEvent notificationEvent = new CustomEvent(eventType, true, "Project created successfully");
+                        eventBus.post(notificationEvent);
+                        // runInParallel(ViewType.PROJECTS);
                     } else {
                         displayError("Project creation failed");
                     }
@@ -813,41 +824,6 @@ public class ModalActionController extends RootController implements Initializab
             }
         });
     }
-
-    // DONT FORGET TO DELETE
-
-//    private void runInParallel(ViewType type) {
-//        final RootController[] parent = {null};
-//        Task<Void> loadDataTask = new Task<>() {
-//            @Override
-//            protected Void call() throws IOException {
-//                parent[0] = loadNodesView(type);
-//                return null;
-//            }
-//        };
-//        loadDataTask.setOnSucceeded(event -> {
-//            switchToView(parent[0].getView());
-//        });
-//        new Thread(loadDataTask).start();
-//    }
-//
-//    private RootController loadNodesView(ViewType viewType) throws IOException {
-//        return controllerFactory.loadFxmlFile(viewType);
-//    }
-//
-//    private void switchToView(Parent parent) {
-//        Stage  test = (Stage) getStage().getProperties().get("previousStage");
-//        Scene previousScene = test.getScene();
-//        Pane layoutPane = (Pane) previousScene.lookup("#layoutPane");
-//        StackPane appContent = (StackPane) previousScene.getRoot().lookup("#app_content");
-//        if (appContent != null || layoutPane != null) {
-//            getStage().close();
-//            layoutPane.setDisable(true);
-//            layoutPane.setStyle("-fx-background-color: transparent;");
-//            appContent.getChildren().clear();
-//            appContent.getChildren().add(parent);
-//        }
-//    }
 
 
 }

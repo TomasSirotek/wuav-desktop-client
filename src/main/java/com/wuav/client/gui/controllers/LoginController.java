@@ -1,6 +1,5 @@
 package com.wuav.client.gui.controllers;
 
-import com.wuav.client.be.Project;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.bll.services.interfaces.IAuthService;
@@ -8,7 +7,6 @@ import com.wuav.client.bll.strategies.interfaces.IUserRoleStrategy;
 import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import com.google.inject.Inject;
-import com.wuav.client.gui.entities.DashboardData;
 import com.wuav.client.gui.manager.StageManager;
 import com.wuav.client.gui.models.user.CurrentUser;
 import com.wuav.client.gui.utils.AnimationUtil;
@@ -18,15 +16,16 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
-
 import javax.naming.AuthenticationException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * The class LoginController.
+ */
 public class LoginController extends RootController implements Initializable {
     @FXML
     private Pane errorPane, loadingPane;
@@ -44,6 +43,13 @@ public class LoginController extends RootController implements Initializable {
 
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    /**
+     * Instantiates a new Login controller.
+     *
+     * @param controllerFactory the controller factory
+     * @param authService       the auth service
+     * @param stageManager      the stage manager
+     */
     @Inject
     public LoginController(IControllerFactory controllerFactory, IAuthService authService, StageManager stageManager) {
         this.controllerFactory = controllerFactory;
@@ -52,15 +58,15 @@ public class LoginController extends RootController implements Initializable {
     }
 
 
+    /**
+     * Initialize the controller
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 
-
-    /**
-     * Load the new view
-     * @throws IOException
-     */
     @FXML
     private void login() {
         // Show the progress bar while the application is loading
@@ -105,10 +111,6 @@ public class LoginController extends RootController implements Initializable {
         });
     }
 
-    /**
-     * Load the new view
-     * @throws IOException
-     */
     private void loadNewView() throws IOException {
         String stageTitle = "WUAV-dashboard";
         RootController rootController = stageManager.loadNodesView(
@@ -118,9 +120,6 @@ public class LoginController extends RootController implements Initializable {
         stageManager.showStage(stageTitle, rootController.getView());
     }
 
-    /**
-     * Handle the error when the user is not authenticated
-     */
     private void handleError() {
         progressLoader.setVisible(false);
         loadingPane.setVisible(false);

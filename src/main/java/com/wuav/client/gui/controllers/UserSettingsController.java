@@ -8,7 +8,6 @@ import com.wuav.client.gui.controllers.abstractController.RootController;
 import com.wuav.client.gui.controllers.event.RefreshEvent;
 import com.wuav.client.gui.models.user.IUserModel;
 import com.wuav.client.gui.utils.AlertHelper;
-import com.wuav.client.gui.utils.enums.ClientType;
 import com.wuav.client.gui.utils.enums.UserRoleType;
 import com.wuav.client.gui.utils.event.CustomEvent;
 import io.github.palexdev.materialfx.controls.MFXButton;
@@ -28,12 +27,15 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class UserSettingsController extends RootController implements Initializable{
+/**
+ * The class UserSettingsController.
+ */
+public class UserSettingsController extends RootController implements Initializable {
 
     @FXML
-    private MFXButton recoverPassword,updateUserRole;
+    private MFXButton recoverPassword, updateUserRole;
     @FXML
-    private Label emailConfirmLabel,userEmailField;
+    private Label emailConfirmLabel, userEmailField;
     @FXML
     private MFXProgressSpinner emailLoad;
     @FXML
@@ -46,6 +48,12 @@ public class UserSettingsController extends RootController implements Initializa
 
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    /**
+     * Instantiates a new User modal controller.
+     *
+     * @param userModel the user model
+     * @param eventBus  the event bus
+     */
     @Inject
     public UserSettingsController(IUserModel userModel, EventBus eventBus) {
         this.userModel = userModel;
@@ -53,6 +61,12 @@ public class UserSettingsController extends RootController implements Initializa
     }
 
 
+    /**
+     * Initialize.
+     *
+     * @param url            the url
+     * @param resourceBundle the resource bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         updateUserRole.setOnAction(e -> updateUserRole());
@@ -70,12 +84,12 @@ public class UserSettingsController extends RootController implements Initializa
                 boolean result = userModel.updateUserRole(appUser.getId(), appUser.getRoles().get(0).getName());
 
                 Platform.runLater(() -> {
-                    if(result){
+                    if (result) {
                         eventBus.post(new RefreshEvent(EventType.UPDATE_USER_TABLE));
                         eventBus.post(new CustomEvent(EventType.SHOW_NOTIFICATION, true, "User updated successfully"));
                         getStage().close();
                         executorService.shutdown();
-                    }else {
+                    } else {
                         getStage().close();
                         eventBus.post(new CustomEvent(EventType.SHOW_NOTIFICATION, false, "User could not update user"));
                     }
@@ -86,6 +100,12 @@ public class UserSettingsController extends RootController implements Initializa
             AlertHelper.showDefaultAlert("User role is already the same", Alert.AlertType.WARNING);
         }
     }
+
+    /**
+     * Sets user settings.
+     *
+     * @param value the value
+     */
     public void setUserSettings(AppUser value) {
         this.appUser = value;
         userEmailField.setText(value.getEmail());

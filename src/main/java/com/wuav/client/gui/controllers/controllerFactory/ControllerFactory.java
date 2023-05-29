@@ -22,11 +22,22 @@ public class ControllerFactory implements IControllerFactory {
     @Inject
     private final Injector injector;
 
+    /**
+     * Instantiates a new Controller factory.
+     *
+     * @param injector the injector
+     */
     @Inject
     public ControllerFactory(final Injector injector) {
         this.injector = Objects.requireNonNull(injector, "injector must not be null.");
     }
 
+    /**
+     * Method that loads the fxml file and binds the injector to the loader
+     * @param fxmlFile enum predefined in ViewType
+     * @return RootController that is loaded from the fxml file
+     * @throws IOException the io exception
+     */
     @Override
     public RootController loadFxmlFile(ViewType fxmlFile) throws IOException {
         Objects.requireNonNull(fxmlFile, "fxmlFile must not be null.");
