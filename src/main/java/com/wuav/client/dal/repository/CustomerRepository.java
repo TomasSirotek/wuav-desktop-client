@@ -11,10 +11,19 @@ import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * CustomerRepository class.
+ **/
 public class CustomerRepository implements ICustomerRepository {
 
-    static Logger logger = LoggerFactory.getLogger(AddressRepository.class);
+    private Logger logger = LoggerFactory.getLogger(AddressRepository.class);
 
+    /**
+     * Get the Customer by id.
+     *
+     * @param id int
+     * @return Customer
+     */
     @Override
     public Customer getCustomerById(int id) {
         Customer customer = null;
@@ -27,8 +36,16 @@ public class CustomerRepository implements ICustomerRepository {
         return customer;
     }
 
+    /**
+     * Create a Customer.
+     *
+     * @param session     SqlSession
+     * @param customerDTO CustomerDTO
+     * @return int affectedRows
+     * @throws Exception Exception
+     */
     @Override
-    public int createCustomer(SqlSession session,CustomerDTO customerDTO) throws Exception {
+    public int createCustomer(SqlSession session, CustomerDTO customerDTO) throws Exception {
         try {
             ICustomerMapper mapper = session.getMapper(ICustomerMapper.class);
             var affectedRows = mapper.createCustomer(
@@ -46,6 +63,12 @@ public class CustomerRepository implements ICustomerRepository {
         }
     }
 
+    /**
+     * Update a Customer.
+     *
+     * @param customerDTO PutCustomerDTO
+     * @return boolean if the customer was updated
+     */
     @Override
     public boolean updateCustomer(PutCustomerDTO customerDTO) {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
@@ -65,6 +88,14 @@ public class CustomerRepository implements ICustomerRepository {
         return false;
     }
 
+    /**
+     * Delete a Customer by id.
+     *
+     * @param session SqlSession
+     * @param id      int customer id
+     * @return boolean if the customer was deleted
+     * @throws Exception Exception
+     */
     @Override
     public boolean deleteCustomerById(SqlSession session, int id) throws Exception {
         try {

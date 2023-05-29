@@ -16,11 +16,6 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public Customer getCustomerById(int id) {
-        return customerRepository.getCustomerById(id);
-    }
-
-    @Override
     public boolean updateCustomer(PutCustomerDTO customerDTO) {
         return customerRepository.updateCustomer(customerDTO);
     }

@@ -13,10 +13,18 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * UserRepository class.
+ */
 public class UserRepository implements IUserRepository {
 
-    Logger logger = LoggerFactory.getLogger(UserRepository.class);
+    private Logger logger = LoggerFactory.getLogger(UserRepository.class);
 
+    /**
+     * Get all users.
+     *
+     * @return List<AppUser>
+     */
     @Override
     public List<AppUser> getAllUsers() {
         List<AppUser> allUsers = new ArrayList<>();
@@ -29,7 +37,12 @@ public class UserRepository implements IUserRepository {
         return allUsers;
     }
 
-
+    /**
+     * Get the user by project id.
+     *
+     * @param projectId the project id
+     * @return AppUser
+     */
     @Override
     public AppUser getUserByProjectId(int projectId) {
         AppUser fetchedUser = new AppUser();
@@ -43,6 +56,12 @@ public class UserRepository implements IUserRepository {
     }
 
 
+    /**
+     * Get the user by email.
+     *
+     * @param email the email
+     * @return AppUser
+     */
     @Override
     public AppUser getUserByEmail(String email) {
         AppUser fetchedUser = new AppUser();
@@ -55,6 +74,13 @@ public class UserRepository implements IUserRepository {
         return fetchedUser;
     }
 
+
+    /**
+     * Create a new user.
+     *
+     * @param id the id
+     * @return AppUser
+     */
     @Override
     public AppUser getUserById(int id) {
         AppUser fetchedUser = new AppUser();
@@ -68,12 +94,19 @@ public class UserRepository implements IUserRepository {
     }
 
 
+    /**
+     * Create a new user.
+     *
+     * @param userId the user id
+     * @param roleId the role id
+     * @return int affected rows
+     */
     @Override
     public int addUserToRole(int userId, int roleId) {
         int finalAffectedRows = 0;
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
             IUserMapper mapper = session.getMapper(IUserMapper.class);
-            int affectedRows = mapper.addUserToRole(userId,roleId);
+            int affectedRows = mapper.addUserToRole(userId, roleId);
             session.commit();
             return affectedRows;
         } catch (Exception ex) {
@@ -82,6 +115,12 @@ public class UserRepository implements IUserRepository {
         return finalAffectedRows;
     }
 
+    /**
+     * Update user by id.
+     *
+     * @param appUser the app user
+     * @return boolean true if updated
+     */
     @Override
     public boolean updateUserById(AppUser appUser) {
         int affectedRows = 0;
@@ -92,7 +131,7 @@ public class UserRepository implements IUserRepository {
                     appUser.getId(),
                     appUser.getName(),
                     appUser.getEmail()
-                    );
+            );
             session.commit();
 
             return affectedRows > 0;
@@ -103,6 +142,13 @@ public class UserRepository implements IUserRepository {
         return false;
     }
 
+    /**
+     * Change user password hash.
+     *
+     * @param id              the id
+     * @param newPasswordHash the new password hash
+     * @return boolean true if updated
+     */
     @Override
     public boolean changeUserPasswordHash(int id, String newPasswordHash) {
         int affectedRows = 0;
@@ -110,7 +156,7 @@ public class UserRepository implements IUserRepository {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
             IUserMapper mapper = session.getMapper(IUserMapper.class);
             affectedRows = mapper.updateUserPasswordHash(
-                   id,
+                    id,
                     newPasswordHash
             );
             session.commit();
@@ -123,6 +169,12 @@ public class UserRepository implements IUserRepository {
         return false;
     }
 
+    /**
+     * Create a new user.
+     *
+     * @param createUserDTO the create user dto
+     * @return int affected rows
+     */
     @Override
     public int createUser(CreateUserDTO createUserDTO) {
         int returnedId = 0;
@@ -142,6 +194,12 @@ public class UserRepository implements IUserRepository {
         return returnedId;
     }
 
+    /**
+     * Remove user from role.
+     *
+     * @param userId the user id
+     * @return int affected rows
+     */
     @Override
     public int removeUserFromRole(int userId) {
         int finalAffectedRows = 0;
@@ -156,6 +214,12 @@ public class UserRepository implements IUserRepository {
         return finalAffectedRows;
     }
 
+    /**
+     * Delete user.
+     *
+     * @param value the value
+     * @return boolean true if deleted
+     */
     @Override
     public boolean deleteUser(AppUser value) {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {

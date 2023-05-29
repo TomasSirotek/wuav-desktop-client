@@ -2,14 +2,34 @@ package com.wuav.client.dal.mappers;
 
 import com.wuav.client.be.device.Projector;
 import org.apache.ibatis.annotations.Param;
-import java.util.List;
 
+
+/**
+ * interface IProjectorMapper
+ **/
 public interface IProjectorMapper {
-    List<Projector> getAllProjectors();
-    Projector getProjectorById(@Param("projectorId") int projectorId);
+
+    /**
+     * Creates projector
+     *
+     * @param projector projector
+     * @return int > 0 if success else 0 (fail)
+     */
     int createProjector(Projector projector);
-    //int updateProjectorById(@Param("projectorId") int id,@Param("resolution") String resolution,@Param("connectionType") String connectionType,@Param("devicePort") String devicePort);
+
+    /**
+     * Update projector by Id
+     *
+     * @param projector
+     * @return
+     */
     int updateProjectorById(Projector projector);
 
+    /**
+     * Delete projector by projectorId
+     *
+     * @param projectorId projectorId
+     * @return int > 0 if success else 0 (fail)
+     */
     int deleteProjectorById(@Param("projectorId") int projectorId);
 }

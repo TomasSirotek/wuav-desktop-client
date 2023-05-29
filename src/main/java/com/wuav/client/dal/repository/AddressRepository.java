@@ -12,14 +12,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * AddressRepository class.
+ */
 public class AddressRepository implements IAddressRepository {
-    static Logger logger = LoggerFactory.getLogger(AddressRepository.class);
+    private Logger logger = LoggerFactory.getLogger(AddressRepository.class);
 
+    /**
+     * Create a new address.
+     *
+     * @param addressDTO AddressDTO
+     * @return boolean
+     * @throws Exception Exception occurred while creating address
+     */
     @Override
-    public boolean createAddress(SqlSession session,AddressDTO addressDTO) throws Exception {
+    public boolean createAddress(SqlSession session, AddressDTO addressDTO) throws Exception {
         try {
             IAddressMapper mapper = session.getMapper(IAddressMapper.class);
-             int affectedRowsResult = mapper.createAddress(
+            int affectedRowsResult = mapper.createAddress(
                     addressDTO.id(),
                     addressDTO.street(),
                     addressDTO.city(),
@@ -28,12 +38,19 @@ public class AddressRepository implements IAddressRepository {
             return affectedRowsResult > 0;
         } catch (PersistenceException ex) {
             logger.error("An error occurred mapping tables", ex);
-           throw new Exception(ex);
+            throw new Exception(ex);
         }
     }
+
+    /**
+     * Get an address by id.
+     *
+     * @param id int
+     * @return Address
+     */
     @Override
     public Address getAddressById(int id) {
-       Address address = null;
+        Address address = null;
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
             IAddressMapper mapper = session.getMapper(IAddressMapper.class);
             address = mapper.getAddressById(id);
@@ -43,6 +60,12 @@ public class AddressRepository implements IAddressRepository {
         return address;
     }
 
+    /**
+     * Update an address.
+     *
+     * @param addressDTO PutAddressDTO
+     * @return boolean
+     */
     @Override
     public boolean updateAddress(PutAddressDTO addressDTO) {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
@@ -61,9 +84,15 @@ public class AddressRepository implements IAddressRepository {
         return false;
     }
 
+    /**
+     * Delete an address by id.
+     *
+     * @param id int
+     * @return boolean
+     */
     @Override
     public boolean deleteAddressById(SqlSession session, int id) {
-        try  {
+        try {
             IAddressMapper mapper = session.getMapper(IAddressMapper.class);
             int affectedRows = mapper.deleteAddress(
                     id

@@ -1,17 +1,17 @@
 package com.wuav.client.dal.blob;
+
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
-import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+
+/**
+ * The blob storage factory
+ */
 public class BlobStorageFactory {
     private static final String CONFIG_FILE_NAME = System.getenv("CONFIG_BLOB");
     private static BlobContainerClient blobContainerClient;
@@ -37,6 +37,11 @@ public class BlobStorageFactory {
         }
     }
 
+    /**
+     * Gets the blob container client
+     *
+     * @return the blob container client
+     */
     public static BlobContainerClient getBlobContainerClient() {
         return blobContainerClient;
     }

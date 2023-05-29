@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ * MyBatisConnectionFactory class.
+ **/
 public class MyBatisConnectionFactory {
     private static final String CONFIG_FILE_NAME = "mybatis-config.xml";
 
@@ -26,11 +29,21 @@ public class MyBatisConnectionFactory {
         }
     }
 
+    /**
+     * Get the SqlSessionFactory.
+     *
+     * @return SqlSessionFactory
+     */
     public static SqlSessionFactory getSqlSessionFactory() {
         return sqlSessionFactory;
     }
 
-    public static void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory)  {
+    /**
+     * Set the SqlSessionFactory.
+     *
+     * @param sqlSessionFactory SqlSessionFactory
+     */
+    public static void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
         MyBatisConnectionFactory.sqlSessionFactory = sqlSessionFactory;
     }
 

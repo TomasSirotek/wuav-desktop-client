@@ -8,10 +8,19 @@ import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * RoleRepository class.
+ */
 public class RoleRepository implements IRoleRepository {
 
-    Logger logger = LoggerFactory.getLogger(UserRepository.class);
+    private Logger logger = LoggerFactory.getLogger(UserRepository.class);
 
+    /**
+     * Get the role by name.
+     *
+     * @param name the name
+     * @return AppRole
+     */
     @Override
     public AppRole getRoleByName(String name) {
         AppRole fetchedRole = new AppRole();

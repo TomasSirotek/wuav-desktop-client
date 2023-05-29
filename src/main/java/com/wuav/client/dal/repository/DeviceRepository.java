@@ -5,7 +5,6 @@ import com.wuav.client.be.device.Projector;
 import com.wuav.client.be.device.Speaker;
 import com.wuav.client.dal.interfaces.IDeviceRepository;
 import com.wuav.client.dal.mappers.IDeviceMapper;
-import com.wuav.client.dal.mappers.IProjectMapper;
 import com.wuav.client.dal.mappers.IProjectorMapper;
 import com.wuav.client.dal.mappers.ISpeakerMapper;
 import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
@@ -17,12 +16,17 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DeviceRepository class.
+ */
 public class DeviceRepository implements IDeviceRepository {
 
-    Logger logger = LoggerFactory.getLogger(DeviceRepository.class);
+    private Logger logger = LoggerFactory.getLogger(DeviceRepository.class);
 
-
-    // FINISHED AND WORKING TESTED
+    /**
+     * Get all devices.
+     * @return List<Device>
+     */
     @Override
     public List<Device> getAllDevices() {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
@@ -34,7 +38,12 @@ public class DeviceRepository implements IDeviceRepository {
         }
     }
 
-    // FINISHED AND WORKING TESTED
+    /**
+     * Get all devices by id.
+     * @param deviceId
+     * @param type The type of devices to get.
+     * @return Device
+     */
     @Override
     public Device getDeviceById(int deviceId, Class<? extends Device> type) {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
@@ -46,7 +55,11 @@ public class DeviceRepository implements IDeviceRepository {
         return null;
     }
 
-    // FINISHED AND WORKING TESTED
+    /**
+     * Create a new device.
+     * @param device The device to create.
+     * @return boolean True if the device was created.
+     */
     @Override
     public boolean createDevice(Device device) {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
@@ -67,6 +80,14 @@ public class DeviceRepository implements IDeviceRepository {
         }
     }
 
+    /**
+     * Adds a device to a project.
+     * @param session   The session.
+     * @param projectId The id of the project to add the device to.
+     * @param deviceId  The id of the device to add to the project.
+     * @return int The number of affected rows.
+     * @throws Exception If an error occurs.
+     */
     @Override
     public int addDeviceToProject(SqlSession session,int projectId, int deviceId) throws Exception {
         try {
@@ -80,7 +101,11 @@ public class DeviceRepository implements IDeviceRepository {
         }
     }
 
-    // FINISHED AND WORKING TESTED
+    /**
+     * Update device information.
+     * @param device The device to update.
+     * @return boolean True if the device was updated.
+     */
     @Override
     public boolean updateDevice(Device device) {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
@@ -105,6 +130,12 @@ public class DeviceRepository implements IDeviceRepository {
         }
     }
 
+    /**
+     * Delete a device.
+     * @param deviceId The id of the device to delete.
+     * @param type The type of device to delete.
+     * @return boolean True if the device was deleted.
+     */
     @Override
     public boolean deleteDevice(int deviceId, Class<? extends Device> type) {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
