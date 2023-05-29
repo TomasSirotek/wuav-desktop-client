@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+/**
+ * The default pdf generator
+ */
 public class DefaultPdfGenerator {
     private AppUser appUser;
     private Project project;
@@ -48,13 +51,19 @@ public class DefaultPdfGenerator {
         this.includeImages = builder.includeImages;
     }
 
+    /**
+     * Generates the pdf
+     *
+     * @return the pdf
+     * @throws Exception if the pdf could not be generated
+     */
     public ByteArrayOutputStream generatePdf() {
         var outputStream = new ByteArrayOutputStream();
         try (PDDocument document = new PDDocument()) {
             int totalPages = 0;
             PDPage page = new PDPage(PDRectangle.A4);
             document.addPage(page);
-            totalPages +=1; // add page
+            totalPages += 1; // add page
 
             PDPageContentStream contentStream = new PDPageContentStream(document, page);
 
@@ -332,8 +341,7 @@ public class DefaultPdfGenerator {
         }
     }
 
-
-    public static List<String> breakTextIntoLines(String text, float maxWidth, PDFont font, float fontSize) throws IOException {
+    private static List<String> breakTextIntoLines(String text, float maxWidth, PDFont font, float fontSize) throws IOException {
         List<String> lines = new ArrayList<>();
         int lastSpace = -1;
 
@@ -363,6 +371,9 @@ public class DefaultPdfGenerator {
         return lines;
     }
 
+    /**
+     * Builder class for the DefaultPdfGenerator class
+     */
     public static class Builder {
         private AppUser appUser;
         private Project project;
@@ -371,27 +382,57 @@ public class DefaultPdfGenerator {
         private boolean includeTechnicians;
         private boolean includeImages;
 
+        /**
+         * Constructor for the Builder class
+         *
+         * @param appUser  The AppUser that is generating the PDF
+         * @param project  The Project that is being generated
+         * @param fileName The name of the file
+         */
         public Builder(AppUser appUser, Project project, String fileName) {
             this.appUser = appUser;
             this.project = project;
             this.fileName = fileName;
         }
 
+        /**
+         * Sets the includeDescription boolean
+         *
+         * @param includeDescription Whether or not to include the description
+         * @return The Builder object
+         */
         public Builder includeDescription(boolean includeDescription) {
             this.includeDescription = includeDescription;
             return this;
         }
 
+        /**
+         * Sets the includeTechnicians boolean
+         *
+         * @param includeTechnicians Whether or not to include the technicians
+         * @return The Builder object
+         */
         public Builder includeTechnicians(boolean includeTechnicians) {
             this.includeTechnicians = includeTechnicians;
             return this;
         }
 
+        /**
+         * Sets the includeImages boolean
+         *
+         * @param includeImages Whether or not to include the images
+         * @return The Builder object
+         */
         public Builder includeImages(boolean includeImages) {
             this.includeImages = includeImages;
             return this;
         }
 
+        /**
+         * Builds the DefaultPdfGenerator object
+         *
+         * @return The DefaultPdfGenerator object
+         */
         public DefaultPdfGenerator build() {
             return new DefaultPdfGenerator(this);
         }

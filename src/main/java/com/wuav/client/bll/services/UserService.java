@@ -22,6 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * The implementation of the user service
+ */
+
 public class UserService implements IUserService {
 
     private final IUserRepository userRepository;
@@ -32,6 +36,15 @@ public class UserService implements IUserService {
 
     private final IEmailSender emailSender;
 
+    /**
+     * Constructor
+     *
+     * @param userRepository the user repository
+     * @param roleService    the role service
+     * @param cryptoEngine   the crypto engine
+     * @param emailEngine    the email engine
+     * @param emailSender    the email sender
+     */
     @Inject
     public UserService(IUserRepository userRepository,
                        IRoleService roleService,
@@ -46,29 +59,52 @@ public class UserService implements IUserService {
     }
 
 
+    /**
+     * Gets the user with the given email
+     *
+     * @param email the email of the user
+     * @return the user
+     */
     @Override
     public AppUser getUserByEmail(String email) {
         return userRepository.getUserByEmail(email);
     }
 
+    /**
+     * Gets all users
+     *
+     * @return the list of users
+     */
     @Override
     public List<AppUser> getAllUsers() {
         return userRepository.getAllUsers();
     }
 
 
+    /**
+     * Gets user by id
+     *
+     * @param id the id of the user
+     * @return the user
+     */
     @Override
     public AppUser getUserById(int id) {
         return userRepository.getUserById(id);
     }
 
+    /**
+     * Updates the user with the given id
+     *
+     * @param appUser the user to update
+     * @return boolean if the user was updated
+     */
     @Override
     public boolean updateUserById(AppUser appUser) {
         boolean isUpdated;
 
         isUpdated = userRepository.updateUserById(appUser);
 
-        if(isUpdated){
+        if (isUpdated) {
             AppUser updatedUser = getUserById(appUser.getId());
             CurrentUser.getInstance().setLoggedUser(updatedUser);
         }
@@ -76,17 +112,32 @@ public class UserService implements IUserService {
         return isUpdated;
     }
 
+    /**
+     * Updates the user password hash
+     *
+     * @param id              the userId to update
+     * @param newPasswordHash the new password hash
+     * @return boolean if the user password hash was updated
+     */
     @Override
     public boolean changeUserPasswordHash(int id, String newPasswordHash) {
-        return userRepository.changeUserPasswordHash(id,newPasswordHash);
+        return userRepository.changeUserPasswordHash(id, newPasswordHash);
     }
 
+    /**
+     * Creates user with the given name, email and role
+     *
+     * @param name  the name of the user
+     * @param email the email of the user
+     * @param role  the role of the user
+     * @return boolean if the user was created
+     */
     @Override
     public boolean createUser(String name, String email, String role) {
         boolean finalResult = false;
         AppUser existingUser = getUserByEmail(email);
 
-        if(existingUser == null){
+        if (existingUser == null) {
             // generate id
             int userId = UniqueIdGenerator.generateUniqueId();
             // generate new password
@@ -104,12 +155,12 @@ public class UserService implements IUserService {
             int userResult = userRepository.createUser(createUserDTO);
 
             // if user is created successfully find role by role name and add user to role
-            if(userResult > 0){
+            if (userResult > 0) {
                 AppRole appRole = roleService.getRoleByName(role);
-                if(appRole != null){
+                if (appRole != null) {
                     int roleId = appRole.getId();
-                    int userRoleResult = userRepository.addUserToRole(userId,roleId);
-                    if(userRoleResult > 0){
+                    int userRoleResult = userRepository.addUserToRole(userId, roleId);
+                    if (userRoleResult > 0) {
                         try {
                             finalResult = sendRecoveryEmail(email);
                         } catch (GeneralSecurityException | IOException e) {
@@ -123,20 +174,35 @@ public class UserService implements IUserService {
         return finalResult;
     }
 
+    /**
+     * Updates user role
+     *
+     * @param id      the id of the user
+     * @param appRole the role of the user
+     * @return boolean if the user role was updated
+     */
     @Override
     public boolean updateUserRole(int id, String appRole) {
         AppRole role = roleService.getRoleByName(appRole);
-        if(role != null){
+        if (role != null) {
             int roleId = role.getId();
             // remove user from role and add to new role
-           int result = userRepository.removeUserFromRole(id);
-           if(result > 0){
-                return userRepository.addUserToRole(id,roleId) > 0;
-           }
+            int result = userRepository.removeUserFromRole(id);
+            if (result > 0) {
+                return userRepository.addUserToRole(id, roleId) > 0;
+            }
         }
         return false;
     }
 
+    /**
+     * Sends email to the customer with the given email
+     *
+     * @param email the email of the recipient
+     * @return
+     * @throws GeneralSecurityException
+     * @throws IOException
+     */
     @Override
     public boolean sendRecoveryEmail(String email) throws GeneralSecurityException, IOException {
         boolean isSent = false;
@@ -147,43 +213,65 @@ public class UserService implements IUserService {
         String newPasswordHash = cryptoEngine.Hash(generatedPassword);
         // get user by email and update the password hash
         AppUser appUser = getUserByEmail(email);
-        if(appUser != null){
+        if (appUser != null) {
             // update user password hash
-             var isChanged = changeUserPasswordHash(appUser.getId(),newPasswordHash);
-             if(isChanged){
-                 // send email
+            var isChanged = changeUserPasswordHash(appUser.getId(), newPasswordHash);
+            if (isChanged) {
+                // send email
 
-                 String templateName = "email-template-confirm";
-                 Map<String, Object> templateVariables = new HashMap<>();
-                 templateVariables.put("newPassword", generatedPassword);
+                String templateName = "email-template-confirm";
+                Map<String, Object> templateVariables = new HashMap<>();
+                templateVariables.put("newPassword", generatedPassword);
 
-                 //Process the template and generate the email body
-                 String emailBody = emailEngine.processTemplate(templateName, templateVariables);
+                //Process the template and generate the email body
+                String emailBody = emailEngine.processTemplate(templateName, templateVariables);
 
-                 boolean emailSent = emailSender.sendEmail(appUser.getEmail(), EmailSubjectType.NEW_PASSWORD.toString().toLowerCase(), emailBody, false, null);
-                 if (emailSent) {
-                     System.out.println("Email sent successfully");
-                     isSent = true;
-                 } else {
-                     System.out.println("Email sending failed");
-                     isSent = false;
-                 }
-             }
-            // if it updated send email with generated password
+                boolean emailSent = emailSender.sendEmail(appUser.getEmail(), EmailSubjectType.NEW_PASSWORD.toString().toLowerCase(), emailBody, false, null);
+                if (emailSent) {
+                    System.out.println("Email sent successfully");
+                    isSent = true;
+                } else {
+                    System.out.println("Email sending failed");
+                    isSent = false;
+                }
+            }
         }
         return isSent;
     }
 
+    /**
+     * Deletes user
+     *
+     * @param value the user to delete
+     * @return boolean if the user was deleted
+     */
     @Override
     public boolean deleteUser(AppUser value) {
         return userRepository.deleteUser(value);
     }
 
+    /**
+     * Gets user by project id
+     *
+     * @param projectId the id of the project
+     * @return the user
+     */
     @Override
     public AppUser getUserByProjectId(int projectId) {
         return userRepository.getUserByProjectId(projectId);
     }
 
+    /**
+     * Sends email with attachment
+     *
+     * @param appUser  the user to send the email to
+     * @param project  the project to send the email about
+     * @param value    the attachment
+     * @param fileName the name of the attachment
+     * @return boolean if the email was sent
+     * @throws GeneralSecurityException
+     * @throws IOException
+     */
     @Override
     public boolean sendEmailWithAttachement(AppUser appUser, Project project, ByteArrayOutputStream value, String fileName) throws GeneralSecurityException, IOException {
         boolean isSent = false;
@@ -213,8 +301,8 @@ public class UserService implements IUserService {
         }
 
         boolean emailSent = emailSender.sendEmail(project.getCustomer().getEmail(), EmailSubjectType.PROJECT_REPORT.toString().toLowerCase(), emailBody, true, tempFile);
-        if(emailSent) isSent = true;
-        if(!emailSent) isSent = false;
+        if (emailSent) isSent = true;
+        if (!emailSent) isSent = false;
 
         return isSent;
     }

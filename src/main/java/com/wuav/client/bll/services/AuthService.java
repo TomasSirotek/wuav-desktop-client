@@ -11,12 +11,22 @@ import com.wuav.client.gui.models.user.CurrentUser;
 
 import javax.naming.AuthenticationException;
 
+/**
+ * The authentication service
+ */
 public class AuthService implements IAuthService {
     private IUserService userService;
     private final ICryptoEngine cryptoEngine;
 
     private final UserRoleStrategyFactory userRoleStrategyFactory;
 
+    /**
+     * Constructor
+     *
+     * @param userService
+     * @param cryptoEngine
+     * @param userRoleStrategyFactory
+     */
     @Inject
     public AuthService(IUserService userService, ICryptoEngine cryptoEngine, UserRoleStrategyFactory userRoleStrategyFactory) {
         this.userService = userService;
@@ -24,12 +34,19 @@ public class AuthService implements IAuthService {
         this.userRoleStrategyFactory = userRoleStrategyFactory;
     }
 
+    /**
+     * Authenticate the user
+     *
+     * @param email
+     * @param password
+     * @throws AuthenticationException
+     */
     @Override
     public void authenticate(String email, String password) throws AuthenticationException {
         AppUser user = userService.getUserByEmail(email);
         if (user == null) throw new AuthenticationException("User not found"); // validate user
         boolean matchedPassword = cryptoEngine.HashCheck(user.getPasswordHash(), password); // hash check password
-        if(!matchedPassword)  throw new AuthenticationException("Invalid password");
+        if (!matchedPassword) throw new AuthenticationException("Invalid password");
         CurrentUser.getInstance().setLoggedUser(user); // set current user
         IUserRoleStrategy userRoleStrategy = userRoleStrategyFactory.getStrategy(user); // get user role strategy
         CurrentUser.getInstance().setUserRoleStrategy(userRoleStrategy); // set user role strategy

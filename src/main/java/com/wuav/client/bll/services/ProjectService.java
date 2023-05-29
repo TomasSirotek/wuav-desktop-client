@@ -14,7 +14,6 @@ import com.wuav.client.dal.myBatis.MyBatisConnectionFactory;
 import com.wuav.client.gui.dto.CreateProjectDTO;
 import com.wuav.client.gui.dto.ImageDTO;
 import com.wuav.client.gui.dto.PutCustomerDTO;
-import com.wuav.client.gui.entities.DashboardData;
 import org.apache.ibatis.session.SqlSession;
 
 import java.io.File;
@@ -23,6 +22,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * The implementation of the project service
+ */
 public class ProjectService implements IProjectService {
 
     private final IProjectRepository projectRepository;
@@ -35,6 +37,15 @@ public class ProjectService implements IProjectService {
     private final IDeviceRepository deviceRepository;
 
 
+    /**
+     * Constructor
+     *
+     * @param projectRepository  the project repository
+     * @param addressRepository  the address repository
+     * @param imageRepository    the image repository
+     * @param customerRepository the customer repository
+     * @param deviceRepository   the device repository
+     */
     @Inject
     public ProjectService(IProjectRepository projectRepository, IAddressRepository addressRepository, IImageRepository imageRepository, ICustomerRepository customerRepository, IDeviceRepository deviceRepository) {
         this.projectRepository = projectRepository;
@@ -44,79 +55,139 @@ public class ProjectService implements IProjectService {
         this.deviceRepository = deviceRepository;
     }
 
+    /**
+     * Gets all projects
+     *
+     * @return a list of projects
+     */
     @Override
     public List<Project> getAllProjects() throws Exception {
         return projectRepository.getAllProjects();
     }
 
+    /**
+     * Gets project by user id
+     *
+     * @param userId the id of the user
+     * @return list of Projects
+     * @throws Exception
+     */
     @Override
     public List<Project> getProjectsByUserId(int userId) throws Exception {
         return projectRepository.getAllProjectsByUserId(userId);
     }
+
+    /**
+     * Gets a project by project id
+     *
+     * @param projectId the id of the project
+     * @return
+     * @throws Exception
+     */
     @Override
     public Project getProjectById(int projectId) throws Exception {
         return projectRepository.getProjectById(projectId);
     }
+
+    /**
+     * Creates a project by project id
+     *
+     * @param userId          the id of the user
+     * @param projectToCreate the project to create
+     * @return boolean if the project was created
+     * @throws Exception
+     */
     @Override
     public boolean createProject(int userId, CreateProjectDTO projectToCreate) throws Exception {
         return tryCreateProject(userId, projectToCreate);
     }
 
 
+    /**
+     * Updates the project image
+     *
+     * @param projectId         the id of the project
+     * @param imageId           the id of the image
+     * @param selectedImageFile the image to upload
+     * @return Optional of CustomImage
+     * @throws Exception
+     */
     @Override
-    public Optional<CustomImage> reuploadImage(int projectId,int imageId, File selectedImageFile) throws Exception {
-            return Optional.ofNullable(imageRepository.getImageById(imageId))
-                    .filter(image -> {
-                        try {
-                            return deleteIfExists(image.getImageUrl());
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    })
-                    .map(image -> {
-                        try {
-                            return uploadImage(selectedImageFile);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    })
-                    .filter(Objects::nonNull)
-                    .filter(newImage -> imageRepository.updateImage(
-                            imageId,
-                            newImage.getImageType(),
-                            newImage.getImageUrl()))
-                    .flatMap(updated -> {
-                        try {
-                            return Optional.ofNullable(imageRepository.getImageById(imageId));
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
+    public Optional<CustomImage> reuploadImage(int projectId, int imageId, File selectedImageFile) throws Exception {
+        return Optional.ofNullable(imageRepository.getImageById(imageId))
+                .filter(image -> {
+                    try {
+                        return deleteIfExists(image.getImageUrl());
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .map(image -> {
+                    try {
+                        return uploadImage(selectedImageFile);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .filter(Objects::nonNull)
+                .filter(newImage -> imageRepository.updateImage(
+                        imageId,
+                        newImage.getImageType(),
+                        newImage.getImageUrl()))
+                .flatMap(updated -> {
+                    try {
+                        return Optional.ofNullable(imageRepository.getImageById(imageId));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
     }
 
+    /**
+     * Updates the project notes
+     *
+     * @param projectId the id of the project
+     * @param content   the new notes
+     * @return String of the new note or empty
+     * @throws Exception
+     */
     @Override
     public String updateNotes(int projectId, String content) throws Exception {
         boolean result = projectRepository.updateNotes(projectId, content);
-        if(!result) return "";
+        if (!result) return "";
         return getProjectById(projectId).getDescription();
     }
 
+    /**
+     * Updates the project customer
+     *
+     * @param customerDTO the customer to update
+     * @return Customer
+     */
     @Override
     public Customer updateCustomer(PutCustomerDTO customerDTO) {
-       boolean result = addressRepository.updateAddress(customerDTO.addressDTO());
-       if(result){
-           boolean projectCustomer = customerRepository.updateCustomer(customerDTO);
-           if(projectCustomer){
+        boolean result = addressRepository.updateAddress(customerDTO.addressDTO());
+        if (result) {
+            boolean projectCustomer = customerRepository.updateCustomer(customerDTO);
+            if (projectCustomer) {
                 return customerRepository.getCustomerById(customerDTO.id());
-           }
-       }
+            }
+        }
         return null;
     }
 
+    /**
+     * Updates the project name
+     *
+     * @param projectId the id of the project
+     * @param newName   the new name
+     * @return String of the new name or empty
+     * @throws Exception
+     */
     @Override
     public String updateProjectName(int projectId, String newName) throws Exception {
         boolean result = projectRepository.updateProjectName(projectId, newName);
-        if(!result) return "";
+        if (!result) return "";
         return getProjectById(projectId).getDescription();
     }
 
@@ -144,13 +215,13 @@ public class ProjectService implements IProjectService {
 
 
                 // add devices to project
-                for(Device device : projectToCreate.selectedDevices()){
+                for (Device device : projectToCreate.selectedDevices()) {
                     int isDeviceAddedToProject = deviceRepository.addDeviceToProject(session, projectToCreate.id(), device.getId());
                     if (isDeviceAddedToProject <= 0) throw new Exception("Failed to add device to project");
                 }
 
                 // Create image in Azure Blob Storage and database, then add it to the project
-                uploadAndCreateImage(session,projectToCreate);
+                uploadAndCreateImage(session, projectToCreate);
 
                 // If no exceptions were thrown, all operations were successful. We can commit the transaction.
                 session.commit();
@@ -163,7 +234,7 @@ public class ProjectService implements IProjectService {
         }
     }
 
-    private void uploadAndCreateImage(SqlSession session,CreateProjectDTO projectToCreate) throws Exception {
+    private void uploadAndCreateImage(SqlSession session, CreateProjectDTO projectToCreate) throws Exception {
         for (ImageDTO imageDTO : projectToCreate.images()) {
             // Upload image to Azure Blob Storage
             CustomImage customImage = uploadImage(imageDTO.getFile());
@@ -178,7 +249,7 @@ public class ProjectService implements IProjectService {
             if (!createdImageResult) throw new Exception("Failed to save image to the image table");
 
             // Add image to the project_image table
-            boolean isImageAddedToProject = imageRepository.addImageToProject(session,projectToCreate.id(), customImage.getId(), imageDTO.isMain());
+            boolean isImageAddedToProject = imageRepository.addImageToProject(session, projectToCreate.id(), customImage.getId(), imageDTO.isMain());
             if (!isImageAddedToProject) throw new Exception("Failed to add image to the project_image table");
         }
     }
@@ -197,43 +268,54 @@ public class ProjectService implements IProjectService {
         return blobStorageHelper.deleteImageIfExist(imageUrl);
     }
 
+    /**
+     * Deletes a project
+     *
+     * @param project the project to delete
+     * @return boolean if the project was deleted
+     * @throws Exception
+     */
     @Override
     public boolean deleteProject(Project project) throws Exception {
         try (SqlSession session = MyBatisConnectionFactory.getSqlSessionFactory().openSession()) {
-        try {
-            // 1. Delete all images from blob storage
-            for (CustomImage image : project.getProjectImages()) {
-                String imageUrl = image.getImageUrl();
-                boolean isDeleted = deleteIfExists(imageUrl);
-                if (!isDeleted) throw new RuntimeException("Failed to delete image from blob storage: " + imageUrl);
+            try {
+                // 1. Delete all images from blob storage
+                for (CustomImage image : project.getProjectImages()) {
+                    String imageUrl = image.getImageUrl();
+                    boolean isDeleted = deleteIfExists(imageUrl);
+                    if (!isDeleted) throw new RuntimeException("Failed to delete image from blob storage: " + imageUrl);
+                }
+
+                // 2. Delete all images from database (including from the join table due to cascade delete)
+                for (CustomImage image : project.getProjectImages()) {
+                    boolean imageDeleted = imageRepository.deleteImageById(session, image.getId());
+                    if (!imageDeleted)
+                        throw new RuntimeException("Failed to delete image from database: " + image.getId());
+                }
+
+                // 4. Delete project from database
+                boolean projectDeleted = projectRepository.deleteProjectById(session, project.getId());
+                if (!projectDeleted)
+                    throw new RuntimeException("Failed to delete project from database: " + project.getId());
+
+                // 3. Delete customer from database (assuming a customer is linked to a project)
+                boolean customerDeleted = customerRepository.deleteCustomerById(session, project.getCustomer().getId());
+                if (!customerDeleted)
+                    throw new RuntimeException("Failed to delete customer from database for project: " + project.getId());
+
+
+                // 5. Delete address from database (assuming an address is linked to a project)
+                boolean addressDeleted = addressRepository.deleteAddressById(session, project.getCustomer().getAddress().getId());
+                if (!addressDeleted)
+                    throw new RuntimeException("Failed to delete address from database for project: " + project.getId());
+                // If all steps are successful, return true
+                session.commit();
+                return true;
+            } catch (Exception e) {
+                // If any step fails, roll back the transaction
+                session.rollback();
+                throw e;
             }
-
-            // 2. Delete all images from database (including from the join table due to cascade delete)
-            for (CustomImage image : project.getProjectImages()) {
-                boolean imageDeleted = imageRepository.deleteImageById(session,image.getId());
-                if (!imageDeleted) throw new RuntimeException("Failed to delete image from database: " + image.getId());
-            }
-
-            // 4. Delete project from database
-            boolean projectDeleted = projectRepository.deleteProjectById(session,project.getId());
-            if (!projectDeleted) throw new RuntimeException("Failed to delete project from database: " + project.getId());
-
-            // 3. Delete customer from database (assuming a customer is linked to a project)
-            boolean customerDeleted = customerRepository.deleteCustomerById(session,project.getCustomer().getId());
-            if (!customerDeleted) throw new RuntimeException("Failed to delete customer from database for project: " + project.getId());
-
-
-            // 5. Delete address from database (assuming an address is linked to a project)
-            boolean addressDeleted = addressRepository.deleteAddressById(session,project.getCustomer().getAddress().getId());
-            if (!addressDeleted) throw new RuntimeException("Failed to delete address from database for project: " + project.getId());
-            // If all steps are successful, return true
-            session.commit();
-            return true;
-        } catch (Exception e) {
-            // If any step fails, roll back the transaction
-            session.rollback();
-            throw e;
-        }
         }
     }
 

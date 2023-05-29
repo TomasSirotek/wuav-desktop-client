@@ -1,5 +1,8 @@
 package com.wuav.client.bll.helpers;
 
+/**
+ * Enum for EventType
+ */
 public enum EventType {
     SET_CURRENT_PROJECT,
     UPDATE_TABLE,

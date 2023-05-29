@@ -62,7 +62,6 @@ public class ConfigModule extends AbstractModule {
         bind(IProjectRepository.class).to(ProjectRepository.class);
         bind(IImageRepository.class).to(ImageRepository.class);
         bind(IAddressRepository.class).to(AddressRepository.class);
-        bind(IAddressService.class).to(AddressService.class);
         bind(ICustomerRepository.class).to(CustomerRepository.class);
         bind(ICustomerService.class).to(CustomerService.class);
         bind(ICryptoEngine.class).to(CryptoEngine.class);

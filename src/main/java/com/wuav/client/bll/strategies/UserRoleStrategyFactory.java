@@ -5,6 +5,9 @@ import com.google.inject.Provider;
 import com.wuav.client.be.user.AppUser;
 import com.wuav.client.bll.strategies.interfaces.IUserRoleStrategy;
 
+/**
+ * The factory for the user role strategies
+ */
 public class UserRoleStrategyFactory {
 
     private final Provider<AdminStrategy> adminStrategyProvider;
@@ -12,6 +15,14 @@ public class UserRoleStrategyFactory {
     private final Provider<SalesStrategy> salesStrategyProvider;
     private final Provider<ManagerStrategy> managerStrategyProvider;
 
+    /**
+     * Constructor
+     *
+     * @param adminStrategyProvider the admin strategy provider
+     * @param technicianStrategyProvider the technician strategy provider
+     * @param salesStrategyProvider the sales strategy provider
+     * @param managerStrategyProvider the manager strategy provider
+     */
     @Inject
     public UserRoleStrategyFactory(Provider<AdminStrategy> adminStrategyProvider, Provider<TechnicianStrategy> technicianStrategyProvider, Provider<SalesStrategy> salesStrategyProvider, Provider<ManagerStrategy> managerStrategyProvider) {
         this.adminStrategyProvider = adminStrategyProvider;
@@ -20,6 +31,12 @@ public class UserRoleStrategyFactory {
         this.managerStrategyProvider = managerStrategyProvider;
     }
 
+    /**
+     * Gets the strategy for the given user
+     *
+     * @param user the user to get the strategy for
+     * @return the strategy
+     */
     public IUserRoleStrategy getStrategy(AppUser user) {
         String roleName = user.getRoles().get(0).getName();
         switch (roleName) {

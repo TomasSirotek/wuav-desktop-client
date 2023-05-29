@@ -83,5 +83,11 @@ public enum ViewType {
             return "views/dashboardView.fxml";
         }
     };
+
+    /**
+     * Abstract method that forces each individual ENUM to override returning string with its own
+     * so if for example MAIN is used it ensures that it will only return views/base.fxml
+     * @return String
+     */
     public abstract String getFXMLView();
 }
