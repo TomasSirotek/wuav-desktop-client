@@ -38,6 +38,7 @@ This was my second semester with duration of 3 weeks in my computer science stud
 This GitHub project will include the development of the web-based application, documentation on how to set up and use the system, and ongoing maintenance and updates to ensure its reliability and effectiveness in supporting WUAV's mobile technicians.
 
 Please let me know if you need any further information or if there's anything specific you would like to add to the project description!
+
 ## Product Mock
 
 
@@ -84,20 +85,54 @@ https://github.com/TomassSimko/wuav-app
   <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
   <ol>
     <li>
-      <a href="#">About The Project</a>
+      <a href="#">Fundaments</a>
       <ul>
         <li><a href="#tech-stack">Tech stack</a></li>
+        <li><a href="#core-management">Core management</a></li>
+        <li><a href="#email-management">Email management</a></li>
+        <li><a href="#pdf-management">PDF management</a></li>
+        <li><a href="#http-request-management">HTTP request management</a></li>
+        <li><a href="#unit-testing">Unit testing</a></li>
+        <li><a href="#password-management">Password management</a></li>
         <li><a href="#style">Style</a></li>
+        <li><a href="#style">Resources used for the project design </a></li>
       </ul>
     </li>
-    <li><a href="#features-and-requirements">Features</a></li>
-    <li><a href="#application-design">Application design</a></li>
-    <li><a href="#database-design">Database design</a></li>
-    <li><a href="#uml-diagram">UML diagram</a></li>
-    <li><a href="#application-design-patterns">Application design patterns</a></li>
-    <li><a href="#application-interface">Application interface</a></li>
-    <li><a href="#licence">License</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li>
+        <a href="#">About the project</a>
+    <ul>
+       <li><a href="#color-pallet">Color pallet</a></li>
+       <li><a href="#user-interface-desktop-design">User interface desktop design</a></li>
+       <li><a href="#user-interface-swift-design">User interface SWIFT design</a></li>
+      </ul>
+    </li>
+ <li>
+        <a href="#">Features and requirements</a>
+    <ul>
+       <li><a href="#pdf-generation">PDF generation</a></li>
+       <li><a href="#email-templates">Email templates</a></li>
+       <li><a href="#language-model-implementation">Language model implementation</a></li>
+       <li><a href="#qr-code-generation">QR code generation</a></li>
+      </ul>
+    </li>
+<li>
+        <a href="#">Architecture</a>
+    <ul>
+       <li><a href="#project-class-diagram">Project Class diagram</a></li>
+       <li><a href="#database-diagram">Database diagram</a></li>
+      </ul>
+    </li>
+       <li><a href="#application-design-patterns">Application design patterns</a></li>
+ <li>
+        <a href="#">Initialization steps</a>
+    <ul>
+       <li><a href="#java-desktop">Java desktop</a></li>
+       <li><a href="#minimal-rest-api-c-sharp">Minimal RestAPI C#</a></li>
+       <li><a href="#swift-application">SWIFT application</a></li>
+      </ul>
+    </li>
+ <li><a href="#license">License</a></li>
+ <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
 
@@ -162,6 +197,10 @@ https://github.com/TomassSimko/wuav-app
 
 
 ## About The Project
+
+## Figma file preview 
+
+[Figma preview ](https://www.figma.com/file/CTTtzNBrhDf45AX4cuBWF0/Wuav-app?type=design&node-id=553%3A5918&t=APpocZkOaKy2m3Wb-1)
 ## Color pallet 
 This is the primary color pallet for the overall product design
 
@@ -169,14 +208,30 @@ This is the primary color pallet for the overall product design
 
 ## User interface desktop design
 
-Login page
-<img width="1112" alt="Screenshot 2023-05-23 at 19 25 29" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/119d84ef-9df3-4782-b3bf-e64ed7f63900">
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-gap: 5px;">
+  <div>
+    <img src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/119d84ef-9df3-4782-b3bf-e64ed7f63900" alt="Login page" width="400">
+  </div>
+  <div>
+    <img src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/8f4bc390-18ac-45ba-b2a4-5f27092e4f0b" alt="Dashboard page" width="400">
+  </div>
+  <div>
+    <img src="https://github.com/TomassSimko/wuav-app/assets/72190589/6f3a87dd-527d-426a-9f08-23cedee21b53" alt="User profile" width="400">
+  </div>
+  <div>
+    <img src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/b08e8ead-1ed6-471e-a2b1-dfc21ea55077" alt="Project creation stepper" width="400">
+  </div>
+  <div>
+    <img src="https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/7b2782fd-53e1-4ed7-ab2f-e17d5abc892f" alt="Project details Tab 1" width="400">
+  </div>
+  <div>
+    <img src="https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/f57a637e-c056-487a-8e9e-8ed41057a610" alt="Project details Tab 2" width="400">
+  </div>
+  <div>
+    <img src="https://github.com/TomassSimko/wuav-desktop-client/assets/72190589/9999cd2f-77cb-4191-ad06-bff73e0043ba" alt="Project details Edit project" width="400">
+  </div>
+</div>
 
-Dashboard page
-<img width="1112" alt="Screenshot 2023-05-23 at 19 25 23" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/8f4bc390-18ac-45ba-b2a4-5f27092e4f0b">
-
-Project creation stepper
-<img width="1068" alt="Screenshot 2023-05-23 at 19 30 53" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/b08e8ead-1ed6-471e-a2b1-dfc21ea55077">
 
 ## User interface SWIFT design
 
@@ -255,7 +310,9 @@ Generated imageView is presented to the user interface and read from the applica
  }
 ```
 
-# Simplified class diagram
+# Architecture
+
+# Project Class diagram
 
 ![Screenshot 2023-05-23 at 13 36 50](https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/3b9c8258-c1a9-4894-80f3-374cdc3db2b6)
 
@@ -266,7 +323,7 @@ MSSQL Database diagram
 <img width="1044" alt="Screenshot 2023-05-23 at 13 34 21" src="https://github.com/TomassSimko/Private-Movie-Collection/assets/72190589/f9591967-6285-47c1-89c5-be0cc09345f3">
 
 
-## Application design patterns
+# Application design patterns
 
 - [x] Singleton pattern
 - [x] Factory pattern
@@ -277,7 +334,7 @@ MSSQL Database diagram
 - [x] Facade pattern
 - [x] Builder pattern
 
-## Initialization steps 
+# Initialization steps 
 These steps are for academy purpose only. You can still go and play with the code however it won't run without the database and the server or the credentials.
 
 ### Java desktop
@@ -364,7 +421,4 @@ Project Link: https://github.com/TomassSimko/wuav-desktop-client
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://contrib.rocks/image?repo=TomassSimko/Private-Movie-Collection
-
-[contributors-url]: https://github.com/TomassSimko/Private-Movie-Collection/graphs/contributors
 
