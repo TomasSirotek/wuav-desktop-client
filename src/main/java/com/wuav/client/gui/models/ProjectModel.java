@@ -19,13 +19,16 @@ import java.io.File;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-public class ProjectModel implements IProjectModel{
+
+/**
+ * The type Project model.
+ */
+public class ProjectModel implements IProjectModel {
     private IProjectService projectService;
 
     private final IUserModel userModel;
@@ -33,11 +36,25 @@ public class ProjectModel implements IProjectModel{
     private final Map<Integer, List<Project>> projectsCache = Collections.synchronizedMap(new HashMap<>());
     private final int ALL_PROJECTS_KEY = -1;
 
+
+    /**
+     * Instantiates a new Project model.
+     *
+     * @param projectService the project service
+     * @param userModel      the user model
+     */
     @Inject
     public ProjectModel(IProjectService projectService, IUserModel userModel) {
         this.projectService = projectService;
         this.userModel = userModel;
     }
+
+    /**
+     * Geets all projects
+     *
+     * @return List of projects
+     * @throws Exception
+     */
     @Override
     public List<Project> getAllProjects() throws Exception {
         List<Project> projects = projectsCache.get(ALL_PROJECTS_KEY);
@@ -50,6 +67,14 @@ public class ProjectModel implements IProjectModel{
 
         return projects;
     }
+
+    /**
+     * Gets all projects by user id.
+     *
+     * @param userId the user id
+     * @return the all projects by user id
+     * @throws Exception the exception
+     */
     @Override
     public List<Project> getProjectsByUserId(int userId) throws Exception {
         List<Project> projects = projectsCache.get(userId);
@@ -62,15 +87,24 @@ public class ProjectModel implements IProjectModel{
         return projects;
     }
 
+    /**
+     * Gets all projects by user id.
+     *
+     * @param projectId the project id
+     * @return the all projects by project id
+     * @throws Exception the exception
+     */
     @Override
-    public Project getProjectById(int projectId) throws Exception {return projectService.getProjectById(projectId);}
-
-    @Override
-    public List<Project> getCachedProjectsByUserId(int userId) {
-        return projectsCache.get(userId);
+    public Project getProjectById(int projectId) throws Exception {
+        return projectService.getProjectById(projectId);
     }
 
-
+    /**
+     * Gets dashboard data by user id.
+     *
+     * @param id the user id
+     * @return the dashboard data by user id
+     */
     @Override
     public DashboardData getTechnicianDashboardData(int id) {
         List<Project> technicianProjects = projectsCache.getOrDefault(id, new ArrayList<>());
@@ -98,6 +132,13 @@ public class ProjectModel implements IProjectModel{
                 amountOfPlansUploaded
         );
     }
+
+    /**
+     * Gets admin dashboard data by user id.
+     *
+     * @param id the user admin id
+     * @return the dashboard data by user id
+     */
     @Override
     public DashboardData getAdminDashboardData(int id) {
         int totalProjects = projectsCache.values().stream()
@@ -129,6 +170,12 @@ public class ProjectModel implements IProjectModel{
         );
     }
 
+    /**
+     * Search project list.
+     *
+     * @param query the query
+     * @return the list
+     */
     @Override
     public List<Project> searchProject(String query) {
         return projectsCache.values().stream()
@@ -139,11 +186,19 @@ public class ProjectModel implements IProjectModel{
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Update Project name
+     *
+     * @param projectId project id
+     * @param newName   project name
+     * @return updated project name
+     * @throws Exception
+     */
     @Override
     public String updateProjectName(int projectId, String newName) throws Exception {
-        String updatedName = projectService.updateProjectName(projectId,newName);
+        String updatedName = projectService.updateProjectName(projectId, newName);
 
-        if(updatedName.isEmpty()){
+        if (updatedName.isEmpty()) {
             // Retrieve the project owner
             AppUser user = userModel.getUserByProjectId(projectId);
 
@@ -166,9 +221,17 @@ public class ProjectModel implements IProjectModel{
         return updatedName;
     }
 
+    /**
+     * Create project
+     *
+     * @param userId
+     * @param projectToCreate
+     * @return true if project is created successfully
+     * @throws Exception
+     */
     @Override
-    public boolean createProject(int userId,CreateProjectDTO projectToCreate) throws Exception {
-        boolean result =  projectService.createProject(userId,projectToCreate);
+    public boolean createProject(int userId, CreateProjectDTO projectToCreate) throws Exception {
+        boolean result = projectService.createProject(userId, projectToCreate);
         if (result) {
             // If the project is successfully created, invalidate the cache entries
             projectsCache.put(userId, projectService.getProjectsByUserId(userId)); // update cache for specific user
@@ -178,29 +241,24 @@ public class ProjectModel implements IProjectModel{
         return result;
     }
 
+    /**
+     * Update customer
+     *
+     * @param customerDTO
+     * @return updated customer
+     */
     @Override
     public Customer updateCustomer(PutCustomerDTO customerDTO) {
         return projectService.updateCustomer(customerDTO);
     }
 
-    @Override
-    public void updateCacheForUser(int userId, Project newProject) throws Exception {
-        List<Project> projects = projectsCache.get(userId);
-        if (projects != null) {
-            projects.add(newProject);
-        } else {
-            projects = new ArrayList<>();
-            projects.add(newProject);
-            projectsCache.put(userId, projects);
-        }
-        cacheProjectImages(newProject);
-    }
-
-    @Override
-    public void updateProjectsCache(int userId, List<Project> updatedProjects) {
-        projectsCache.put(userId, updatedProjects);
-    }
-
+    /**
+     * Delete project
+     *
+     * @param project
+     * @return true if project is deleted successfully
+     * @throws Exception
+     */
     @Override
     public boolean deleteProject(Project project) throws Exception {
         AppUser user = userModel.getUserByProjectId(project.getId());
@@ -213,9 +271,18 @@ public class ProjectModel implements IProjectModel{
         return result;
     }
 
+    /**
+     * Reupload image
+     *
+     * @param projectId         project id
+     * @param id                image id
+     * @param selectedImageFile image file
+     * @return updated image
+     * @throws Exception
+     */
     @Override
     public Image reuploadImage(int projectId, int id, File selectedImageFile) throws Exception {
-        Optional<CustomImage> updatedImage = projectService.reuploadImage(projectId,id, selectedImageFile);
+        Optional<CustomImage> updatedImage = projectService.reuploadImage(projectId, id, selectedImageFile);
         updatedImage.get().setMainImage(true);
         AppUser user = userModel.getUserByProjectId(projectId);
         Image image = null;
@@ -254,11 +321,19 @@ public class ProjectModel implements IProjectModel{
     }
 
 
+    /**
+     * Update project notes
+     *
+     * @param projectId project id
+     * @param content   project notes
+     * @return updated project notes
+     * @throws Exception
+     */
     @Override
     public String updateNotes(int projectId, String content) throws Exception {
-        String updatedNotes = projectService.updateNotes(projectId,content);
+        String updatedNotes = projectService.updateNotes(projectId, content);
 
-        if(updatedNotes != null){
+        if (updatedNotes != null) {
             // Retrieve the project owner
             AppUser user = userModel.getUserByProjectId(projectId);
 
