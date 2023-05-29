@@ -4,12 +4,36 @@ import com.wuav.client.gui.dto.ImageDTO;
 
 import java.util.List;
 
+/**
+ * The interface Image operation service.
+ *
+ * @param <T> the type parameter
+ */
 public interface IImageOperationService<T> {
-        void startImageFetch(ImageOperationFacade.ImageFetchCallback callback);
+    /**
+     * The interface Image fetch callback.
+     */
+    void startImageFetch(ImageOperationFacade.ImageFetchCallback callback);
 
-        List<ImageDTO> getStoredFetchedImages();
+    /**
+     * Gets stored fetched images.
+     *
+     * @return the stored fetched images
+     */
+    List<ImageDTO> getStoredFetchedImages();
 
-        void stopImageFetch();
-        void removeImagesFromServer();
-        List<T> fetchImagesFromServer(int id);
+    /**
+     * Stop image fetch.
+     */
+    void stopImageFetch();
+
+    /**
+     * Remove images from server.
+     */
+    void removeImagesFromServer();
+
+    /**
+     * Fetch images from server.
+     */
+    List<T> fetchImagesFromServer(int id);
 }

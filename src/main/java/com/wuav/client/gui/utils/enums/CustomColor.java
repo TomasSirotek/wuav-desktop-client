@@ -1,5 +1,8 @@
 package com.wuav.client.gui.utils.enums;
 
+/**
+ * The enum Custom color.
+ */
 public enum CustomColor {
     ERROR("-fx-background-color: rgb(211, 47, 47);"),
     SUCCESS("-fx-background-color: rgb(56, 142, 60);"),
@@ -15,10 +18,20 @@ public enum CustomColor {
 
     private final String style;
 
+    /**
+     * Instantiates a new Custom color.
+     *
+     * @param style the style
+     */
     CustomColor(String style) {
         this.style = style;
     }
 
+    /**
+     * Gets style.
+     *
+     * @return the style
+     */
     public String getStyle() {
         return style;
     }

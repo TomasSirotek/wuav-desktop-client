@@ -20,12 +20,18 @@ import javafx.util.Duration;
 
 import java.io.File;
 
+/**
+ * The type Ck editor pane.
+ */
 public class CKEditorPane extends VBox {
 
     private WebView webView;
     private WebEngine webEngine;
     private StringProperty editorContent;
 
+    /**
+     * Instantiates a new Ck editor pane.
+     */
     public CKEditorPane() {
         webView = new WebView();
         webEngine = webView.getEngine();
@@ -96,10 +102,19 @@ public class CKEditorPane extends VBox {
         getChildren().add(vBox);
     }
 
+    /**
+     * Gets editor content.
+     *
+     * @return the editor content
+     */
     public StringProperty editorContentProperty() {
         return editorContent;
     }
 
+    /**
+     * Sets content.
+     * @param content the content
+     */
     public void setContent(String content) {
         String escapedContent = content.replace("'", "\\'");
         webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {

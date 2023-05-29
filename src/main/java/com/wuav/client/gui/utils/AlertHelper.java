@@ -8,6 +8,9 @@ import javafx.stage.StageStyle;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * The type Alert helper.
+ */
 public class AlertHelper {
     private static Alert alert;
 
@@ -45,6 +48,12 @@ public class AlertHelper {
         return alert.showAndWait();
     }
 
+    /**
+     * Show default alert box with needed description and its alert type
+     *
+     * @param content that will be displayed inside the show alert as main message
+     * @param type    java fx scene control Alert enum type
+     */
     public static void showDefaultAlert(String content, Alert.AlertType type) {
         alert = new Alert(type);
         alert.setAlertType(type);

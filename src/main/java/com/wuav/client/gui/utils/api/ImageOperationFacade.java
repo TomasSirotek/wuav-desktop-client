@@ -22,6 +22,9 @@ import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * The type Image operation facade.
+ */
 public class ImageOperationFacade implements IImageOperationService<ImageDTO> {
 
     private final int userId;
@@ -32,15 +35,29 @@ public class ImageOperationFacade implements IImageOperationService<ImageDTO> {
     private List<ImageDTO> storedFetchedImages = List.of();
 
 
+    /**
+     * Instantiates a new Image operation facade.
+     *
+     * @param userId the user id
+     */
     @Inject
     public ImageOperationFacade(int userId) {
         this.userId = userId;
     }
 
 
+    /**
+     * Interface Image fetch callback.
+     */
     public interface ImageFetchCallback {
         void onImagesFetched(List<Image> images);
     }
+
+    /**
+     * Gets stored fetched images.
+     *
+     * @param callback the callback
+     */
     @Override
     public void startImageFetch(ImageFetchCallback callback) {
         AtomicBoolean fetched = new AtomicBoolean(false);
@@ -67,10 +84,19 @@ public class ImageOperationFacade implements IImageOperationService<ImageDTO> {
         imageFetchTimeline.play();
     }
 
+    /**
+     * Gets stored fetched images.
+     *
+     * @return the stored fetched images
+     */
     @Override
     public List<ImageDTO> getStoredFetchedImages() {
         return storedFetchedImages;
     }
+
+    /**
+     * Stop image fetch.
+     */
     @Override
     public void stopImageFetch() {
         if (imageFetchTimeline != null) {
@@ -78,6 +104,9 @@ public class ImageOperationFacade implements IImageOperationService<ImageDTO> {
         }
     }
 
+    /**
+     * Remove images from server.
+     */
     @Override
     public void removeImagesFromServer() {
         try {
@@ -97,6 +126,12 @@ public class ImageOperationFacade implements IImageOperationService<ImageDTO> {
         }
     }
 
+    /**
+     * Fetch images from server.
+     *
+     * @param userId the user id
+     * @return the list
+     */
     @Override
     public List<ImageDTO> fetchImagesFromServer(int userId) {
         List<ImageDTO> imagesFromApp = new ArrayList<>();
@@ -119,7 +154,8 @@ public class ImageOperationFacade implements IImageOperationService<ImageDTO> {
 
                 // Deserialize JSON response into a list of strings
                 Gson gson = new Gson();
-                TypeToken<List<String>> token = new TypeToken<List<String>>() {};
+                TypeToken<List<String>> token = new TypeToken<List<String>>() {
+                };
                 List<String> base64Images = gson.fromJson(jsonResponse, token.getType());
 
                 int fileIndex = 0;

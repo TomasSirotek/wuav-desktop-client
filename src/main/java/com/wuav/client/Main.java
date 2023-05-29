@@ -10,11 +10,26 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * The type Main.
+ */
 public class Main extends Application {
+
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         launch();
     }
 
+    /**
+     * Start.
+     *
+     * @param stage the stage
+     * @throws IOException the io exception
+     */
     @Override
     public void start(Stage stage) throws IOException {
             StartUp.configure();

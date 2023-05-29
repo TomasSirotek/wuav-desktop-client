@@ -7,7 +7,18 @@ import javafx.animation.PauseTransition;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
+/**
+ * The type Animation util.
+ */
 public class AnimationUtil {
+
+    /**
+     * Animate in out.
+     *
+     * @param pane                     the pane
+     * @param pauseDurationInSeconds  the pause duration in seconds
+     * @param style                    the style
+     */
     public static void animateInOut(Pane pane, double pauseDurationInSeconds, CustomColor style) {
         pane.setVisible(true);
         pane.setStyle(style.getStyle());
