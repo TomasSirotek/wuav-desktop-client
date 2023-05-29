@@ -1,7 +1,9 @@
 package com.wuav.client.gui.dto;
 
-import java.util.List;
 
+/**
+ * The record CreateUserDTO.
+ */
 public record CreateUserDTO(int id, String name, String email, String password) {
 
 }

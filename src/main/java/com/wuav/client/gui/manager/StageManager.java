@@ -3,7 +3,6 @@ package com.wuav.client.gui.manager;
 import com.wuav.client.be.Project;
 import com.wuav.client.bll.helpers.ViewType;
 import com.wuav.client.gui.controllers.abstractController.RootController;
-import com.wuav.client.gui.controllers.controllerFactory.ControllerFactory;
 import com.wuav.client.gui.controllers.controllerFactory.IControllerFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,13 +17,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type Stage manager.
+ */
 public class StageManager {
     private final Map<String, Stage> stages;
 
+    /**
+     * Instantiates a new Stage manager.
+     */
     public StageManager() {
         stages = new HashMap<>();
     }
 
+    /**
+     * Show stage.
+     *
+     * @param title  the title
+     * @param parent the parent
+     */
     public void showStage(String title, Parent parent) {
         Stage stage = stages.get(title);
         if (stage == null) {
@@ -36,6 +47,13 @@ public class StageManager {
         stage.show();
     }
 
+    /**
+     * Show stage.
+     *
+     * @param title         the title
+     * @param parent        the parent
+     * @param previousScene the previous scene
+     */
     public void showStage(Parent parent, String title, Scene previousScene,List<Project> projectList) {
         Stage stage = new Stage();
         Scene scene = new Scene(parent);
@@ -66,17 +84,11 @@ public class StageManager {
         stage.show();
     }
 
-    private void switchToView(Parent parent,Pane projectAnchorPane) {
-        Scene scene = projectAnchorPane.getScene();
-        Window window = scene.getWindow();
-        if (window instanceof Stage) {
-            StackPane layoutPane = (StackPane) scene.lookup("#app_content");
-            layoutPane.getChildren().clear();
-            layoutPane.getChildren().add(parent);
-        }
-
-    }
-
+    /**
+     * Create stage
+     * @param title the title
+     * @return the stage
+     */
     private Stage createStage(String title) {
         Stage stage = new Stage();
         stage.initModality(Modality.WINDOW_MODAL);
@@ -85,6 +97,14 @@ public class StageManager {
         return stage;
     }
 
+    /**
+     * Load nodes view root controller.
+     *
+     * @param viewType         the view type
+     * @param controllerFactory the controller factory
+     * @return the root controller
+     * @throws IOException the io exception
+     */
     public RootController loadNodesView(ViewType viewType, IControllerFactory controllerFactory) throws IOException {
         return controllerFactory.loadFxmlFile(viewType);
     }
