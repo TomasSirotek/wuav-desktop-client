@@ -36,17 +36,6 @@ public class DeviceService implements IDeviceService {
     }
 
     /**
-     * Gets all devices of the given type
-     *
-     * @param type the type of the devices
-     * @return a list of devices
-     */
-    @Override
-    public Device getDeviceById(int deviceId, Class<? extends Device> type) {
-        return deviceRepository.getDeviceById(deviceId, type);
-    }
-
-    /**
      * Creates a device
      *
      * @param device the device to create

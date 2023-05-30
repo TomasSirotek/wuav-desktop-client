@@ -17,15 +17,6 @@ public interface IDeviceService {
     List<Device> getAllDevices();
 
     /**
-     * Gets all devices of the given type
-     *
-     * @param type the type of the devices
-     * @return a list of devices
-     */
-
-    Device getDeviceById(int deviceId, Class<? extends Device> type);
-
-    /**
      * Creates a device
      *
      * @param device the device to create
