@@ -7,6 +7,9 @@ import com.wuav.client.bll.strategies.interfaces.IUserRoleStrategy;
 
 /**
  * The factory for the user role strategies
+ * Provider <T> interface that provides instances of type T.
+ * The purpose of Provider is to allow lazy loading of services and to
+ * control their instantiation in cases where injecting the service directly would not be suitable.
  */
 public class UserRoleStrategyFactory {
 

@@ -108,6 +108,9 @@
     </select>
 
 
+    <!--  PREPARED  to prevent SQL injection attacks.-->
+<!--    KEY PROPERTY corresponds to the primary key in database table.-->
+<!--    KEY COLUMN corresponds to the column in database table that is the PK-->
     <insert
             id="createUser"
             statementType="PREPARED"

@@ -111,6 +111,7 @@ public class UsersController extends RootController implements Initializable {
     private void openCreateUserWindow(String title, ViewType viewType, AppUser value) {
         Scene scene = userAnchorPane.getScene();
         Window window = scene.getWindow();
+
         if (window instanceof Stage) {
             Pane layoutPane = (Pane) scene.lookup("#layoutPane");
             if (layoutPane != null) {
@@ -124,6 +125,7 @@ public class UsersController extends RootController implements Initializable {
                     UserSettingsController userSettingsController = (UserSettingsController) controller;
                     userSettingsController.setUserSettings(value);
                 }
+
                 show(controller.getView(), title, scene);
 
             } else {

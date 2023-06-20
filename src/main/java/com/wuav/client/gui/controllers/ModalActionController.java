@@ -252,8 +252,6 @@ public class ModalActionController extends RootController implements Initializab
 
         Scene scene = new Scene(layout);
         stage.setScene(scene);
-
-
         stage.showAndWait();
 
     }

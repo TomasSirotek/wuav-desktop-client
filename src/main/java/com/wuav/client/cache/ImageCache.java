@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * The image cache
  */
 public class ImageCache {
+    // concurrent hashmap save for multi-threading, divides the map into segments (dont have to use synchronized) lock striping technique
     private static Map<Integer, Image> imageCache = new ConcurrentHashMap<>();
     private static BlobStorageHelper blobStorageHelper = new BlobStorageHelper(BlobStorageFactory.getBlobContainerClient());
 

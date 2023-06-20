@@ -19,10 +19,7 @@
                r.name
         FROM app_role r
         WHERE r.name = #{roleName}
-
     </select>
-
-
 
 </mapper>
 

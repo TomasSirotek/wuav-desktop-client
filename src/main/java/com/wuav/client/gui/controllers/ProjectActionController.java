@@ -131,8 +131,6 @@ public class ProjectActionController extends RootController implements Initializ
     public void initialize(URL url, ResourceBundle resourceBundle) {
         eventBus.register(this);
         setupActionButtons();
-
-
     }
 
     private void setupActionButtons() {
@@ -142,13 +140,11 @@ public class ProjectActionController extends RootController implements Initializ
         newFileUploadBox.setVisible(false);
         selectedImageFile = null;
         updateClient.setOnAction(e -> updateClient());
-
         editNameToggle.setOnAction(e -> handleHboxSwitch());
     }
 
     private void handleHboxSwitch() {
         editNameHbox.getChildren().clear();
-
 
         TextField textField = new TextField();
         textField.setText(projectNameField.getText());
@@ -437,7 +433,12 @@ public class ProjectActionController extends RootController implements Initializ
     }
 
     private void uploadFile() {
-        int mainImageId = currentProject.getProjectImages().stream().filter(CustomImage::isMainImage).findFirst().get().getId();
+        int mainImageId = currentProject.getProjectImages()
+                .stream()
+                .filter(CustomImage::isMainImage)
+                .findFirst()
+                .get()
+                .getId();
 
         Task<Image> task = new Task<Image>() {
             @Override

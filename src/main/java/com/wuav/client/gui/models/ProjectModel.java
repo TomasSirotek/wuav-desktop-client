@@ -30,9 +30,7 @@ import java.util.stream.Collectors;
  */
 public class ProjectModel implements IProjectModel {
     private IProjectService projectService;
-
     private final IUserModel userModel;
-
     private final Map<Integer, List<Project>> projectsCache = Collections.synchronizedMap(new HashMap<>());
     private final int ALL_PROJECTS_KEY = -1;
 

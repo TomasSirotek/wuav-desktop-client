@@ -162,16 +162,37 @@ public class UserService implements IUserService {
                     int userRoleResult = userRepository.addUserToRole(userId, roleId);
                     if (userRoleResult > 0) {
                         try {
-                            finalResult = sendRecoveryEmail(email);
+                            finalResult = sendNewPasswordEmail(email, newPassword);
                         } catch (GeneralSecurityException | IOException e) {
                             throw new RuntimeException(e);
                         }
                     }
                 }
             }
-
         }
         return finalResult;
+    }
+
+    private boolean sendNewPasswordEmail(String email, String newPassword) throws GeneralSecurityException, IOException {
+        boolean isSent = false;
+        // send email
+        String templateName = "email-template-confirm";
+        Map<String, Object> templateVariables = new HashMap<>();
+        templateVariables.put("newPassword", newPassword);
+
+        //Process the template and generate the email body
+        String emailBody = emailEngine.processTemplate(templateName, templateVariables);
+
+        boolean emailSent = emailSender.sendEmail(email, EmailSubjectType.NEW_PASSWORD.toString().toLowerCase(), emailBody, false, null);
+        if (emailSent) {
+            System.out.println("Email sent successfully");
+            isSent = true;
+        } else {
+            System.out.println("Email sending failed");
+            isSent = false;
+        }
+
+        return isSent;
     }
 
     /**
@@ -218,7 +239,6 @@ public class UserService implements IUserService {
             var isChanged = changeUserPasswordHash(appUser.getId(), newPasswordHash);
             if (isChanged) {
                 // send email
-
                 String templateName = "email-template-confirm";
                 Map<String, Object> templateVariables = new HashMap<>();
                 templateVariables.put("newPassword", generatedPassword);

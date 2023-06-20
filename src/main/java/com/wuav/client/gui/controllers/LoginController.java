@@ -15,7 +15,12 @@ import io.github.palexdev.materialfx.controls.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
 import javax.naming.AuthenticationException;
 import java.io.IOException;
 import java.net.URL;
@@ -90,17 +95,18 @@ public class LoginController extends RootController implements Initializable {
 
                 // Update the UI on the JavaFX application thread
                 Platform.runLater(() -> {
-                    try {
-                        // Hide the progress bar
-                        progressLoader.setVisible(false);
-                        loadingPane.setStyle(CustomColor.TRANSPARENT.getStyle());
+                    // Hide the progress bar
+                    progressLoader.setVisible(false);
+                    loadingPane.setStyle(CustomColor.TRANSPARENT.getStyle());
 
-                        getStage().close(); // Close the login stage
-                        loadNewView(); // Load the new view
-                        executorService.shutdown(); // Shutdown the executor service
-                    } catch (IOException e) {
-                        errorPane.setVisible(true);
-                    }
+                    // getStage().close(); // Close the login stage
+                    //  loadNewView(); // Load the new view
+
+                    var test = tryToLoadView();
+                    getStage().close();
+                    show(test.getView(), "Logged view ");
+
+                    executorService.shutdown(); // Shutdown the executor service
                 });
             } catch (AuthenticationException e) {
                 // Update the UI on the JavaFX application thread
@@ -110,6 +116,37 @@ public class LoginController extends RootController implements Initializable {
             }
         });
     }
+    private RootController loadNodesView(ViewType viewType) throws IOException {
+        return controllerFactory.loadFxmlFile(viewType);
+    }
+
+    /**
+     * private method for showing new stages whenever its need
+     *
+     * @param parent root that will be set
+     * @param title  title for new stage
+     */
+    private void show(Parent parent, String title) {
+        Stage stage = new Stage();
+        Scene scene = new Scene(parent);
+
+        stage.initOwner(getStage());
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setTitle(title);
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+
+    private RootController tryToLoadView() {
+        try {
+            return loadNodesView(ViewType.MAIN);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     private void loadNewView() throws IOException {
         String stageTitle = "WUAV-dashboard";

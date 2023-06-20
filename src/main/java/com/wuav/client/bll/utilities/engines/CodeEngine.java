@@ -50,14 +50,19 @@ public class CodeEngine implements ICodesEngine {
      */
     @Override
     public ImageView generateQRCodeImageView(int userId, String projectName, int width, int height) throws Exception {
+        // A new HashMap is created. This will be used to store the data that will be encoded into the QR code.
         Map<String, Object> qrData = new HashMap<>();
 
+        // The user's ID and the project name are put into the HashMap with keys "userId" and "projectName", respectively.
         qrData.put("userId", userId);
         qrData.put("projectName", projectName);
 
+        // A new Gson object is created. Gson is a library that can be used to convert Java Objects into their JSON representation and vice versa.
         Gson gson = new Gson();
+        // The HashMap is converted into a JSON string using the Gson object.
         String jsonString = gson.toJson(qrData);
 
+        // The JSON string is then converted into a QR code image. The width and height parameters specify the dimensions of the QR code image.
         byte[] qrCodeImage = generateQRCodeImage(jsonString, width, height);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(qrCodeImage);
         Image image = new Image(inputStream);

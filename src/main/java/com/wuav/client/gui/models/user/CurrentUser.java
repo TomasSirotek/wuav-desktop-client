@@ -9,6 +9,9 @@ import com.wuav.client.bll.strategies.interfaces.IUserRoleStrategy;
 public class CurrentUser {
     private AppUser currentUser = null;
     private IUserRoleStrategy userRoleStrategy = null;
+
+    // volatile - ensuring its read from main memory and not from cache
+    // immediately visible to all threads
     private static volatile CurrentUser instance;
 
 
@@ -18,16 +21,15 @@ public class CurrentUser {
      * @return the instance
      */
     public static CurrentUser getInstance() {
-        if (instance == null) {
-            synchronized (CurrentUser.class) {
-                if (instance == null) {
-                    instance = new CurrentUser();
+        if (instance == null) {  // Check if the instance is null
+            synchronized (CurrentUser.class) {  // Acquire a lock on the class object
+                if (instance == null) {  // Double-check if the instance is still null
+                    instance = new CurrentUser();  // Create a new instance
                 }
             }
         }
-        return instance;
+        return instance;  // Return the instance
     }
-
     /**
      * Gets logged user.
      *

@@ -38,7 +38,6 @@ public class UserModalController extends RootController implements Initializable
     private MFXButton createUserBtn;
     @FXML
     private MFXProgressSpinner loadSpinner;
-
     private final IUserModel userModel;
     private final EventBus eventBus;
 
@@ -79,30 +78,55 @@ public class UserModalController extends RootController implements Initializable
         roleField.getSelectionModel().select(3); // selects technician by default
     }
 
+    // This method is used to create a new user.
     private void createNewUser() {
+
+        // The spinner indicating a loading process is made visible.
         loadSpinner.setVisible(true);
+
+        // A check is made to ensure the input is valid.
         if (validateInput()) {
+
+            // A new task is submitted to the executor service. This task runs in a background thread and does not interfere with the UI thread.
+            // Returns immediately after submitting the task and does not wait for the task to complete.
             executorService.submit(() -> {
+
+                // An attempt is made to create a new user using the provided input.
                 boolean result = userModel.createUser(
                         userNameField.getText(),
                         userEmailField.getText(),
                         roleField.getSelectionModel().getSelectedItem().toString()
                 );
 
+                // Platform.runLater is a method used to ensure that the Runnable inside will be executed on the JavaFX Application Thread. Thread safety.
                 Platform.runLater(() -> {
-                    if (result) {
+                    if (result) { // The user creation was successful.
+
+                        // The spinner is made invisible, indicating the end of the loading process.
                         loadSpinner.setVisible(false);
+
+                        // A refresh event is posted to the EventBus to update the user table.
                         eventBus.post(new RefreshEvent(EventType.UPDATE_USER_TABLE));
+
+                        // A custom event is posted to the EventBus to show a notification indicating the success of the user creation.
                         eventBus.post(new CustomEvent(EventType.SHOW_NOTIFICATION, true, "User created successfully"));
+
+                        // The current stage is closed.
                         getStage().close();
+
+                        // The executor service is shut down.
                         executorService.shutdown();
-                    } else {
+
+                    } else { // The user creation was unsuccessful.
+
+                        // A custom event is posted to the EventBus to show a notification indicating the failure of the user creation.
                         eventBus.post(new CustomEvent(EventType.SHOW_NOTIFICATION, false, "User could not have been created successfully"));
                     }
                 });
             });
         }
     }
+
 
     private boolean validateInput() {
         boolean isValid = true;

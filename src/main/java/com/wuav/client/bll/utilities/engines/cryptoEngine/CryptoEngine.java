@@ -4,6 +4,9 @@ import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
 public class CryptoEngine implements ICryptoEngine {
 
+    /**
+     * static = initiliazed once, associated with the class itself, not instance, final = cannot be changed
+     */
     private final static Argon2PasswordEncoder encoder =
             new Argon2PasswordEncoder(32, 64, 1, 15 * 1024, 2);
 

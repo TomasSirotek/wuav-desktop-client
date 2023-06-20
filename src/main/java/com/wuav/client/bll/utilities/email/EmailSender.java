@@ -33,9 +33,10 @@ import static com.google.api.services.gmail.GmailScopes.GMAIL_SEND;
  * The email sender
  */
 public class EmailSender implements IEmailSender {
-    private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT, GsonFactory gsonFactory)
+    private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT, GsonFactory gsonFactory)
             throws IOException {
 
+        // Load client secrets.
         String clientSecretFilePath = System.getenv("GMAIL_PATH");
         GoogleClientSecrets clientSecrets =
                 GoogleClientSecrets.load(gsonFactory,

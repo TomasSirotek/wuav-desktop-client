@@ -14,7 +14,6 @@ public class AppUser {
     private int id;
     private String name;
     private String email;
-
     private String passwordHash;
     private Date createdAt;
 
